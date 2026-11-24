@@ -388,7 +388,7 @@ jobs:
 
       # Pages plumbing only on a main deploy build; PRs just validate the build.
       - name: Setup Pages
-        if: github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: github.repository == 'bitrix24/b24jssdk' && github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
       - name: Build docs
@@ -403,14 +403,14 @@ jobs:
         run: node scripts/check-docs-csp-present.mjs
 
       - name: Create Pages artifact
-        if: github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: github.repository == 'bitrix24/b24jssdk' && github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: |
           mkdir -p combined-artifact
           cp -r docs/.output/public/* combined-artifact/
           touch combined-artifact/.nojekyll
 
       - name: Upload Pages artifact
-        if: github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: github.repository == 'bitrix24/b24jssdk' && github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: combined-artifact
@@ -422,7 +422,8 @@ jobs:
   # release workflows. (#111)
   deploy:
     needs: docs-build
-    if: github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    # Наш форк публикует сайт на своём сервере, не в GitHub Pages bitrix24.
+    if: github.repository == 'bitrix24/b24jssdk' && github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

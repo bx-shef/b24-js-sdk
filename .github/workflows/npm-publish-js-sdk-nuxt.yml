@@ -30,6 +30,8 @@ concurrency:
 
 jobs:
   ci:
+    # Наш форк: автоматика bitrix24 (релизы, npm, ночной smoke против их портала) здесь не работает.
+    if: github.repository == 'bitrix24/b24jssdk'
     uses: ./.github/workflows/ci.yml
     # See npm-publish-js-sdk.yml for why these permissions are granted here.
     permissions:
