@@ -4,27 +4,27 @@
 
 # @bitrix24/b24jssdk
 
-JavaScript/TypeScript SDK for the Bitrix24 REST API. Supports three usage scenarios:
+JavaScript/TypeScript SDK для REST API Битрикс24. Поддерживает три сценария использования:
 
-- **B24Frame** — iframe apps embedded in the Bitrix24 interface (uses the current user's token automatically)
-- **B24Hook** — server-side apps using a permanent webhook token
-- **B24OAuth** — server-side apps using OAuth 2.0 with token refresh
+- **B24Frame** — iframe-приложения, встроенные в интерфейс Битрикс24 (токен текущего пользователя используется автоматически)
+- **B24Hook** — серверные приложения с постоянным токеном вебхука
+- **B24OAuth** — серверные приложения с OAuth 2.0 и обновлением токена
 
-## Installation
+## Установка
 
 ```bash
 pnpm add @bitrix24/b24jssdk
 ```
 
-For Nuxt projects:
+Для проектов на Nuxt:
 
 ```bash
 pnpm add @bitrix24/b24jssdk-nuxt
 ```
 
-## Quick Start
+## Быстрый старт
 
-### B24Frame (iframe app)
+### B24Frame (iframe-приложение)
 
 ```ts
 import { initializeB24Frame } from '@bitrix24/b24jssdk'
@@ -43,7 +43,7 @@ if (response.isSuccess) {
 $b24.destroy()
 ```
 
-### B24Hook (server webhook)
+### B24Hook (серверный вебхук)
 
 ```ts
 import { B24Hook } from '@bitrix24/b24jssdk'
@@ -62,7 +62,7 @@ if (response.isSuccess) {
 $b24.destroy()
 ```
 
-### B24OAuth (OAuth app)
+### B24OAuth (приложение с OAuth)
 
 ```ts
 import { B24OAuth } from '@bitrix24/b24jssdk'
@@ -81,20 +81,20 @@ if (response.isSuccess) {
 $b24.destroy()
 ```
 
-## Documentation
+## Документация
 
-Full documentation: [https://bitrix24.github.io/b24jssdk/](https://bitrix24.github.io/b24jssdk/)
+Полная документация: [https://bitrix24.github.io/b24jssdk/](https://bitrix24.github.io/b24jssdk/)
 
-## Contributing
+## Участие в разработке
 
-See [AGENTS.md](./AGENTS.md) for contributor and AI agent guidance.
+Руководство для контрибьюторов и ИИ-агентов — в [AGENTS.md](./AGENTS.md).
 
-## Security
+## Безопасность
 
-Found a vulnerability? Please report it privately —
-[see SECURITY.md](./SECURITY.md), which also explains what belongs here and what
-belongs to Bitrix24 itself.
+Нашли уязвимость? Сообщите о ней приватно —
+[см. SECURITY.md](./SECURITY.md): там же объяснено, что относится к этому репозиторию,
+а что — к самому Битрикс24.
 
-## Changelog
+## Журнал изменений
 
-See [CHANGELOG.md](./CHANGELOG.md).
+См. [CHANGELOG.md](./CHANGELOG.md).

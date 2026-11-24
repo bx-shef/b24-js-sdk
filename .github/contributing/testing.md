@@ -445,4 +445,4 @@ If you touched the limiter stack or transport layer, also run the relevant under
 
 > **CI runs only the portal-free Vitest projects.** The `test` job runs `jsSdk:unit`, `jsSdk:types` and `skills:unit`. Everything that needs `B24_HOOK` — `jsSdk:integration`, `jsSdk:underLoad`, `skills:live` — is your **local-only** responsibility, so a green CI on a PR does not mean the whole suite passed; the reviewer expects you to confirm a local integration run in the PR description.
 
-See also the [Before Submitting](../../AGENTS.md#before-submitting) checklist in `AGENTS.md` for the full per-PR checklist (lint, typecheck, docs sync, contributing-guide sync, commit-message format).
+See also the [Before Submitting](../../AGENTS.md#перед-отправкой) checklist in `AGENTS.md` for the full per-PR checklist (lint, typecheck, docs sync, contributing-guide sync, commit-message format).
