@@ -27,6 +27,6 @@
    `site/landing/deploy/proxy.compose.yml` из bx-shef/toolsai.
 2. Каталог, например `/opt/b24-js-sdk-docs`: `docker-compose.prod.yml` и `.env` из `.env.example`.
 3. `docker compose -f docker-compose.prod.yml up -d`.
-4. Проверка: `https://<DOMAIN>/llms.txt` — 200, `https://<DOMAIN>/mcp/` — MCP-сервер.
+4. Проверка: `https://<DOMAIN>/` и `https://<DOMAIN>/llms.txt` (есть при заданном `SITE_URL`) — 200, `https://<DOMAIN>/mcp/` — MCP-сервер.
 
 Новые версии ставит Watchtower по метке `com.centurylinklabs.watchtower.enable=true`.

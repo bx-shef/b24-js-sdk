@@ -130,7 +130,7 @@ Code Style Guidelines for Vue and Nuxt:
     abortSignal: abortController.signal,
     providerOptions: {},
     system,
-    messages: await convertToModelMessages(messages),
+    messages: await convertToModelMessages(messages as Parameters<typeof convertToModelMessages>[0]),
     experimental_transform: smoothStream(),
     stopWhen: stepCountIs(maxStepCount),
     tools: {

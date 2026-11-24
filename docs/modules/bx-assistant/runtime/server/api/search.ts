@@ -90,7 +90,7 @@ export default defineEventHandler(async (event) => {
 
   const stream = createUIMessageStream({
     execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
-      const modelMessages = await convertToModelMessages(messages)
+      const modelMessages = await convertToModelMessages(messages as Parameters<typeof convertToModelMessages>[0])
       const result = streamText({
         model: deepseek(config.bxAssistant.modelDeepSeek),
         maxOutputTokens: 4000, // Possible values: `10000` | `8100` | `4000`

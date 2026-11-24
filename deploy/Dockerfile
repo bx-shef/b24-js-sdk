@@ -32,5 +32,5 @@ EXPOSE 3000
 LABEL org.opencontainers.image.source=https://github.com/bx-shef/b24-js-sdk
 USER node
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD ["node", "-e", "fetch('http://127.0.0.1:3000/llms.txt').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+  CMD ["node", "-e", "fetch('http://127.0.0.1:3000/').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
 CMD ["node", "server/index.mjs"]
