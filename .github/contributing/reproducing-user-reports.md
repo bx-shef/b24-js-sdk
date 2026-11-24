@@ -1,36 +1,36 @@
-# Reproducing user reports
+# Воспроизведение сообщений пользователей
 
-<sub>Last reviewed: 2026-06-27.</sub>
+<sub>Последняя проверка: 2026-06-27.</sub>
 
-How to handle a "I did X, nothing worked — here's my snippet" report. These land
-as issues or chat messages and are usually **not** SDK bugs: the SDK forwards
-the REST call unchanged and surfaces the server's answer (including soft errors
-on the `AjaxResult`). Most failures come down to the **caller's context** — auth
-type (webhook vs application OAuth), missing scopes, or the wrong method — or a
-platform-side change. So the rule is: **reproduce before concluding.**
+Как обрабатывать сообщение вида «я сделал X, ничего не сработало — вот мой фрагмент». Такие сообщения приходят
+как задачи (issues) или сообщения в чате и обычно **не** являются ошибками SDK: SDK передаёт
+вызов REST без изменений и выводит ответ сервера (включая «мягкие» ошибки
+в `AjaxResult`). Большинство сбоев сводится к **контексту вызывающего** — типу авторизации
+(вебхук или OAuth приложения), недостающим правам доступа (scopes) или неверному методу — либо к изменению
+на стороне платформы. Поэтому правило такое: **сначала воспроизведите, потом делайте выводы.**
 
-## The loop
+## Цикл
 
-1. **You get a report** (a complaint plus a small code snippet).
-2. **Assemble the call chain** as a scenario on a branch (see below).
-3. **The maintainer runs it locally** in the nuxt playground, inside Bitrix24.
-4. **Read the log** — each call's request and response.
-5. **Hand the transcript back**; confirm the result or fix the chain.
-6. **Form the answer** for the reporter: "call it like this and it works", or a
-   concrete cause (scope/context/method), or — if it's a platform regression — a
-   minimal repro to file with Bitrix24 technical support.
-7. **Attach the transcript to the issue** (and to any Bitrix24 support report) as
-   the evidence of what ran — the request/response chain, not just a verdict.
-   Redact the tunnel host and any private data first (see Gotchas → Privacy).
+1. **Вы получаете сообщение** (жалоба и небольшой фрагмент кода).
+2. **Соберите цепочку вызовов** как сценарий в ветке (см. ниже).
+3. **Сопровождающий запускает её локально** в playground на Nuxt, внутри Битрикс24.
+4. **Прочитайте журнал** — запрос и ответ каждого вызова.
+5. **Верните протокол**; подтвердите результат или поправьте цепочку.
+6. **Сформируйте ответ** автору сообщения: «вызывайте так, и это работает», либо
+   конкретная причина (права доступа/контекст/метод), либо — если это регрессия платформы — минимальное
+   воспроизведение, которое нужно направить в техническую поддержку Битрикс24.
+7. **Приложите протокол к задаче** (и к обращению в поддержку Битрикс24) как
+   свидетельство того, что выполнялось, — цепочку запросов и ответов, а не просто вердикт.
+   Предварительно скройте хост туннеля и любые приватные данные (см. «Подводные камни» → «Конфиденциальность»).
 
-## The tool
+## Инструмент
 
-`playgrounds/nuxt/app/components/IssueReproHarness.vue` (wired into
-`app/pages/index.vue`). It runs inside `B24Frame` — the **application OAuth
-context**, which is what most reports actually need (a webhook can't do
-everything an app can).
+`playgrounds/nuxt/app/components/IssueReproHarness.vue` (подключён в
+`app/pages/index.vue`). Он работает внутри `B24Frame` — в **контексте OAuth приложения**,
+который как раз и нужен большинству сообщений (вебхук умеет не всё,
+что умеет приложение).
 
-Edit **only** the `SCENARIO` block. Use the helpers the harness provides:
+Редактируйте **только** блок `SCENARIO`. Используйте помощники, которые даёт стенд:
 
 ```ts
 // v2 by default; pass { ver: 'v3' } for the v3 endpoint
@@ -41,11 +41,11 @@ note('an observation', 'ok')        // 'info' | 'ok' | 'err'
 verdict(true, 'why it passed')      // plain pass/fail line
 ```
 
-Every `call()` records the **request (method + params)** and the **response**
-(or error), with the API version and duration. Always **clean up** anything the
-scenario creates so the portal is left as it was.
+Каждый `call()` записывает **запрос (метод + параметры)** и **ответ**
+(или ошибку) с версией API и длительностью. Всегда **убирайте за собой** всё, что создаёт
+сценарий, чтобы портал остался в прежнем состоянии.
 
-## Running it locally
+## Локальный запуск
 
 ```bash
 pnpm --filter ./packages/jssdk build   # the playground depends on dist
@@ -54,23 +54,23 @@ cp .env.example .env
 pnpm dev                               # http://localhost:3001
 ```
 
-The app must run **inside** Bitrix24, so expose the dev server with a tunnel and
-allow the tunnel host:
+Приложение должно работать **внутри** Битрикс24, поэтому откройте dev-сервер через туннель и
+разрешите хост туннеля:
 
 ```bash
 # playgrounds/nuxt/.env
 NUXT_ALLOWED_HOSTS=your-tunnel.example.dev
 ```
 
-Register a local application (with UI) in **Applications → Developer resources →
-Local application**, point the handler at the tunnel URL, and grant the scopes
-the scenario needs. Open the app and press **Run scenario**.
+Зарегистрируйте локальное приложение (с интерфейсом) в **Приложения → Ресурсы для разработчиков →
+Локальное приложение**, укажите обработчик на URL туннеля и выдайте права доступа,
+которые нужны сценарию. Откройте приложение и нажмите **Run scenario**.
 
-## Reading the result
+## Чтение результата
 
-The live log shows compact one-liners (`#n method [ver] · Nms · OK/ERROR`).
-Below it, the full chain is rendered as raw markdown in a `<pre>` — select all
-and copy it back. The transcript pairs every request with its response, e.g.:
+Живой журнал показывает компактные однострочные записи (`#n method [ver] · Nms · OK/ERROR`).
+Ниже вся цепочка выводится сырым markdown в `<pre>` — выделите всё
+и скопируйте обратно. В протоколе каждый запрос соседствует со своим ответом, например:
 
 ```text
 ### #4 crm.deal.userfield.add [v2] — OK (195ms)
@@ -80,27 +80,27 @@ response:
 247
 ```
 
-## Deciding the outcome
+## Определение исхода
 
-| Finding | Action |
+| Находка | Действие |
 | --- | --- |
-| The chain works in the app context | Answer the reporter with the working chain; the difference is their context/scope/method. Not an SDK bug. |
-| The chain fails the same way | Compare against the report — narrow to context, scope, or method, then advise. |
-| The SDK transforms/sends something wrong | That's a real SDK bug — fix it with a test in the same PR. |
-| It misbehaves across portals with unchanged code | Likely a platform regression — attach the transcript and file it with Bitrix24 technical support. |
+| Цепочка работает в контексте приложения | Ответьте автору рабочей цепочкой; разница в его контексте/правах/методе. Это не ошибка SDK. |
+| Цепочка падает так же | Сравните с сообщением — сузьте до контекста, прав или метода, затем дайте совет. |
+| SDK преобразует/отправляет что-то неверно | Это настоящая ошибка SDK — исправьте её с тестом в том же PR. |
+| Ведёт себя неправильно на разных порталах при неизменном коде | Вероятно, регрессия платформы — приложите протокол и направьте в техническую поддержку Битрикс24. |
 
-## Gotchas worth remembering
+## Подводные камни, которые стоит помнить
 
-- **Webhook vs application context.** Some methods are application-only and a
-  webhook is rejected outright (`WRONG_AUTH_TYPE` / *Application context
-  required*) — e.g. `userfieldtype.*`. Reproduce in the context the user
-  actually uses.
-- **Scopes.** Custom user types / user fields need the matching scopes
-  (`crm`, `user.userfield`, `userfieldconfig`). A "worked before, now fails"
-  with unchanged code often points at context or scope, not the SDK.
-- **The SDK is a pass-through.** `actions.v{2,3}.*.make()` sends the call and
-  returns the server's answer; a server `error` becomes a soft error
-  (`response.isSuccess === false`). Don't fix "by symptom" — get the cause.
-- **Privacy.** Don't commit a reporter's private data (portal URLs, tokens,
-  member ids) into the repo. The scenario uses throwaway, generated names and
-  `window.location.origin` for any handler URL.
+- **Вебхук и контекст приложения.** Некоторые методы доступны только приложению, а вебхук
+  отклоняется сразу (`WRONG_AUTH_TYPE` / *Application context
+  required*) — например, `userfieldtype.*`. Воспроизводите в том контексте,
+  который пользователь действительно использует.
+- **Права доступа (scopes).** Пользовательские типы / пользовательские поля требуют соответствующих прав
+  (`crm`, `user.userfield`, `userfieldconfig`). Сообщение «раньше работало, теперь падает»
+  при неизменном коде часто указывает на контекст или права, а не на SDK.
+- **SDK — это транзит.** `actions.v{2,3}.*.make()` отправляет вызов и
+  возвращает ответ сервера; серверная `error` становится мягкой ошибкой
+  (`response.isSuccess === false`). Не чините «по симптому» — найдите причину.
+- **Конфиденциальность.** Не коммитьте в репозиторий приватные данные автора (URL порталов, токены,
+  member id). Сценарий использует одноразовые сгенерированные имена и
+  `window.location.origin` для любого URL обработчика.

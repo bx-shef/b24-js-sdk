@@ -1,14 +1,14 @@
-# Documentation
+# Документация
 
-<sub>Last reviewed: 2026-09-05.</sub>
+<sub>Последняя проверка: 2026-09-05.</sub>
 
-> **Agent-facing mirror:** the same surface, condensed for agents generating usage code, lives in [`skills/`](../../skills/README.md). The skill set has its own maintenance playbook ([`maintenance.md`](../../.github/contributing/maintenance.md)). When the public docs change here, the matching skill files usually need a refresh in the same PR.
+> **Зеркало для агентов:** та же поверхность в сжатом виде, для агентов, генерирующих код использования, лежит в [`skills/`](../../skills/README.md). У набора навыков свой регламент сопровождения ([`maintenance.md`](../../.github/contributing/maintenance.md)). Когда здесь меняется публичная документация, соответствующие файлы навыков обычно нужно обновить в том же PR.
 
-The docs site is the public source of truth. Out-of-date documentation is treated as a bug equal to a broken test. Documentation updates ship in the **same PR** as the code change — use a `docs:` commit only when the change is documentation-only.
+Сайт документации — публичный источник истины. Устаревшая документация считается такой же ошибкой, как сломанный тест. Обновления документации выходят в **том же PR**, что и изменение кода, — коммит `docs:` используйте, только когда изменение касается лишь документации.
 
-## File Location
+## Расположение файлов (File Location)
 
-Pages live under `docs/content/docs/` and use **kebab-case** filenames with a numeric prefix that controls navigation order:
+Страницы лежат в `docs/content/docs/` и называются в **kebab-case** с числовым префиксом, который задаёт порядок навигации:
 
 ```text
 docs/content/docs/
@@ -33,11 +33,11 @@ docs/content/docs/
     └── 30.node-hook-company-export.md
 ```
 
-The leading number is sort order, not part of the URL slug. Pages that pair a v2 / v3 variant share a number (e.g. both `1.call-rest-api-ver2.md` and `1.call-rest-api-ver3.md` use `1.`).
+Ведущее число задаёт порядок сортировки и не входит в slug URL. Страницы, у которых есть пара вариантов v2 / v3, делят один номер (например, и `1.call-rest-api-ver2.md`, и `1.call-rest-api-ver3.md` используют `1.`).
 
-## Required Frontmatter
+## Обязательный frontmatter (Required Frontmatter)
 
-Every page starts with YAML frontmatter:
+Каждая страница начинается с YAML frontmatter:
 
 ```yaml
 ---
@@ -62,45 +62,45 @@ links:
 ---
 ```
 
-| Field | Required | Notes |
+| Поле | Обязательно | Примечания |
 | --- | --- | --- |
-| `title` | yes | Used as the page heading |
-| `description` | yes | One sentence; appears under the title and in OG meta |
-| `navigation.title` | optional | Short label for the sidebar; falls back to `title` |
-| `category` | for action pages | One of: `actions`, `frame`, `helper`, `tools`, … (use existing values; don't invent new categories without coordination) |
-| `restApiVersion` | for action pages | `rest-api-ver2` or `rest-api-ver3` — drives the `::rest-api-version-only` filter |
-| `links` | yes for API pages | Each entry points to the source file backing this page. Always include the primary class plus `Result`/`AjaxResult`/`AjaxError`/`SdkError` when relevant |
+| `title` | да | Используется как заголовок страницы |
+| `description` | да | Одно предложение; выводится под заголовком и в OG-метаданных |
+| `navigation.title` | нет | Короткая подпись для боковой панели; по умолчанию берётся `title` |
+| `category` | для страниц действий | Одно из: `actions`, `frame`, `helper`, `tools`, … (используйте существующие значения; не изобретайте новые категории без согласования) |
+| `restApiVersion` | для страниц действий | `rest-api-ver2` или `rest-api-ver3` — управляет фильтром `::rest-api-version-only` |
+| `links` | да для страниц API | Каждая запись указывает на файл исходников, на котором держится страница. Всегда включайте основной класс, а также `Result`/`AjaxResult`/`AjaxError`/`SdkError`, когда это уместно |
 
-The `links` block is how readers (and agents) jump from a doc page to the implementation. **Keep these links accurate** — every page in `2.working-with-the-rest-api/` already follows this pattern, copy from the closest existing page. CI enforces this: a `blob/main/` target in `links:` whose file no longer exists fails the `docs-lint` job (#117).
+Блок `links` — то, как читатели (и агенты) переходят со страницы документации к реализации. **Следите за точностью этих ссылок** — каждая страница в `2.working-with-the-rest-api/` уже следует этому паттерну, копируйте с ближайшей существующей страницы. CI это обеспечивает: цель `blob/main/` в `links:`, файла которой больше нет, роняет задание `docs-lint` (#117).
 
-**In-page links must be site-absolute.** Link to another doc page with an absolute route (`[Call v3](/docs/working-with-the-rest-api/call-rest-api-ver3/)`), never a relative `./` or `../` path — relative links silently fail to resolve in Nuxt Content and are rejected by CI (#102).
+**Ссылки внутри страниц должны быть абсолютными для сайта.** Ссылайтесь на другую страницу документации абсолютным маршрутом (`[Call v3](/docs/working-with-the-rest-api/call-rest-api-ver3/)`), никогда не относительным путём `./` или `../` — относительные ссылки молча не разрешаются в Nuxt Content и отклоняются CI (#102).
 
-## Page Structure
+## Структура страницы (Page Structure)
 
-A standard API page has these sections, in order:
+Стандартная страница API содержит эти разделы, по порядку:
 
-1. **Notices** — `::warning` / `::caution` blocks at the very top for deprecation, migration, or "page in progress" notes.
-2. **Overview** — one or two paragraphs of prose.
-3. **Method Signature** — TypeScript signature in a fenced code block.
-4. **Parameters** — table of name / type / description.
-5. **Returns** — what the method returns (`Result`, `AjaxResult`, …).
-6. **Examples** — runnable snippets.
-7. **Limitations / Key Concepts** — what callers must know that isn't obvious from the signature.
-8. **Error Handling** — `SdkError` invariants and `AjaxError` codes the method can produce.
+1. **Уведомления (Notices)** — блоки `::warning` / `::caution` в самом верху для заметок об устаревании, миграции или «страница в работе».
+2. **Обзор (Overview)** — один-два абзаца прозы.
+3. **Сигнатура метода (Method Signature)** — сигнатура на TypeScript в блоке кода.
+4. **Параметры (Parameters)** — таблица имя / тип / описание.
+5. **Возвращаемое значение (Returns)** — что возвращает метод (`Result`, `AjaxResult`, …).
+6. **Примеры (Examples)** — запускаемые фрагменты.
+7. **Ограничения / Ключевые понятия (Limitations / Key Concepts)** — то, что вызывающему нужно знать и что неочевидно из сигнатуры.
+8. **Обработка ошибок (Error Handling)** — инварианты `SdkError` и коды `AjaxError`, которые может выдать метод.
 
-When the change touches the method signature, parameters, return shape, runtime behaviour, error codes, or warnings emitted, sync **all** of these sections in the same PR.
+Когда изменение затрагивает сигнатуру метода, параметры, форму возвращаемого значения, поведение во время выполнения, коды ошибок или выдаваемые предупреждения, синхронизируйте **все** эти разделы в том же PR.
 
-## Language
+## Язык (Language)
 
-- All documentation prose, parameter tables, code samples, and notes are **English**.
-- Use sentence case for headings (`## Working with batches`, not `## Working With Batches`).
-- Be concise; show, don't tell. Prefer a runnable example over a paragraph of prose.
+- Вся проза документации, таблицы параметров, образцы кода и примечания — на **русском языке**; английскими остаются только код, идентификаторы, комментарии в коде и литералы.
+- Заголовки пишите в обычном регистре предложения (`## Работа с пакетными запросами`, а не `## Работа С Пакетными Запросами`).
+- Будьте лаконичны: показывайте, а не рассказывайте. Запускаемый пример предпочтительнее абзаца прозы.
 
-## MDC Blocks Used in This Project
+## Блоки MDC, используемые в проекте (MDC Blocks Used in This Project)
 
-The docs site is Nuxt Content with MDC. Use the components that are already in use — don't introduce new ones without coordinating with the docs maintainer.
+Сайт документации — Nuxt Content с MDC. Используйте уже применяемые компоненты — не вводите новые без согласования с сопровождающим документации.
 
-### Notices
+### Уведомления (Notices)
 
 ```md
 ::warning
@@ -118,9 +118,9 @@ Cursor-based paging is preferred over manual `start` increments.
 ::
 ```
 
-### REST-version filtering
+### Фильтрация по версии REST (REST-version filtering)
 
-`::rest-api-version-only` shows different prose depending on which API version the reader has selected:
+`::rest-api-version-only` показывает разный текст в зависимости от версии API, выбранной читателем:
 
 ```md
 ::rest-api-version-only
@@ -129,7 +129,7 @@ The library supports both REST API version 2 and the new version 3.
 ::
 ```
 
-### Callouts with link
+### Выноски со ссылкой (Callouts with link)
 
 ```md
 ::callout{color="air-secondary" iconName="GitHubIcon" title="AuthActions interface" to="https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/types/auth.ts"}
@@ -137,7 +137,7 @@ Source for the AuthActions surface used by `B24Frame`.
 ::
 ```
 
-### Code examples
+### Примеры кода (Code examples)
 
 ````md
 ::code-example
@@ -157,59 +157,59 @@ console.log(result.getData().result)
 ::
 ````
 
-> Compile-checked example: [`documentation-b24hook-example.ts`](../../test/some-code-from-docs/contributing/documentation-b24hook-example.ts)
+> Пример с проверкой компиляции: [`documentation-b24hook-example.ts`](../../test/some-code-from-docs/contributing/documentation-b24hook-example.ts)
 >
-> **CI guard:** the `docs-lint` job runs [`scripts/check-v3-method-refs.mjs`](../../scripts/check-v3-method-refs.mjs) over docs, skills, `README-AI.md` **and `packages/jssdk/src/`**. Two layers: it blocks examples that call a non-existent `actions.v3.*` action (real actions: `call` / `callList` / `fetchList` / `callTail` / `fetchTail` / `batch` / `batchByChunk`), and it holds every v3 **method name** against a committed snapshot of a portal's own OpenAPI document — see below.
+> **Защита в CI:** задание `docs-lint` запускает [`scripts/check-v3-method-refs.mjs`](../../scripts/check-v3-method-refs.mjs) по документации, навыкам, `README-AI.md` **и `packages/jssdk/src/`**. Два уровня: он блокирует примеры, которые вызывают несуществующее действие `actions.v3.*` (настоящие действия: `call` / `callList` / `fetchList` / `callTail` / `fetchTail` / `batch` / `batchByChunk`), и сверяет каждое **имя метода** v3 с закоммиченным снимком собственного документа OpenAPI портала — см. ниже.
 
-### Checking a v3 method name against a portal snapshot
+### Сверка имени метода v3 со снимком портала (Checking a v3 method name against a portal snapshot)
 
-The docs call `rest.documentation.openapi` the source of truth for what exists on v3, and now something compares against it. `scripts/data/openapi-<kind>-<date>.json` is a reduction of that document — method name, module, operations — carrying a portal **kind** and never a domain, a scope or a credential.
+Документация называет `rest.documentation.openapi` источником истины о том, что существует в v3, и теперь есть то, что с ним сверяется. `scripts/data/openapi-<kind>-<date>.json` — это сокращение этого документа: имя метода, модуль, операции — с указанием **вида** портала, но никогда не домена, не области доступа и не учётных данных.
 
-A name is only judged in a **method position**: a `method: '…'` literal, a v3 batch tuple, a parameter-table row whose first cell is `method`, or a JSDoc bullet documenting the `method` option. A backticked name in ordinary prose is not one, because this project writes `result.items` the same way it writes `crm.item.list`.
+Имя оценивается только в **позиции метода**: литерал `method: '…'`, кортеж пакетного запроса v3, строка таблицы параметров, первая ячейка которой — `method`, или пункт JSDoc, описывающий опцию `method`. Имя в обратных кавычках в обычной прозе позицией метода не является, потому что в этом проекте `result.items` пишется так же, как `crm.item.list`.
 
-Two verdicts, and only one of them fails:
+Два вердикта, и проваливает только один:
 
-- a name in a v3 position that **no** snapshot publishes → **failure**, with `file:line`;
-- a portal method the docs never mention → informational. Never a failure — the great majority of what a portal publishes is undocumented here, and a check that is red by design gets switched off. `pnpm lint:v3-coverage` prints the current figure rather than this sentence carrying one.
+- имя в позиции v3, которое **ни один** снимок не публикует → **сбой**, с `file:line`;
+- метод портала, который документация нигде не упоминает → информационно. Никогда не сбой — подавляющее большинство того, что публикует портал, здесь не задокументировано, а проверку, которая красная по замыслу, отключают. `pnpm lint:v3-coverage` выводит текущую цифру, а не это предложение её содержит.
 
-A name published by **one** snapshot is accepted. Portals genuinely differ: the audit in #472 reported two cloud portals measured a day apart disagreeing on 28 methods, and every on-premise method existing in the cloud while 98 cloud ones did not exist on the box. Those figures are that issue's, not something this repository can reproduce — only cloud snapshots are committed. A snapshot is a baseline for prose, not a catalogue, and this must never gate runtime.
+Имя, опубликованное **одним** снимком, принимается. Порталы действительно различаются: аудит в #472 сообщил, что два облачных портала, измеренных с разницей в день, расходятся по 28 методам, а каждый метод коробочной версии существует в облаке, тогда как 98 облачных там не существовали. Эти цифры принадлежат той задаче, а не чему-то, что может воспроизвести этот репозиторий — закоммичены только облачные снимки. Снимок — это базовая линия для прозы, а не каталог, и он никогда не должен ограничивать работу во время выполнения.
 
-**Deliberate anti-examples and placeholders** are marked with the same `// @check-ignore: <reason>` this repository already uses, on the line, the line above, or the nearest non-empty line before the fence. **The reason must name the method**, e.g. ``// @check-ignore: `some.method` is a placeholder, not a portal method``. That is deliberate: two fences already carried a marker written for the typecheck gate, and without the name an exemption granted for one reason would silently grant the other.
+**Намеренные антипримеры и заглушки** помечаются тем же `// @check-ignore: <reason>`, который этот репозиторий уже использует, — на той же строке, строкой выше или на ближайшей непустой строке перед ограждением блока. **Причина должна называть метод**, например, ``// @check-ignore: `some.method` is a placeholder, not a portal method``. Это сделано намеренно: два блока уже несли маркер, написанный для проверки типизации, и без имени исключение, выданное по одной причине, молча распространялось бы и на другую.
 
-**Refreshing a snapshot** is a local step — CI never calls a portal:
+**Обновление снимка** — локальный шаг, CI никогда не обращается к порталу:
 
 ```bash
 B24_HOOK='https://<portal>/rest/<userId>/<secret>/' V3_SNAPSHOT_KIND=cloud \
   node scripts/check-v3-method-refs.mjs --refresh
 ```
 
-`V3_SNAPSHOT_KIND` is the portal kind (`cloud`, `on-premise`), never a domain. Re-run it when a Bitrix24 release adds v3 methods, or when a name you know is real is rejected. `--coverage` prints the per-module table and always exits 0 — that is the number to quote in a PR.
+`V3_SNAPSHOT_KIND` — вид портала (`cloud`, `on-premise`), никогда не домен. Запускайте заново, когда релиз Битрикс24 добавляет методы v3 или когда отклоняется имя, которое вы точно знаете как настоящее. `--coverage` выводит таблицу по модулям и всегда завершается с кодом 0 — именно эту цифру нужно приводить в PR.
 
-**Commit the new file and keep the old one.** An earlier version of this guide said to delete the snapshot it replaces; that is wrong, and #472 measured why. Methods *disappear* as well as appear — a pair of cloud snapshots taken thirteen days apart during that work differed by two withdrawn `crm.lead.timeline.activity.email.*` methods, alongside thirty-five new ones — and since the gate accepts a name published by **any** snapshot, deleting the older file is what would turn a still-correct page red. Keeping both is also the only way drift can be measured at all; only one snapshot is committed today, so `--coverage` reports the rate as not yet measurable.
+**Закоммитьте новый файл и оставьте старый.** Ранняя версия этого руководства говорила удалять заменяемый снимок; это неверно, и #472 измерил почему. Методы не только появляются, но и *исчезают* — пара облачных снимков, сделанных с разницей в тринадцать дней в ходе той работы, различалась двумя отозванными методами `crm.lead.timeline.activity.email.*` наряду с тридцатью пятью новыми, — а поскольку проверка принимает имя, опубликованное **любым** снимком, удаление более старого файла как раз и покрасило бы ещё корректную страницу. Хранение обоих — также единственный способ вообще измерить дрейф; сегодня закоммичен только один снимок, поэтому `--coverage` сообщает, что скорость пока не измерима.
 
-The trade that comes with it, stated because it is a real one: the union is monotonic. A name the portal published once and withdrew stays accepted for as long as the snapshot that carried it is kept, so the question the gate answers slides from *"does this exist?"* towards *"has this ever existed?"*. That is the cheaper mistake — a stale acceptance costs a page documenting a withdrawn method, a stale rejection blocks a contributor documenting a real one — but it is not free.
+Компромисс, который с этим связан, назван потому, что он реален: объединение монотонно. Имя, которое портал однажды опубликовал и отозвал, остаётся принятым, пока хранится снимок, который его содержал, так что вопрос, на который отвечает проверка, смещается от *«это существует?»* к *«это когда-либо существовало?»*. Это более дешёвая ошибка — устаревшее принятие стоит страницы с описанием отозванного метода, а устаревшее отклонение блокирует участника, описывающего настоящий, — но не бесплатная.
 
-**Pruning** is therefore a deliberate act, and `pnpm lint:v3-coverage` gives you the number to justify it: each snapshot's line reports how many names **only it** publishes that this repository documents. When that is zero, dropping the file narrows the union without red-lighting anything, and the PR should say so.
+**Очистка** поэтому — осознанное действие, и `pnpm lint:v3-coverage` даёт число для обоснования: строка каждого снимка сообщает, сколько имён, которые публикует **только он** и которые этот репозиторий документирует. Когда их ноль, удаление файла сужает объединение, не краснея ни на чём, и в PR об этом нужно сказать.
 
-**How fast a snapshot goes stale** is for `--coverage` to answer, not this paragraph — a number written here would go stale exactly the way the snapshot does. Run `pnpm lint:v3-coverage`: it prints, per portal kind, the age of the newest snapshot and what changed between the two most recent ones, and says so plainly when there is only one and the rate cannot be measured. The one measurement taken so far, recorded in #472, was not small: treat a months-old snapshot as a real problem rather than a tidy-up.
+**Как быстро снимок устаревает** — вопрос для `--coverage`, а не для этого абзаца: записанное здесь число устарело бы так же, как снимок. Запустите `pnpm lint:v3-coverage`: он выводит по каждому виду портала возраст самого нового снимка и то, что изменилось между двумя последними, и прямо говорит, когда снимок один и скорость измерить нельзя. Единственное измерение, сделанное до сих пор и записанное в #472, оказалось немалым: считайте снимок возрастом в несколько месяцев настоящей проблемой, а не наведением порядка.
 
-Two things it prints alongside, and they are the reason it is a report and not a gate. Two points are a line rather than a trend. And a rate measured across a window in which the *portal's* tariff, installed applications or webhook scopes changed measures that change, not Bitrix24 publishing — `rest.documentation.openapi` returns what this portal exposes to this hook, so a whole module appearing may mean an entitlement was switched on.
+Две вещи он выводит рядом, и именно поэтому это отчёт, а не проверка с блокировкой. Две точки — это линия, а не тренд. И скорость, измеренная в окне, в котором менялись тариф *портала*, установленные приложения или права вебхука, измеряет это изменение, а не публикацию со стороны Битрикс24: `rest.documentation.openapi` возвращает то, что этот портал открывает этому вебхуку, так что появление целого модуля может означать включение лицензии.
 
-> **Refresh from a portal you own.** For the same reason, a snapshot's module list reflects the refreshing portal's tariff, installed applications and the scopes its webhook was given — it is weakly identifying, and a series of them records when those changed. Do not run `--refresh` against a customer's or an employer's portal and commit the result: that publishes their module inventory. Prefer the environment (`export B24_HOOK=…`) or a `.env` file over putting the hook on the command line, where it lands in shell history and in `ps` output.
+> **Обновляйте со своего портала.** По той же причине список модулей снимка отражает тариф обновляющего портала, установленные приложения и права, выданные его вебхуку, — он слабо идентифицирует, а серия снимков фиксирует, когда они менялись. Не запускайте `--refresh` на портале клиента или работодателя и не коммитьте результат: это публикует их перечень модулей. Предпочитайте окружение (`export B24_HOOK=…`) или файл `.env`, а не указание вебхука в командной строке, где он попадает в историю оболочки и в вывод `ps`.
 
-(Separate from `// @check-ignore` used alone, which skips the `docs:typecheck-blocks` TypeScript pass.)
+(Отдельно от `// @check-ignore` без причины, который пропускает проход TypeScript в `docs:typecheck-blocks`.)
 
-#### Runnable examples (`<CodeExample>`)
+#### Запускаемые примеры (`<CodeExample>`)
 
-The inline form above is a plain fenced block. Most pages instead pull a real,
-type-checked file so the snippet can be run against a live portal from the page:
+Встроенная форма выше — обычный блок кода. Большинство страниц вместо этого подтягивают настоящий
+файл с проверкой типов, чтобы фрагмент можно было запустить на живом портале прямо со страницы:
 
 ```md
 ::code-example{name="call-rest-api-ver2" lang="ts"}
 ::
 ```
 
-The file lives at `docs/app/examples/<name>.ts` and looks like this:
+Файл лежит в `docs/app/examples/<name>.ts` и выглядит так:
 
 ```ts
 import { B24Hook } from '@bitrix24/b24jssdk'
@@ -222,20 +222,19 @@ export async function Action_callRestApiVer2() {
 }
 ```
 
-Only the imports and the span between the two markers are published. The
-wrapper function, the markers themselves and anything after `endregion: start`
-are stripped by [`docs/app/utils/codeTransform.ts`](../../docs/app/utils/codeTransform.ts),
-which also rewrites the `useB24()` live-portal override out of the published
-snippet. Body lines are dedented by the smallest indentation shared by the
-region's non-blank lines, so the wrapper's level is removed whatever it is —
-two spaces, four, or a tab. Relative nesting inside the snippet is preserved.
+Публикуются только импорты и участок между двумя маркерами. Функция-обёртка, сами маркеры и
+всё после `endregion: start` отбрасываются в
+[`docs/app/utils/codeTransform.ts`](../../docs/app/utils/codeTransform.ts),
+который также вырезает из публикуемого фрагмента подмену `useB24()` на живой портал. Строки тела
+сдвигаются влево на наименьший отступ, общий для непустых строк региона, так что уровень
+обёртки убирается каким бы он ни был — два пробела, четыре или табуляция. Относительная
+вложенность внутри фрагмента сохраняется.
 
-**Names must be unique by basename across the whole tree.** Examples are
-addressed by basename — that is what `name=` takes and what
-`/api/code-examples/:name?` serves, and that route is a single segment — so two
-files called `foo.ts` in different subdirectories would overwrite each other and
-a page would show the wrong code. The build fails on a duplicate rather than
-letting that happen:
+**Имена должны быть уникальны по basename во всём дереве.** Примеры
+адресуются по basename — именно его принимает `name=` и именно он используется в
+`/api/code-examples/:name?`, а этот маршрут — один сегмент, — так что два
+файла `foo.ts` в разных подкаталогах перезаписали бы друг друга, и
+страница показала бы не тот код. Сборка падает на дубликате, не допуская этого:
 
 ```text
 [code-example] duplicate example name "tools-ping":
@@ -243,7 +242,7 @@ letting that happen:
   …/examples/tools-ping.ts
 ```
 
-### Steps
+### Шаги (Steps)
 
 ```md
 ::steps{level="3"}
@@ -259,17 +258,17 @@ letting that happen:
 ::
 ```
 
-## Linking Docs Pages to Source
+## Связывание страниц документации с исходниками (Linking Docs Pages to Source)
 
-The `links:` block in frontmatter is the canonical pointer from documentation to source. Whenever you add a new public method or class:
+Блок `links:` во frontmatter — канонический указатель от документации к исходникам. Каждый раз, когда вы добавляете новый публичный метод или класс:
 
-1. Find the matching docs page (or create one) under `docs/content/docs/`.
-2. Add an entry to `links:` for the new symbol pointing to `https://github.com/bitrix24/b24jssdk/blob/main/<path>`.
-3. If the page documents an action (`b24.actions.vX.call.make`, `callList.make`, `fetchList.make`, `batch.make`, `batchByChunk.make`), include `Result`, `AjaxResult`, `AjaxError`, and `SdkError` links so readers can navigate to the result/error types from any action page.
+1. Найдите соответствующую страницу документации (или создайте её) в `docs/content/docs/`.
+2. Добавьте в `links:` запись для нового символа, указывающую на `https://github.com/bitrix24/b24jssdk/blob/main/<path>`.
+3. Если страница документирует действие (`b24.actions.vX.call.make`, `callList.make`, `fetchList.make`, `batch.make`, `batchByChunk.make`), включите ссылки на `Result`, `AjaxResult`, `AjaxError` и `SdkError`, чтобы читатели могли перейти к типам результата и ошибок с любой страницы действия.
 
-## Pairing Code, Tests, and Docs
+## Связка кода, тестов и документации (Pairing Code, Tests, and Docs)
 
-These three move together:
+Эти три вещи двигаются вместе:
 
 ```text
 packages/jssdk/src/core/actions/v3/call.ts        # implementation
@@ -279,35 +278,35 @@ docs/content/docs/2.working-with-the-rest-api/    # docs page
 test/some-code-from-docs/<corresponding>.ts       # docs snippet, kept compilable
 ```
 
-When the implementation changes:
+Когда меняется реализация:
 
-- Update the docs page in the same PR.
-- If a runnable snippet appears in the page, mirror the change to `test/some-code-from-docs/`.
-- New errors / warnings must be mentioned under "Error Handling" or "Limitations".
+- Обновите страницу документации в том же PR.
+- Если на странице есть запускаемый фрагмент, отразите изменение в `test/some-code-from-docs/`.
+- Новые ошибки / предупреждения нужно упомянуть в разделе «Обработка ошибок» или «Ограничения».
 
-## Categories
+## Категории (Categories)
 
-| Category | Used for |
+| Категория | Для чего используется |
 | --- | --- |
-| `actions` | Transport-level actions (`call`, `call-list`, `fetch-list`, `batch`) |
-| `frame` | `B24Frame` and iframe-only managers (slider, dialog, placement, …) |
-| `helper` | `B24HelperManager` and its sub-managers |
-| `tools` | Public utilities under `src/tools/` |
-| `limiters` | Limiter stack and `RestrictionParams` reference (page `77.limiters.md`) |
+| `actions` | Действия транспортного уровня (`call`, `call-list`, `fetch-list`, `batch`) |
+| `frame` | `B24Frame` и менеджеры, работающие только во фрейме (slider, dialog, placement, …) |
+| `helper` | `B24HelperManager` и его подчинённые менеджеры |
+| `tools` | Публичные утилиты в `src/tools/` |
+| `limiters` | Стек лимитеров и справочник `RestrictionParams` (страница `77.limiters.md`) |
 
-Use existing categories. New categories belong in a separate doc-only PR so the navigation can be reviewed independently.
+Используйте существующие категории. Новые категории оформляйте отдельным PR только с документацией, чтобы навигацию можно было проверить независимо.
 
-## Writing Guidelines
+## Правила написания (Writing Guidelines)
 
-1. **Sentence case** for headings.
-2. **English only** — prose, tables, code comments inside snippets.
-3. **Show, don't tell** — runnable examples beat long explanations.
-4. **One idea per section** — split rather than nest.
-5. **Mention every new warning, error, or `SdkError` code** in "Limitations" or "Error Handling".
-6. **Update parameter tables** when method signatures change — type and description, both.
-7. **Use `::warning` for "page in progress"** notes; remove them when the page is complete.
-8. **Use `::caution{title="⚠️ REST API DEPRECATION"}`** for any v2 method that has a v3 equivalent; the SDK will emit a runtime warning that mirrors the doc note.
+1. **Заголовки** — в регистре предложения.
+2. **Только русский язык** — проза, таблицы; в образцах кода остаются английские идентификаторы и литералы.
+3. **Показывайте, а не рассказывайте** — запускаемые примеры лучше длинных объяснений.
+4. **Одна мысль на раздел** — лучше разделить, чем вкладывать.
+5. **Упоминайте каждое новое предупреждение, ошибку или код `SdkError`** в «Ограничениях» или «Обработке ошибок».
+6. **Обновляйте таблицы параметров**, когда меняются сигнатуры методов, — и тип, и описание.
+7. **Используйте `::warning` для заметок «страница в работе»**; убирайте их, когда страница завершена.
+8. **Используйте `::caution{title="⚠️ REST API DEPRECATION"}`** для любого метода v2, у которого есть эквивалент в v3; SDK выдаст предупреждение во время выполнения, которое повторяет заметку в документации.
 
-## Doc-Only Changes
+## Изменения только в документации (Doc-Only Changes)
 
-If the change is documentation-only (typo, clarification, link fix), use a `docs:` commit. Otherwise, the documentation update is part of the `feat:` / `fix:` commit that introduced the code change — do not split.
+Если изменение касается только документации (опечатка, уточнение, исправление ссылки), используйте коммит `docs:`. В остальных случаях обновление документации входит в коммит `feat:` / `fix:`, который внёс изменение кода, — не разделяйте.

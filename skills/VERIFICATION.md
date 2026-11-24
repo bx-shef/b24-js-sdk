@@ -143,7 +143,7 @@ iframe встройки Битрикс24, потому что SDK общаетс
 
 ### Подготовка к проходу по встройке
 
-[`reproducing-user-reports.md`](../.github/contributing/reproducing-user-reports.md#running-it-locally)
+[`reproducing-user-reports.md`](../.github/contributing/reproducing-user-reports.md#локальный-запуск)
 уже описывает эту подготовку от начала до конца — сборку SDK, запуск playground на Nuxt,
 публикацию его через туннель с помощью `NUXT_ALLOWED_HOSTS` и регистрацию локального
 приложения **с UI** в разделе *Приложения → Ресурсы для разработчиков →

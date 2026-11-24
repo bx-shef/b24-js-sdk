@@ -1,12 +1,12 @@
-# Transports and Results
+# Транспорты и результаты
 
-<sub>Last reviewed: 2026-09-08.</sub>
+<sub>Последняя проверка: 2026-09-08.</sub>
 
-> **Agent-facing mirror:** the same area, viewed from the angle of agents writing usage code, lives in [`skills/b24jssdk-rest/SKILL.md`](../../skills/b24jssdk-rest/SKILL.md), [`skills/b24jssdk-filtering/SKILL.md`](../../skills/b24jssdk-filtering/SKILL.md), and [`skills/b24jssdk-core/SKILL.md`](../../skills/b24jssdk-core/SKILL.md). Keep this guide and those skills in sync when the underlying API changes.
+> **Зеркало для агентов:** та же область с точки зрения агентов, пишущих код использования, лежит в [`skills/b24jssdk-rest/SKILL.md`](../../skills/b24jssdk-rest/SKILL.md), [`skills/b24jssdk-filtering/SKILL.md`](../../skills/b24jssdk-filtering/SKILL.md) и [`skills/b24jssdk-core/SKILL.md`](../../skills/b24jssdk-core/SKILL.md). Держите это руководство и эти навыки синхронными, когда меняется базовый API.
 
-These are the SDK's "design tokens" — the cross-cutting types and policies that every transport-touching change has to follow. Read this before adding HTTP code paths, error types, or limiter logic.
+Это «дизайн-токены» SDK — сквозные типы и политики, которым должно следовать любое изменение, затрагивающее транспорт. Прочитайте это, прежде чем добавлять пути HTTP-кода, типы ошибок или логику лимитеров.
 
-## Files
+## Файлы
 
 ```text
 packages/jssdk/src/core/
@@ -28,9 +28,9 @@ packages/jssdk/src/core/
         └── params-factory.ts            # ParamsFactory — preset bundles
 ```
 
-## Result Type
+## Тип Result
 
-`Result` is the uniform return type for every domain method. It carries data, errors, and (for paged endpoints) the next-page handle. **Never return raw axios responses.**
+`Result` — единый тип возвращаемого значения для каждого предметного метода. Он несёт данные, ошибки и (для постраничных конечных точек) указатель на следующую страницу. **Никогда не возвращайте сырые ответы axios.**
 
 // @check-ignore: SDK-internal excerpt; the import is relative to `packages/jssdk/src/<area>/` and the real file is compiled by `package-jssdk:typecheck`
 
@@ -43,9 +43,9 @@ async function load(): Promise<Result> {
 }
 ```
 
-> Compile-checked example: [`transports-and-results-result-type.ts`](../../test/some-code-from-docs/contributing/transports-and-results-result-type.ts)
+> Пример с проверкой компиляции: [`transports-and-results-result-type.ts`](../../test/some-code-from-docs/contributing/transports-and-results-result-type.ts)
 
-Callers consume it through the action surface (`b24.actions.vX.<action>.make({ ... })`):
+Вызывающий код использует его через поверхность действий (`b24.actions.vX.<action>.make({ ... })`):
 
 ```ts
 const result = await b24.actions.v3.call.make({
@@ -61,7 +61,7 @@ if (!result.isSuccess) {
 const user = result.getData().result
 ```
 
-`AjaxResult` extends `Result` for transport calls and adds paging — v2 only:
+`AjaxResult` расширяет `Result` для транспортных вызовов и добавляет постраничную выборку — только v2:
 
 ```ts
 import { ApiVersion } from '@bitrix24/b24jssdk'
@@ -77,21 +77,21 @@ if (result.isMore()) {
 }
 ```
 
-> Compile-checked example: [`test/some-code-from-docs/contributing/transports-and-results-paging.ts`](../../test/some-code-from-docs/contributing/transports-and-results-paging.ts)
+> Пример с проверкой компиляции: [`test/some-code-from-docs/contributing/transports-and-results-paging.ts`](../../test/some-code-from-docs/contributing/transports-and-results-paging.ts)
 
-- Pass the http client (from `b24.getHttpClient(version)`) to `getNext()` — it preserves the same limiter stack.
-- Do **not** loop with raw `start` parameters; use `isMore()` + `getNext()`.
-- **v3 does not support `getNext()`** — it throws `restApi:v3 not support method getNext`. For v3 pagination use `b24.actions.v3.callList.make()` or `b24.actions.v3.fetchList.make()` instead.
-- The legacy shortcuts on `AbstractB24` (`b24.callMethod`, `callListMethod`, `fetchListMethod`, `callBatch`, `callBatchByChunk`) were **removed in 3.0.0** (#277). Use `b24.actions.v{2,3}.*.make(options)`; see the [migration guide](../../docs/content/docs/1.getting-started/3.migration/2.v3.md).
+- Передавайте в `getNext()` http-клиент (из `b24.getHttpClient(version)`) — это сохраняет тот же стек лимитеров.
+- **Не** организуйте цикл по сырым параметрам `start`; используйте `isMore()` + `getNext()`.
+- **v3 не поддерживает `getNext()`** — он бросает `restApi:v3 not support method getNext`. Для постраничной выборки в v3 используйте `b24.actions.v3.callList.make()` или `b24.actions.v3.fetchList.make()`.
+- Устаревшие сокращения в `AbstractB24` (`b24.callMethod`, `callListMethod`, `fetchListMethod`, `callBatch`, `callBatchByChunk`) были **удалены в 3.0.0** (#277). Используйте `b24.actions.v{2,3}.*.make(options)`; см. [руководство по миграции](../../docs/content/docs/1.getting-started/3.migration/2.v3.md).
 
-## Error Types
+## Типы ошибок
 
-Two error classes, two purposes:
+Два класса ошибок, две цели:
 
-| Class | Purpose | How it surfaces |
+| Класс | Назначение | Как проявляется |
 | --- | --- | --- |
-| `SdkError` | SDK-level invariant violations (bad arguments, illegal state, missing config) | Thrown from public methods |
-| `AjaxError` | HTTP / REST API errors (4xx, 5xx, malformed payloads) | Returned via `Result.getErrors()` |
+| `SdkError` | Нарушения инвариантов уровня SDK (неверные аргументы, недопустимое состояние, отсутствующая конфигурация) | Бросается из публичных методов |
+| `AjaxError` | Ошибки HTTP / REST API (4xx, 5xx, некорректные данные) | Возвращается через `Result.getErrors()` |
 
 ```ts
 import { SdkError, AjaxError } from '@bitrix24/b24jssdk'
@@ -122,57 +122,57 @@ if (err instanceof AjaxError) {
 }
 ```
 
-> Compile-checked example: [`test/some-code-from-docs/contributing/transports-and-results-error-handling.ts`](../../test/some-code-from-docs/contributing/transports-and-results-error-handling.ts)
+> Пример с проверкой компиляции: [`test/some-code-from-docs/contributing/transports-and-results-error-handling.ts`](../../test/some-code-from-docs/contributing/transports-and-results-error-handling.ts)
 
-Rules:
+Правила:
 
-- Public methods may throw `SdkError`. They must not throw bare `Error` or strings.
-- Public methods must never throw `AjaxError` — the transport surfaces it through `Result`.
-- A new error class belongs in `src/core/` next to `SdkError`. Don't fork the type into other directories.
-- Adding a new error code: document it in the relevant docs page under "Error Handling" or "Limitations" so callers can recognise it.
+- Публичные методы могут бросать `SdkError`. Они не должны бросать голый `Error` или строки.
+- Публичные методы никогда не должны бросать `AjaxError` — транспорт выводит его через `Result`.
+- Новый класс ошибки принадлежит `src/core/` рядом с `SdkError`. Не разносите тип по другим каталогам.
+- Добавляя новый код ошибки, задокументируйте его на соответствующей странице документации в разделе «Обработка ошибок» или «Ограничения», чтобы вызывающие могли его распознать.
 
-## HTTP Transports
+## HTTP-транспорты
 
-Two transports, one shared base. Both are owned by `AbstractB24` and accessed via `b24.getHttpClient(ApiVersion.v2)` / `b24.getHttpClient(ApiVersion.v3)`. There is **no `b24.http` field** — always go through `getHttpClient(version)` so the right transport / limiter stack is picked.
+Два транспорта, одна общая база. Оба принадлежат `AbstractB24` и доступны через `b24.getHttpClient(ApiVersion.v2)` / `b24.getHttpClient(ApiVersion.v3)`. Поля **`b24.http` нет** — всегда обращайтесь через `getHttpClient(version)`, чтобы выбирался правильный транспорт / стек лимитеров.
 
-| Transport | File | Endpoint shape |
+| Транспорт | Файл | Форма конечной точки |
 | --- | --- | --- |
-| v2 | `packages/jssdk/src/core/http/v2.ts` | `https://<portal>/rest/<method>.json` (legacy, deprecation in progress) |
-| v3 | `packages/jssdk/src/core/http/v3.ts` | `https://<portal>/rest/v3/<method>` (newer routes, rollout in progress — see [apidocs.bitrix24.com/api-reference/rest-v3](https://apidocs.bitrix24.com/api-reference/rest-v3/index.html)) |
+| v2 | `packages/jssdk/src/core/http/v2.ts` | `https://<portal>/rest/<method>.json` (устаревшая, устаревание идёт) |
+| v3 | `packages/jssdk/src/core/http/v3.ts` | `https://<portal>/rest/v3/<method>` (новые маршруты, внедрение идёт — см. [apidocs.bitrix24.com/api-reference/rest-v3](https://apidocs.bitrix24.com/api-reference/rest-v3/index.html)) |
 
-When a method is available on **both** v2 and v3, the SDK logs a warning encouraging migration to v3. Do not silence this warning.
+Когда метод доступен **и** в v2, и в v3, SDK пишет предупреждение, призывающее перейти на v3. Не заглушайте это предупреждение.
 
-Choosing a transport when adding actions:
+Выбор транспорта при добавлении действий:
 
-- If the REST method exists on v3, prefer v3.
-- If the action is v2-only, place it under `src/core/actions/v2/`.
-- v3-only goes under `src/core/actions/v3/`.
-- Files mirror the action name (`call.ts`, `batch.ts`, `call-list.ts`, `fetch-list.ts`).
+- Если метод REST есть в v3, предпочитайте v3.
+- Если действие только для v2, поместите его в `src/core/actions/v2/`.
+- Только для v3 — в `src/core/actions/v3/`.
+- Файлы повторяют имя действия (`call.ts`, `batch.ts`, `call-list.ts`, `fetch-list.ts`).
 
-The base `AbstractHttp` class (`packages/jssdk/src/core/http/abstract-http.ts`, implements `TypeHttp`) owns retries, batching, and limiter integration — extend it rather than duplicating those concerns inside actions.
+Базовый класс `AbstractHttp` (`packages/jssdk/src/core/http/abstract-http.ts`, реализует `TypeHttp`) владеет повторами, пакетными запросами и интеграцией с лимитерами — расширяйте его, а не дублируйте эти задачи внутри действий.
 
-### Telemetry Query Params
+### Параметры телеметрии в запросе
 
-`_prepareMethod` (in `abstract-http.ts`) appends `bx24_request_id` / `bx24_sdk_ver` / `bx24_sdk_type` to every request URL for tracing. The one exception: legacy positional `task.*` methods (`task.commentitem.*`, `task.checklistitem.*`, …) read the query string **positionally**, so the appended params shift `Param #0` and the server rejects the call (`WRONG_ARGUMENTS: Param #0`). Telemetry is therefore suppressed for methods matching the anchored `^task\.` only. Do NOT broaden this to a substring match — that also strips telemetry from modern named-param `tasks.task.*` / `bizproc.task.*`, which are telemetry-safe and should stay traceable (#272).
+`_prepareMethod` (в `abstract-http.ts`) добавляет `bx24_request_id` / `bx24_sdk_ver` / `bx24_sdk_type` к URL каждого запроса для трассировки. Единственное исключение: унаследованные позиционные методы `task.*` (`task.commentitem.*`, `task.checklistitem.*`, …) читают строку запроса **позиционно**, так что добавленные параметры сдвигают `Param #0`, и сервер отклоняет вызов (`WRONG_ARGUMENTS: Param #0`). Поэтому телеметрия подавляется только для методов, подходящих под якорный шаблон `^task\.`. НЕ расширяйте это до сопоставления подстроки — иначе телеметрия пропадёт и у современных методов с именованными параметрами `tasks.task.*` / `bizproc.task.*`, для которых она безопасна и которые должны оставаться отслеживаемыми (#272).
 
-### Batch Semantics
+### Семантика пакетных запросов
 
-The two batch transports differ in how they surface per-command failures. Authors of new batch-aware actions must respect this:
+Два пакетных транспорта различаются тем, как выводят сбои отдельных команд. Авторы новых действий с поддержкой пакетов должны это учитывать:
 
-| Transport | Failure model | Per-command result |
+| Транспорт | Модель сбоя | Результат по команде |
 | --- | --- | --- |
-| v2 batch (`packages/jssdk/src/core/interaction/batch/processing/v2/abstract-processing.ts`) | Per-command — successful entries return data, failed entries surface their own error in `AjaxResult.getErrors()` | Each entry is an `AjaxResult` |
-| v3 batch (`packages/jssdk/src/core/interaction/batch/processing/v3/abstract-processing.ts`) | **All-or-nothing** — if any command fails, the whole batch fails. `getData()` returns an empty map; the top-level `response.getErrorMessages()` contains the error(s) | Each entry is an `AjaxResult` (only on full success) |
+| v2 batch (`packages/jssdk/src/core/interaction/batch/processing/v2/abstract-processing.ts`) | По командам — успешные записи возвращают данные, неудавшиеся выводят свою ошибку в `AjaxResult.getErrors()` | Каждая запись — `AjaxResult` |
+| v3 batch (`packages/jssdk/src/core/interaction/batch/processing/v3/abstract-processing.ts`) | **Всё или ничего** — если падает любая команда, падает весь пакет. `getData()` возвращает пустую карту; ошибки находятся в `response.getErrorMessages()` верхнего уровня | Каждая запись — `AjaxResult` (только при полном успехе) |
 
-Two more batch contracts shared by both versions:
+Ещё два контракта пакетных запросов, общие для обеих версий:
 
-- **`null` is a legitimate `result` value.** When a REST method legitimately returns no data, the per-command `result` is forwarded as-is (including `null`). Type the generic as `T | null` for nullable methods. Do not coerce `null` to `{}` — that breaks nullable type guards on the caller side.
-- **Per-command `time` is the batch-level time**, not per-command. The rate-limiter does not attribute the batch duration to individual methods.
-- v3 specifically: a successful response missing a result entry for a command throws `JSSDK_INTERACTION_BATCH_STRATEGY_V3_EMPTY_COMMAND_RESPONSE` — this signals a malformed REST response, not a caller error.
+- **`null` — допустимое значение `result`.** Когда метод REST законно не возвращает данных, `result` команды передаётся как есть (включая `null`). Для методов, допускающих null, типизируйте дженерик как `T | null`. Не превращайте `null` в `{}` — это ломает проверки типов на null у вызывающего.
+- **`time` по команде — это время всего пакета**, а не команды. Лимитер скорости не относит длительность пакета к отдельным методам.
+- Только v3: успешный ответ без записи результата для команды бросает `JSSDK_INTERACTION_BATCH_STRATEGY_V3_EMPTY_COMMAND_RESPONSE` — это сигнал о некорректном ответе REST, а не ошибке вызывающего.
 
-## Limiter Stack
+## Стек лимитеров
 
-Every transport call passes through three layers. Skipping any of them is a bug.
+Каждый транспортный вызов проходит через три слоя. Пропуск любого из них — ошибка.
 
 ```text
 caller
@@ -182,78 +182,78 @@ caller
                  └─> axios
 ```
 
-| Limiter | File | Responsibility |
+| Лимитер | Файл | Ответственность |
 | --- | --- | --- |
-| `RateLimiter` | `src/core/http/limiters/rate-limiter.ts` | Caps requests-per-second on the client side |
-| `OperatingLimiter` | `src/core/http/limiters/operating-limiter.ts` | Pauses on the server's "operating reset" signal |
-| `AdaptiveDelayer` | `src/core/http/limiters/adaptive-delayer.ts` | Dynamic backoff in response to transient failures |
+| `RateLimiter` | `src/core/http/limiters/rate-limiter.ts` | Ограничивает число запросов в секунду на стороне клиента |
+| `OperatingLimiter` | `src/core/http/limiters/operating-limiter.ts` | Делает паузу по сигналу сервера «operating reset» |
+| `AdaptiveDelayer` | `src/core/http/limiters/adaptive-delayer.ts` | Динамическая задержка в ответ на временные сбои |
 
-Rules:
+Правила:
 
-- Do not call axios (or any other HTTP client) directly from outside `src/core/http/`.
-- Do not bypass a limiter "for performance" — the limits exist to keep portals from blocking the integration.
-- `LicenseManager` automatically swaps in enterprise-tuned restriction params; don't second-guess it.
+- Не вызывайте axios (или другой HTTP-клиент) напрямую вне `src/core/http/`.
+- Не обходите лимитер «ради производительности» — лимиты существуют, чтобы порталы не блокировали интеграцию.
+- `LicenseManager` автоматически подставляет параметры ограничений, настроенные для enterprise; не пересматривайте это.
 
 ## ParamsFactory
 
-`ParamsFactory` (in `src/core/http/limiters/params-factory.ts`) bundles limiter parameters into named presets. Pick a preset; don't construct ad-hoc params at call sites.
+`ParamsFactory` (в `src/core/http/limiters/params-factory.ts`) объединяет параметры лимитеров в именованные пресеты. Выбирайте пресет; не конструируйте произвольные параметры в местах вызова.
 
-| Preset | When to use | Profile shape (actual numbers in [params-factory.ts](../../packages/jssdk/src/core/http/limiters/params-factory.ts)) |
+| Пресет | Когда использовать | Форма профиля (реальные числа — в [params-factory.ts](../../packages/jssdk/src/core/http/limiters/params-factory.ts)) |
 | --- | --- | --- |
-| `getDefault()` | `B24Frame`, `B24Hook`, `B24OAuth` unless overridden | Standard QPS + adaptive backoff + `retryOnNetworkError: true` |
-| `getEnterprise()` | Enterprise plans (auto-selected via `LicenseManager`) | Higher burst + higher drain rate on top of `getDefault()` |
-| `getBatchProcessing()` | Bulk imports / migrations | Lower QPS, lower heavy-request threshold, longer backoff, more retries — used by the under-load test suite |
-| `getRealtime()` | UI flows where stale data is worse than a thrown error | Adaptive backoff disabled, retry budget cut to 1 (still inherits `retryOnNetworkError: true` from default — opt out explicitly if you need fast-fail on transport errors, see below) |
-| `fromTariffPlan(plan)` | When `LicenseManager` provides a portal plan string | Maps `enterprise` → `getEnterprise()`, others → `getDefault()` |
+| `getDefault()` | `B24Frame`, `B24Hook`, `B24OAuth`, если не переопределено | Стандартный QPS + адаптивная задержка + `retryOnNetworkError: true` |
+| `getEnterprise()` | Тарифы Enterprise (выбирается автоматически через `LicenseManager`) | Больший всплеск + большая скорость слива поверх `getDefault()` |
+| `getBatchProcessing()` | Массовые импорты / миграции | Меньший QPS, меньший порог тяжёлых запросов, более долгая задержка, больше повторов — используется набором тестов под нагрузкой |
+| `getRealtime()` | Сценарии UI, где устаревшие данные хуже брошенной ошибки | Адаптивная задержка отключена, бюджет повторов сокращён до 1 (по-прежнему наследует `retryOnNetworkError: true` из default — отключите явно, если нужен быстрый отказ при ошибках транспорта, см. ниже) |
+| `fromTariffPlan(plan)` | Когда `LicenseManager` предоставляет строку тарифа портала | Сопоставляет `enterprise` → `getEnterprise()`, остальные → `getDefault()` |
 
-When introducing a new tuning profile, add it as a `ParamsFactory.getX()` static. Concrete numeric values live in source — do not duplicate them into this guide; they would silently rot on the next limiter adjustment.
+Вводя новый профиль настройки, добавляйте его как статический `ParamsFactory.getX()`. Конкретные числовые значения живут в исходниках — не дублируйте их в этом руководстве; они молча устареют при следующей подстройке лимитера.
 
-### `RestrictionParams` Knobs
+### Переключатели `RestrictionParams`
 
-Beyond the preset, `RestrictionParams` exposes per-call switches that callers can layer on top of any preset (`{ ...ParamsFactory.getDefault(), <overrides> }`). When you add a new option, document it in [docs/content/docs/2.working-with-the-rest-api/77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md) — that page is the canonical reference.
+Помимо пресета, `RestrictionParams` предоставляет переключатели на уровне вызова, которые вызывающий может наложить поверх любого пресета (`{ ...ParamsFactory.getDefault(), <overrides> }`). Добавляя новую опцию, задокументируйте её в [docs/content/docs/2.working-with-the-rest-api/77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md) — эта страница является каноническим справочником.
 
-| Field | Purpose |
+| Поле | Назначение |
 | --- | --- |
-| `maxRetries`, `retryDelay` | Retry budget for soft errors |
-| `retryOnNetworkError` | Default `true`. Set `false` for **non-idempotent** calls (any `*.add`, file uploads, document generation) — a client-side timeout may have succeeded server-side, so retrying creates duplicates. With `false` the SDK throws `NETWORK_ERROR` / `REQUEST_TIMEOUT` immediately. For long-running heavy ops also raise the axios timeout via `b24.getHttpClient(ApiVersion.vX).ajaxClient.defaults.timeout`. |
-| `hardErrorCodes` | **Add** custom REST error codes that must be thrown immediately, no retry. Use for **HTTP 2xx responses with a domain-level REST error code** that the SDK doesn't recognise as terminal (otherwise the SDK treats unknown codes as transient and retries them). HTTP 4xx is already classified as non-retryable automatically inside `RestrictionManager` in [packages/jssdk/src/core/http/limiters/manager.ts](../../packages/jssdk/src/core/http/limiters/manager.ts) (private method `#isNonRetryableClientError`) — you don't need to list 4xx codes here. The list is additive (auth / fatal codes are always hard; you cannot remove built-ins). |
-| `softErrorCodes` | **Add** custom codes that should surface inside `AjaxResult` as a soft error instead of being thrown. Use when your code branches on a specific REST error as part of normal flow (e.g. validation errors from a custom v3 endpoint). |
+| `maxRetries`, `retryDelay` | Бюджет повторов для мягких ошибок |
+| `retryOnNetworkError` | По умолчанию `true`. Ставьте `false` для **неидемпотентных** вызовов (любой `*.add`, загрузка файлов, генерация документов) — клиентский таймаут мог на сервере завершиться успехом, и повтор создаст дубликаты. При `false` SDK немедленно бросает `NETWORK_ERROR` / `REQUEST_TIMEOUT`. Для долгих тяжёлых операций также увеличьте таймаут axios через `b24.getHttpClient(ApiVersion.vX).ajaxClient.defaults.timeout`. |
+| `hardErrorCodes` | **Добавляет** пользовательские коды ошибок REST, которые нужно бросать сразу, без повторов. Используйте для **ответов HTTP 2xx с кодом ошибки REST уровня предметной области**, который SDK не распознаёт как окончательный (иначе SDK считает неизвестные коды временными и повторяет их). HTTP 4xx уже автоматически классифицируется как не подлежащий повтору внутри `RestrictionManager` в [packages/jssdk/src/core/http/limiters/manager.ts](../../packages/jssdk/src/core/http/limiters/manager.ts) (приватный метод `#isNonRetryableClientError`) — перечислять здесь коды 4xx не нужно. Список аддитивный (коды авторизации / фатальные всегда жёсткие; встроенные убрать нельзя). |
+| `softErrorCodes` | **Добавляет** пользовательские коды, которые должны выводиться внутри `AjaxResult` как мягкая ошибка, а не бросаться. Используйте, когда ваш код ветвится по конкретной ошибке REST как часть обычного потока (например, ошибки валидации из собственной конечной точки v3). |
 
-When adding a new field to `RestrictionParams`:
+Добавляя новое поле в `RestrictionParams`:
 
-1. Default to **preserve historical behaviour** — opt-in for risk, opt-out for safety. The realtime preset history is the cautionary tale: a one-line "fast-fail by default" change silently flipped the thrown error code from `JSSDK_CALL_ALL_ATTEMPTS_EXHAUSTED` to `REQUEST_TIMEOUT` for every existing realtime caller. The change was reverted in PR review (commit `a21eab7`); the lesson is to keep new flags opt-in even when the new behaviour is "obviously better."
-2. Wire the field through `RestrictionManager` (`packages/jssdk/src/core/http/limiters/manager.ts`) — that's where hard/soft lists are merged with built-ins.
-3. Add an integration spec under `test/integration/core/limiters-*.spec.ts`. Pin retry counts to **exact** values, not `>=` thresholds — soft assertions silently pass through future regressions in loop bounds.
+1. По умолчанию **сохраняйте историческое поведение** — включение по желанию для риска, отключение по желанию для безопасности. Поучительная история — пресет realtime: однострочное изменение «быстрый отказ по умолчанию» молча заменило бросаемый код ошибки с `JSSDK_CALL_ALL_ATTEMPTS_EXHAUSTED` на `REQUEST_TIMEOUT` для всех существующих вызывающих realtime. Изменение откатили на ревью PR (коммит `a21eab7`); урок — держать новые флаги отключёнными по умолчанию, даже когда новое поведение «очевидно лучше».
+2. Пробросьте поле через `RestrictionManager` (`packages/jssdk/src/core/http/limiters/manager.ts`) — именно там списки hard/soft объединяются со встроенными.
+3. Добавьте интеграционную спецификацию в `test/integration/core/limiters-*.spec.ts`. Фиксируйте число повторов **точными** значениями, а не порогами `>=` — мягкие проверки молча пропускают будущие регрессии границ цикла.
 
-### Status-based fail-fast (since v1.1.2)
+### Быстрый отказ по статусу (с v1.1.2)
 
-`RestrictionManager.handleError()` gates every retry decision on HTTP status first,
-before consulting the error-code lists
+`RestrictionManager.handleError()` проверяет каждое решение о повторе сначала по статусу HTTP,
+до обращения к спискам кодов ошибок
 ([`packages/jssdk/src/core/http/limiters/manager.ts:125`](../../packages/jssdk/src/core/http/limiters/manager.ts#L125),
-`#isNonRetryableClientError` defined at [line 192](../../packages/jssdk/src/core/http/limiters/manager.ts#L192)):
+`#isNonRetryableClientError` определён в [строке 192](../../packages/jssdk/src/core/http/limiters/manager.ts#L192)):
 
-| HTTP status | Retry behaviour |
+| Статус HTTP | Поведение повтора |
 | --- | --- |
-| `4xx` (except `408` / `429`) | **No retry.** Deterministic client error — fails fast on the first attempt. |
-| `429` | Retried as operating limit — matched by `#isOperatingLimitError` (`status === 429` or `code === 'OPERATION_TIME_LIMIT'`), which is evaluated before `#isNonRetryableClientError`, so `429` never reaches the fail-fast gate. (`503` / `QUERY_LIMIT_EXCEEDED` is handled separately by `#isRateLimitError`.) |
-| `408` (request timeout) | Transient — retried when `retryOnNetworkError` is `true` (default); fast-fails when `false`. |
-| `5xx`, network errors, timeouts | Retried with exponential backoff + jitter. |
+| `4xx` (кроме `408` / `429`) | **Без повтора.** Детерминированная клиентская ошибка — быстрый отказ с первой попытки. |
+| `429` | Повторяется как операционный лимит — сопоставляется `#isOperatingLimitError` (`status === 429` или `code === 'OPERATION_TIME_LIMIT'`), который вычисляется раньше `#isNonRetryableClientError`, так что `429` никогда не доходит до шлюза быстрого отказа. (`503` / `QUERY_LIMIT_EXCEEDED` обрабатывается отдельно через `#isRateLimitError`.) |
+| `408` (таймаут запроса) | Временная — повторяется при `retryOnNetworkError` равном `true` (по умолчанию); быстрый отказ при `false`. |
+| `5xx`, сетевые ошибки, таймауты | Повторяются с экспоненциальной задержкой + джиттером. |
 
-`hardErrorCodes` and `softErrorCodes` remain in effect on top of this status gate. A
-`4xx` soft code (e.g. a v3 validation error) causes `handleError` to return `0`
-(meaning "no delay before the next attempt"), and the caller in `abstract-http.ts`
-then surfaces it as an `AjaxResult` error without consuming any further retry budget.
+`hardErrorCodes` и `softErrorCodes` продолжают действовать поверх этого шлюза по статусу. Мягкий код
+`4xx` (например, ошибка валидации v3) заставляет `handleError` вернуть `0`
+(то есть «без задержки перед следующей попыткой»), а вызывающий в `abstract-http.ts`
+затем выводит его как ошибку `AjaxResult`, не расходуя оставшийся бюджет повторов.
 
-User-facing reference: [Customizing Error Classification — 77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md#настройка-классификации-ошибок).
+Справочник для пользователей: [Customizing Error Classification — 77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md#настройка-классификации-ошибок).
 
-## Logger Discipline
+## Дисциплина логирования
 
-Every transport / limiter holds a `LoggerInterface` (the public abstraction from `packages/jssdk/src/logger/`). It is initialised to a null logger via `LoggerFactory.createNullLogger()` and replaced through a `setLogger(logger)` call — never injected via the constructor.
+Каждый транспорт / лимитер держит `LoggerInterface` (публичная абстракция из `packages/jssdk/src/logger/`). Он инициализируется нулевым логгером через `LoggerFactory.createNullLogger()` и заменяется вызовом `setLogger(logger)` — никогда не передаётся через конструктор.
 
-- Use `logger.warn(...)` for things callers should know but that don't break flow (deprecated method, unexpected payload shape).
-- Use `logger.error(...)` only for unrecoverable transport-side failures.
-- Do not add `console.log` calls — they cannot be silenced by callers.
-- For runtime deprecation warnings on `@deprecated` public methods, use `LoggerFactory.forcedLog(logger, action, message, context)` — **four arguments**:
+- Используйте `logger.warn(...)` для того, что вызывающим стоит знать, но что не ломает поток (устаревший метод, неожиданная форма данных).
+- Используйте `logger.error(...)` только для невосстановимых сбоев на стороне транспорта.
+- Не добавляйте вызовы `console.log` — вызывающие не могут их заглушить.
+- Для предупреждений об устаревании во время выполнения на публичных методах с `@deprecated` используйте `LoggerFactory.forcedLog(logger, action, message, context)` — **четыре аргумента**:
 
   ```ts
   LoggerFactory.forcedLog(
@@ -264,57 +264,57 @@ Every transport / limiter holds a `LoggerInterface` (the public abstraction from
   )
   ```
 
-  > Compile-checked example: [`package-structure-deprecation-warning.ts`](../../test/some-code-from-docs/contributing/package-structure-deprecation-warning.ts) (shared with package-structure.md)
+  > Пример с проверкой компиляции: [`package-structure-deprecation-warning.ts`](../../test/some-code-from-docs/contributing/package-structure-deprecation-warning.ts) (общий с package-structure.md)
 
-  Context key is `removalVersion`, not `removeInVersion`. The canonical pattern lives in [packages/jssdk/src/core/abstract-b24.ts](../../packages/jssdk/src/core/abstract-b24.ts) (look for `@deprecated` + `@removed` + `forcedLog`).
-- New warnings or errors must be mentioned in the relevant docs page so users can recognise them.
+  Ключ контекста — `removalVersion`, а не `removeInVersion`. Канонический образец лежит в [packages/jssdk/src/core/abstract-b24.ts](../../packages/jssdk/src/core/abstract-b24.ts) (ищите `@deprecated` + `@removed` + `forcedLog`).
+- Новые предупреждения или ошибки нужно упомянуть на соответствующей странице документации, чтобы пользователи могли их распознать.
 
-### A `restApi:v3` batch is the only bare array on the wire
+### Пакет `restApi:v3` — единственный «голый» массив в запросе
 
-`HttpV3.batch` passes the commands as `params`, and `_makeAxiosRequest` sends
-them unwrapped instead of through `_prepareParams`, because on v3 the commands
-**are** the body. The portal reads every top-level entry as a command and
-requires `method` and `query` on each, so an `auth` entry fails the whole batch
-with `INVALIDSELECTEXCEPTION` before anything runs — and so does a command that
-carries no `query`, which is why `ParseRow` defaults it to `{}`.
+`HttpV3.batch` передаёт команды как `params`, а `_makeAxiosRequest` отправляет
+их без обёртки, минуя `_prepareParams`, потому что в v3 команды
+**и есть** тело. Портал читает каждую запись верхнего уровня как команду и
+требует у каждой `method` и `query`, так что запись `auth` роняет весь пакет
+с `INVALIDSELECTEXCEPTION` до того, как что-либо выполнится, — как и команда,
+у которой нет `query`, поэтому `ParseRow` по умолчанию подставляет `{}`.
 
-The credential therefore moves, per transport: a webhook keeps it in the URL, a
-non-hook transport **outside a CORS-enforcing runtime** sends
-`Authorization: Bearer`. A browser — and a Web Worker, which is a browser
-context without a `window` — keeps the old object body and stays broken: the
-portal's preflight allows only `origin, content-type, accept`, so asking for the
-header would replace a diagnosable 400 with an opaque network error. Do not
-"fix" that branch without a portal-side change.
+Поэтому учётные данные перемещаются по транспортам: вебхук держит их в URL, не-вебхук
+транспорт **вне среды с принудительным CORS** отправляет
+`Authorization: Bearer`. Браузер — и Web Worker, который является браузерным
+контекстом без `window` — сохраняет прежнее тело-объект и остаётся сломанным: предзапрос
+портала разрешает только `origin, content-type, accept`, так что запрос
+заголовка заменил бы диагностируемый 400 непрозрачной сетевой ошибкой. Не
+«чините» эту ветку без изменения на стороне портала.
 
-The branch is gated on the version **and** the method, not on the body being an
-array: `TypeCallParams` has an index signature, so a positional `restApi:v2`
-call such as `task.commentitem.getlist` also arrives here with an array, and
-none of the reasoning above applies to it.
+Ветка определяется версией **и** методом, а не тем, что тело — массив:
+у `TypeCallParams` есть индексная сигнатура, так что позиционный вызов `restApi:v2`,
+например `task.commentitem.getlist`, тоже приходит сюда массивом, и
+ничто из рассуждений выше к нему не относится.
 
-## Credential redaction (since v1.1.2)
+## Скрытие учётных данных (с v1.1.2)
 
-The transport layer redacts credentials from log lines and error messages before they reach the logger. The redaction module is [packages/jssdk/src/core/http/redact.ts](../../packages/jssdk/src/core/http/redact.ts); the full list of redacted keys is the **static** `SENSITIVE_PARAM_KEYS` array in that file (matched **case-insensitively**, and the scrub also masks `key=value` pairs embedded in string values, e.g. a batch `cmd[i]`, and the secret segment of a Bitrix24 webhook URL, which is neither a key nor a pair). The list is not extended automatically: when you introduce a new credential-bearing parameter on any code path, add its key to `SENSITIVE_PARAM_KEYS` in `redact.ts` in the same PR, or it will appear unredacted in logs and in `AjaxError`.
+Транспортный слой скрывает учётные данные в строках журнала и сообщениях об ошибках до того, как они попадут в логгер. Модуль скрытия — [packages/jssdk/src/core/http/redact.ts](../../packages/jssdk/src/core/http/redact.ts); полный список скрываемых ключей — **статический** массив `SENSITIVE_PARAM_KEYS` в этом файле (сопоставление **без учёта регистра**, а очистка также маскирует пары `key=value`, встроенные в строковые значения, например `cmd[i]` пакета, и секретный сегмент URL вебхука Битрикс24, который не является ни ключом, ни парой). Список не расширяется автоматически: когда вы вводите новый параметр, несущий учётные данные, на любом пути кода, добавьте его ключ в `SENSITIVE_PARAM_KEYS` в `redact.ts` в том же PR, иначе он появится нескрытым в журналах и в `AjaxError`.
 
-**A header is not a parameter, and nothing redacts it.** The SDK sets
-`Authorization: Bearer` itself on a v3 batch outside a CORS-enforcing runtime.
-`redactSensitiveParams` walks `params` and never sees a header; the local
-`no-credential-in-logger` rule does not know the word either. So the invariant
-"no header reaches logger context" is held by a test, not by a guard — if you
-add a log line near the transport, do not put the request config in it.
+**Заголовок — не параметр, и его не скрывает ничто.** SDK сам ставит
+`Authorization: Bearer` в пакете v3 вне среды с принудительным CORS.
+`redactSensitiveParams` обходит `params` и никогда не видит заголовок; локальное
+правило `no-credential-in-logger` это слово тоже не знает. Поэтому инвариант
+«ни один заголовок не попадает в контекст логгера» держится тестом, а не защитой — если вы
+добавляете строку журнала рядом с транспортом, не кладите в неё конфигурацию запроса.
 
-Rules for code under `packages/jssdk/src/`:
+Правила для кода в `packages/jssdk/src/`:
 
-- **Never log raw request payloads** from outside the transport layer. Go through the transport's logger so redaction applies automatically. When in doubt, wrap params with `redactSensitiveParams(params)` from `redact.ts`.
-- **Never log the raw request URL for a `B24Hook` transport.** The URL contains the webhook secret in the path segment (`/rest/<userId>/<secret>/`, or `/rest/api/<userId>/<secret>/` under `restApi:v3`). The redactor *does* mask that one shape now, including when it arrives in a **response body** (`rest.deferredbatch.downloadresult` returns such a URL) — but treat it as a backstop, not a licence: it matches Bitrix24's webhook shape and nothing else, and `originalError.config.url` is not covered at all. Log only the method name and `requestId`.
-- **Never put credentials into `SdkError` fields.** `code`, `description`, and any value you pass to a thrown error are serialised to logs and to caller-visible error messages.
-- `AjaxError`'s `requestInfo` shape no longer includes a `url` field — the full webhook URL (`/rest/{userId}/{secret}/`) would otherwise appear in `toJSON()` output and log sinks. **Do not widen `AjaxQuery` to add `url` back.** The path scrub is a second line, not a reason to reopen this one.
-- **Never log or serialize `AjaxError.originalError` directly.** `originalError` holds the raw `AxiosError` whose `config.url` carries the webhook secret and `config.headers.Authorization` carries the OAuth token. Neither field is covered by the payload redactor. Log only `err.code`, `err.status`, `err.message`, or `err.requestInfo` (which is redacted).
+- **Никогда не логируйте сырые тела запросов** вне транспортного слоя. Идите через логгер транспорта, чтобы скрытие применялось автоматически. В сомнительных случаях оборачивайте параметры в `redactSensitiveParams(params)` из `redact.ts`.
+- **Никогда не логируйте сырой URL запроса для транспорта `B24Hook`.** URL содержит секрет вебхука в сегменте пути (`/rest/<userId>/<secret>/` или `/rest/api/<userId>/<secret>/` в `restApi:v3`). Теперь средство скрытия *маскирует* именно эту форму, в том числе когда она приходит в **теле ответа** (`rest.deferredbatch.downloadresult` возвращает такой URL), — но считайте это страховкой, а не разрешением: оно подходит только под форму вебхука Битрикс24 и ни под что другое, а `originalError.config.url` не покрыт вовсе. Логируйте только имя метода и `requestId`.
+- **Никогда не кладите учётные данные в поля `SdkError`.** `code`, `description` и любое значение, переданное в бросаемую ошибку, сериализуются в журналы и в сообщения об ошибках, видимые вызывающему.
+- В форме `requestInfo` у `AjaxError` больше нет поля `url` — полный URL вебхука (`/rest/{userId}/{secret}/`) иначе появился бы в выводе `toJSON()` и приёмниках журналов. **Не расширяйте `AjaxQuery`, возвращая `url`.** Очистка пути — вторая линия обороны, а не повод заново открывать первую.
+- **Никогда не логируйте и не сериализуйте `AjaxError.originalError` напрямую.** `originalError` содержит сырой `AxiosError`, в чьём `config.url` лежит секрет вебхука, а в `config.headers.Authorization` — токен OAuth. Ни одно из этих полей не покрыто средством скрытия параметров. Логируйте только `err.code`, `err.status`, `err.message` или `err.requestInfo` (он скрыт).
 
-User-facing reference: [Logging & Credential Redaction — 78.logging.md](../../docs/content/docs/2.working-with-the-rest-api/78.logging.md) (full redaction rules, callsite table, and webhook-URL audit patterns).
+Справочник для пользователей: [Logging & Credential Redaction — 78.logging.md](../../docs/content/docs/2.working-with-the-rest-api/78.logging.md) (полные правила скрытия, таблица мест вызова и шаблоны аудита URL вебхуков).
 
-## Adding a New Transport Action
+## Добавление нового транспортного действия
 
-A checklist mirroring the steps verified by code review. The canonical example is [packages/jssdk/src/core/actions/v3/call.ts](../../packages/jssdk/src/core/actions/v3/call.ts).
+Чек-лист, повторяющий шаги, проверяемые на ревью кода. Канонический пример — [packages/jssdk/src/core/actions/v3/call.ts](../../packages/jssdk/src/core/actions/v3/call.ts).
 
 ```text
 - [ ] Picked the version directory (src/core/actions/v2/ or v3/) matching the REST method
@@ -328,19 +328,19 @@ A checklist mirroring the steps verified by code review. The canonical example i
 - [ ] Matching docs page under docs/content/docs/ added or updated
 ```
 
-See also the [Adding a REST Method to an Existing Action](../../AGENTS.md#добавление-rest-метода-в-существующее-действие) lightweight checklist in `AGENTS.md` when you only need to call a new method from caller code, without adding a new action class.
+См. также облегчённый чек-лист [Adding a REST Method to an Existing Action](../../AGENTS.md#добавление-rest-метода-в-существующее-действие) в `AGENTS.md`, когда нужно лишь вызвать новый метод из кода вызывающего, не добавляя новый класс действия.
 
-## Quick Reference
+## Краткая справка
 
-| Task | Use |
+| Задача | Что использовать |
 | --- | --- |
-| Return data from a domain method | `Result` |
-| Return data from a transport call | `AjaxResult` |
-| Iterate over a paged list (v2) | `result.isMore()` + `result.getNext(b24.getHttpClient(ApiVersion.v2))` |
-| Iterate over a paged list (v3) | `b24.actions.v3.callList.make(...)` / `b24.actions.v3.fetchList.make(...)` (no `getNext()` on v3) |
-| Reject bad arguments | `throw new SdkError({ code, description, status })` |
-| Inspect HTTP failures | `result.getErrors()` → `AjaxError` instances |
-| Issue an HTTP call | `b24.actions.v3.call.make({ method, params, requestId })` (or `actions.v2.…`) |
-| Get the http client | `b24.getHttpClient(ApiVersion.vX)` (no `b24.http` field) |
-| Tune limiter behaviour | `ParamsFactory.getX()` preset, layered with `RestrictionParams` overrides |
-| Get the SDK version at runtime | `__SDK_VERSION__` build token |
+| Вернуть данные из предметного метода | `Result` |
+| Вернуть данные из транспортного вызова | `AjaxResult` |
+| Обойти постраничный список (v2) | `result.isMore()` + `result.getNext(b24.getHttpClient(ApiVersion.v2))` |
+| Обойти постраничный список (v3) | `b24.actions.v3.callList.make(...)` / `b24.actions.v3.fetchList.make(...)` (в v3 нет `getNext()`) |
+| Отклонить неверные аргументы | `throw new SdkError({ code, description, status })` |
+| Проверить сбои HTTP | `result.getErrors()` → экземпляры `AjaxError` |
+| Выполнить HTTP-вызов | `b24.actions.v3.call.make({ method, params, requestId })` (или `actions.v2.…`) |
+| Получить http-клиент | `b24.getHttpClient(ApiVersion.vX)` (поля `b24.http` нет) |
+| Настроить поведение лимитера | Пресет `ParamsFactory.getX()` с наложением переопределений `RestrictionParams` |
+| Получить версию SDK во время выполнения | Токен сборки `__SDK_VERSION__` |
