@@ -64,4 +64,4 @@ name: 'tools-health-check'
 
 * **For measuring response speed**: Use [`Ping`](/docs/working-with-the-rest-api/tools-ping/).
 * **For checking specific permissions**: Perform a test request to the required API method.
-* **On the client-side (browser):** Use the built-in [`B24Frame`](/docs/getting-started/installation/vue/#init) object.
+* **On the client-side (browser):** Use the built-in [`B24Frame`](/docs/getting-started/installation/vue/#инициализация) object.

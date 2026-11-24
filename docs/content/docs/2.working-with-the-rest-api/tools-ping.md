@@ -64,4 +64,4 @@ name: 'tools-ping'
 
 * **For availability check**: Use [`HealthCheck`](/docs/working-with-the-rest-api/tools-health-check/).
 * **For measuring operation performance**: Perform time measurements for specific API methods.
-* **On the client-side (browser):** Use the built-in [`B24Frame`](/docs/getting-started/installation/vue/#init) object.
+* **On the client-side (browser):** Use the built-in [`B24Frame`](/docs/getting-started/installation/vue/#инициализация) object.
