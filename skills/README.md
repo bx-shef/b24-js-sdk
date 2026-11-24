@@ -1,46 +1,46 @@
-# b24jssdk skills
+# Навыки b24jssdk
 
-Project skills for the `@bitrix24/b24jssdk` workspace. Source of truth:
+Проектные навыки для рабочего пространства `@bitrix24/b24jssdk`. Источники истины:
 
-- `packages/jssdk/README-AI.md` — API-guide for callers
-- `test/integration/js-docs/actions-v{2,3}.spec.ts` — canonical surface examples
+- `packages/jssdk/README-AI.md` — руководство по API для вызывающего кода
+- `test/integration/js-docs/actions-v{2,3}.spec.ts` — канонические примеры API
 
-## Skills
+## Навыки
 
-| Skill | When to use |
+| Навык | Когда использовать |
 | --- | --- |
-| **b24jssdk-core** | First skill to load. Picks the right entry point (B24Hook / B24Frame / B24OAuth), shows boot/teardown, error handling, hardErrorCodes/softErrorCodes/retryOnNetworkError tuning. |
-| **b24jssdk-rest** | The canonical REST surface: `actions.v{2,3}.{call,batch,callList,fetchList,batchByChunk}.make()`, and `actions.v3.deferredBatch`. Picking between v2 and v3, AjaxResult shape, batch semantics. |
-| **b24jssdk-filtering** | Two filter dialects — v2 prefix-keyed objects (`'>=createdTime'`) and v3 array-of-triples (`[['fld', '>=', v]]`). NOT, IN, dates via `Text.toB24Format`, the `order`-stripping rule of `callList`. |
-| **b24jssdk-frame-ui** | UI managers available only inside Bitrix24 iframe: slider, dialog (`selectUser/Users/CRM/Access`), parent, placement (with `setValue`), options, auth. |
-| **b24jssdk-helpers** | `useB24Helper`, `B24HelperManager`, Pull client, currency formatting, app/user options. |
-| **b24jssdk-recipes** | Thirteen end-to-end mini-apps (CRM analytics, ERP sync, Telegram bot, mass mailing, task automation, AI assistant, web search + LLM, Disk files, webhook handler, error-handling, event registration, OAuth install, deferred-batch export) — built on `actions.v{2,3}.*`. |
-| **b24jssdk-vibecode** | How to use the SDK alongside the VibeCode HTTP API. Mostly: don't — keep them apart. The "AI add-on" pattern is the only sane mix. |
+| **b24jssdk-core** | Загружается первым. Выбирает нужную точку входа (B24Hook / B24Frame / B24OAuth), показывает запуск и завершение работы, обработку ошибок, настройку hardErrorCodes/softErrorCodes/retryOnNetworkError. |
+| **b24jssdk-rest** | Канонический REST API: `actions.v{2,3}.{call,batch,callList,fetchList,batchByChunk}.make()` и `actions.v3.deferredBatch`. Выбор между v2 и v3, форма AjaxResult, семантика пакетных запросов (batch). |
+| **b24jssdk-filtering** | Два диалекта фильтров: v2 — объекты с ключами-префиксами (`'>=createdTime'`) и v3 — массив троек (`[['fld', '>=', v]]`). NOT, IN, даты через `Text.toB24Format`, правило удаления `order` в `callList`. |
+| **b24jssdk-frame-ui** | UI-менеджеры, доступные только внутри iframe Битрикс24: слайдер, диалог (`selectUser/Users/CRM/Access`), parent, встройка (placement) с `setValue`, options, auth. |
+| **b24jssdk-helpers** | `useB24Helper`, `B24HelperManager`, клиент Pull, форматирование валют, опции приложения и пользователя. |
+| **b24jssdk-recipes** | Тринадцать готовых мини-приложений (аналитика CRM, синхронизация с ERP, Telegram-бот, массовая рассылка, автоматизация задач, AI-ассистент, веб-поиск + LLM, файлы Диска, обработчик вебхуков, обработка ошибок, регистрация событий, установка по OAuth, экспорт через отложенный пакет) — построены на `actions.v{2,3}.*`. |
+| **b24jssdk-vibecode** | Как использовать SDK вместе с HTTP API VibeCode. В основном — никак: держите их раздельно. Единственное разумное сочетание — шаблон «AI-надстройка». |
 
-## Verification status
+## Статус проверки
 
-The snippets in every skill are compile-checked in CI (`pnpm run skills:typecheck`).
-They have **not** yet been verified against a live portal — that is #113, and
-[`VERIFICATION.md`](VERIFICATION.md) is the pass: `pnpm run skills:verify` covers
-everything a webhook can reach, and a manual checklist covers the frame-only
-managers, which need an app open inside a real placement.
+Фрагменты кода в каждом навыке проверяются компилятором в CI (`pnpm run skills:typecheck`).
+С живым порталом они **ещё не** сверены — это задача #113, и проход по ней описан в
+[`VERIFICATION.md`](VERIFICATION.md): `pnpm run skills:verify` покрывает всё, до чего
+дотягивается вебхук, а ручной чек-лист — менеджеры, работающие только во фрейме, для
+которых нужно приложение, открытое внутри настоящей встройки.
 
-## Top-level docs
+## Документы верхнего уровня
 
-- `.github/contributing/maintenance.md` — rules for the weekly `docs/llms-full.txt` review.
-- `.github/contributing/report.md` — open questions, conspectus of doubtful bits, migration log.
-- `.github/contributing/suggested-examples.md` — gaps in the current example set, ranked by ROI.
+- `.github/contributing/maintenance.md` — правила еженедельной проверки `docs/llms-full.txt`.
+- `.github/contributing/report.md` — открытые вопросы, конспект сомнительных мест, журнал миграции.
+- `.github/contributing/suggested-examples.md` — пробелы в текущем наборе примеров, отранжированные по отдаче.
 
-## Conventions used inside every skill
+## Соглашения во всех навыках
 
-- TypeScript / ESM. Bare imports from `@bitrix24/b24jssdk`.
-- The active client is always `$b24` and is treated as `TypeB24` — every example works for `B24Hook`, `B24Frame`, and `B24OAuth` because the actions surface lives on `AbstractB24`.
-- Always use **`$b24.actions.v{2,3}.*.make()`** — the legacy `callMethod`/`callBatch`/`callListMethod`/`fetchListMethod` was **removed in 3.0.0** and no longer exists.
-- The SDK has no hardcoded v3 allowlist any more — `actions.v3.*` sends any method to the v3 endpoint and the server validates it (unknown → `METHODNOTFOUNDEXCEPTION`). Default to `v2`; use `v3` when you want a method's v3 representation (`tasks.task.*`, `main.eventlog.*`, `note.*`, `rest.application.*`, …).
-- v3 entities (`crm.item.*`) on v2 still need `idKey: 'id'` (lowercase) and `customKeyForResult: 'items'` for list helpers; classic methods (`crm.deal.*`) use default `idKey: 'ID'`. `tasks.task.list` differs by endpoint: on **v2** it sorts / filters by `ID` but returns lowercase `id`, so it needs `idKey: 'id', cursorIdKey: 'ID'` (and `customKeyForResult: 'tasks'`); on **v3** it is all-lowercase — `idKey: 'id'` (default), no `cursorIdKey`, `customKeyForResult: 'items'`.
-- Filters: v2 = prefix-keyed object; v3 = array of `[field, op, value]` triples. Never mix.
-- Dates: use `Text.toB24Format(date)` for the canonical `yyyy-MM-dd'T'HH:mm:ssZZ` format.
+- TypeScript / ESM. Голые импорты из `@bitrix24/b24jssdk`.
+- Активный клиент всегда называется `$b24` и трактуется как `TypeB24` — каждый пример работает для `B24Hook`, `B24Frame` и `B24OAuth`, потому что API actions живёт в `AbstractB24`.
+- Всегда используйте **`$b24.actions.v{2,3}.*.make()`** — устаревшие `callMethod`/`callBatch`/`callListMethod`/`fetchListMethod` были **удалены в 3.0.0** и больше не существуют.
+- Жёстко заданного списка разрешённых методов v3 в SDK больше нет — `actions.v3.*` отправляет любой метод на endpoint v3, а проверяет его сервер (неизвестный метод → `METHODNOTFOUNDEXCEPTION`). По умолчанию берите `v2`; `v3` используйте, когда нужно v3-представление метода (`tasks.task.*`, `main.eventlog.*`, `note.*`, `rest.application.*`, …).
+- Сущности v3 (`crm.item.*`) при вызове через v2 по-прежнему требуют `idKey: 'id'` (строчными) и `customKeyForResult: 'items'` для списочных помощников; классические методы (`crm.deal.*`) используют `idKey: 'ID'` по умолчанию. `tasks.task.list` зависит от endpoint: в **v2** сортирует и фильтрует по `ID`, но возвращает `id` строчными, поэтому нужны `idKey: 'id', cursorIdKey: 'ID'` (и `customKeyForResult: 'tasks'`); в **v3** всё строчными — `idKey: 'id'` (по умолчанию), без `cursorIdKey`, `customKeyForResult: 'items'`.
+- Фильтры: v2 — объект с ключами-префиксами; v3 — массив троек `[field, op, value]`. Никогда не смешивайте.
+- Даты: используйте `Text.toB24Format(date)` для канонического формата `yyyy-MM-dd'T'HH:mm:ssZZ`.
 
-## Migration note
+## Заметка о миграции
 
-This skill set was rewritten in 2026-05 to move off the legacy SDK surface, which was removed outright in 3.0.0. If you find examples in the wider repo (docs/, playgrounds/) still using `b24.callMethod(...)`, that code no longer compiles — surface it for migration. The current form is `b24.actions.v{2,3}.call.make({ method, params, requestId? })`.
+Этот набор навыков переписан в 2026-05, чтобы уйти от устаревшего API SDK, полностью удалённого в 3.0.0. Если в остальном репозитории (docs/, playgrounds/) вам попадутся примеры с `b24.callMethod(...)`, этот код больше не компилируется — отметьте его для миграции. Актуальная форма — `b24.actions.v{2,3}.call.make({ method, params, requestId? })`.

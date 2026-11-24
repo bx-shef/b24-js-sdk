@@ -1,63 +1,62 @@
-# Why this directory has its own package.json and lockfile
+# Почему у этого каталога свой package.json и lock-файл
 
-`skills/b24jssdk-recipes` is **deliberately not a pnpm workspace member** (#65). It
-carries its own `package.json`, `pnpm-workspace.yaml` and `pnpm-lock.yaml`, and its
-own `node_modules`.
+`skills/b24jssdk-recipes` **намеренно не является членом рабочего пространства pnpm** (#65). У него
+свои `package.json`, `pnpm-workspace.yaml` и `pnpm-lock.yaml` и свой `node_modules`.
 
-## What this buys
+## Что это даёт
 
-The recipes import packages the SDK itself has no use for — `express`, `grammy`,
-`node-cron`, `openai`. Declaring those at the workspace root meant:
+Рецепты импортируют пакеты, которые самому SDK не нужны, — `express`, `grammy`,
+`node-cron`, `openai`. Если объявлять их в корне рабочего пространства, то:
 
-- **Every contributor installed them.** A breaking release of `grammy` or `openai`
-  would fail `pnpm install` for people working on the HTTP layer, who have no reason
-  to care that a Telegram example exists.
-- **They showed up in `pnpm audit` for the repository**, as findings against code
-  that is never in the SDK bundle.
-- **They read as intent.** `openai` in the root manifest suggests the SDK integrates
-  with OpenAI. It does not; one teaching recipe does.
-- **517 lines of transitive resolution in the root lockfile.**
+- **Каждый контрибьютор их устанавливал.** Ломающий релиз `grammy` или `openai`
+  провалил бы `pnpm install` у тех, кто работает над HTTP-слоем и не обязан
+  знать, что где-то есть пример с Telegram.
+- **Они попадали в `pnpm audit` репозитория** как замечания к коду,
+  которого нет в бандле SDK.
+- **Они читались как намерение.** `openai` в корневом манифесте наводит на мысль, что SDK
+  интегрируется с OpenAI. Это не так; интегрируется один обучающий рецепт.
+- **517 строк транзитивных зависимостей в корневом lock-файле.**
 
-A workspace member would have fixed only the last point in appearance, not in fact:
-a pnpm workspace has one lockfile, so a member's dependencies land in the root lock
-and a root `pnpm install` still installs them. Standing outside the workspace is what
-actually separates the trees. That is why the nested `pnpm-workspace.yaml` exists —
-it declares this directory its own root, so plain `pnpm install` here does the right
-thing instead of walking up and installing into the repository root.
+Член рабочего пространства исправил бы только последний пункт — внешне, а не по сути:
+у рабочего пространства pnpm один lock-файл, поэтому зависимости участника попадают в корневой lock,
+и корневой `pnpm install` по-прежнему их ставит. Реально разделяет деревья только положение вне
+рабочего пространства. Поэтому и существует вложенный `pnpm-workspace.yaml` —
+он объявляет этот каталог собственным корнем, так что обычный `pnpm install` здесь делает то,
+что нужно, а не поднимается вверх и не ставит пакеты в корень репозитория.
 
-## How it is wired
+## Как это подключено
 
-`skills:install` at the repository root runs the nested install, and both
-`skills:typecheck` and `skills:test` depend on it. Nothing extra is needed in CI, and
-a fresh clone running `pnpm run typecheck` gets the install on the way through rather
-than a confusing `Cannot find module 'grammy'`.
+`skills:install` в корне репозитория запускает вложенную установку, а `skills:typecheck`
+и `skills:test` зависят от неё. В CI ничего дополнительного не нужно,
+а свежий клон, запускающий `pnpm run typecheck`, получает установку по пути,
+а не путающее `Cannot find module 'grammy'`.
 
-## The one thing that stayed behind
+## Единственное, что осталось
 
-`@types/express` remains a root devDependency. `docs/content/docs/2.working-with-the-rest-api/79.security.md`
-documents Express handler patterns, and `pnpm run docs:typecheck-blocks` compiles
-those fenced blocks at the repository root — so those types are a root-level need, not
-a recipe one. Only the types stayed; `express` itself did not.
+`@types/express` остаётся корневой devDependency. `docs/content/docs/2.working-with-the-rest-api/79.security.md`
+описывает паттерны обработчиков Express, а `pnpm run docs:typecheck-blocks` компилирует
+эти фрагменты кода в корне репозитория — так что эти типы нужны на уровне корня, а не рецептам.
+Остались только типы; сам `express` — нет.
 
-## Isolated is not the same as unwatched
+## Изолировано — не значит без присмотра
 
-Standing outside the workspace means the root `pnpm audit` and the root Dependabot
-entry (`directory: "/"`) cannot see this lockfile. That was the one real hazard in
-this change: the point was to stop these packages being every contributor's install
-problem, not to stop anyone watching them — and `express` and `openai` are exactly
-the kind of dependency that needs a bot on it.
+Положение вне рабочего пространства означает, что корневой `pnpm audit` и корневая запись Dependabot
+(`directory: "/"`) не видят этот lock-файл. Это была единственная реальная опасность
+изменения: цель была в том, чтобы эти пакеты перестали быть проблемой установки для каждого
+контрибьютора, а не в том, чтобы за ними никто не следил, — а `express` и `openai` как раз та
+зависимость, на которой должен висеть бот.
 
-So both were extended rather than left behind:
+Поэтому обе проверки расширены, а не оставлены:
 
-- `.github/dependabot.yml` has a second npm entry for `/skills/b24jssdk-recipes`.
-- `.github/workflows/ci.yml` audits this lockfile alongside the root one, same
-  `moderate` threshold.
+- в `.github/dependabot.yml` есть вторая запись npm для `/skills/b24jssdk-recipes`.
+- `.github/workflows/ci.yml` проверяет этот lock-файл наряду с корневым, с тем же
+  порогом `moderate`.
 
-One consequence worth knowing: the `overrides` block in the root
-`pnpm-workspace.yaml` — the security floors — does **not** reach this tree. If an
-advisory here needs pinning, the pin goes in this package's own manifest.
+Одно следствие, о котором стоит знать: блок `overrides` в корневом
+`pnpm-workspace.yaml` — нижние границы безопасности — **не** распространяется на это дерево. Если
+замечание безопасности здесь требует закрепления версии, закрепление идёт в собственный манифест этого пакета.
 
-## If you add a dependency to a recipe
+## Если вы добавляете зависимость в рецепт
 
-Add it here, not to the root manifest. `test/integration/skills-recipes/recipe-hygiene.unit.spec.ts`
-fails if one of the recipe-only packages reappears in the root `devDependencies`.
+Добавляйте её сюда, а не в корневой манифест. `test/integration/skills-recipes/recipe-hygiene.unit.spec.ts`
+падает, если один из пакетов, нужных только рецептам, снова появляется в корневых `devDependencies`.

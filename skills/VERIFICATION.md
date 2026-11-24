@@ -1,130 +1,130 @@
-# Verifying the skills against a real portal (#113)
+# Проверка навыков на реальном портале (#113)
 
-CI already compiles every snippet in every skill (`pnpm run skills:typecheck`).
-That proves they type-check against the built SDK types. It does not prove the
-portal answers the way the skill says it does — which is what #113 asks for.
+CI уже компилирует каждый фрагмент кода в каждом навыке (`pnpm run skills:typecheck`).
+Это доказывает, что они проходят проверку типов по собранным типам SDK. Но не доказывает,
+что портал отвечает так, как сказано в навыке, — а именно этого требует #113.
 
-This splits in two, because half of it cannot be scripted.
+Работа делится на две части, потому что половину нельзя автоматизировать.
 
-| | How | Who |
+| | Как | Кто |
 | --- | --- | --- |
-| **Part A** — everything a webhook can reach | `pnpm run skills:verify` | anyone with `.env.test` |
-| **Part B** — everything that needs a live placement iframe | by hand, in a browser | someone with an installed app |
+| **Часть A** — всё, до чего дотягивается вебхук | `pnpm run skills:verify` | любой, у кого есть `.env.test` |
+| **Часть B** — всё, что требует живого iframe встройки (placement) | вручную, в браузере | тот, у кого установлено приложение |
 
 ---
 
-## Part A — scripted
+## Часть A — автоматическая
 
-### Setup for the scripted pass
+### Подготовка к автоматическому прогону
 
 ```bash
 cp .env.test-example .env.test
-# set B24_HOOK to a real webhook URL
+# укажите в B24_HOOK настоящий URL вебхука
 pnpm run skills:verify
 ```
 
-The webhook needs the scopes the skills document — at minimum `crm`, `task`,
-`user`. A narrower webhook still works; cases it cannot reach report as skips,
-not failures (see *Reading the output*).
+Вебхуку нужны права, которые описаны в навыках, — минимум `crm`, `task`,
+`user`. Более узкий вебхук тоже работает: случаи, до которых он не дотягивается,
+отчитываются как пропуски, а не как падения (см. *Как читать вывод*).
 
-### What it covers
+### Что покрывается
 
-Everything is discovered at run time — the suite finds a task, a deal and a
-contact on your portal rather than assuming fixed ids, so it runs anywhere.
-It is read-only.
+Всё определяется во время прогона: набор сам находит задачу, сделку и контакт
+на вашем портале, а не полагается на фиксированные id, поэтому работает где угодно.
+Он только читает данные.
 
-| Skill | Verified |
+| Навык | Что проверяется |
 | --- | --- |
-| `b24jssdk-core` | boot snippet reaches the portal; an unknown method is a **soft** error on the `Result`, not a throw; the operating-budget fields the skill documents have the shape it claims, when the portal sends them (a self-hosted portal with its operating limiter off sends none) |
-| `b24jssdk-rest` | `actions.v2.batch` (one result per command), `v2.callList`, `v2.fetchList` (chunked), `v3.call`, `v3.callList` on `tasks.task.list` **without** a `cursorIdKey` override — the claim in the skill's table; a non-v3 method fails softly rather than throwing; **`v3.aggregate` availability asked of the portal in one call** and reported, not asserted — see below |
-| `b24jssdk-filtering` | a v2 prefix-keyed filter actually narrows rows; a v3 array-of-triples filter is accepted; `callList` **strips a caller-supplied `order`** — asks for `DESC`, asserts the rows come back ascending |
-| `b24jssdk-helpers` | `initB24Helper` over a webhook loads Profile + Currency; `currency.format` uses the portal's own rules (the formatted value is printed) |
-| `b24jssdk-vibecode` | the SDK-side calls the skill documents succeed |
+| `b24jssdk-core` | код запуска достаёт до портала; неизвестный метод — это **мягкая** ошибка в `Result`, а не исключение; поля бюджета операций, описанные в навыке, имеют заявленную форму, если портал их присылает (портал на собственной инфраструктуре (self-hosted) с выключенным лимитером времени операций их не присылает) |
+| `b24jssdk-rest` | `actions.v2.batch` (один результат на команду), `v2.callList`, `v2.fetchList` (частями), `v3.call`, `v3.callList` на `tasks.task.list` **без** переопределения `cursorIdKey` — утверждение из таблицы навыка; метод, не поддерживаемый v3, падает мягко, а не бросает исключение; **доступность `v3.aggregate` запрашивается у портала одним вызовом** и сообщается, но не утверждается — см. ниже |
+| `b24jssdk-filtering` | фильтр v2 с ключами-префиксами действительно сужает выборку; фильтр v3 в виде массива троек принимается; `callList` **убирает переданный вызывающим `order`** — запрашивается `DESC`, проверяется, что строки приходят по возрастанию |
+| `b24jssdk-helpers` | `initB24Helper` через вебхук загружает Profile и Currency; `currency.format` использует собственные правила портала (отформатированное значение печатается) |
+| `b24jssdk-vibecode` | вызовы со стороны SDK, описанные в навыке, проходят успешно |
 
-**Measured by hand, not part of `skills:verify`:** a batch command whose arguments
-are spelled `query` returns the method's defaults rather than the selected fields
-— checked on both versions (`main.eventlog.list` on `restApi:v3`, `user.get` on
-`restApi:v2`). The SDK-side half of that claim is pinned portal-free in
-`test/integration/core/batch-command-unread-keys.unit.spec.ts`, which the
-`jsSdk:unit` project runs; nothing in `test/integration/skills/` covers it.
+**Измерено вручную, в `skills:verify` не входит:** команда пакетного запроса (batch),
+аргументы которой записаны как `query`, возвращает значения метода по умолчанию, а не
+выбранные поля — проверено на обеих версиях (`main.eventlog.list` на `restApi:v3`,
+`user.get` на `restApi:v2`). Часть этого утверждения, относящаяся к SDK, зафиксирована
+без портала в `test/integration/core/batch-command-unread-keys.unit.spec.ts`, который
+запускает проект `jsSdk:unit`; в `test/integration/skills/` его ничто не покрывает.
 
-### The one question this run is expected to answer: does any shipped module expose `*.aggregate` yet?
+### Единственный вопрос, на который должен ответить этот прогон: есть ли уже у какого-нибудь поставляемого модуля `*.aggregate`?
 
-**The contract itself is no longer in question.** It was measured against a
-module written for the purpose (PR #498), reaching the same
-`AggregateOrmActionTrait` / `OrmRepository::getAllWithAggregate()` every future
-module will: values come back as **strings**, an aggregate over an empty match is
-`null` except `count` (which is `'0'`), and the `{ result: { result } }` double
-envelope the reference §7 describes is real. `AggregateResultV3` says so, and the
-docs no longer hedge on the shape.
+**Сам контракт больше не под вопросом.** Он измерен на модуле, написанном для этой
+цели (PR #498), который использует тот же `AggregateOrmActionTrait` /
+`OrmRepository::getAllWithAggregate()`, что и каждый будущий модуль: значения приходят
+**строками**, агрегат по пустой выборке равен `null`, кроме `count` (он равен `'0'`),
+а двойная обёртка `{ result: { result } }`, описанная в справочнике §7, действительно
+существует. Это отражено в `AggregateResultV3`, и документация больше не оговаривается
+насчёт формы.
 
-What is still unmeasured is the **use case**: no *shipped* module publishes an
-`*.aggregate` action on any of the four portals checked, so no per-module
-behaviour has been observed and the action keeps its `@experimental` tag for that
-reason alone. That is what this check is looking for.
+Не измерен пока **сценарий использования**: ни один *поставляемый* модуль не публикует
+действие `*.aggregate` ни на одном из четырёх проверенных порталов, поэтому поведение
+конкретных модулей не наблюдалось, и действие сохраняет метку `@experimental` только по
+этой причине. Именно это и ищет данная проверка.
 
-So the suite asks the portal for its own document in **one call**:
-`rest.documentation.openapi`, then lists every path ending in `.aggregate`. It
-prints a block headed `[skills-live] v3 aggregate availability`.
+Поэтому набор запрашивает у портала его собственный документ **одним вызовом**:
+`rest.documentation.openapi`, а затем перечисляет все пути, оканчивающиеся на `.aggregate`.
+Он печатает блок с заголовком `[skills-live] v3 aggregate availability`.
 
-That replaced a six-module survey — `tasks.task`, four `crm.*` and
-`main.eventlog`, each probed with `select: { count: ['id'] }`. Every line came
-back `SOFT` on every portal, four of the six being `crm.*`, which on v3 exists
-only as timeline email. One request now answers for the **whole portal** instead
-of six guesses, and it cannot print anyone's row counts — which is why the
-warning this section used to carry about posting real deal counts is gone.
+Это заменило опрос шести модулей — `tasks.task`, четырёх `crm.*` и `main.eventlog`,
+каждый из которых проверялся с `select: { count: ['id'] }`. Каждая строка на каждом
+портале возвращалась как `SOFT`, причём четыре из шести были `crm.*`, которые в v3
+существуют только как письма таймлайна. Теперь один запрос отвечает за **весь портал**
+вместо шести догадок и не может напечатать чьи-либо количества строк — поэтому
+предупреждение о публикации реальных счётчиков сделок, которое раньше было в этом
+разделе, убрано.
 
-**An empty list cannot fail the run**, by design: a portal where no module
-supports `aggregate` is a fact about Bitrix24's v3 rollout, not a defect in a
-skill file. Everything around that answer is asserted, though — the document has
-to arrive and has to list methods — so unlike the six-probe loop this replaced,
-a green line here does mean the portal was asked and answered. What it does not
-tell you is *what* the answer was: **read the output**.
+**Пустой список не может провалить прогон** — так задумано: портал, где ни один модуль
+не поддерживает `aggregate`, — это факт о развёртывании v3 в Битрикс24, а не дефект
+файла навыка. Всё вокруг этого ответа проверяется: документ должен прийти и должен
+перечислять методы, — поэтому, в отличие от заменённого цикла из шести проверок, зелёная
+строка здесь действительно означает, что портал спросили и он ответил. Но она не говорит,
+*каким* был ответ: **читайте вывод**.
 
-A portal that scope-gates `rest.documentation.openapi` reports SKIP rather than
-FAIL. That needs handling inside the case: the refusal arrives soft, and the
-suite's limitation classifiers only see thrown errors.
+Портал, который закрывает `rest.documentation.openapi` правами доступа, сообщает SKIP, а
+не FAIL. Это нужно обрабатывать внутри самого случая: отказ приходит мягко, а
+классификаторы ограничений в наборе видят только брошенные ошибки.
 
-| Output | Means | What to do |
+| Вывод | Значение | Что делать |
 | --- | --- | --- |
-| `*.aggregate: (none)` | no shipped module on this portal opts into `AggregateOrmActionTrait` | Expected today. Record the method count alongside it — the denominator is what makes the zero informative. |
-| `*.aggregate: <names>` | the exit condition is met | Record the names. `AggregateV3`'s tag can be revisited against a real method, and its per-module behaviour observed for the first time. |
-| the case fails on `isSuccess` | the document did not arrive | **A defect worth reporting** — that is a transport problem, not an answer about aggregate. |
+| `*.aggregate: (none)` | ни один поставляемый модуль на этом портале не подключает `AggregateOrmActionTrait` | Сегодня ожидаемо. Запишите рядом число методов — знаменатель делает ноль информативным. |
+| `*.aggregate: <names>` | условие выхода выполнено | Запишите имена. Метку `AggregateV3` можно пересмотреть на реальном методе, а его поведение в конкретном модуле наблюдается впервые. |
+| случай падает на `isSuccess` | документ не пришёл | **Дефект, о котором стоит сообщить** — это проблема транспорта, а не ответ про aggregate. |
 
-Paste the block into #113 — and if you are pasting a *failure* rather than the
-block, redact the portal domain first (see the note at the end of this file):
-portal prose reaches an error message verbatim, and redaction does not cover it.
-If the list is empty, nothing changes: `AggregateV3`
-keeps its `@experimental` tag — not because the contract is unknown, but because
-no shipped module exercises it — the docs keep telling readers to reduce a
-`callList` client-side, and `AjaxResult.getTotal()` remains the only count
-available under `restApi:v2`, which is why it was kept out of the `3.0.0`
-removal set. A non-empty list is the interesting outcome: it names the first
-module that can lift the tag.
+Вставьте блок в #113 — а если вы вставляете *падение*, а не блок, сначала замажьте
+домен портала (см. примечание в конце файла): текст портала попадает в сообщение об
+ошибке дословно, и замазывание его не охватывает.
+Если список пуст, ничего не меняется: `AggregateV3`
+сохраняет метку `@experimental` — не потому, что контракт неизвестен, а потому, что
+ни один поставляемый модуль его не использует, — документация продолжает советовать
+сворачивать `callList` на стороне клиента, а `AjaxResult.getTotal()` остаётся единственным
+доступным счётчиком в `restApi:v2`, поэтому он и не попал в набор удалений `3.0.0`.
+Непустой список — самый интересный исход: он называет первый модуль, который может
+снять метку.
 
-### Reading the output
+### Как читать вывод
 
-Three outcomes, and the distinction is the point:
+Три исхода, и различие между ними — главное:
 
-- **pass** — the skill is right about this portal.
-- **`SKIP — … portal limitation [CODE]`** — your webhook or plan cannot do this.
-  Says nothing about the skill. Common on trial portals and narrow webhooks.
-- **`FAIL — … error [CODE]`** — the skill documents something that does not
-  work. **This is the finding #113 is after.** Copy the line into the issue.
+- **pass** — навык верен для этого портала.
+- **`SKIP — … portal limitation [CODE]`** — ваш вебхук или тариф этого не умеет.
+  О навыке это ничего не говорит. Обычно бывает на пробных порталах и узких вебхуках.
+- **`FAIL — … error [CODE]`** — навык описывает то, что не работает.
+  **Это и есть находка, ради которой затеян #113.** Скопируйте строку в issue.
 
-A failure whose code looks like a limitation the suite does not yet recognise is
-still a failure by design — the pattern list in the spec is deliberately narrow,
-because erring towards "skip" would hide exactly what this is for. If you hit
-one, paste the code and it gets added rather than guessed at.
+Падение с кодом, похожим на ограничение, которое набор пока не распознаёт, всё равно
+считается падением — так задумано: список шаблонов в спецификации нарочно узкий, потому
+что уклон в «пропуск» скрыл бы ровно то, ради чего всё это делается. Если вы наткнулись
+на такой случай, вставьте код — его добавят, а не будут угадывать.
 
-> Portals answer in the portal's language. The classifier matches both English
-> and Russian; a portal in a third language will surface unfamiliar text as a
-> failure with the code attached.
+> Порталы отвечают на языке портала. Классификатор понимает английский и русский;
+> портал на третьем языке покажет незнакомый текст как падение с приложенным кодом.
 
-### Recording the result
+### Запись результата
 
-If you paste this into a public issue, replace the domain with a placeholder —
-the plan and the scopes are what matter, and the domain identifies the portal.
+Если вы вставляете это в публичный issue, замените домен на заглушку — важны тариф и
+права, а домен идентифицирует портал.
 
 ```text
 Portal:            (domain or placeholder, plan)
@@ -136,86 +136,85 @@ Failures:          (paste the FAIL lines)
 
 ---
 
-## Part B — manual, needs a live placement
+## Часть B — ручная, нужна живая встройка (placement)
 
-None of this can run from a webhook: it needs the app open **inside** a Bitrix24
-placement iframe, because the SDK talks to the parent window over `postMessage`.
+Ничего из этого нельзя запустить через вебхук: приложение должно быть открыто **внутри**
+iframe встройки Битрикс24, потому что SDK общается с родительским окном через `postMessage`.
 
-### Setup for the placement pass
+### Подготовка к проходу по встройке
 
 [`reproducing-user-reports.md`](../.github/contributing/reproducing-user-reports.md#running-it-locally)
-already describes this setup end to end — building the SDK, running the Nuxt
-playground, exposing it with a tunnel via `NUXT_ALLOWED_HOSTS`, and registering
-a local application **with UI** under *Applications → Developer resources →
-Local application*. Follow it; there is no second way to do this.
+уже описывает эту подготовку от начала до конца — сборку SDK, запуск playground на Nuxt,
+публикацию его через туннель с помощью `NUXT_ALLOWED_HOSTS` и регистрацию локального
+приложения **с UI** в разделе *Приложения → Ресурсы для разработчиков →
+Локальное приложение*. Следуйте ему; второго способа нет.
 
-Two things that pass differs in:
+Этот проход отличается двумя вещами:
 
-- **Bind a placement**, not just install the app. Rows 8–9 need the app opened
-  *from* a placement, so the handler has to be registered against one — an app
-  that only opens from the left menu has no placement context and
-  `$b24.placement.title` comes back empty.
-- **Scopes.** Grant `crm` (row 5), `user` (row 4), `task` if you want the
-  helper rows to have data, and `placement` (rows 8–9). Missing a scope shows
-  up as the manager rejecting, not as a blank screen.
+- **Привяжите встройку**, а не просто установите приложение. Строки 8–9 требуют, чтобы
+  приложение было открыто *из* встройки, поэтому обработчик должен быть зарегистрирован
+  на неё — у приложения, которое открывается только из левого меню, нет контекста
+  встройки, и `$b24.placement.title` возвращается пустым.
+- **Права.** Выдайте `crm` (строка 5), `user` (строка 4), `task`, если нужны данные для
+  строк помощников, и `placement` (строки 8–9). Отсутствие права проявляется как отказ
+  менеджера, а не как пустой экран.
 
-Each row names the skill file and the section, so a mismatch has a place to be
-fixed. Record **observed**, not "looks fine".
+В каждой строке указан файл навыка и раздел, чтобы у расхождения было место, где его
+исправить. Записывайте **наблюдаемое**, а не «вроде нормально».
 
 ### `b24jssdk-frame-ui/SKILL.md`
 
-| # | What to do | Expected | OK? | Observed |
+| # | Что сделать | Ожидается | OK? | Наблюдалось |
 | --- | --- | --- | --- | --- |
-| 1 | `$b24.slider.openPath(path)` | the slider opens on that path | ☐ | |
-| 2 | `$b24.slider.openSliderAppPage(params)` | the app page opens in a slider | ☐ | |
-| 3 | close the slider from inside | the promise the skill documents settles, with the documented shape | ☐ | |
-| 4 | `$b24.dialog.selectUser()` | user picker opens; the resolved value matches the skill's shape | ☐ | |
-| 5 | `$b24.dialog.selectCRM()` | CRM picker opens; resolved shape matches | ☐ | |
-| 6 | `$b24.parent.fitWindow()` | the iframe resizes to content | ☐ | |
-| 7 | `$b24.parent.setTitle(...)` | the portal's title area changes | ☐ | |
-| 8 | `$b24.placement.title` / `.options` / `.isSliderMode` | identify the placement the app was opened from, and the params it was given | ☐ | |
-| 9 | `$b24.placement.setValue(...)` | value persists; re-open the placement to confirm | ☐ | |
-| 10 | `$b24.options` round-trip (app and user) | written value reads back after a reload | ☐ | |
+| 1 | `$b24.slider.openPath(path)` | слайдер открывается по этому пути | ☐ | |
+| 2 | `$b24.slider.openSliderAppPage(params)` | страница приложения открывается в слайдере | ☐ | |
+| 3 | закрыть слайдер изнутри | промис, описанный в навыке, завершается с документированной формой | ☐ | |
+| 4 | `$b24.dialog.selectUser()` | открывается выбор пользователя; полученное значение совпадает с формой из навыка | ☐ | |
+| 5 | `$b24.dialog.selectCRM()` | открывается выбор CRM; полученная форма совпадает | ☐ | |
+| 6 | `$b24.parent.fitWindow()` | iframe подгоняется под содержимое | ☐ | |
+| 7 | `$b24.parent.setTitle(...)` | область заголовка портала меняется | ☐ | |
+| 8 | `$b24.placement.title` / `.options` / `.isSliderMode` | определяют встройку, из которой открыто приложение, и переданные ей параметры | ☐ | |
+| 9 | `$b24.placement.setValue(...)` | значение сохраняется; откройте встройку заново, чтобы убедиться | ☐ | |
+| 10 | круговой проход `$b24.options` (приложение и пользователь) | записанное значение читается обратно после перезагрузки | ☐ | |
 
-### `b24jssdk-helpers/SKILL.md` — the frame half
+### `b24jssdk-helpers/SKILL.md` — часть для фрейма
 
-| # | What to do | Expected | OK? | Observed |
+| # | Что сделать | Ожидается | OK? | Наблюдалось |
 | --- | --- | --- | --- | --- |
-| 11 | `initB24Helper` with `LoadDataType.App` | `helper.appInfo.data` populated; `statusCode` is an `EnumAppStatus` value | ☐ | |
-| 12 | `LoadDataType.AppOptions` / `UserOptions` | both load; `helper.appOptions.encode` round-trips | ☐ | |
-| 13 | `usePullClient()` + `useSubscribePullClient(...)` then `startPullClient()` | subscription receives a message (trigger one via `helper.appOptions.save` with the `command` option, per the skill) | ☐ | |
-| 14 | `helper.appOptions.save({...}, { moduleId, command })` | saves **and** broadcasts the Pull event the skill describes | ☐ | |
-| 15 | read `helper.profileInfo` **before** `initB24Helper` resolves | throws `B24HelperManager.profileInfo not initialized` — the skill's stated guard | ☐ | |
+| 11 | `initB24Helper` с `LoadDataType.App` | `helper.appInfo.data` заполнен; `statusCode` — значение `EnumAppStatus` | ☐ | |
+| 12 | `LoadDataType.AppOptions` / `UserOptions` | оба загружаются; `helper.appOptions.encode` проходит круговой проход | ☐ | |
+| 13 | `usePullClient()` + `useSubscribePullClient(...)`, затем `startPullClient()` | подписка получает сообщение (вызовите его через `helper.appOptions.save` с опцией `command`, как сказано в навыке) | ☐ | |
+| 14 | `helper.appOptions.save({...}, { moduleId, command })` | сохраняет **и** рассылает событие Pull, описанное в навыке | ☐ | |
+| 15 | чтение `helper.profileInfo` **до** завершения `initB24Helper` | бросает `B24HelperManager.profileInfo not initialized` — заявленная в навыке защита | ☐ | |
 
-### `b24jssdk-core/SKILL.md` — the frame boot
+### `b24jssdk-core/SKILL.md` — запуск фрейма
 
-| # | What to do | Expected | OK? | Observed |
+| # | Что сделать | Ожидается | OK? | Наблюдалось |
 | --- | --- | --- | --- | --- |
-| 16 | `initializeB24Frame()` | resolves inside the placement | ☐ | |
-| 17 | the same page opened **outside** a placement | fails the way the skill says it does, not by hanging | ☐ | |
+| 16 | `initializeB24Frame()` | завершается успешно внутри встройки | ☐ | |
+| 17 | та же страница, открытая **вне** встройки | падает так, как сказано в навыке, а не зависает | ☐ | |
 
 ---
 
-## Closing #113
+## Закрытие #113
 
-The issue's acceptance criteria, and where each is answered:
+Критерии приёмки issue и где на каждый из них отвечено:
 
-- [x] every snippet compiles — `skills:typecheck`, already in CI
-- [ ] every REST-calling snippet verified live — Part A, plus rows 1–17 for the
-      frame-only ones
-- [x] the v3 whitelist table matches `version-manager.ts` — **already true**:
-      the SDK dropped the allowlist (`automaticallyObtainApiVersion` ignores the
-      method and returns v2, `isSupport` returns `true` unconditionally), and
-      `b24jssdk-rest/SKILL.md` says so and lists known families as
-      non-exhaustive. Nothing to reconcile.
-- [ ] patterns that changed since the 2026-05 migration updated — whatever Parts
-      A and B turn up
-- [ ] open questions resolved or deferred with a reason — the issue says
-      `skills/REPORT.md`, which does not exist; the file is
+- [x] каждый фрагмент компилируется — `skills:typecheck`, уже в CI
+- [ ] каждый фрагмент, вызывающий REST, проверен вживую — часть A плюс строки 1–17 для
+      тех, что работают только во фрейме
+- [x] таблица разрешённых методов v3 совпадает с `version-manager.ts` — **уже верно**:
+      SDK отказался от списка разрешённых (`automaticallyObtainApiVersion` игнорирует
+      метод и возвращает v2, `isSupport` безусловно возвращает `true`), а
+      `b24jssdk-rest/SKILL.md` об этом говорит и перечисляет известные семейства как
+      неисчерпывающие. Сверять нечего.
+- [ ] паттерны, изменившиеся после миграции 2026-05, обновлены — то, что выявят части
+      A и B
+- [ ] открытые вопросы решены или отложены с указанием причины — в issue указан
+      `skills/REPORT.md`, которого не существует; файл называется
       [`.github/contributing/report.md`](../.github/contributing/report.md)
-      (same for `skills/SUGGESTED-EXAMPLES.md` →
+      (то же для `skills/SUGGESTED-EXAMPLES.md` →
       [`suggested-examples.md`](../.github/contributing/suggested-examples.md))
-- [ ] `skills/README.md` migration note updated once the pass is done
-- [ ] the `v3 aggregate availability` block pasted into the issue, and
-      `AggregateV3`'s `@experimental` tag revisited if the portal named any
-      `*.aggregate` method
+- [ ] заметка о миграции в `skills/README.md` обновлена после завершения прохода
+- [ ] блок `v3 aggregate availability` вставлен в issue, а метка `@experimental` у
+      `AggregateV3` пересмотрена, если портал назвал какой-либо метод `*.aggregate`

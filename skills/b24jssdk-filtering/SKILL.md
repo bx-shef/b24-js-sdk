@@ -1,15 +1,15 @@
 ---
 name: b24jssdk-filtering
-description: Build filter, order, and select parameters for Bitrix24 REST methods called via b24jssdk's actions.v{2,3}.* API. Covers the v2 prefix dialect (>=, <=, !, %, =%), the v3 array-triple dialect ([['field', 'op', value]]) and the typed FilterV3 builder (eq/in/between/and/or/not/build), NOT, multi-value (IN), dates via Text.toB24Format, and the order-stripping rule of callList. Load when building filtered queries.
+description: Построение параметров filter, order и select для REST-методов Битрикс24, вызываемых через API actions.v{2,3}.* из b24jssdk. Охватывает префиксный диалект v2 (>=, <=, !, %, =%), диалект v3 из массива троек ([['field', 'op', value]]) и типизированный построитель FilterV3 (eq/in/between/and/or/not/build), NOT, множественные значения (IN), даты через Text.toB24Format и правило удаления order в callList. Загружайте при построении запросов с фильтрами.
 ---
 
-# b24jssdk filtering
+# Фильтры b24jssdk
 
-Bitrix24 has **two filter dialects**. They are not interchangeable — each API version accepts only its own. Pick the dialect that matches the action surface you're using.
+В Битрикс24 **два диалекта фильтров**. Они не взаимозаменяемы — каждая версия API принимает только свой. Выбирайте диалект, соответствующий используемому API actions.
 
-## v2 — prefix-keyed object
+## v2 — объект с ключами-префиксами
 
-Used by `$b24.actions.v2.{call,callList,fetchList}.make({ params: { filter: ... }})`. The operator is a prefix on the field name.
+Используется в `$b24.actions.v2.{call,callList,fetchList}.make({ params: { filter: ... }})`. Оператор — это префикс в имени поля.
 
 ```ts
 const params = {
@@ -22,40 +22,40 @@ const params = {
 }
 ```
 
-### v2 operators
+### Операторы v2
 
-| Prefix | Meaning | Example |
+| Префикс | Значение | Пример |
 | --- | --- | --- |
-| (none) | exact match | `{ stageId: 'NEW' }` |
-| `>=` | greater or equal | `{ '>=opportunity': 50000 }` |
-| `>` | greater | `{ '>id': 100 }` |
-| `<=` | less or equal | `{ '<=opportunity': 200000 }` |
-| `<` | less | `{ '<closeDate': '2026-01-01' }` |
-| `!` | not equal | `{ '!stageId': 'LOST' }` |
-| `!=` | not equal (alternate) | `{ '!=stageId': 'LOST' }` |
-| `%` | LIKE (substring, case-insensitive) | `{ '%title': 'поставка' }` |
-| `=%` | LIKE with explicit pattern (`%`/`_`) | `{ '=%title': 'A%' }` |
+| (нет) | точное совпадение | `{ stageId: 'NEW' }` |
+| `>=` | больше или равно | `{ '>=opportunity': 50000 }` |
+| `>` | больше | `{ '>id': 100 }` |
+| `<=` | меньше или равно | `{ '<=opportunity': 200000 }` |
+| `<` | меньше | `{ '<closeDate': '2026-01-01' }` |
+| `!` | не равно | `{ '!stageId': 'LOST' }` |
+| `!=` | не равно (альтернативная запись) | `{ '!=stageId': 'LOST' }` |
+| `%` | LIKE (подстрока, без учёта регистра) | `{ '%title': 'поставка' }` |
+| `=%` | LIKE с явным шаблоном (`%`/`_`) | `{ '=%title': 'A%' }` |
 | `!%` | NOT LIKE | `{ '!%title': 'тест' }` |
 
-Multiple keys are combined with AND. Two operators on the same field need two separate keys: `{ '>=opportunity': 50000, '<=opportunity': 200000 }`.
+Несколько ключей объединяются через AND. Два оператора для одного поля требуют двух отдельных ключей: `{ '>=opportunity': 50000, '<=opportunity': 200000 }`.
 
-### v2 IN / multi-value
+### IN / множественные значения в v2
 
-Plain array means `IN`:
+Обычный массив означает `IN`:
 
 ```ts
 const params = { filter: { stageId: ['NEW', 'PREPARATION', 'EXECUTING'] } }
 ```
 
-For "not in":
+Для «не входит в»:
 
 ```ts
 const params = { filter: { '!stageId': ['LOST', 'WON'] } }
 ```
 
-## v3 — array of triples
+## v3 — массив троек
 
-Used by `$b24.actions.v3.{call,callList,fetchList}.make({ params: { filter: ... }})`. The filter is a JSON **array**, each element is a condition.
+Используется в `$b24.actions.v3.{call,callList,fetchList}.make({ params: { filter: ... }})`. Фильтр — это JSON-**массив**, каждый элемент которого — условие.
 
 ```ts
 filter: [
@@ -65,27 +65,27 @@ filter: [
 ]
 ```
 
-### v3 operators — exhaustive list (only these 8)
+### Операторы v3 — исчерпывающий список (только эти 8)
 
 ```text
 =   !=   >   >=   <   <=   in   between
 ```
 
-> **No `%`, `like`, `~`, or substring operator** at the v3 protocol level — `Filtering/Operator.php` does not define one. Substring search is currently a v2-only feature.
+> На уровне протокола v3 **нет `%`, `like`, `~` и вообще оператора подстроки** — `Filtering/Operator.php` его не определяет. Поиск по подстроке сейчас доступен только в v2.
 
-`between` value must be a 2-element array: `[min, max]`.
-`in` value must be an array.
+Значение `between` должно быть массивом из двух элементов: `[min, max]`.
+Значение `in` должно быть массивом.
 
-### v3 condition forms
+### Формы условий v3
 
-The two-arg form is sugar:
+Двухаргументная форма — синтаксический сахар:
 
 ```ts
 const equals = ['id', 42]              // same as ['id', '=', 42]
 const oneOf = ['stageId', ['A', 'B']]  // same as ['stageId', 'in', ['A', 'B']]
 ```
 
-The long struct form supports nested groups with `or` logic and negation (rarely needed in user code):
+Длинная структурная форма поддерживает вложенные группы с логикой `or` и отрицанием (в пользовательском коде нужна редко):
 
 ```ts
 filter: [
@@ -102,11 +102,11 @@ filter: [
 ]
 ```
 
-The top-level array is implicitly `logic: 'and'`. The `type: 'filter'` key above is optional — the server infers it — so the `FilterV3` builder below emits the shorter `{ logic, conditions }` form (verified live), and both are accepted.
+Массив верхнего уровня неявно имеет `logic: 'and'`. Ключ `type: 'filter'` выше необязателен — сервер определяет его сам, — поэтому построитель `FilterV3` ниже выдаёт более короткую форму `{ logic, conditions }` (проверено вживую), и принимаются обе.
 
-### v3 — typed builder (`FilterV3`)
+### v3 — типизированный построитель (`FilterV3`)
 
-For anything beyond a flat list of triples, prefer the `FilterV3` builder over hand-writing the structs — it validates operators and `in`/`between` shapes on the client (a typo fails fast instead of as a server `UNKNOWNFILTEROPERATOREXCEPTION`):
+Для всего, что сложнее плоского списка троек, предпочитайте построитель `FilterV3` ручному написанию структур — он проверяет операторы и формы `in`/`between` на клиенте (опечатка падает сразу, а не как серверный `UNKNOWNFILTEROPERATOREXCEPTION`):
 
 ```ts
 import { Text } from '@bitrix24/b24jssdk'
@@ -123,47 +123,47 @@ const filter = F.build(
 await $b24.actions.v3.call.make({ method: 'tasks.task.list', params: { filter } })
 ```
 
-- Leaves: `F.eq` / `F.ne` / `F.gt` / `F.ge` / `F.lt` / `F.le` / `F.in(field, array)` / `F.between(field, from, to)`.
-- Groups: `F.and(...)`, `F.or(...)`, `F.not(node)` (negates a condition or group).
-- `F.build(...nodes)` returns the top-level (AND-joined) array for `params.filter`; falsy nodes are skipped, so `F.build(F.eq('a', 1), flag && F.gt('b', 2))` inlines conditionals.
+- Листья: `F.eq` / `F.ne` / `F.gt` / `F.ge` / `F.lt` / `F.le` / `F.in(field, array)` / `F.between(field, from, to)`.
+- Группы: `F.and(...)`, `F.or(...)`, `F.not(node)` (отрицает условие или группу).
+- `F.build(...nodes)` возвращает массив верхнего уровня (объединённый через AND) для `params.filter`; ложные узлы пропускаются, поэтому `F.build(F.eq('a', 1), flag && F.gt('b', 2))` встраивает условные части.
 
-> Inside a **v3 batch**, a filter value can reference an earlier command's output via a `$ref`/`$refArray` marker — build them with `BatchRefV3` (`import { BatchRefV3 } from '@bitrix24/b24jssdk'`), e.g. `['id', 'in', BatchRefV3.refArray('tasks.id')]`. The server does the substitution; see the `b24jssdk-rest` skill / the v3 batch docs.
+> Внутри **пакетного запроса v3 (batch)** значение фильтра может ссылаться на вывод более раннего команды через маркер `$ref`/`$refArray` — стройте их с помощью `BatchRefV3` (`import { BatchRefV3 } from '@bitrix24/b24jssdk'`), например `['id', 'in', BatchRefV3.refArray('tasks.id')]`. Подстановку выполняет сервер; см. навык `b24jssdk-rest` / документацию по пакетным запросам v3.
 
-## `order` rule for callList / fetchList
+## Правило `order` для callList / fetchList
 
-Both `actions.v{2,3}.callList.make` and `fetchList.make` **strip user-supplied `order`** and force `{ [cursorIdKey]: 'ASC' }` (where `cursorIdKey` defaults to `idKey`) because the action uses keyset cursor pagination. If you pass an `order`, the SDK logs a warning (`callList.make: user-provided 'order' parameter is ignored…`) and discards it (see the `order` warning in `packages/jssdk/src/core/actions/v2/call-list.ts` and the v3 equivalent).
+И `actions.v{2,3}.callList.make`, и `fetchList.make` **удаляют переданный пользователем `order`** и принудительно ставят `{ [cursorIdKey]: 'ASC' }` (где `cursorIdKey` по умолчанию равен `idKey`), потому что действие использует курсорную постраничную выборку по ключу. Если вы передадите `order`, SDK запишет предупреждение (`callList.make: user-provided 'order' parameter is ignored…`) и отбросит его (см. предупреждение про `order` в `packages/jssdk/src/core/actions/v2/call-list.ts` и его аналог для v3).
 
-If you need a specific sort order, drop down to `call.make` and page manually — but you almost certainly want to filter more narrowly instead.
+Если нужна определённая сортировка, спуститесь до `call.make` и листайте страницы вручную — но почти наверняка вам лучше сузить фильтр.
 
-## `order` for single `call.make`
+## `order` для одиночного `call.make`
 
-- **v2**: object with values `'asc' | 'desc' | 'ASC' | 'DESC'` — `order: { id: 'asc', amount: 'desc' }`.
-- **v3**: object form **only** (`{ field: 'asc' | 'desc' }`). Arrays throw `InvalidOrderException`. The DTO field must carry the server-side `#[Sortable]` attribute, or the request is **refused**: HTTP 400 with `BITRIX_REST_V3_EXCEPTION_VALIDATION_REQUESTVALIDATIONEXCEPTION` and the field name in `validation[].field`. (The specific PHP class is `DtoFieldRequiredAttributeException`, but it inherits that code and gets none of its own, so match on the code and the field — never on the message, which is localised.) `<entity>.field.list` tells you which fields are `sortable` before you send anything.
+- **v2**: объект со значениями `'asc' | 'desc' | 'ASC' | 'DESC'` — `order: { id: 'asc', amount: 'desc' }`.
+- **v3**: **только** объектная форма (`{ field: 'asc' | 'desc' }`). Массивы бросают `InvalidOrderException`. Поле DTO должно иметь на сервере атрибут `#[Sortable]`, иначе запрос **отклоняется**: HTTP 400 с `BITRIX_REST_V3_EXCEPTION_VALIDATION_REQUESTVALIDATIONEXCEPTION` и именем поля в `validation[].field`. (Конкретный PHP-класс — `DtoFieldRequiredAttributeException`, но он наследует этот код и своего не получает, поэтому сопоставляйте по коду и полю — никогда по сообщению, которое локализовано.) `<entity>.field.list` сообщает, какие поля `sortable`, ещё до отправки.
 
-## A boolean condition needs a JSON body
+## Булевому условию нужно тело JSON
 
-A boolean in a `filter` survives only if the request body is **JSON**. Sent as
-`application/x-www-form-urlencoded` it arrives as the string `"false"`, the
-condition is dropped, and the call answers with rows it should have excluded —
-no error on either side. Measured on `user.get` / `ACTIVE`: JSON
-`{ ACTIVE: false }` → 0 rows, form-encoded → 1 row.
+Булево значение в `filter` сохраняется, только если тело запроса — **JSON**. При отправке как
+`application/x-www-form-urlencoded` оно приходит строкой `"false"`, условие отбрасывается,
+и вызов отвечает строками, которые должен был исключить, — ошибки нет ни с одной стороны.
+Измерено на `user.get` / `ACTIVE`: JSON
+`{ ACTIVE: false }` → 0 строк, form-encoded → 1 строка.
 
-The SDK states `Content-Type: application/json` on every request, per request, so
-this is handled — with two ways to undo it:
+SDK указывает `Content-Type: application/json` в каждом запросе отдельно, так что
+это обработано — но есть два способа это испортить:
 
-- a **request interceptor** on `getHttpClient(v).ajaxClient` that sets
-  `Content-Type` runs after the SDK's config and changes the encoding;
-- building the same call **by hand** (`curl`, a webhook tester, your own client)
-  and posting form data.
+- **перехватчик запросов** на `getHttpClient(v).ajaxClient`, который задаёт
+  `Content-Type`, выполняется после конфигурации SDK и меняет кодировку;
+- построение того же вызова **вручную** (`curl`, тестер вебхуков, собственный клиент)
+  с отправкой данных формы.
 
 ```ts
 // ✅ through the SDK — JSON, so the condition holds
 await $b24.actions.v2.call.make({ method: 'user.get', params: { filter: { ACTIVE: false } } })
 ```
 
-## Dates
+## Даты
 
-Use the SDK helper `Text.toB24Format(date)` — it produces the Bitrix24 format `yyyy-MM-dd'T'HH:mm:ssZZ` and handles `Date | DateTime | string` inputs (see `Text.toB24Format` in `packages/jssdk/src/tools/text.ts`).
+Используйте помощник SDK `Text.toB24Format(date)` — он выдаёт формат Битрикс24 `yyyy-MM-dd'T'HH:mm:ssZZ` и обрабатывает входные значения `Date | DateTime | string` (см. `Text.toB24Format` в `packages/jssdk/src/tools/text.ts`).
 
 ```ts
 import { Text } from '@bitrix24/b24jssdk'
@@ -178,45 +178,44 @@ const paramsV2 = { filter: { '>=createdTime': Text.toB24Format(sixMonthsAgo) } }
 const paramsV3 = { filter: [['createdTime', '>=', Text.toB24Format(sixMonthsAgo)]] }
 ```
 
-## Field naming — two casings inside v2
+## Имена полей — два регистра внутри v2
 
-The same logical field has different names depending on the method:
+Одно и то же логическое поле называется по-разному в зависимости от метода:
 
-| Logical | UPPER_SNAKE methods (`crm.deal.list`, …) | camelCase methods (`crm.item.list`) |
+| Логическое | Методы UPPER_SNAKE (`crm.deal.list`, …) | Методы camelCase (`crm.item.list`) |
 | --- | --- | --- |
 | ID | `ID` | `id` |
-| Title | `TITLE` | `title` |
-| Stage | `STAGE_ID` | `stageId` |
-| Amount | `OPPORTUNITY` | `opportunity` |
-| Currency | `CURRENCY_ID` | `currencyId` |
-| Created | `DATE_CREATE` | `createdTime` |
-| Modified | `DATE_MODIFY` | `updatedTime` |
-| Assigned to | `ASSIGNED_BY_ID` | `assignedById` |
-| Custom field | `UF_CRM_INN` | `ufCrmInn` |
+| Название | `TITLE` | `title` |
+| Стадия | `STAGE_ID` | `stageId` |
+| Сумма | `OPPORTUNITY` | `opportunity` |
+| Валюта | `CURRENCY_ID` | `currencyId` |
+| Создано | `DATE_CREATE` | `createdTime` |
+| Изменено | `DATE_MODIFY` | `updatedTime` |
+| Ответственный | `ASSIGNED_BY_ID` | `assignedById` |
+| Пользовательское поле | `UF_CRM_INN` | `ufCrmInn` |
 
-> Both shapes are v2-API, and neither is "v3-style": the casing here is per-method, not per-API-version. `crm.item.*` is camelCase for reasons of its own and is **not** a v3 method — v3 publishes no `crm.item.*` at all. Under `restApi:v3` camelCase *is* the rule, without exception across the 108 field descriptors measured; ask `<entity>.field.list` when unsure. Use the same casing across `filter`, `select`, and (where applicable) `order`. Mixing styles silently breaks paging.
+> Обе формы относятся к API v2, и ни одна не является «стилем v3»: регистр здесь зависит от метода, а не от версии API. `crm.item.*` пишется в camelCase по собственным причинам и **не** является методом v3 — v3 вообще не публикует `crm.item.*`. В `restApi:v3` camelCase *и есть* правило, без исключений среди измеренных 108 описаний полей; если сомневаетесь, спросите `<entity>.field.list`. Используйте один и тот же регистр в `filter`, `select` и (где применимо) `order`. Смешение стилей молча ломает постраничную выборку.
 
-Full guide: [Discovering entity fields](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/discovering-entity-fields/) — how to ask an entity for its own field
-list, and why a `filterable: false` field is refused rather than ignored.
+Полное руководство: [Discovering entity fields](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/discovering-entity-fields/) — как спросить у сущности её собственный список полей и почему поле с `filterable: false` отклоняется, а не игнорируется.
 
 ## Select
 
-Always pass `select` to limit response size:
+Всегда передавайте `select`, чтобы ограничить размер ответа:
 
 ```ts
 select: ['id', 'title', 'stageId', 'opportunity', 'currencyId']
 ```
 
-For custom fields, list them explicitly. For v3, dot syntax expands relations:
+Пользовательские поля перечисляйте явно. В v3 точечный синтаксис раскрывает связи:
 
 ```ts
 // v3 only
 select: ['id', 'title', 'responsible.name', 'responsible.email']
 ```
 
-## Examples
+## Примеры
 
-### v2 — open deals with amount range
+### v2 — открытые сделки в диапазоне сумм
 
 ```ts
 import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
@@ -236,7 +235,7 @@ const response = await $b24.actions.v2.callList.make<CrmItem>({
 })
 ```
 
-### v2 — contacts by phone substring
+### v2 — контакты по подстроке телефона
 
 ```ts
 import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
@@ -252,7 +251,7 @@ const response = await $b24.actions.v2.callList.make<CrmItem>({
 })
 ```
 
-### v2 — tasks not closed
+### v2 — незавершённые задачи
 
 ```ts
 const response = await $b24.actions.v2.callList.make<TaskItem>({
@@ -267,7 +266,7 @@ const response = await $b24.actions.v2.callList.make<TaskItem>({
 })
 ```
 
-### v3 — eventlog last 6 months
+### v3 — журнал событий за последние 6 месяцев
 
 ```ts
 import { Text } from '@bitrix24/b24jssdk'
@@ -297,23 +296,23 @@ filter: [
 ]
 ```
 
-## Multi-funnel pipelines (CRM)
+## Мультиворонки (CRM)
 
-On portals with multiple funnels, stage IDs come prefixed: `C2:WON`, `C4:LOSE`. Strategies:
+На порталах с несколькими воронками идентификаторы стадий приходят с префиксом: `C2:WON`, `C4:LOSE`. Стратегии:
 
-- Filter by category ID and base stage: `filter: { categoryId: 2, stageId: 'NEW' }`.
-- Enumerate full list explicitly: `filter: { stageId: ['C2:WON', 'C4:WON'] }`.
-- Don't trust a bare `'NEW'` to match across funnels — read the live stage list from `crm.dealcategory.stage.list`.
+- Фильтровать по ID категории и базовой стадии: `filter: { categoryId: 2, stageId: 'NEW' }`.
+- Явно перечислять полный список: `filter: { stageId: ['C2:WON', 'C4:WON'] }`.
+- Не рассчитывать, что голое `'NEW'` совпадёт во всех воронках, — прочитайте актуальный список стадий через `crm.dealcategory.stage.list`.
 
-## Anti-patterns
+## Антипаттерны
 
-- ❌ `filter: { stageId: { $gte: 100 } }` — MongoDB-style. Not understood by Bitrix24, will 400.
-- ❌ `filter: [['title', 'like', 'A%']]` — `like` is not in the v3 operator set. Use v2 + `=%` for substring search.
-- ❌ Hand-assembling nested v3 groups (`{ logic, conditions }`) by hand — use the `FilterV3` builder, which validates operators and `in`/`between` shapes client-side.
-- ❌ Passing a single condition as `params.filter` (`filter: F.eq('a', 1)`) — `filter` must be an **array**; wrap it: `filter: F.build(F.eq('a', 1))` (or `[F.eq('a', 1)]`).
-- ⚠️ The array requirement is `callList` / `fetchList` only. They append the page condition to `filter`, so only an array can be extended (`JSSDK_ACTION_V3_LIST_FILTER_NOT_ARRAY`). `callTail` / `fetchTail` forward `filter` untouched and the portal takes a bare logic group as the whole filter, so `filter: F.or(...)` is accepted there — only the v2 object dialect is refused (`JSSDK_ACTION_V3_TAIL_FILTER_INVALID`). See [CallTail](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/call-tail-rest-api-ver3/) and [FetchTail](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/fetch-tail-rest-api-ver3/) — and note a `*.tail` endpoint is rare, so check the method has one first. Wrapping in an array works everywhere, so wrap if you want one habit.
-- ❌ Passing `order` to `callList.make` / `fetchList.make` — silently discarded with a warning.
-- ❌ Mixing `STAGE_ID` and `stageId` across `filter` and `select` — they're different fields per method.
-- ❌ Forgetting timezone in date strings — Bitrix24 portals are configured in a portal timezone. Use `Text.toB24Format()` to stay consistent.
-- ❌ Using v3 array-of-triples filter for `actions.v2.*` — silently misparsed and returns wrong results.
-- ❌ Using v2 prefix-keyed filter for `actions.v3.*` — returns `UnknownFilterOperatorException`.
+- ❌ `filter: { stageId: { $gte: 100 } }` — стиль MongoDB. Битрикс24 его не понимает, вернётся 400.
+- ❌ `filter: [['title', 'like', 'A%']]` — `like` нет в наборе операторов v3. Для поиска по подстроке используйте v2 + `=%`.
+- ❌ Ручная сборка вложенных групп v3 (`{ logic, conditions }`) — используйте построитель `FilterV3`, который проверяет операторы и формы `in`/`between` на клиенте.
+- ❌ Передавать одно условие как `params.filter` (`filter: F.eq('a', 1)`) — `filter` должен быть **массивом**; оберните его: `filter: F.build(F.eq('a', 1))` (или `[F.eq('a', 1)]`).
+- ⚠️ Требование массива относится только к `callList` / `fetchList`. Они добавляют условие страницы в `filter`, поэтому расширить можно только массив (`JSSDK_ACTION_V3_LIST_FILTER_NOT_ARRAY`). `callTail` / `fetchTail` передают `filter` без изменений, а портал принимает голую логическую группу как весь фильтр, поэтому `filter: F.or(...)` там допустим — отклоняется только объектный диалект v2 (`JSSDK_ACTION_V3_TAIL_FILTER_INVALID`). См. [CallTail](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/call-tail-rest-api-ver3/) и [FetchTail](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/fetch-tail-rest-api-ver3/) — и учтите, что эндпоинт `*.tail` встречается редко, поэтому сначала проверьте, есть ли он у метода. Оборачивание в массив работает везде, так что оборачивайте, если хотите единую привычку.
+- ❌ Передавать `order` в `callList.make` / `fetchList.make` — молча отбрасывается с предупреждением.
+- ❌ Смешивать `STAGE_ID` и `stageId` в `filter` и `select` — это разные поля в разных методах.
+- ❌ Забывать часовой пояс в строках дат — порталы Битрикс24 настроены на свой часовой пояс. Используйте `Text.toB24Format()`, чтобы сохранять согласованность.
+- ❌ Использовать фильтр v3 из массива троек для `actions.v2.*` — молча неверно разбирается и возвращает неправильные результаты.
+- ❌ Использовать префиксный фильтр v2 для `actions.v3.*` — возвращает `UnknownFilterOperatorException`.
