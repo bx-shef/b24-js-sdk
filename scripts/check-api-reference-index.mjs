@@ -319,9 +319,11 @@ export function collectPagePositions(markdown) {
       continue
     }
 
-    const target = section.startsWith('Everything else')
+    // The fork's index is in Russian: «Всё остальное» and «Пока без руководства»
+    // are the same two sections as "Everything else" / "Not yet covered".
+    const target = (section.startsWith('Everything else') || section.startsWith('Всё остальное'))
       ? everythingElse
-      : (section.startsWith('Not yet covered') ? uncovered : null)
+      : ((section.startsWith('Not yet covered') || section.startsWith('Пока без руководства')) ? uncovered : null)
     if (target === null) {
       continue
     }

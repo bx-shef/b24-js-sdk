@@ -102,7 +102,7 @@ const _useHeader = () => {
     },
     {
       label: 'GitHub',
-      to: 'https://github.com/bitrix24/b24jssdk',
+      to: 'https://github.com/bx-shef/b24-js-sdk',
       icon: GitHubIcon,
       target: '_blank',
       b24ui: {
