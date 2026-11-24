@@ -422,7 +422,8 @@ jobs:
   # release workflows. (#111)
   deploy:
     needs: docs-build
-    if: github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    # Наш форк публикует сайт на своём сервере, не в GitHub Pages bitrix24.
+    if: github.repository == 'bitrix24/b24jssdk' && github.workflow == 'ci' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

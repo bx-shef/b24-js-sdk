@@ -24,6 +24,8 @@ concurrency:
 
 jobs:
   ci:
+    # Наш форк: автоматика bitrix24 (релизы, npm, ночной smoke против их портала) здесь не работает.
+    if: github.repository == 'bitrix24/b24jssdk'
     uses: ./.github/workflows/ci.yml
     # ci.yml's `deploy` job declares `pages: write` + `id-token: write`. A called
     # reusable workflow cannot request more than its caller grants, and GitHub

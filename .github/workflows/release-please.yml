@@ -35,6 +35,8 @@ permissions:
 
 jobs:
   release-please:
+    # Наш форк: автоматика bitrix24 (релизы, npm, ночной smoke против их портала) здесь не работает.
+    if: github.repository == 'bitrix24/b24jssdk'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

@@ -2,9 +2,12 @@
 # of problem in #103 (an action stranded on a removed Node runtime) is caught
 # automatically instead of by hand. All action bumps are collected into a single
 # grouped weekly PR to keep the noise down.
+# Наш форк: версии зависимостей приходят из bitrix24/b24jssdk при еженедельной синхронизации,
+# поэтому свои PR Dependabot выключены (open-pull-requests-limit: 0).
 version: 2
 updates:
   - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 0
     directory: "/"
     schedule:
       interval: "weekly"
@@ -34,7 +37,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     # See the cooldown note above — most relevant here, where the 36-package
     # group re-resolution kept pulling just-published transitive deps that
     # failed the pnpm `minimumReleaseAge` guard in CI.
@@ -90,7 +93,7 @@ updates:
     directory: "/skills/b24jssdk-recipes"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 0
     cooldown:
       default-days: 3
     commit-message:
