@@ -1,7 +1,7 @@
 // @memo we not use jsonSchema
 import { streamText, convertToModelMessages, smoothStream, stepCountIs, jsonSchema } from 'ai'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { assistantGuard, assertMessages } from '../../modules/bx-assistant/runtime/server/utils/guard'
+import { assistantGuard, assertMessages, chargeAssistant } from '../../modules/bx-assistant/runtime/server/utils/guard'
 import { z } from 'zod'
 import { tools as mcpToolDefinitions } from '#nuxt-mcp-toolkit/tools.mjs'
 
@@ -68,6 +68,7 @@ export default defineEventHandler(async (event) => {
   const { messages, restApiVersion, currentPage } = (await readBody<{ messages?: any, restApiVersion?: string, currentPage?: string }>(event)) || {}
 
   assertMessages(messages)
+  chargeAssistant(event)
 
   const safeRestApiVersion = restApiVersion === 'vue' ? 'vue' : 'nuxt'
 

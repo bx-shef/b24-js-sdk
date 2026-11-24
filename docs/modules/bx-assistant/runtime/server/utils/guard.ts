@@ -1,4 +1,4 @@
-import { createError, getRequestIP } from 'h3'
+import { createError, getHeader, getRequestIP } from 'h3'
 import type { H3Event } from 'h3'
 
 /**
@@ -26,13 +26,19 @@ setInterval(() => {
 }, WINDOW_MS).unref?.()
 
 /**
- * Behind nginx-proxy every request comes from the proxy's address, so the client
- * is the first `X-Forwarded-For` entry — trusted only when the deployment says the
- * proxy sets it (NUXT_TRUST_PROXY=true). Otherwise a client could pick its own key.
+ * Behind nginx-proxy every request comes from the proxy's address. The proxy
+ * appends the address it saw to X-Forwarded-For, so the LAST entry is the one
+ * our proxy vouches for; earlier entries are whatever the client sent and would
+ * let it pick a fresh bucket per request. Trusted only when the deployment says
+ * a proxy is in front (NUXT_TRUST_PROXY=true); a CDN in front of nginx-proxy
+ * would need the hop count raised.
  */
 function clientKey(event: H3Event): string {
-  const trustProxy = process.env.NUXT_TRUST_PROXY === 'true'
-  return getRequestIP(event, { xForwardedFor: trustProxy }) ?? 'unknown'
+  if (process.env.NUXT_TRUST_PROXY === 'true') {
+    const hop = getHeader(event, 'x-forwarded-for')?.split(',').at(-1)?.trim()
+    if (hop) return hop
+  }
+  return getRequestIP(event) ?? 'unknown'
 }
 
 function tooMany(retryAfter: number): never {
@@ -46,7 +52,10 @@ export function assistantGuard(event: H3Event, enabled: boolean): void {
   if (!process.env.DEEPSEEK_API_KEY) {
     throw createError({ status: 503, message: 'The AI assistant is not configured on this server.' })
   }
+}
 
+/** Counts a request against both limits. Call after the body is validated, so junk does not spend the day. */
+export function chargeAssistant(event: H3Event): void {
   const now = Date.now()
   if (now > day.resetAt) day = { count: 0, resetAt: now + 24 * 60 * 60_000 }
   if (day.count >= PER_DAY) tooMany(Math.ceil((day.resetAt - now) / 1000))

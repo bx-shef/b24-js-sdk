@@ -2,7 +2,7 @@ import { streamText, convertToModelMessages, createUIMessageStream, createUIMess
 import type { UIMessageStreamWriter, ToolCallPart, ToolSet } from 'ai'
 import { createMCPClient } from '@ai-sdk/mcp'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { assistantGuard, assertMessages } from '../utils/guard'
+import { assistantGuard, assertMessages, chargeAssistant } from '../utils/guard'
 
 const MAX_STEPS = 10
 
@@ -62,6 +62,7 @@ export default defineEventHandler(async (event) => {
   assistantGuard(event, config.public.bxAssistant?.enabled === true)
   const { messages } = (await readBody<{ messages?: unknown }>(event)) || {}
   assertMessages(messages)
+  chargeAssistant(event)
 
   // @todo fix this
   const siteName = 'Documentation'
