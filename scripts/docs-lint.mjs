@@ -9,18 +9,28 @@ import { createReporter } from './_reporter.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..')
-const DOCS_ROOT = join(REPO_ROOT, 'docs', 'content', 'docs')
+// DOCS_LINT_ROOT points the lint at a fixture tree in tests, like DOCS_LINK_CHECK_ROOT.
+const DOCS_ROOT = process.env.DOCS_LINT_ROOT
+  ? resolve(process.env.DOCS_LINT_ROOT)
+  : join(REPO_ROOT, 'docs', 'content', 'docs')
 
+// Each section is a list of accepted headings: the fork translates the docs into
+// Russian, so a page carries either the original English heading or its Russian
+// translation. Order and presence are checked exactly as before. The English
+// spellings stay accepted while the translation is in progress and for pages
+// merged in from bitrix24/b24jssdk.
 const REQUIRED_SECTIONS_FOR_ACTION_PAGES = [
-  '## Overview',
-  '## Method Signature',
-  '## Examples',
-  '## Alternatives and Recommendations'
+  ['## Overview', '## Обзор'],
+  ['## Method Signature', '## Сигнатура метода'],
+  ['## Examples', '## Примеры'],
+  ['## Alternatives and Recommendations', '## Альтернативы и рекомендации']
 ]
 
 const RECOMMENDED_SECTIONS_FOR_ACTION_PAGES = [
-  '## Error Handling'
+  ['## Error Handling', '## Обработка ошибок']
 ]
+
+const sectionLabel = names => names.map(n => `"${n}"`).join(' or ')
 
 const ACTION_LIKE_CATEGORIES = new Set(['actions', 'tools'])
 
@@ -213,35 +223,44 @@ export function isShallowRepository(execImpl = execFileSync) {
 
 const UNSHALLOW_HINT = 'run `git fetch --unshallow` to check it'
 
-function checkActionSkeleton(file, body) {
+/**
+ * Problems with the required/recommended section skeleton of an action-like page.
+ * Pure — takes the page's `## ` headings, returns `{ level, message }` entries.
+ */
+export function actionSkeletonProblems(headingLines) {
   // Use the heading text (trimmed) as the comparison key so a trailing space
   // on the markdown side doesn't make the contract fail surprisingly.
-  const headings = body
-    .split('\n')
-    .filter(l => l.startsWith('## '))
-    .map(l => l.trimEnd())
+  const headings = headingLines.map(l => l.trimEnd())
+  const problems = []
   const presentRequired = []
-  for (const required of REQUIRED_SECTIONS_FOR_ACTION_PAGES) {
-    const idx = headings.indexOf(required)
+  for (const names of REQUIRED_SECTIONS_FOR_ACTION_PAGES) {
+    const idx = headings.findIndex(h => names.includes(h))
     if (idx === -1) {
-      log('error', file, `missing required section "${required}"`)
+      problems.push({ level: 'error', message: `missing required section ${sectionLabel(names)}` })
     } else {
-      presentRequired.push({ section: required, idx })
+      presentRequired.push({ section: headings[idx], idx })
     }
   }
   for (let i = 1; i < presentRequired.length; i++) {
     if (presentRequired[i].idx <= presentRequired[i - 1].idx) {
-      log(
-        'error',
-        file,
-        `section "${presentRequired[i].section}" appears before "${presentRequired[i - 1].section}" — reorder so the page reads ${REQUIRED_SECTIONS_FOR_ACTION_PAGES.join(' → ')}`
-      )
+      problems.push({
+        level: 'error',
+        message: `section "${presentRequired[i].section}" appears before "${presentRequired[i - 1].section}" — reorder so the page reads ${REQUIRED_SECTIONS_FOR_ACTION_PAGES.map(n => n[0]).join(' → ')}`
+      })
     }
   }
-  for (const recommended of RECOMMENDED_SECTIONS_FOR_ACTION_PAGES) {
-    if (!headings.includes(recommended)) {
-      log('warn', file, `recommended section "${recommended}" is missing`)
+  for (const names of RECOMMENDED_SECTIONS_FOR_ACTION_PAGES) {
+    if (!headings.some(h => names.includes(h))) {
+      problems.push({ level: 'warn', message: `recommended section ${sectionLabel(names)} is missing` })
     }
+  }
+  return problems
+}
+
+function checkActionSkeleton(file, body) {
+  const headings = body.split('\n').filter(l => l.startsWith('## '))
+  for (const { level, message } of actionSkeletonProblems(headings)) {
+    log(level, file, message)
   }
 }
 
