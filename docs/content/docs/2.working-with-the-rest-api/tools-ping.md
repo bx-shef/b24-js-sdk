@@ -1,6 +1,6 @@
 ---
 title: Ping.make()
-description: 'Method for measuring Bitrix24 REST API response speed. Performs a test request and returns response time in milliseconds.'
+description: 'Метод измерения скорости ответа REST API Битрикс24. Выполняет тестовый запрос и возвращает время ответа в миллисекундах.'
 category: 'tools'
 audited: 2026-09-05
 navigation.title: Ping
@@ -10,9 +10,9 @@ links:
     to: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/tools/ping.ts
 ---
 
-## Overview
+## Обзор
 
-Use `Ping.make()`{lang="ts-type"} to measure the response time of Bitrix24 REST API. The method returns a `Promise` with a numeric value of the response time in milliseconds.
+Используйте `Ping.make()`{lang="ts-type"}, чтобы измерить время ответа REST API Битрикс24. Метод возвращает `Promise` с числовым значением времени ответа в миллисекундах.
 
 ```ts
 // Basic usage
@@ -25,7 +25,7 @@ if (responseTime >= 0) {
 }
 ```
 
-## Method Signature
+## Сигнатура метода
 
 ```ts-type
 make(
@@ -33,26 +33,26 @@ make(
 ): Promise<number>
 ```
 
-### Parameters
+### Параметры
 
-| Parameter | Type | Required | Description |
+| Параметр | Тип | Обязательный | Описание |
 |----|----|----|----|
-| **`requestId`** | `string`{lang="ts-type"} | No | Unique request identifier for tracking and debugging — sent as the `bx24_request_id` query parameter. It does not deduplicate anything; for that see `idempotencyKey` (restApi:v3). |
+| **`requestId`** | `string`{lang="ts-type"} | Нет | Уникальный идентификатор запроса для отслеживания и отладки — передаётся как параметр запроса `bx24_request_id`. Он ничего не дедуплицирует; для этого см. `idempotencyKey` (restApi:v3). |
 
-### Return Value
+### Возвращаемое значение
 
-`Promise<number>`{lang="ts-type"} — a promise that resolves to a numeric value:
+`Promise<number>`{lang="ts-type"} — промис, который разрешается числовым значением:
 
-- **Positive number** — response time in milliseconds from sending the request to receiving the response.
-- **`-1`** — in case of error or timeout.
+- **Положительное число** — время ответа в миллисекундах от отправки запроса до получения ответа.
+- **`-1`** — в случае ошибки или тайм-аута.
 
-## Error Handling
+## Обработка ошибок
 
-`Ping.make()`{lang="ts-type"} never throws. Network failures, HTTP errors, invalid credentials, and timeouts are all swallowed internally and surfaced as a return value of `-1`. There is no way to distinguish between failure modes from the call site — for that, use [`HealthCheck.make()`](/docs/working-with-the-rest-api/tools-health-check/) or call the underlying method directly with [`CallV2.make()`](/docs/working-with-the-rest-api/call-rest-api-ver2/) and inspect `AjaxResult`.
+`Ping.make()`{lang="ts-type"} никогда не выбрасывает исключение. Сбои сети, ошибки HTTP, недействительные учётные данные и тайм-ауты поглощаются внутри и отображаются как возвращаемое значение `-1`. По месту вызова различить виды сбоев нельзя — для этого используйте [`HealthCheck.make()`](/docs/working-with-the-rest-api/tools-health-check/) или вызовите нужный метод напрямую через [`CallV2.make()`](/docs/working-with-the-rest-api/call-rest-api-ver2/) и изучите `AjaxResult`.
 
-## Examples
+## Примеры
 
-### Measuring response time
+### Измерение времени ответа
 
 ::code-example
 ---
@@ -60,8 +60,8 @@ name: 'tools-ping'
 ---
 ::
 
-## Alternatives and Recommendations
+## Альтернативы и рекомендации
 
-* **For availability check**: Use [`HealthCheck`](/docs/working-with-the-rest-api/tools-health-check/).
-* **For measuring operation performance**: Perform time measurements for specific API methods.
-* **On the client-side (browser):** Use the built-in [`B24Frame`](/docs/getting-started/installation/vue/#инициализация) object.
+* **Для проверки доступности**: используйте [`HealthCheck`](/docs/working-with-the-rest-api/tools-health-check/).
+* **Для измерения производительности операции**: измеряйте время для конкретных методов API.
+* **На стороне клиента (в браузере):** используйте встроенный объект [`B24Frame`](/docs/getting-started/installation/vue/#инициализация).

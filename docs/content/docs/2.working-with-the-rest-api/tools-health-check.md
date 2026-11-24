@@ -1,6 +1,6 @@
 ---
 title: HealthCheck.make()
-description: 'Method for checking the availability of Bitrix24 REST API. Performs a simple request to the REST API to verify service health.'
+description: 'Метод проверки доступности REST API Битрикс24. Выполняет простой запрос к REST API, чтобы проверить работоспособность сервиса.'
 category: 'tools'
 audited: 2026-09-05
 navigation.title: HealthCheck
@@ -10,9 +10,9 @@ links:
     to: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/tools/healthcheck.ts
 ---
 
-## Overview
+## Обзор
 
-Use `HealthCheck.make()`{lang="ts-type"} to check the availability of Bitrix24 REST API. The method returns a `Promise` with a boolean value indicating API availability.
+Используйте `HealthCheck.make()`{lang="ts-type"}, чтобы проверить доступность REST API Битрикс24. Метод возвращает `Promise` с булевым значением, указывающим доступность API.
 
 ```ts
 // Basic usage
@@ -25,7 +25,7 @@ if (isHealthy) {
 }
 ```
 
-## Method Signature
+## Сигнатура метода
 
 ```ts-type
 make(
@@ -33,26 +33,26 @@ make(
 ): Promise<boolean>
 ```
 
-### Parameters
+### Параметры
 
-| Parameter | Type | Required | Description |
+| Параметр | Тип | Обязательный | Описание |
 |----|----|----|----|
-| **`requestId`** | `string`{lang="ts-type"} | No | Unique request identifier for tracking and debugging — sent as the `bx24_request_id` query parameter. It does not deduplicate anything; for that see `idempotencyKey` (restApi:v3). |
+| **`requestId`** | `string`{lang="ts-type"} | Нет | Уникальный идентификатор запроса для отслеживания и отладки — передаётся как параметр запроса `bx24_request_id`. Он ничего не дедуплицирует; для этого см. `idempotencyKey` (restApi:v3). |
 
-### Return Value
+### Возвращаемое значение
 
-`Promise<boolean>`{lang="ts-type"} — a promise that resolves to a boolean value:
+`Promise<boolean>`{lang="ts-type"} — промис, который разрешается булевым значением:
 
-- **`true`** — REST API is available and responding, webhook is configured correctly.
-- **`false`** — REST API is unavailable, an error occurred, or necessary access rights are missing.
+- **`true`** — REST API доступен и отвечает, вебхук настроен правильно.
+- **`false`** — REST API недоступен, произошла ошибка или не хватает прав доступа.
 
-## Error Handling
+## Обработка ошибок
 
-`HealthCheck.make()`{lang="ts-type"} never throws. Network failures, HTTP errors, missing scopes, and timeouts are all collapsed into a return value of `false`. The method is intentionally a black-box probe — for actionable error information, call the underlying method directly with [`CallV2.make()`](/docs/working-with-the-rest-api/call-rest-api-ver2/) and inspect `AjaxResult` (`isSuccess`, `getErrorMessages()`).
+`HealthCheck.make()`{lang="ts-type"} никогда не выбрасывает исключение. Сбои сети, ошибки HTTP, отсутствующие области доступа и тайм-ауты сводятся к возвращаемому значению `false`. Метод намеренно служит зондом «чёрного ящика» — для получения подробностей об ошибке вызовите нужный метод напрямую через [`CallV2.make()`](/docs/working-with-the-rest-api/call-rest-api-ver2/) и изучите `AjaxResult` (`isSuccess`, `getErrorMessages()`).
 
-## Examples
+## Примеры
 
-### Availability check
+### Проверка доступности
 
 ::code-example
 ---
@@ -60,8 +60,8 @@ name: 'tools-health-check'
 ---
 ::
 
-## Alternatives and Recommendations
+## Альтернативы и рекомендации
 
-* **For measuring response speed**: Use [`Ping`](/docs/working-with-the-rest-api/tools-ping/).
-* **For checking specific permissions**: Perform a test request to the required API method.
-* **On the client-side (browser):** Use the built-in [`B24Frame`](/docs/getting-started/installation/vue/#инициализация) object.
+* **Для измерения скорости ответа**: используйте [`Ping`](/docs/working-with-the-rest-api/tools-ping/).
+* **Для проверки конкретных прав**: выполните тестовый запрос к нужному методу API.
+* **На стороне клиента (в браузере):** используйте встроенный объект [`B24Frame`](/docs/getting-started/installation/vue/#инициализация).
