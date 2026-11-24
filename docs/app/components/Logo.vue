@@ -31,7 +31,7 @@ const gradientId = useId()
       font-size="17"
       font-weight="700"
       letter-spacing="-0.2"
-      font-family="'Inter Tight', var(--ui-font-family-primary, system-ui), sans-serif"
+      style="font-family: 'Inter Tight', var(--ui-font-family-primary, system-ui), sans-serif"
     >JS SDK</text>
   </svg>
 </template>
