@@ -484,3 +484,22 @@ test('the real page satisfies both consistency checks', () => {
   const entry = join(REPO_ROOT, 'packages/jssdk/src/index.ts')
   assert.deepEqual(checkPositionSplit(collectValueExports(entry), positions), [])
 })
+
+test('the Russian section headings of the fork are the same two flat lists', () => {
+  const { everythingElse, uncovered } = collectPagePositions(page([
+    '## Всё остальное',
+    '',
+    '`AppFrame` `LsKeys`',
+    '',
+    '## Пока без руководства',
+    '',
+    '`versionManager`',
+    '',
+    '## Прочее',
+    '',
+    '`RpcMethod`'
+  ].join('\n')))
+
+  assert.deepEqual([...everythingElse], ['AppFrame', 'LsKeys'])
+  assert.deepEqual([...uncovered], ['versionManager'])
+})

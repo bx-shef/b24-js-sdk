@@ -66,7 +66,7 @@ export function useSearch() {
       label: 'GitHub',
       description: 'Репозиторий SDK на GitHub.',
       icon: GitHubIcon,
-      to: 'https://github.com/bitrix24/b24ui',
+      to: 'https://github.com/bx-shef/b24-js-sdk',
       target: '_blank'
     }
   ].filter(link => !!link) as ContentSearchLink[]) // @memo: use filter: `isAssistantEnabled`
