@@ -2,7 +2,7 @@
 
 import { readFileSync } from 'node:fs'
 import { join, resolve, relative, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { walkMarkdownFiles, parseFrontmatter } from './_docs-utils.mjs'
 import { createReporter } from './_reporter.mjs'
 
@@ -43,10 +43,13 @@ function fileToUrl(file) {
 // lowercase, strip everything that isn't a word char, whitespace or hyphen,
 // then turn each whitespace char into a single hyphen. Adjacent hyphens are
 // preserved so "A  B" -> "a--b" (matches Nuxt Content's runtime behaviour).
-function slugifyHeading(text) {
+// Same rule as github-slugger, which @nuxtjs/mdc uses for heading ids: letters and
+// numbers of any script survive, so a Russian heading keeps its Cyrillic anchor.
+// `\w` here would strip it to an empty anchor that the rendered page never has.
+export function slugifyHeading(text) {
   return text
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
+    .replace(/[^\p{L}\p{M}\p{N}_\s-]/gu, '')
     .trim()
     .replace(/\s/g, '-')
 }
@@ -188,4 +191,6 @@ function main() {
   process.exit(report.finish())
 }
 
-main()
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main()
+}
