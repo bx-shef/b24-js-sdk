@@ -9,7 +9,10 @@ import { createReporter } from './_reporter.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..')
-const DOCS_ROOT = join(REPO_ROOT, 'docs', 'content', 'docs')
+// DOCS_LINT_ROOT points the lint at a fixture tree in tests, like DOCS_LINK_CHECK_ROOT.
+const DOCS_ROOT = process.env.DOCS_LINT_ROOT
+  ? resolve(process.env.DOCS_LINT_ROOT)
+  : join(REPO_ROOT, 'docs', 'content', 'docs')
 
 // Each section is a list of accepted headings: the fork translates the docs into
 // Russian, so a page carries either the original English heading or its Russian
