@@ -1,128 +1,128 @@
-# Report — skill set after the 2026-05 migration
+# Отчёт — набор навыков после миграции 2026-05
 
-This file captures the state of the skill set after migrating off the deprecated SDK surface, plus the open questions the user should be aware of.
+Этот файл фиксирует состояние набора навыков после ухода с устаревшей поверхности SDK, а также открытые вопросы, о которых стоит знать пользователю.
 
-## Migration log (2026-05)
+## Журнал миграции (2026-05)
 
-Trigger: rebasing the `claude/extract-sdk-examples-7HE3n` branch onto `main@1.1.1` surfaced a `Deprecation notice` in `packages/jssdk/README-AI.md`. The entire `callMethod` / `callBatch` / `callBatchByChunk` / `callListMethod` / `fetchListMethod` surface, plus `AjaxResult.isMore() / getNext() / getTotal()`, is `@deprecated` and scheduled for removal in **`2.0.0`**.
+Причина: при перебазировании ветки `claude/extract-sdk-examples-7HE3n` на `main@1.1.1` в `packages/jssdk/README-AI.md` обнаружилось `Deprecation notice`. Вся поверхность `callMethod` / `callBatch` / `callBatchByChunk` / `callListMethod` / `fetchListMethod`, а также `AjaxResult.isMore() / getNext() / getTotal()`, помечена `@deprecated` и будет удалена в **`2.0.0`**.
 
-Files migrated to `$b24.actions.v{2,3}.*.make()`:
+Файлы, перенесённые на `$b24.actions.v{2,3}.*.make()`:
 
-- `b24jssdk-rest/SKILL.md` — complete rewrite. Covers `call`, `batch`, `callList`, `fetchList`, `batchByChunk` for both API versions; AjaxResult new shape; v3 all-or-nothing batch; null-result passthrough.
-- `b24jssdk-filtering/SKILL.md` — added the v3 array-of-triples dialect alongside the existing v2 prefix dialect. Added the rule that `callList`/`fetchList` strip user-supplied `order`.
-- `b24jssdk-core/SKILL.md` — added `hardErrorCodes` / `softErrorCodes` / `retryOnNetworkError` tuning. Updated examples to the new surface.
-- `b24jssdk-frame-ui/SKILL.md` — un-deprecated `selectCRM` (it's actively maintained now and normalizes response buckets); added `placement.setValue` helper.
-- `b24jssdk-helpers/SKILL.md` — corrected `usePullClient()` to be arg-less; mentioned new `isInitB24Helper()` getter.
-- `b24jssdk-recipes/SKILL.md` + 9 recipe `.ts` files — all rewritten on the new surface. CRM → `actions.v2.*`, tasks → `actions.v3.*` where on the whitelist (`tasks.task.add/get/update/delete/list`).
-- `b24jssdk-vibecode/SKILL.md` — AI-add-on example updated to new API.
-- `README.md` + `MAINTENANCE.md` — translation tables now use `actions.v{2,3}.*.make`.
+- `b24jssdk-rest/SKILL.md` — переписан целиком. Охватывает `call`, `batch`, `callList`, `fetchList`, `batchByChunk` для обеих версий API; новую форму AjaxResult; атомарный (всё или ничего) пакетный запрос v3; пропуск `null`-результата.
+- `b24jssdk-filtering/SKILL.md` — рядом с существующим префиксным диалектом v2 добавлен диалект v3 (массив троек). Добавлено правило, что `callList`/`fetchList` вырезают переданный пользователем `order`.
+- `b24jssdk-core/SKILL.md` — добавлена настройка `hardErrorCodes` / `softErrorCodes` / `retryOnNetworkError`. Примеры обновлены под новую поверхность.
+- `b24jssdk-frame-ui/SKILL.md` — с `selectCRM` снята пометка об устаревании (теперь он активно поддерживается и нормализует корзины ответа); добавлен помощник `placement.setValue`.
+- `b24jssdk-helpers/SKILL.md` — исправлено: `usePullClient()` вызывается без аргументов; упомянут новый геттер `isInitB24Helper()`.
+- `b24jssdk-recipes/SKILL.md` + 9 файлов рецептов `.ts` — все переписаны на новую поверхность. CRM → `actions.v2.*`, задачи → `actions.v3.*` там, где метод есть в белом списке (`tasks.task.add/get/update/delete/list`).
+- `b24jssdk-vibecode/SKILL.md` — пример AI-add-on обновлён под новый API.
+- `README.md` + `MAINTENANCE.md` — таблицы соответствий теперь используют `actions.v{2,3}.*.make`.
 
-## Weekly llms-full.txt triage log
+## Журнал еженедельного триажа llms-full.txt
 
 ### 2026-05-29
 
-Source: `docs/llms-full.txt` (generated 2026-05-28, header `# VibeCode — Complete Documentation`, 4942 ``` fences — even). No previous version on `origin/claude/busy-cray-w38fN` (`NO_PREV`), so a full review was done.
+Источник: `docs/llms-full.txt` (сгенерирован 2026-05-28, заголовок `# VibeCode — Complete Documentation`, 4942 ограждения ``` — чётное число). Предыдущей версии в `origin/claude/busy-cray-w38fN` нет (`NO_PREV`), поэтому проведён полный разбор.
 
-Outcome: **no actionable SDK changes.** Every section in the focus list maps to VibeCode's own HTTP API, not the b24jssdk surface:
+Итог: **действий по SDK не требуется.** Каждый раздел из списка внимания относится к собственному HTTP API VibeCode, а не к поверхности b24jssdk:
 
-- **Filtering** — documents the Vibe API `/v1/{entity}?filter[...]` and `POST /v1/{entity}/search` MongoDB-style dialect (`$gte`, `$ne`, `$in`, `$contains`). These are VibeCode-proprietary operators (in the explicit ignore list), distinct from the SDK's v2-prefix / v3-array-triple dialects already covered by `b24jssdk-filtering`.
-- **Batch / Limits** — describe `POST /v1/batch`, `POST /v1/{entity}/batch`, server-side auto-pagination, the portal queue (`QUEUE_TIMEOUT`), and `/v1/{entity}/aggregate`. All VibeCode infra; the SDK equivalents (`actions.v{2,3}.batch/batchByChunk/callList/fetchList`) are unaffected.
-- **Errors** — the `{ success, error: { code } }` envelope and the `MISSING_API_KEY` / `RATE_LIMITED` / `QUEUE_TIMEOUT` code table apply "ко всем эндпоинтам `/v1/...`" — VibeCode error codes, not the SDK's `AjaxError` / restriction-manager `hardErrorCodes` / `softErrorCodes`.
-- **Recipes** — only 9 are present (Ai Assistant, Crm Analytics, Disk Files, Erp Sync, Mass Messaging, Task Automation, Telegram Bot, Web Search With Llm, Webhook Handler). Each is implemented with raw `fetch(${BASE}/v1/...)` + `X-Api-Key`, not the SDK. The `b24jssdk-recipes` skill already covers the same scenarios (plus error-handling, event-registration, and OAuth-install) on the canonical `actions.v{2,3}.*` surface. The Web-Search-with-LLM recipe relies on VibeCode-only endpoints (`/v1/search`, `/v1/ai/chat/completions`, AI Router, Tavily/Brave BYOK) the SDK does not expose.
+- **Фильтрация** — описывает диалект в стиле MongoDB у Vibe API: `/v1/{entity}?filter[...]` и `POST /v1/{entity}/search` (`$gte`, `$ne`, `$in`, `$contains`). Это проприетарные операторы VibeCode (они в явном списке игнорируемых), отличные от префиксного диалекта v2 и диалекта троек v3 SDK, которые уже покрыты `b24jssdk-filtering`.
+- **Пакетные запросы / лимиты** — описывают `POST /v1/batch`, `POST /v1/{entity}/batch`, серверную автопагинацию, очередь портала (`QUEUE_TIMEOUT`) и `/v1/{entity}/aggregate`. Всё это инфраструктура VibeCode; эквиваленты в SDK (`actions.v{2,3}.batch/batchByChunk/callList/fetchList`) не затронуты.
+- **Ошибки** — конверт `{ success, error: { code } }` и таблица кодов `MISSING_API_KEY` / `RATE_LIMITED` / `QUEUE_TIMEOUT` относятся «ко всем эндпоинтам `/v1/...`» — это коды ошибок VibeCode, а не `AjaxError` и не `hardErrorCodes` / `softErrorCodes` менеджера ограничений SDK.
+- **Рецепты** — их всего 9 (Ai Assistant, Crm Analytics, Disk Files, Erp Sync, Mass Messaging, Task Automation, Telegram Bot, Web Search With Llm, Webhook Handler). Каждый реализован на «сыром» `fetch(${BASE}/v1/...)` + `X-Api-Key`, без SDK. Навык `b24jssdk-recipes` уже покрывает те же сценарии (плюс обработку ошибок, регистрацию событий и установку OAuth) на канонической поверхности `actions.v{2,3}.*`. Рецепт Web-Search-with-LLM опирается на эндпоинты только VibeCode (`/v1/search`, `/v1/ai/chat/completions`, AI Router, Tavily/Brave BYOK), которых SDK не предоставляет.
 
-No issues opened, no SUGGESTED-EXAMPLES.md entries, no new open questions. All content classified D (VibeCode-only) and skipped.
+Issue не открывались, записей в SUGGESTED-EXAMPLES.md нет, новых открытых вопросов нет. Всё содержимое отнесено к классу D (только VibeCode) и пропущено.
 
-## Anchor facts (verified against current SDK source)
+## Опорные факты (сверены с текущим исходным кодом SDK)
 
-These are the load-bearing facts that the skills rely on. If a future audit finds one of them changed, the related skill needs revision.
+Это несущие факты, на которые опираются навыки. Если будущий аудит обнаружит, что один из них изменился, соответствующий навык нужно пересмотреть.
 
-### Live-portal verification log
+### Журнал проверок на живом портале
 
-| Recipe | Status | Date | Portal | Notes |
+| Рецепт | Статус | Дата | Портал | Примечания |
 | --- | --- | --- | --- | --- |
-| 1 — CRM analytics | ✅ verified | 2026-05-28 | bitrix24.ru | 3013 deals loaded in ~30s (~100 deals/s, normal SDK rate-limit). Funnel printed correctly: NEW 895, WON 1205 (40%), LOSE 912, win rate 56.9%, total revenue 169M. |
-| 5 — Disk files | ✅ verified | 2026-05-28 | bitrix24.ru | 5 storages listed (1 common + 4 user). Root folder read for storage 3. Subfolder #288 created (`Project_1779973933442`). Batch round-trip: 5 storages + 1 root item. Runtime sub-second. Note: disk scope must be enabled on the webhook. |
-| 10 — Error handling | ✅ verified | 2026-05-28 | bitrix24.ru | All error paths exercised. `NOT_FOUND` (from `crm.item.get`) caught correctly after fix; `ERROR_NOT_FOUND` fallthrough kept for `crm.deal.get` compat. `SdkError JSSDK_CORE_METHOD_NOT_SUPPORT_IN_API_V3` triggered as expected. Runtime sub-second. Bug found and fixed: recipe originally used `ERROR_NOT_FOUND` but `crm.item.get` returns `NOT_FOUND`. |
-| 11 — Event registration | ⛔ blocked | 2026-05-28 | bitrix24.ru | `WRONG_AUTH_TYPE` (HTTP 403) on `event.get`. Bitrix24 blocks `event.get/bind/unbind` for incoming-webhook auth — these methods are only callable as an **OAuth app**. Recipe is architecturally correct but cannot be tested with just a `B24_HOOK`. Needs a live OAuth app (recipe 12). |
+| 1 — CRM-аналитика | ✅ проверен | 2026-05-28 | bitrix24.ru | 3013 сделок загружено примерно за 30 с (~100 сделок/с, обычный лимитер SDK). Воронка выведена верно: NEW 895, WON 1205 (40%), LOSE 912, доля выигрышей 56,9%, общая выручка 169M. |
+| 5 — файлы Диска | ✅ проверен | 2026-05-28 | bitrix24.ru | Перечислено 5 хранилищ (1 общее + 4 пользовательских). Прочитана корневая папка хранилища 3. Создана подпапка #288 (`Project_1779973933442`). Круг через пакетный запрос: 5 хранилищ + 1 корневой элемент. Время выполнения меньше секунды. Примечание: у вебхука должна быть включена область disk. |
+| 10 — обработка ошибок | ✅ проверен | 2026-05-28 | bitrix24.ru | Проверены все пути ошибок. `NOT_FOUND` (из `crm.item.get`) после исправления перехватывается верно; запасной вариант `ERROR_NOT_FOUND` оставлен для совместимости с `crm.deal.get`. `SdkError JSSDK_CORE_METHOD_NOT_SUPPORT_IN_API_V3` срабатывает как ожидалось. Время выполнения меньше секунды. Найдена и исправлена ошибка: рецепт изначально использовал `ERROR_NOT_FOUND`, а `crm.item.get` возвращает `NOT_FOUND`. |
+| 11 — регистрация событий | ⛔ заблокирован | 2026-05-28 | bitrix24.ru | `WRONG_AUTH_TYPE` (HTTP 403) на `event.get`. Битрикс24 блокирует `event.get/bind/unbind` для авторизации входящим вебхуком — эти методы можно вызывать только как **OAuth-приложение**. Рецепт архитектурно верен, но проверить его с одним `B24_HOOK` нельзя. Нужно живое OAuth-приложение (рецепт 12). |
 
-| Fact | Source |
+| Факт | Источник |
 | --- | --- |
-| Which methods exist on v3 (the SDK no longer keeps a `#supportMethods` allowlist — removed; the server validates) | The portal's OpenAPI (`rest.documentation.openapi`) or [apidocs rest-v3](https://apidocs.bitrix24.com/api-reference/rest-v3/index.html) |
-| `actions.v{2,3}.call.make` returns `Promise<AjaxResult<T>>`; access with `res.getData()!.result.<key>` | `core/actions/v{2,3}/call.ts`, `test/integration/js-docs/actions-v{2,3}.spec.ts` |
-| `actions.v{2,3}.callList.make` strips user-supplied `order` and forces `{ [idKey]: 'ASC' }` | `core/actions/v2/call-list.ts:77-87`, v3 equivalent at `core/actions/v3/call-list.ts:77-87` |
-| Default `idKey` is `'ID'` for v2 (uppercase), `'id'` for v3 (lowercase) | `core/actions/v2/call-list.ts:72`, `core/actions/v3/call-list.ts:72` |
-| `crm.item.list` is v2, response is `{ items: [...] }` → needs `customKeyForResult: 'items'` + `idKey: 'id'` | `test/integration/js-docs/actions-v2.spec.ts:41-65` |
-| `tasks.task.*` have a v3 form (add/get/update/delete/list, `result.*`, `*.field.*`) | The portal's OpenAPI (`rest.documentation.openapi`) |
-| v3 filter dialect: array of `[field, op, value]` or `[field, value]` triples; 8 operators only (`=`, `!=`, `>`, `>=`, `<`, `<=`, `in`, `between`); no `like`/`%` | `skills/b24jssdk-filtering/SKILL.md` (the v3 section) |
-| v2 filter dialect: prefix-keyed object — `'>=createdTime'`, `'!stageId'`, `'%title'`, `'=%title'` | `test/integration/js-docs/actions-v2.spec.ts:46-49`, `core/actions/v2/call-list.ts:81-86` |
-| Date format: `Text.toB24Format(date)` → `yyyy-MM-dd'T'HH:mm:ssZZ` | `tools/text.ts:213-226` |
-| `AjaxResult.getData()` returns `SuccessPayload<T> \| undefined` = `{ result, time } \| undefined` | `types/payloads.ts:68-82`, `core/http/ajax-result.ts:61-72` |
-| v3 batch is all-or-nothing (no per-command errors) | `README-AI.md` "Limitations", `core/actions/v3/batch.ts` |
-| Per-command `result` in batch can legitimately be `null` (issue #23) | `README-AI.md` "Patterns" |
-| `hardErrorCodes` / `softErrorCodes` / `retryOnNetworkError` available via `setRestrictionManagerParams` | `types/limiters.ts:90-147` |
-| `placement.setValue(value)` auto-serializes; `placement.call('setValue', { value })` requires `value` already stringified | `frame/placement.ts:104-151` |
-| `dialog.selectCRM()` is NOT deprecated — re-implemented to normalize buckets to real arrays | `frame/dialog.ts:175-235` |
+| Какие методы существуют в v3 (SDK больше не хранит белый список `#supportMethods` — он удалён; проверку делает сервер) | OpenAPI портала (`rest.documentation.openapi`) или [apidocs rest-v3](https://apidocs.bitrix24.com/api-reference/rest-v3/index.html) |
+| `actions.v{2,3}.call.make` возвращает `Promise<AjaxResult<T>>`; доступ — `res.getData()!.result.<key>` | `core/actions/v{2,3}/call.ts`, `test/integration/js-docs/actions-v{2,3}.spec.ts` |
+| `actions.v{2,3}.callList.make` вырезает переданный пользователем `order` и принудительно ставит `{ [idKey]: 'ASC' }` | `core/actions/v2/call-list.ts:77-87`, аналог для v3 — `core/actions/v3/call-list.ts:77-87` |
+| `idKey` по умолчанию — `'ID'` для v2 (заглавными), `'id'` для v3 (строчными) | `core/actions/v2/call-list.ts:72`, `core/actions/v3/call-list.ts:72` |
+| `crm.item.list` — это v2, ответ имеет вид `{ items: [...] }` → нужны `customKeyForResult: 'items'` + `idKey: 'id'` | `test/integration/js-docs/actions-v2.spec.ts:41-65` |
+| У `tasks.task.*` есть форма v3 (add/get/update/delete/list, `result.*`, `*.field.*`) | OpenAPI портала (`rest.documentation.openapi`) |
+| Диалект фильтра v3: массив троек `[field, op, value]` или `[field, value]`; только 8 операторов (`=`, `!=`, `>`, `>=`, `<`, `<=`, `in`, `between`); без `like`/`%` | `skills/b24jssdk-filtering/SKILL.md` (раздел про v3) |
+| Диалект фильтра v2: объект с префиксами в ключах — `'>=createdTime'`, `'!stageId'`, `'%title'`, `'=%title'` | `test/integration/js-docs/actions-v2.spec.ts:46-49`, `core/actions/v2/call-list.ts:81-86` |
+| Формат даты: `Text.toB24Format(date)` → `yyyy-MM-dd'T'HH:mm:ssZZ` | `tools/text.ts:213-226` |
+| `AjaxResult.getData()` возвращает `SuccessPayload<T> \| undefined` = `{ result, time } \| undefined` | `types/payloads.ts:68-82`, `core/http/ajax-result.ts:61-72` |
+| Пакетный запрос v3 — всё или ничего (ошибок по отдельным командам нет) | `README-AI.md`, «Limitations», `core/actions/v3/batch.ts` |
+| `result` отдельной команды в пакетном запросе вполне может быть `null` (issue #23) | `README-AI.md`, «Patterns» |
+| `hardErrorCodes` / `softErrorCodes` / `retryOnNetworkError` доступны через `setRestrictionManagerParams` | `types/limiters.ts:90-147` |
+| `placement.setValue(value)` сериализует значение автоматически; `placement.call('setValue', { value })` требует, чтобы `value` уже был строкой | `frame/placement.ts:104-151` |
+| `dialog.selectCRM()` НЕ устарел — переписан так, чтобы нормализовать корзины в настоящие массивы | `frame/dialog.ts:175-235` |
 
-## Open questions / unresolved
+## Открытые и нерешённые вопросы
 
-### 1. v3 method whitelist removed — when do we re-balance recipes?
+### 1. Белый список методов v3 удалён — когда пересматриваем баланс рецептов?
 
-**Update:** the hardcoded v3 allowlist (`version-manager.ts` `#supportMethods`) has been removed — `actions.v3.*` now sends any method to the v3 endpoint and the server validates it. So routing is no longer gated by a list. The open recipe question stands on its own merits: when a CRM method's v3 form is the better fit, several recipes (1, 3, 4, 6, 7, 9) could move to `actions.v3.*` — but the **filter dialect changes from prefix-keyed to array-of-triples** at the same time, so it's a meaningful rewrite, not a renaming. The earlier "watch `#supportMethods` for new entries" action item no longer applies.
+**Обновление:** жёстко заданный белый список v3 (`#supportMethods` в `version-manager.ts`) удалён — `actions.v3.*` теперь отправляет любой метод на эндпоинт v3, а проверку делает сервер. Маршрутизация больше не ограничена списком. Открытый вопрос о рецептах остаётся сам по себе: когда форма v3 для метода CRM лучше подходит, несколько рецептов (1, 3, 4, 6, 7, 9) можно перевести на `actions.v3.*` — но одновременно **диалект фильтра меняется с префиксов в ключах на массив троек**, так что это существенная переделка, а не переименование. Прежний пункт «следить за новыми записями в `#supportMethods`» больше неактуален.
 
-### 2. ~~Aggregate action not exposed in the SDK~~ — RESOLVED
+### 2. ~~Действие aggregate не доступно в SDK~~ — РЕШЕНО
 
-The SDK now exposes a typed `actions.v3.aggregate.make` (`avg`/`sum`/`min`/`max`/`count`/`countDistinct`). Its request and response contract has been measured, but no shipped module publishes an `*.aggregate` endpoint — confirmed via OpenAPI on four portals — so it stays `@experimental` for want of a use case rather than for want of verification. Recipe 1 (CRM analytics) still aggregates client-side because CRM is v2-only here; switch it to a one-call `aggregate` query if/when a CRM `*.aggregate` v3 method appears.
+SDK теперь предоставляет типизированный `actions.v3.aggregate.make` (`avg`/`sum`/`min`/`max`/`count`/`countDistinct`). Его контракт запроса и ответа измерен, но ни один поставляемый модуль не публикует эндпоинт `*.aggregate` — подтверждено через OpenAPI на четырёх порталах, — поэтому он остаётся `@experimental` из-за отсутствия сценария использования, а не из-за недостатка проверки. Рецепт 1 (CRM-аналитика) по-прежнему агрегирует на клиенте, потому что CRM здесь только v2; перейти на запрос `aggregate` одним вызовом можно, когда появится метод CRM `*.aggregate` в v3.
 
-### 3. `B24OAuth` install handshake still uncovered
+### 3. Рукопожатие установки `B24OAuth` по-прежнему не покрыто
 
-The skills assume the user already has `authParams` populated from install events. The full OAuth install round-trip (Express endpoint that handles `ONAPPINSTALL`, persists tokens, swaps refresh on schedule) isn't a recipe yet — biggest blocker for anyone shipping a Marketplace app. Highest-ROI gap.
+Навыки предполагают, что у пользователя уже есть заполненные `authParams` из событий установки. Полный круг установки OAuth (эндпоинт Express, обрабатывающий `ONAPPINSTALL`, сохраняющий токены и по расписанию обновляющий refresh) пока не оформлен как рецепт — это главное препятствие для всех, кто выпускает приложение для Маркетплейса. Самый выгодный пробел.
 
-### 4. Recipe 7 (webhook handler) payload shape still unverified
+### 4. Форма полезной нагрузки рецепта 7 (обработчик вебхука) по-прежнему не проверена
 
-Bitrix24 outbound webhooks POST `application/x-www-form-urlencoded`. The recipe relies on `express.urlencoded({ extended: true })` to parse `data[FIELDS][ID]` into a nested object. Confirmed by reading the Express docs, but **not yet run against a live portal**. If `payload.data?.FIELDS?.ID` arrives empty, that's where to look.
+Исходящие вебхуки Битрикс24 отправляют POST `application/x-www-form-urlencoded`. Рецепт полагается на `express.urlencoded({ extended: true })`, чтобы разобрать `data[FIELDS][ID]` во вложенный объект. Подтверждено чтением документации Express, но **ещё не запускалось на живом портале**. Если `payload.data?.FIELDS?.ID` приходит пустым, искать нужно здесь.
 
-**Related — Recipe 11 requires OAuth:** live-portal run on 2026-05-28 showed that `event.get/bind/unbind` return `WRONG_AUTH_TYPE` (403) when called via an incoming webhook (`B24Hook`). These methods are only available for OAuth app tokens. Recipe 11 can only be fully verified paired with recipe 12's OAuth flow.
+**Связанное — рецепт 11 требует OAuth:** прогон на живом портале 2026-05-28 показал, что `event.get/bind/unbind` возвращают `WRONG_AUTH_TYPE` (403) при вызове через входящий вебхук (`B24Hook`). Эти методы доступны только для токенов OAuth-приложений. Рецепт 11 можно полностью проверить только в паре с OAuth-потоком рецепта 12.
 
-### 5. ~~Recipe 9 (timeline comment) ENTITY_TYPE shape~~ — RESOLVED 2026-05-28
+### 5. ~~Форма ENTITY_TYPE в рецепте 9 (комментарий таймлайна)~~ — РЕШЕНО 2026-05-28
 
-`crm.timeline.comment.add` — confirmed: use `ENTITY_TYPE_ID: EnumCrmEntityTypeId.deal` (numeric, value 2). Accepted on all portal versions tested. The string form (`ENTITY_TYPE: 'deal'`) also works on modern portals. Recipe 9 updated to use the enum constant; `UNVERIFIED_ON_LIVE_PORTAL` marker removed from recipe header.
+`crm.timeline.comment.add` — подтверждено: используйте `ENTITY_TYPE_ID: EnumCrmEntityTypeId.deal` (число, значение 2). Принимается на всех проверенных версиях портала. Строковая форма (`ENTITY_TYPE: 'deal'`) на современных порталах тоже работает. Рецепт 9 обновлён и использует константу перечисления; маркер `UNVERIFIED_ON_LIVE_PORTAL` из заголовка рецепта убран.
 
-### 6. Multi-funnel filtering for v2 array-IN
+### 6. Фильтрация по нескольким воронкам для массива IN в v2
 
-The recipes filter `'!stageId': ['WON', 'LOSE']` — v2 syntax. On multi-funnel portals there's also `C2:WON`, `C4:LOSE`, etc. Each recipe that touches stages also runs a client-side `baseStage(s)` re-filter as belt-and-suspenders. Not pretty but defensive.
+Рецепты фильтруют `'!stageId': ['WON', 'LOSE']` — синтаксис v2. На порталах с несколькими воронками есть ещё `C2:WON`, `C4:LOSE` и т. п. Каждый рецепт, затрагивающий стадии, дополнительно выполняет клиентскую повторную фильтрацию `baseStage(s)` — «и ремень, и подтяжки». Некрасиво, но надёжно.
 
-### 7. `placement.setValue` semantics
+### 7. Семантика `placement.setValue`
 
-The skill describes it correctly for the documented "select-value" placement case. Whether it works for other placement types isn't clear from the source comments — there's just the `setValue` command name and a JSON.parse-on-receipt rule. Treat as out-of-scope until needed.
+Навык описывает её верно для документированного случая встройки с выбором значения. Работает ли она для других типов встроек, из комментариев в исходниках неясно — есть только имя команды `setValue` и правило JSON.parse при получении. Считать вне области до появления необходимости.
 
-## Items deliberately NOT extracted from llms-full.txt
+## Что сознательно НЕ извлекалось из llms-full.txt
 
-- Per-endpoint reference pages (`# Bot: …`, `# Entity: …`) — auto-generated, duplicate apidocs.
-- VibeCode's deploy / infra / Black Hole / preview-token sections — irrelevant to SDK.
-- MCP-for-AI section — VibeCode-only.
-- `Менеджмент-ключи`, `Partner Connect` — VibeCode platform-internal.
+- Страницы справки по отдельным эндпоинтам (`# Bot: …`, `# Entity: …`) — генерируются автоматически и дублируют apidocs.
+- Разделы VibeCode про деплой / инфраструктуру / Black Hole / preview-токены — к SDK отношения не имеют.
+- Раздел MCP-for-AI — только VibeCode.
+- `Менеджмент-ключи`, `Partner Connect` — внутренности платформы VibeCode.
 
-## What's likely to break first (rank-ordered)
+## Что сломается в первую очередь (по убыванию вероятности)
 
-1. **Skills referencing `b24.callMethod(...)` after the 2.0.0 release.** Mitigated: all skills now use the actions surface. Search for any leftover `callMethod` / `callBatch` / `callListMethod` / `fetchListMethod` in skill files — should return zero results.
-2. **`customKeyForResult: 'result'` typo for `crm.item.list`.** Silent empty arrays. Skill explicitly calls this out.
-3. **Passing `order` to `callList.make`.** Silently dropped with a warning. Skill explicitly calls this out.
-4. **v2 prefix filter inside `actions.v3.*`.** Throws `UnknownFilterOperatorException`. Skill explicitly calls this out, but a copy-paste from a v2 example into a v3 call is plausible.
-5. **`crm.item.list` filter using uppercase field names (`STAGE_ID`).** Silently returns wrong data — the v3-style methods need lowercase. The skill's field-naming table covers this but the failure mode is silent, so worth re-emphasising in code review.
+1. **Навыки, ссылающиеся на `b24.callMethod(...)`, после релиза 2.0.0.** Смягчено: все навыки теперь используют поверхность actions. Поиск по файлам навыков любых оставшихся `callMethod` / `callBatch` / `callListMethod` / `fetchListMethod` должен давать ноль результатов.
+2. **Опечатка `customKeyForResult: 'result'` для `crm.item.list`.** Тихие пустые массивы. Навык прямо на это указывает.
+3. **Передача `order` в `callList.make`.** Молча отбрасывается с предупреждением. Навык прямо на это указывает.
+4. **Префиксный фильтр v2 внутри `actions.v3.*`.** Бросает `UnknownFilterOperatorException`. Навык прямо на это указывает, но копирование из примера v2 в вызов v3 вполне вероятно.
+5. **Фильтр `crm.item.list` с именами полей заглавными (`STAGE_ID`).** Тихо возвращает неверные данные — методам в стиле v3 нужны строчные. Таблица имён полей в навыке это покрывает, но сбой тихий, поэтому стоит напоминать о нём при код-ревью.
 
-## How to verify the skills locally
+## Как проверить навыки локально
 
-After any future edit:
+После любой будущей правки:
 
 ```bash
-# 1. Lint everything
+# 1. Линтер для всего
 pnpm run lint
 
-# 2. Typecheck workspace
+# 2. Проверка типов в рабочем пространстве
 pnpm run typecheck
 
-# 3. (Optional, requires .env.test) — run the canonical actions specs
+# 3. (Необязательно, нужен .env.test) — запуск канонических спецификаций actions
 pnpm vitest run -t "js-docs.actions" --project jsSdk:integration
 ```
 
-The lint config ignores `.claude/**` (see `eslint.config.mjs`), so changes to skill files won't trip the linter. That's intentional — these are agent-facing examples, not workspace source.
+Конфигурация линтера игнорирует `.claude/**` (см. `eslint.config.mjs`), поэтому правки файлов навыков линтер не затронут. Так задумано — это примеры для агентов, а не исходный код рабочего пространства.

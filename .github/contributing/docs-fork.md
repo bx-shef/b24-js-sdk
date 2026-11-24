@@ -1,165 +1,165 @@
-# `docs/` is a fork of `nuxt/ui`'s documentation site
+# `docs/` — форк сайта документации `nuxt/ui`
 
-Last reviewed: 2026-08-28
-Upstream compared against: [`nuxt/ui`](https://github.com/nuxt/ui) branch `v4`, commit `b751eae` (2026-08-25)
+Последняя сверка: 2026-08-28
+Сравнение с upstream: [`nuxt/ui`](https://github.com/nuxt/ui), ветка `v4`, коммит `b751eae` (2026-08-25)
 
-This file exists so that pulling a fix down from upstream does not silently
-revert something this fork does on purpose. Everything below is a **deliberate**
-difference. Anything not listed here should be assumed to track upstream, and a
-sync is the right instinct.
+Этот файл нужен, чтобы подтягивание исправления из upstream не откатило незаметно то,
+что форк делает намеренно. Всё ниже — **намеренные** отличия. Всё, что здесь не
+перечислено, следует считать следующим за upstream, и синхронизация — верный
+инстинкт.
 
-Two things to know before you start:
+Две вещи, которые нужно знать, прежде чем начинать:
 
-- **Statements about what upstream does are pinned to the commit above.** They
-  were true then. Check them again before acting on them, and move the pin when
-  you do — a claim nobody has re-checked in six months is folklore with a commit
-  hash attached.
-- **A downstream mirror keeps `docs/` byte-identical.** Deleting or renaming a
-  file there lands on someone else's plate. #139 was filed by that mirror's
-  maintainer; that is how it reaches us. It is also why this document lives
-  here and not in `docs/`: it is a record about the fork, not content of the
-  site, and adding a file upstream does not have would put it in the way of
-  both the mirror and the next tree comparison.
+- **Утверждения о том, что делает upstream, привязаны к коммиту выше.** Тогда они были
+  верны. Перепроверьте их, прежде чем действовать, и сдвиньте привязку, когда это
+  сделаете: утверждение, которого никто не перепроверял полгода, — это фольклор с
+  хешем коммита в придачу.
+- **Нижестоящее зеркало держит `docs/` побайтово идентичным.** Удаление или
+  переименование файла там ложится на плечи другого человека. #139 завёл сопровождающий
+  этого зеркала; так оно и доходит до нас. Поэтому же этот документ лежит здесь, а не в
+  `docs/`: это запись о форке, а не содержимое сайта, и добавление файла, которого нет
+  в upstream, помешало бы и зеркалу, и следующему сравнению деревьев.
 
-## The divergences
+## Отличия
 
-### 1. Prettier is bundled, not fetched from a CDN
+### 1. Prettier встроен в сборку, а не загружается с CDN
 
-**Files:** [`app/workers/prettier.js`](../../docs/app/workers/prettier.js), [`app/plugins/prettier.ts`](../../docs/app/plugins/prettier.ts), [`nuxt.config.ts`](../../docs/nuxt.config.ts)
-**Introduced:** #407 (#399 is the issue)
+**Файлы:** [`app/workers/prettier.js`](../../docs/app/workers/prettier.js), [`app/plugins/prettier.ts`](../../docs/app/plugins/prettier.ts), [`nuxt.config.ts`](../../docs/nuxt.config.ts)
+**Внесено:** #407 (#399 — issue)
 
-Upstream loads prettier and five parser plugins from jsDelivr with dynamic
-`import()`. This fork bundles them.
+Upstream загружает prettier и пять плагинов парсеров с jsDelivr динамическим
+`import()`. Этот форк встраивает их в сборку.
 
-A dynamic `import()` cannot carry an `integrity` attribute, so SRI was not
-available even in principle, and the site sets no CSP — so nothing verified that
-jsDelivr served the pinned bytes on any given request. `prettier` is already a
-dependency of `docs/` (the server prerenders the same snippets), so the browser
-was fetching a copy of something already on disk, and the version could drift
-from the prerenderer's. It cannot now, because it *is* the prerenderer's.
+Динамический `import()` не может нести атрибут `integrity`, поэтому SRI был недоступен
+даже в принципе, а CSP сайт не задавал — так что ничто не проверяло, что jsDelivr при
+каждом запросе отдаёт именно закреплённые байты. `prettier` уже является зависимостью
+`docs/` (сервер пререндерит те же фрагменты), так что браузер скачивал копию того, что
+уже лежит на диске, и версия могла разойтись с версией пререндерера. Теперь не может,
+потому что это и есть версия пререндерера.
 
-Two mechanical consequences of bundling, both of which have to survive a sync:
+Два механических следствия встраивания, оба должны пережить синхронизацию:
 
-- **`nuxt.config.ts` sets `vite.worker.format: 'es'`.** Vite builds a worker as
-  an IIFE by default, and an IIFE cannot be code split, so every dynamic
-  `import()` inside the worker is inlined into it — that put all 1.9 MB of
-  prettier in the worker script. As a module worker the parsers stay a separate
-  chunk. The cost is browser support: `new Worker(url, { type: 'module' })`
-  needs Chrome/Edge 80+, Safari 15+, Firefox 114+. Contained failure — the
-  worker is built lazily, so on an older browser in-page formatting does not
-  happen and nothing else is affected.
-- **`app/plugins/prettier.ts` imports `?worker`, not `?worker&inline`.**
-  Inlining would base64-embed the parsers into the entry bundle, which is the
-  page-weight problem bundling was supposed to avoid. It also constructs the
-  worker on the **first format** rather than at plugin setup, restoring the
-  timing the CDN version had.
+- **`nuxt.config.ts` задаёт `vite.worker.format: 'es'`.** Vite по умолчанию собирает
+  воркер как IIFE, а IIFE нельзя разбить на части, поэтому каждый динамический
+  `import()` внутри воркера встраивается в него — весь prettier объёмом 1,9 МБ оказался
+  в скрипте воркера. Как модульный воркер парсеры остаются отдельным чанком. Цена —
+  поддержка браузерами: `new Worker(url, { type: 'module' })` требует Chrome/Edge 80+,
+  Safari 15+, Firefox 114+. Сбой локализован — воркер создаётся лениво, так что в более
+  старом браузере форматирование на странице не происходит, а всё остальное не
+  затронуто.
+- **`app/plugins/prettier.ts` импортирует `?worker`, а не `?worker&inline`.**
+  Встраивание закодировало бы парсеры в base64 внутри основного бандла, а это именно та
+  проблема веса страницы, которой встраивание призвано избежать. Плагин также создаёт
+  воркер при **первом форматировании**, а не при инициализации плагина, возвращая
+  тайминг, который был у версии с CDN.
 
-**An earlier, smaller version of this divergence is gone.** Before #407 the fork
-injected the prettier version at build time via a `__PRETTIER_VERSION__` define,
-to keep the CDN URL in step with the manifest (upstream hard-codes the literal
-and drifts). With no CDN URL left there is nothing to keep in step, and the
-define was removed. If you find `__PRETTIER_VERSION__` anywhere, it is a leftover.
+**Более ранний, меньший вариант этого отличия ушёл.** До #407 форк подставлял версию
+prettier на этапе сборки через define `__PRETTIER_VERSION__`, чтобы держать URL CDN в
+соответствии с манифестом (upstream жёстко прописывает литерал и расходится). Раз URL
+CDN не осталось, согласовывать нечего, и define удалён. Если вы нашли
+`__PRETTIER_VERSION__` где-либо — это остаток.
 
-**To go back upstream** you would have to decide that third-party code execution
-on the docs site is acceptable again. #399 is where that argument lives.
+**Чтобы вернуться к upstream**, пришлось бы решить, что исполнение стороннего кода на
+сайте документации снова допустимо. Этот спор идёт в #399.
 
-### 2. No wildcard CORS header on the code-examples endpoint
+### 2. Нет универсального заголовка CORS на эндпоинте примеров кода
 
-**File:** [`server/api/code-examples.get.ts`](../../docs/server/api/code-examples.get.ts)
+**Файл:** [`server/api/code-examples.get.ts`](../../docs/server/api/code-examples.get.ts)
 
-Upstream sets `Access-Control-Allow-Origin: *`. This fork does not.
+Upstream задаёт `Access-Control-Allow-Origin: *`. Этот форк — нет.
 
-The only browser caller is same-origin: the `fetchCodeExample` composable. The
-MCP `b24-jssdk-get-example` tool reaches it server-to-server, where CORS does not
-apply at all. So the wildcard granted cross-origin read access to nobody who
-needed it, on a read-only endpoint, and widened the surface for no reason.
+Единственный вызывающий в браузере — того же источника: композабл `fetchCodeExample`.
+Инструмент MCP `b24-jssdk-get-example` обращается к нему с сервера на сервер, где CORS
+вообще не применяется. Так что универсальный заголовок давал кросс-доменный доступ на
+чтение никому, кому он был нужен, на эндпоинте только для чтения и без причины
+расширял поверхность.
 
-**To change it:** if a cross-origin consumer ever appears, name it and scope the
-header to that origin. Do not restore `*`.
+**Чтобы изменить:** если когда-нибудь появится кросс-доменный потребитель, назовите его
+и ограничьте заголовок этим источником. Не возвращайте `*`.
 
-### 3. `processLinks` / `prepareHref` in the MDC transform
+### 3. `processLinks` / `prepareHref` в преобразовании MDC
 
-**File:** [`server/utils/transformMDC.ts`](../../docs/server/utils/transformMDC.ts)
+**Файл:** [`server/utils/transformMDC.ts`](../../docs/server/utils/transformMDC.ts)
 
-Local additions with no upstream counterpart. They rewrite documentation links
-so that a link to a docs page also resolves under `/raw/*.md` (the plain-text
-mirror that feeds `llms-full.txt`), and they map cross-project links through the
-`B24_DOCS` table to the b24ui and b24jssdk sites.
+Локальные добавления без аналога в upstream. Они переписывают ссылки в документации так,
+чтобы ссылка на страницу документации разрешалась и под `/raw/*.md` (зеркало простого
+текста, питающее `llms-full.txt`), и сопоставляют ссылки между проектами через таблицу
+`B24_DOCS` с сайтами b24ui и b24jssdk.
 
-Upstream has no `/raw` route and no sibling-project link table, so there is
-nothing to sync here — but the surrounding file *is* upstream's, so a sync can
-easily drop these two functions on the floor. They are called from
-`transformMDC` near the end of the pipeline.
+В upstream нет маршрута `/raw` и таблицы ссылок на соседние проекты, так что
+синхронизировать тут нечего, — но окружающий файл *принадлежит* upstream, поэтому при
+синхронизации эти две функции легко потерять. Они вызываются из `transformMDC` ближе к
+концу конвейера.
 
-### 4. A Content Security Policy
+### 4. Политика безопасности контента (CSP)
 
-**File:** [`server/plugins/csp.ts`](../../docs/server/plugins/csp.ts)
-**Introduced:** #399
+**Файл:** [`server/plugins/csp.ts`](../../docs/server/plugins/csp.ts)
+**Внесено:** #399
 
-Upstream sets no CSP. This fork does, as a `<meta http-equiv>` tag, because
-GitHub Pages cannot set response headers.
+Upstream не задаёт CSP. Этот форк задаёт — в виде тега `<meta http-equiv>`, потому что
+GitHub Pages не умеет задавать заголовки ответа.
 
-It only became worth doing once divergence 1 landed: with prettier bundled the
-site loads nothing from any external origin, so the policy is `'self'`
-throughout rather than a list of CDN exceptions.
+Затевать это имело смысл только после отличия 1: когда prettier встроен, сайт не
+загружает ничего с внешних источников, поэтому везде в политике `'self'`, а не список
+исключений для CDN.
 
-**Before changing it, read [`docs-csp.md`](docs-csp.md).** Three relaxations are
-load-bearing and one of them fails invisibly — nothing on a statically loaded
-page touches the SQLite search worker, so a policy missing `'wasm-unsafe-eval'`
-looks clean until someone searches.
+**Прежде чем менять её, прочитайте [`docs-csp.md`](docs-csp.md).** Три послабления
+несущие, и одно из них отказывает невидимо: ничто на статически загруженной странице не
+обращается к воркеру поиска SQLite, поэтому политика без `'wasm-unsafe-eval'` выглядит
+чистой, пока кто-нибудь не выполнит поиск.
 
-**A sync will not conflict with this** — upstream has no such plugin — which is
-precisely why it can be dropped by accident: a sync that prunes files absent
-upstream removes it silently, and nothing fails. The static presence check in
-`docs-build` is what catches that.
+**Синхронизация с этим не конфликтует** — в upstream такого плагина нет, — именно
+поэтому его можно потерять случайно: синхронизация, удаляющая файлы, которых нет в
+upstream, уберёт его молча, и ничто не упадёт. Поймает это статическая проверка
+присутствия в `docs-build`.
 
-### 5. `codeTransform.ts` and `prettierWorkerApi.ts` are extracted modules
+### 5. `codeTransform.ts` и `prettierWorkerApi.ts` — выделенные модули
 
-**Files:** [`app/utils/codeTransform.ts`](../../docs/app/utils/codeTransform.ts), [`app/utils/prettierWorkerApi.ts`](../../docs/app/utils/prettierWorkerApi.ts)
-**Introduced:** #139
+**Файлы:** [`app/utils/codeTransform.ts`](../../docs/app/utils/codeTransform.ts), [`app/utils/prettierWorkerApi.ts`](../../docs/app/utils/prettierWorkerApi.ts)
+**Внесено:** #139
 
-Upstream keeps both bodies inline. This fork extracted them so they can be unit
-tested without a Nuxt app, a DOM, or a `Worker`.
+Upstream держит оба тела внутри. Этот форк выделил их, чтобы их можно было тестировать
+модульно — без приложения Nuxt, DOM и `Worker`.
 
-`codeTransform.ts` carries a hard constraint the extraction exists to protect:
-**it must stay free of Vue, Nuxt and SDK imports.** `server/utils/transformMDC.ts`
-calls it during SSR and prerender, so anything constructing a client or reading
-runtime config breaks `/raw/*.md` and `llms-full.txt`. It previously reached
-`prepareCode` through the `useB24` composable, which builds `B24Hook` / `B24Frame`
-— that is what #139 reported.
+`codeTransform.ts` несёт жёсткое ограничение, ради которого выделение и сделано:
+**в нём не должно быть импортов Vue, Nuxt и SDK.** `server/utils/transformMDC.ts`
+вызывает его во время SSR и пререндера, поэтому всё, что создаёт клиент или читает
+рантайм-конфиг, ломает `/raw/*.md` и `llms-full.txt`. Раньше он добирался до
+`prepareCode` через композабл `useB24`, который создаёт `B24Hook` / `B24Frame`, — об
+этом и сообщал #139.
 
-`prettierWorkerApi.ts` holds the postMessage/reply bookkeeping. Its contract is
-why `workers/prettier.js` must reply to **every** message: a pending call sits in
-`handlers` until a reply carrying its `uid` arrives, so a message that never gets
-one is a promise that never settles, and `CodeExample.vue` awaits it forever.
+`prettierWorkerApi.ts` содержит учёт postMessage/ответов. Его контракт — причина, по
+которой `workers/prettier.js` должен отвечать на **каждое** сообщение: ожидающий вызов
+лежит в `handlers`, пока не придёт ответ с его `uid`, так что сообщение, на которое
+ответа нет, — это промис, который никогда не завершится, и `CodeExample.vue` ждёт его
+вечно.
 
-**To go back upstream** you would be giving up the tests. There is no other
-reason these files are separate.
+**Чтобы вернуться к upstream**, пришлось бы отказаться от тестов. Другой причины для
+отдельности этих файлов нет.
 
-## Keeping this file honest
+## Как поддерживать этот файл честным
 
-- Add a divergence here **in the PR that introduces it**, not afterwards. The
-  file-level comment is still worth writing — it is what someone editing that
-  file sees — but a comment alone does not survive the second sync, because the
-  next person has to already know to look for it.
+- Добавляйте отличие сюда **в том PR, который его вносит**, а не потом. Комментарий на
+  уровне файла писать всё равно стоит — его увидит тот, кто правит этот файл, — но один
+  комментарий не переживает второй синхронизации, потому что следующий человек уже
+  должен знать, что искать.
 
-  **Nothing enforces this.** No gate fails when a PR introduces a divergence and
-  skips this file; it is the one rule here that is pure honour system, and it is
-  therefore the one most likely to be skipped under time pressure. Said out loud
-  so nobody mistakes an unchanged file for a verified one.
-- Move the pin at the top whenever you actually compare against upstream, and
-  say what you compared. Bumping it without looking is worse than leaving it
-  stale, because it launders a guess into a fact. Also unenforced — but a stale
-  pin fails safe, since every claim below is explicitly scoped to it.
-- If a divergence stops being deliberate — upstream adopts it, or the reason
-  expires — delete the entry and sync the file. An entry here is a claim that
-  the difference is still earning its keep.
+  **Ничто это не обеспечивает.** Ни одна проверка не падает, когда PR вносит отличие и
+  пропускает этот файл; это единственное здесь правило, которое держится чисто на
+  честном слове, и поэтому его чаще всего пропускают в спешке. Сказано вслух, чтобы
+  никто не принял неизменённый файл за проверенный.
+- Сдвигайте привязку в начале всякий раз, когда действительно сравниваете с upstream, и
+  указывайте, с чем сравнивали. Сдвинуть её, не посмотрев, хуже, чем оставить
+  устаревшей, потому что это превращает догадку в факт. Тоже не обеспечивается — но
+  устаревшая привязка безопасна, поскольку каждое утверждение ниже явно ограничено ею.
+- Если отличие перестало быть намеренным — upstream принял его или причина отпала, —
+  удалите запись и синхронизируйте файл. Запись здесь — утверждение, что отличие всё
+  ещё оправдывает своё существование.
 
-The **links** are enforced: `lint:md-links` checks every path this file cites, so
-an entry recorded against a file that has since moved fails CI rather than
-sending the next reader hunting. That covers where the divergences are, not
-whether the list is complete — see the honour-system note above.
+**Ссылки** проверяются: `lint:md-links` проверяет каждый путь, который цитирует этот
+файл, так что запись о файле, который с тех пор переехал, роняет CI, а не отправляет
+следующего читателя на поиски. Это покрывает, где находятся отличия, но не полноту
+списка — см. примечание выше про честное слово.
 
-This document records decisions already taken. It does not answer whether
-maintaining a fork of someone else's docs site is the right long-term position;
-that question is #411.
+Этот документ фиксирует уже принятые решения. Он не отвечает на вопрос, правильно ли в
+долгосрочной перспективе поддерживать форк чужого сайта документации; этот вопрос — issue #411.

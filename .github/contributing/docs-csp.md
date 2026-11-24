@@ -1,59 +1,59 @@
-# The documentation site's Content Security Policy
+# Политика безопасности контента (CSP) сайта документации
 
-Last reviewed: 2026-08-29.
+Последняя сверка: 2026-08-29.
 
-The policy lives in [`docs/server/plugins/csp.ts`](../../docs/server/plugins/csp.ts).
-This page is why it says what it says, why it is emitted from there rather than
-from `nuxt.config.ts`, and how to change it without breaking the site quietly.
+Политика лежит в [`docs/server/plugins/csp.ts`](../../docs/server/plugins/csp.ts).
+Эта страница объясняет, почему она именно такая, почему её выдаёт этот файл, а не
+`nuxt.config.ts`, и как менять её, не сломав сайт незаметно.
 
-## Why a `<meta>` tag and not a header
+## Почему тег `<meta>`, а не заголовок
 
-The site is `nuxt generate` output served by GitHub Pages, which cannot set
-response headers. That is not a preference; there is no mechanism.
+Сайт — это результат `nuxt generate`, который раздаёт GitHub Pages, а он не умеет
+задавать заголовки ответа. Это не предпочтение: такого механизма просто нет.
 
-It is worth knowing because the same file sets `routeRules` headers — `Link`,
-`Vary`, and `X-Frame-Options` / `Referrer-Policy` on `/api/**`. **Those are inert
-on Pages.** They apply when the site runs under a Nitro server; on the deployed
-static build nothing serves them. Do not read their presence as evidence that a
-header-based approach works here.
+Знать это нужно ещё и потому, что тот же файл задаёт заголовки в `routeRules` — `Link`,
+`Vary`, а также `X-Frame-Options` / `Referrer-Policy` на `/api/**`. **На Pages они
+бездействуют.** Они применяются, когда сайт работает под сервером Nitro; в
+развёрнутой статической сборке их никто не отдаёт. Не принимайте их наличие за
+доказательство того, что подход через заголовки здесь работает.
 
-Three directives are header-only and therefore **cannot be expressed at all**:
+Три директивы работают только в заголовке и поэтому **не могут быть выражены вообще**:
 
-| Directive | What is lost |
+| Директива | Что теряется |
 | --- | --- |
-| `frame-ancestors` | Nothing prevents another site framing ours. `X-Frame-Options` in `routeRules` does not fill the gap — it is inert for the same reason. |
-| `report-uri` / `report-to` | No violation reporting. A policy that is too strict shows up only in a visitor's console. |
-| `sandbox` | Not applicable here anyway. |
+| `frame-ancestors` | Ничто не мешает другому сайту встроить наш во фрейм. `X-Frame-Options` в `routeRules` пробел не закрывает — он бездействует по той же причине. |
+| `report-uri` / `report-to` | Отчётов о нарушениях нет. Слишком строгая политика проявляется только в консоли посетителя. |
+| `sandbox` | В любом случае здесь неприменима. |
 
-The first is a genuine residual risk, accepted — but not because there is
-nothing worth framing. This is an official vendor SDK's documentation: it carries
-install commands, code to copy, and links to GitHub and npm. A framed clone could
-overlay a different package name in an install snippet, or dress a link as a
-sign-in. The honest statement is narrower: **we accept it because GitHub Pages
-leaves no mechanism to set the directive**, and because the site holds no session
-and performs no state-changing action a visitor could be tricked into.
+Первое — настоящий остаточный риск, который принят, — но не потому, что встраивать
+нечего. Это документация официального вендорского SDK: в ней есть команды установки,
+код для копирования и ссылки на GitHub и npm. Встроенный во фрейм клон мог бы наложить
+другое имя пакета на фрагмент установки или выдать ссылку за форму входа. Честнее
+сказать так: **мы принимаем риск, потому что GitHub Pages не оставляет механизма для
+задания директивы**, и потому что у сайта нет сессии и он не выполняет действий,
+меняющих состояние, к которым посетителя можно было бы подтолкнуть обманом.
 
-## Why a Nitro plugin, and not `app.head.meta`
+## Почему плагин Nitro, а не `app.head.meta`
 
-A `<meta>` policy governs only what the parser reaches **after** it, so its
-position in `<head>` decides how much of the page it covers at all.
+Политика в `<meta>` управляет только тем, до чего парсер доходит **после** неё, поэтому
+её положение в `<head>` определяет, какую часть страницы она вообще покрывает.
 
-`app.head.meta` cannot get it high enough. Measured: even with
-`tagPriority: 'critical'`, the tag landed **158 tags deep** — below the import
-map, the inline critical CSS, the entry stylesheet and 143 `modulepreload` hints,
-all of which were therefore outside the policy. Unhead does not order those; Nitro
-and Vite emit them directly, so no head configuration moves the tag above them.
+`app.head.meta` не может поднять её достаточно высоко. Измерено: даже с
+`tagPriority: 'critical'` тег оказался **на 158-м месте** — ниже import map,
+встроенного критического CSS, основной таблицы стилей и 143 подсказок `modulepreload`,
+и всё это оказалось вне политики. Unhead их не упорядочивает: Nitro и Vite выдают их
+напрямую, поэтому никакая настройка head не поднимает тег выше.
 
-A build-time `hooks: { 'render:html' }` in `nuxt.config.ts` does not work either —
-that key takes Nuxt's build hooks, and `render:html` is a Nitro **runtime** hook.
-It has to be a Nitro plugin: [`docs/server/plugins/csp.ts`](../../docs/server/plugins/csp.ts),
-which prepends the tag so it is first in `<head>`, ahead of everything.
+Хук сборки `hooks: { 'render:html' }` в `nuxt.config.ts` тоже не работает — этот ключ
+принимает хуки сборки Nuxt, а `render:html` — **рантайм**-хук Nitro. Нужен плагин Nitro:
+[`docs/server/plugins/csp.ts`](../../docs/server/plugins/csp.ts), который добавляет
+тег в начало, чтобы он шёл первым в `<head>`, раньше всего остального.
 
-Verified on the built output: **151 pages, the tag first on every one, and never
-duplicated.** The last part matters — two `<meta>` policies are both enforced and
-a resource must satisfy the intersection.
+Проверено на собранном результате: **151 страница, тег первый на каждой и нигде не
+продублирован.** Последнее важно: две политики в `<meta>` применяются обе, и ресурс
+должен удовлетворять их пересечению.
 
-## The policy
+## Политика
 
 ```text
 default-src 'self';
@@ -70,65 +70,65 @@ frame-src 'none';
 manifest-src 'self'
 ```
 
-Everything is `'self'` because **the built site loads nothing from any external
-origin** — no script, stylesheet, font, image, or fetch. That became true with
-PR #407, which replaced the prettier CDN with a bundled copy. Before it, this policy
-would have needed a jsDelivr exception in `script-src`, and the whole exercise
-would have been worth much less.
+Везде `'self'`, потому что **собранный сайт ничего не загружает с внешних источников** —
+ни скриптов, ни стилей, ни шрифтов, ни изображений, ни запросов fetch. Так стало после
+PR #407, который заменил CDN с prettier встроенной копией. До него политике понадобилось
+бы исключение для jsDelivr в `script-src`, и вся затея стоила бы гораздо меньше.
 
-Three relaxations, each required by something real:
+Три послабления, каждое вызвано чем-то реальным:
 
-| Relaxation | Why | If you remove it |
+| Послабление | Зачем | Если убрать |
 | --- | --- | --- |
-| `script-src 'unsafe-inline'` | Nuxt emits an inline hydration payload on every page | Every page fails to hydrate |
-| `script-src 'wasm-unsafe-eval'` | `@nuxt/content`'s search runs SQLite compiled to WebAssembly in the browser | Search silently returns nothing |
-| `style-src 'unsafe-inline'` | Nuxt inlines critical CSS | The site renders unstyled |
+| `script-src 'unsafe-inline'` | Nuxt выдаёт встроенную полезную нагрузку гидратации на каждой странице | Ни одна страница не гидратируется |
+| `script-src 'wasm-unsafe-eval'` | Поиск `@nuxt/content` запускает в браузере SQLite, скомпилированный в WebAssembly | Поиск молча ничего не возвращает |
+| `style-src 'unsafe-inline'` | Nuxt встраивает критический CSS | Сайт отображается без стилей |
 
-`'unsafe-inline'` in `script-src` removes most of CSP's XSS protection, and it
-cannot be avoided here: hashes would differ per page, and one static `<meta>` tag
-cannot carry 151 sets of them. Nonces need a per-response server.
+`'unsafe-inline'` в `script-src` лишает CSP основной защиты от XSS, и избежать этого
+здесь нельзя: хеши различались бы от страницы к странице, а один статический тег
+`<meta>` не может нести 151 набор хешей. Для nonce нужен сервер, отвечающий на каждый
+запрос отдельно.
 
-**So do not read this policy as XSS mitigation.** An injected `<script>` or an
-`onerror=` payload still runs. What it does buy, and the reason #399 exists, is
-that such a payload cannot **fetch a second stage from, or exfiltrate anything
-to, an attacker-controlled origin** — `script-src`, `connect-src` and `img-src`
-are all `'self'`. That is a defence against a compromised build-time dependency
-far more than against runtime XSS, and it is a narrow win rather than a broad
-one.
+**Поэтому не воспринимайте эту политику как защиту от XSS.** Внедрённый `<script>` или
+нагрузка `onerror=` всё равно выполнится. Политика даёт другое, и ради этого существует issue #399:
+такая нагрузка не сможет **загрузить второй этап с подконтрольного атакующему
+источника или отправить ему что-либо** — `script-src`, `connect-src` и `img-src` все
+`'self'`. Это защита скорее от скомпрометированной зависимости времени сборки, чем от
+XSS в рантайме, и это узкий, а не широкий выигрыш.
 
-`worker-src 'self'` is stated rather than left to fall back to `script-src`,
-because that fallback would carry `'unsafe-inline'` with it. Both workers the
-site starts — `@nuxt/content`'s SQLite worker and the prettier formatting worker,
-a module worker since #407 — are same-origin, so `'self'` is enough.
+`worker-src 'self'` указан явно, а не оставлен на откат к `script-src`, потому что такой
+откат принёс бы с собой `'unsafe-inline'`. Оба воркера, которые запускает сайт, — SQLite
+из `@nuxt/content` и воркер форматирования prettier (модульный воркер с #407) — того же
+источника, так что `'self'` достаточно.
 
-The prettier worker needed a deliberate check, because **no page visit reaches
-it**: `CodeExample` formats only when its `prettier` prop is set, and no content
-page sets it. So the browser script constructs it directly, on every page it
-visits, rather than leaving half of `worker-src` untested — a module worker is
-fetched rather than inherited, which is exactly the case a policy is likely to
-get wrong. Confirmed to fail under `worker-src 'none'`.
+Воркер prettier потребовал отдельной проверки, потому что **ни одно посещение страницы
+до него не доходит**: `CodeExample` форматирует, только когда задан его проп `prettier`,
+а ни одна страница контента его не задаёт. Поэтому скрипт для браузера создаёт его
+напрямую на каждой посещаемой странице, а не оставляет половину `worker-src`
+непроверенной: модульный воркер загружается, а не наследуется, и именно этот случай
+политика, скорее всего, обработает неверно. Подтверждено: при `worker-src 'none'`
+воркер падает.
 
-`img-src 'self'` carries no `data:`, and this one has a caveat worth stating
-precisely. **The built CSS does contain a `data:image/svg+xml` URI** — the
-`bg-grid-example` rule in `docs/app/assets/css/main.css`, inherited from upstream
-`nuxt/ui`. No element on the built site carries that class, so nothing ever
-requests it and the policy never fires.
+В `img-src 'self'` нет `data:`, и здесь стоит оговорка, которую нужно сформулировать
+точно. **Собранный CSS содержит URI `data:image/svg+xml`** — правило `bg-grid-example` в
+`docs/app/assets/css/main.css`, унаследованное из upstream `nuxt/ui`. Ни один элемент
+собранного сайта не использует этот класс, поэтому его никто не запрашивает и политика
+не срабатывает.
 
-That makes it a latent landmine of exactly the shape this page warns about
-elsewhere: applying `bg-grid-example` to anything, or pasting another upstream
-rule that uses a `data:` background, would break rendering with no build or test
-failure. If you do, either add `data:` to `img-src` or drop the rule — do not
-assume the absence of a violation today means the site is free of `data:` URIs.
+Это скрытая мина ровно той формы, о которой эта страница предупреждает в других местах:
+применение `bg-grid-example` к чему-либо или копирование другого upstream-правила с
+фоном `data:` сломает отрисовку без падения сборки или тестов. Если так случится,
+добавьте `data:` в `img-src` или уберите правило — не считайте, что отсутствие нарушения
+сегодня означает отсутствие URI `data:` на сайте.
 
-## Changing it
+## Как её менять
 
-**Do not reason about a CSP. Measure it.** Every relaxation above was established
-by removing it and watching what broke, and one of them — `'wasm-unsafe-eval'` —
-is invisible on a statically loaded page: nothing touches the SQLite worker until
-someone opens search, so a policy missing it looks perfectly clean.
+**Не рассуждайте о CSP. Измеряйте её.** Каждое послабление выше установлено тем, что его
+убирали и смотрели, что сломается, а одно из них — `'wasm-unsafe-eval'` — невидимо на
+статически загруженной странице: к воркеру SQLite ничто не обращается, пока кто-нибудь
+не откроет поиск, так что политика без него выглядит совершенно чистой.
 
 ```bash
-npm i playwright        # not a dependency of this repo; remove it afterwards
+npm i playwright        # не зависимость этого репозитория; потом удалите
 
 NUXT_PUBLIC_SITE_URL=https://bitrix24.github.io \
 NUXT_PUBLIC_BASE_URL=/b24jssdk \
@@ -140,61 +140,60 @@ pnpm run docs:generate
 node scripts/check-docs-csp.mjs
 ```
 
-The environment variables are not optional: without them the footer's
-`${gitUrl}/releases` link becomes the relative path `/releases`, the prerenderer
-crawls it, and the build fails with a 404 that says nothing about the cause.
+Переменные окружения обязательны: без них ссылка `${gitUrl}/releases` в подвале
+превращается в относительный путь `/releases`, пререндерер обходит её, и сборка падает с
+404, ничего не говорящей о причине.
 
-[`scripts/check-docs-csp.mjs`](../../scripts/check-docs-csp.mjs) serves the built
-site, loads a sample of pages in Chromium, **opens the search dialog on each**,
-and reports every violation the browser raises. Pass paths to check others. Pass
-a candidate policy in `CSP=` to try one without rebuilding — that is how to check
-whether a relaxation is still load-bearing.
+[`scripts/check-docs-csp.mjs`](../../scripts/check-docs-csp.mjs) раздаёт собранный сайт,
+загружает выборку страниц в Chromium, **открывает на каждой диалог поиска** и сообщает
+обо всех нарушениях, которые зафиксировал браузер. Чтобы проверить другие страницы,
+передайте пути. Чтобы попробовать кандидата в политики без пересборки, передайте его в
+`CSP=` — так проверяют, остаётся ли послабление необходимым.
 
-The script **strips the built-in policy before injecting the candidate**, so the
-candidate genuinely replaces it. That is not a detail: adding a second `<meta>`
-policy would leave both enforced, a resource would have to satisfy the
-intersection, and dropping a directive from the candidate could never actually
-loosen anything — the check would report "still works" for a relaxation that is
-in fact required. Verified by counting the tags in the served response: one, and
-it is the candidate.
+Скрипт **вырезает встроенную политику перед внедрением кандидата**, так что кандидат
+действительно её заменяет. Это не мелочь: второй тег `<meta>` с политикой оставил бы
+действующими обе, ресурс должен был бы удовлетворять пересечению, и удаление директивы
+из кандидата никогда ничего не ослабило бы — проверка сообщала бы «всё работает» для
+послабления, которое на самом деле необходимо. Проверено подсчётом тегов в отданном
+ответе: тег один, и это кандидат.
 
 ```bash
 CSP="default-src 'self'; script-src 'self' 'unsafe-inline'" node scripts/check-docs-csp.mjs
 ```
 
-## What runs automatically, and what does not
+## Что выполняется автоматически, а что нет
 
-Two checks, and the difference matters:
+Две проверки, и разница между ними важна:
 
-| | Runs | Catches |
+| | Когда выполняется | Что ловит |
 | --- | --- | --- |
-| [`scripts/check-docs-csp-present.mjs`](../../scripts/check-docs-csp-present.mjs) | **in CI**, in `docs-build`, on every PR | the tag missing, duplicated, or no longer first in `<head>`, and the loss of a structural directive |
-| [`scripts/check-docs-csp.mjs`](../../scripts/check-docs-csp.mjs) | by hand | a policy that is **too strict** — the page breaking under it |
+| [`scripts/check-docs-csp-present.mjs`](../../scripts/check-docs-csp-present.mjs) | **в CI**, в `docs-build`, на каждом PR | тег отсутствует, продублирован или больше не первый в `<head>`, а также потерю структурной директивы |
+| [`scripts/check-docs-csp.mjs`](../../scripts/check-docs-csp.mjs) | вручную | политику, которая **слишком строга**, — страница ломается под ней |
 
-The presence check exists because that failure already happened here: an earlier
-attempt emitted **no policy at all** on any of the 151 pages, with a green build
-and green tests. It needs no browser, so it is cheap enough to run always.
+Проверка присутствия существует потому, что такой сбой здесь уже случался: одна из
+ранних попыток выдавала **вообще никакой политики** ни на одной из 151 страницы при
+зелёной сборке и зелёных тестах. Ей не нужен браузер, так что запускать её всегда
+дёшево.
 
-It deliberately pins only four directives — `default-src`, `script-src`,
-`object-src`, `base-uri`. Pinning the whole policy would make every intentional
-change fail twice, once in the plugin and once in the check. The consequence is
-worth knowing: **dropping `frame-src`, `worker-src`, `style-src` or the rest
-passes CI silently.** Only the browser check would notice, and only if what you
-dropped happens to break something.
+Она намеренно закрепляет только четыре директивы — `default-src`, `script-src`,
+`object-src`, `base-uri`. Закрепление всей политики заставило бы каждое намеренное
+изменение падать дважды: в плагине и в проверке. Следствие стоит знать: **удаление
+`frame-src`, `worker-src`, `style-src` или остальных проходит CI молча.** Заметит
+только проверка в браузере, и то лишь если удалённое случайно что-то ломает.
 
-## Why the browser check is not in CI
+## Почему проверка в браузере не в CI
 
-It needs a full `docs:generate` and a browser, and `playwright` is not a
-dependency of this repository. Adding both to catch a policy that changes perhaps
-once a year is not a trade worth making.
+Ей нужны полный `docs:generate` и браузер, а `playwright` не является зависимостью
+этого репозитория. Добавлять и то и другое ради политики, которая меняется, может быть,
+раз в год, — невыгодная сделка.
 
-The consequence is worth stating plainly: **nothing automatically catches a CSP
-that is too strict.** It does not break the build, or any test. It breaks the
-page, in the browser, for visitors. If you touch the policy, run the script.
+Следствие нужно назвать прямо: **ничто автоматически не ловит слишком строгую CSP.**
+Она не ломает ни сборку, ни какой-либо тест. Она ломает страницу в браузере у
+посетителей. Если вы трогаете политику — запустите скрипт.
 
-## Related
+## Связанное
 
-- #399 — the issue; its first half (#407) removed the CDN this policy would
-  otherwise have to allow
-- [`docs-fork.md`](docs-fork.md) — this policy is also a divergence from upstream
-  `nuxt/ui`, recorded there
+- #399 — issue; его первая половина (#407) убрала CDN, для которого этой политике
+  иначе пришлось бы делать исключение
+- [`docs-fork.md`](docs-fork.md) — эта политика также является отличием от upstream
+  `nuxt/ui`, записанным там
