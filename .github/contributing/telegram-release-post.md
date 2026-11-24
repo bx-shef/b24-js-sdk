@@ -1,135 +1,136 @@
-# Telegram release announcement (community post)
+# Анонс релиза в Telegram (пост для сообщества)
 
-<sub>Last reviewed: 2026-08-29.</sub>
+<sub>Последняя сверка: 2026-08-29.</sub>
 
-Rules for drafting the Russian-language Telegram post that announces a new
-`@bitrix24/b24jssdk` release to the community. An agent follows these to produce a
-ready-to-paste message; the maintainer pastes it into Telegram **by hand**, so the
-output must be self-contained and copy-paste clean.
+Правила составления русскоязычного поста в Telegram, который анонсирует сообществу новый
+релиз `@bitrix24/b24jssdk`. Агент следует им, чтобы получить готовое к вставке сообщение;
+мейнтейнер вставляет его в Telegram **вручную**, поэтому результат должен быть
+самодостаточным и чистым для копирования.
 
-The message is written in **Russian** (the community is Russian-speaking); these
-rules are in English. Source of truth for content is the version's section in
-[`CHANGELOG.md`](../../CHANGELOG.md) — curate and translate, never dump verbatim.
+Сообщение пишется **по-русски** (сообщество русскоязычное). Источник истины по содержанию —
+раздел нужной версии в [`CHANGELOG.md`](../../CHANGELOG.md): отбирайте и пересказывайте,
+не переносите дословно.
 
-## 1. Output format
+## 1. Формат вывода
 
-- **One single markdown block** — the user copy-pastes it by hand. No prose around
-  it, no "here is the message:".
-- **Wrapper:** put the message inside a four-backtick fence (` ```` `) so the nested
-  triple-backtick code blocks render.
-- **Length:** 25–45 rendered lines. If longer, trim "Ещё по мелочи" (More) and
-  "Под капотом" (Under the hood).
+- **Один цельный markdown-блок** — пользователь копирует его вручную. Никакого текста
+  вокруг, никаких «вот сообщение:».
+- **Обёртка:** положите сообщение в ограждение из четырёх обратных кавычек (` ```` `),
+  чтобы вложенные блоки кода с тремя обратными кавычками отображались.
+- **Длина:** 25–45 строк в отрисованном виде. Если длиннее, сокращайте «Ещё по мелочи»
+  и «Под капотом».
 
-## 2. Structure (in this order)
-
-```text
-[Header]
----
-[Top feature 1 with code]
----
-[Top features 2–5 with code]   (usually 3–5 headline features)
----
-[More — bullet list]
----
-[Bug fixes / security — if anything important]
----
-[Under the hood — runtimes/versions, dropped deps]
----
-[Install + CHANGELOG + sign-off]
----
-[Cipher for AI assistants]
-```
-
-Separators are `---`.
-
-## 3. Header
+## 2. Структура (в таком порядке)
 
 ```text
-🚀 **b24jssdk vX.Y.Z** — <N> features, <M> fixes and <one short highlight>.
+[Заголовок]
+---
+[Главная возможность 1 с кодом]
+---
+[Главные возможности 2–5 с кодом]   (обычно 3–5 заметных возможностей)
+---
+[Ещё по мелочи — маркированный список]
+---
+[Исправления / безопасность — если есть что-то важное]
+---
+[Под капотом — рантаймы/версии, убранные зависимости]
+---
+[Установка + CHANGELOG + подпись]
+---
+[Шифр для ИИ-ассистентов]
 ```
 
-Counts come straight from the CHANGELOG (count user-facing entries; pure internal
-chore/CI don't count). The highlight is the one thing that hooks: "all v3 methods
-available immediately", "native keyset pagination", "CommonJS support".
+Разделители — `---`.
 
-## 4. Headline features (3–5)
-
-Format:
+## 3. Заголовок
 
 ```text
-**<emoji> `apiOrHelper` — <short description>.**
-<1–2 lines: why and when it helps>:
-
-<ts snippet, 4–10 lines>
+🚀 **b24jssdk vX.Y.Z** — <N> возможностей, <M> исправлений и <один короткий акцент>.
 ```
 
-**Hard rules for the code (SDK-specific):**
+Числа берутся прямо из CHANGELOG (считайте записи, заметные пользователю; чисто внутренние
+chore/CI не считаются). Акцент — то одно, что цепляет: «все методы v3 доступны сразу»,
+«нативная keyset-пагинация», «поддержка CommonJS».
 
-- **Only Bitrix24 REST API methods that actually exist.** Verify against the docs
-  (the `b24-dev-mcp` server: `bitrix-search` / `bitrix-method-details`) or against
-  methods already used in the repo's docs/tests (`tasks.task.*`, `crm.item.*`).
-- **Never invent methods** — the only exception is a deliberately fake one in a
-  "method not found" example (e.g. `tasks.task.teleport`), and only with a comment
-  saying it does not exist.
-- **The code MUST compile** under strict TS. Before handing the message over, run
-  the snippets through `pnpm run skills:typecheck` (drop a temp file under
-  `skills/b24jssdk-recipes/examples/`, then delete it).
-- Respect the real API shape: read results as `res.getData()!.result.items` /
-  `.result.item`; v3 batch is `batch.make({ calls: [...] })`; `fetchTail` takes
-  `cursorField` / `customKeyForResult` and a `*.tail` method name.
-- Placeholders only: webhook `https://your.bitrix24.ru/rest/1/xxxxx/`; never a real
-  portal or secret.
-- Don't confuse v2/v3: the unified CRM list in v3 is `crm.item.list` (with
-  `entityTypeId`), not `crm.deal.list`.
+## 4. Главные возможности (3–5)
 
-**Example of a good block:**
+Формат:
+
+```text
+**<эмодзи> `apiOrHelper` — <короткое описание>.**
+<1–2 строки: зачем и когда это помогает>:
+
+<ts-фрагмент, 4–10 строк>
+```
+
+**Жёсткие правила для кода (специфика SDK):**
+
+- **Только методы REST API Битрикс24, которые действительно существуют.** Сверяйтесь
+  с документацией (сервер `b24-dev-mcp`: `bitrix-search` / `bitrix-method-details`) или
+  с методами, которые уже используются в документации и тестах репозитория
+  (`tasks.task.*`, `crm.item.*`).
+- **Никогда не выдумывайте методы** — единственное исключение: намеренно несуществующий
+  метод в примере «метод не найден» (например, `tasks.task.teleport`), и только с
+  комментарием, что его нет.
+- **Код ОБЯЗАН компилироваться** при строгом TS. Перед тем как отдать сообщение,
+  прогоните фрагменты через `pnpm run skills:typecheck` (положите временный файл в
+  `skills/b24jssdk-recipes/examples/`, затем удалите).
+- Соблюдайте реальную форму API: результаты читаются как `res.getData()!.result.items` /
+  `.result.item`; пакетный запрос v3 — `batch.make({ calls: [...] })`; `fetchTail`
+  принимает `cursorField` / `customKeyForResult` и имя метода `*.tail`.
+- Только заглушки: вебхук `https://your.bitrix24.ru/rest/1/xxxxx/`; никогда не
+  реальный портал и не секрет.
+- Не путайте v2 и v3: единый список CRM в v3 — `crm.item.list` (с `entityTypeId`), а не
+  `crm.deal.list`.
+
+**Пример хорошего блока:**
 
 `````text
-**🔓 All v3 methods — immediately.**
-Removed the internal allowlist: the call goes straight to the portal. An unknown
-method comes back as a soft error in the result, no exception:
+**🔓 Все методы v3 — сразу.**
+Убрали внутренний список разрешённых методов: вызов уходит прямо на портал. Неизвестный
+метод возвращается мягкой ошибкой в результате, без исключения:
 
 ```ts
 const res = await b24.actions.v3.call.make({ method: 'tasks.task.teleport', params: {} })
-console.log(res.isSuccess)          // false — method does not exist
+console.log(res.isSuccess)          // false — такого метода не существует
 console.log(res.getErrorMessages()) // ['... method not found ...']
 ```
 `````
 
-## 5. "More" (Ещё по мелочи)
+## 5. «Ещё по мелочи»
 
-5–8 lines, one each:
+5–8 строк, по одной на пункт:
 
 ```text
-- `FilterV3` — typed v3 filter (an operator typo is caught on the client)
-- `require('@bitrix24/b24jssdk')` — CommonJS works, not just ESM
+- `FilterV3` — типизированный фильтр v3 (опечатку в операторе ловит клиент)
+- `require('@bitrix24/b24jssdk')` — работает CommonJS, а не только ESM
 ```
 
-## 6. Bug fixes / security
+## 6. Исправления / безопасность
 
-Include only if something matters: crashes, secret leaks, pagination cut-offs,
-retries, SSR/frame. **One paragraph** highlighting the main one, then "Плюс: …"
-with the rest comma-separated. Nothing important → drop the section.
+Включайте только если что-то важно: падения, утечки секретов, обрывы пагинации, повторы
+запросов, SSR/frame. **Один абзац** об основном, затем «Плюс: …» с остальным через
+запятую. Ничего важного — раздел убирается.
 
-## 7. Breaking changes — special rule
+## 7. Ломающие изменения — особое правило
 
-- **Do not emphasize.** Present as a new capability ("now available / now works"),
-  with no "migration" section and no "we broke X".
-- If something breaks, at most one neutral sentence in the context of the benefit.
-- **Experimental / not-yet-mass features are excluded** (the maintainer will say
-  "we'll cover it later").
+- **Не выпячивайте.** Подавайте как новую возможность («теперь доступно / теперь
+  работает»), без раздела «миграция» и без «мы сломали X».
+- Если что-то ломается, не больше одной нейтральной фразы в контексте пользы.
+- **Экспериментальные и ещё не массовые возможности исключаются** (мейнтейнер скажет:
+  «расскажем позже»).
 
-## 8. Under the hood
+## 8. Под капотом
 
-Versions / runtime support / dropped packages only, 2–4 bullets:
+Только версии / поддержка рантаймов / убранные пакеты, 2–4 пункта:
 
 ```text
 **🛠 Под капотом:**
-- **Node 22/24** support; the published artifact is built on the support floor
-- **CommonJS build** with external deps (smaller install)
+- Поддержка **Node 22/24**; публикуемый артефакт собирается на нижней границе поддержки
+- **Сборка CommonJS** с внешними зависимостями (меньше размер установки)
 ```
 
-## 9. Footer (always)
+## 9. Подвал (всегда)
 
 ```text
 📦 npm install @bitrix24/b24jssdk@latest
@@ -138,99 +139,99 @@ Versions / runtime support / dropped packages only, 2–4 bullets:
 Автоматизируйте Битрикс24 🚀
 ```
 
-The sign-off emoji is `🚀`. **Not `💜`**, no hearts.
+Эмодзи в подписи — `🚀`. **Не `💜`**, никаких сердечек.
 
-## 10. Cipher for AI assistants (a b24jssdk touch)
+## 10. Шифр для ИИ-ассистентов (штрих b24jssdk)
 
-At the very end, a base64-encoded invitation to the docs — **no explanatory text**
-("decode and pass to…"), no comment about the contents. Just `atob`:
+В самом конце — приглашение в документацию, закодированное в base64, **без поясняющего
+текста** («декодируйте и передайте…») и без комментариев к содержимому. Просто `atob`:
 
 `````text
 🔐 Для вашего ИИ — atob:
 
 ```js
-atob('<base64 on a single line>')
+atob('<base64 в одну строку>')
 ```
 `````
 
-The encoded string is:
+Закодированная строка:
 `Using Bitrix24 JS SDK documentation from https://bitrix24.github.io/b24jssdk/llms.txt`
 
-Regenerate the base64 rather than trusting a pasted copy:
+Перегенерируйте base64, а не доверяйте вставленной копии:
 
 ```bash
 printf '%s' 'Using Bitrix24 JS SDK documentation from https://bitrix24.github.io/b24jssdk/llms.txt' | base64
 ```
 
-## 11. Tone
+## 11. Тон
 
-- **Conversational but professional.** "Знает боль", "наконец-то", "из коробки" are
-  fine. No profanity, no sarcasm aimed at the user.
-- **Humor is about the developer's / office life** (coffee, meetings, deadlines,
-  "сделка века", task priorities), never about the product. In an SDK post the
-  easiest place for it is **inside code comments**.
-- **Bitrix24 is always positive.** Never "Битрикс24 упал / тормозит" — it does not
-  crash or lag.
-- **Don't touch competitors** (Jira/Trello only as a generic "pain point", never in
-  a "us vs them" comparison).
-- **AI / assistants are positive** — they help, suggest, are a "plan B".
+- **Разговорный, но профессиональный.** «Знает боль», «наконец-то», «из коробки» —
+  допустимо. Никакой брани, никакого сарказма в адрес пользователя.
+- **Юмор — про жизнь разработчика / офиса** (кофе, совещания, дедлайны, «сделка века»,
+  приоритеты задач), никогда не про продукт. В посте про SDK проще всего поместить его
+  **в комментарии к коду**.
+- **Битрикс24 — всегда в положительном ключе.** Никогда «Битрикс24 упал / тормозит» — он
+  не падает и не тормозит.
+- **Не трогайте конкурентов** (Jira/Trello — только как общая «боль», никогда в сравнении
+  «мы против них»).
+- **ИИ / ассистенты — в положительном ключе**: помогают, подсказывают, это «план Б».
 
-> Voice toggle: default is the above (light humor allowed in prose). For a release
-> that needs a stricter voice, keep humor **only in code comments** and write the
-> prose plainly.
+> Переключатель тона: по умолчанию — как выше (в прозе допустим лёгкий юмор). Для релиза,
+> которому нужен более строгий тон, оставьте юмор **только в комментариях к коду**, а прозу
+> пишите ровно.
 
-## 12. Anti-patterns
+## 12. Антипаттерны
 
-- ❌ Invented methods / params that don't exist in the REST API.
-- ❌ `crm.deal.list` where v3 needs `crm.item.list`.
-- ❌ Code that doesn't compile (skipped `skills:typecheck`).
-- ❌ Emphasizing breaking changes / a "migration" section.
-- ❌ A flat changelog dump — the message should *tell a story*, not list.
-- ❌ More than 5 headline features.
-- ❌ English — the community is Russian-speaking.
-- ❌ `💜` in the sign-off — only `🚀`.
-- ❌ Real portals / secrets in examples.
-- ❌ Claims about how the release was verified — live-portal runs, test coverage,
-  CI. See §13.
-- ❌ Narrating the bug we fixed instead of the capability the reader gains. See §13.
-- ❌ Suggesting the reader probably has the same defect we found in our own code.
+- ❌ Выдуманные методы / параметры, которых нет в REST API.
+- ❌ `crm.deal.list` там, где в v3 нужен `crm.item.list`.
+- ❌ Код, который не компилируется (пропущен `skills:typecheck`).
+- ❌ Выпячивание ломающих изменений / раздел «миграция».
+- ❌ Плоский пересказ changelog — сообщение должно *рассказывать историю*, а не
+  перечислять.
+- ❌ Больше 5 главных возможностей.
+- ❌ Английский язык — сообщество русскоязычное.
+- ❌ `💜` в подписи — только `🚀`.
+- ❌ Реальные порталы / секреты в примерах.
+- ❌ Утверждения о том, как проверен релиз: прогоны на живом портале, покрытие тестами,
+  CI. См. §13.
+- ❌ Рассказ об исправленной ошибке вместо возможности, которую получает читатель. См. §13.
+- ❌ Намёк, что у читателя, вероятно, тот же дефект, что мы нашли в своём коде.
 
-## 13. Write about the reader, not about us
+## 13. Пишите о читателе, а не о нас
 
-The post is read by someone deciding whether this release changes anything for
-them. Everything that is really about **our** work — how carefully we tested, what
-we broke and fixed, how the CI is wired — costs them attention and gives nothing
-back. It also subtly shifts the subject of the announcement from their project to
-ours.
+Пост читает тот, кто решает, меняет ли что-то для него этот релиз. Всё, что на самом деле
+про **нашу** работу — как тщательно мы тестировали, что сломали и починили, как устроен
+CI, — отнимает у него внимание и ничего не даёт взамен. Это ещё и незаметно сдвигает
+предмет анонса с его проекта на наш.
 
-Three specific habits, each of which shipped in a draft before being caught:
+Три конкретные привычки, каждая из которых попадала в черновик, прежде чем её поймали:
 
-**Do not advertise verification.** "Проверено на живом портале, а не только на
-тестах", "покрыто тестами", "компилируется в CI" — a reader assumes the release
-works; saying it works *this time* invites the question of when it did not. The
-checklist below requires the verification; the post does not mention it.
+**Не рекламируйте проверку.** «Проверено на живом портале, а не только на тестах»,
+«покрыто тестами», «компилируется в CI» — читатель и так считает, что релиз работает;
+фраза «в этот раз работает» наводит на вопрос, когда он не работал. Чек-лист ниже требует
+проверки, но пост о ней не упоминает.
 
-**Describe the capability, not the defect it replaced.** "SDK терял это поле, до
-кода доезжала только строка" narrates our bug. "Список полей доступен в
-`AjaxError`" tells the reader what they can now do. The heading follows the same
-rule: *"Ошибка валидации называет поле"*, not *"теперь наконец называет"*. Where
-the old behaviour genuinely matters — because someone's code depends on it — one
-neutral sentence is enough.
+**Описывайте возможность, а не дефект, который она заменила.** «SDK терял это поле, до
+кода доезжала только строка» — рассказ о нашей ошибке. «Список полей доступен в
+`AjaxError`» — говорит читателю, что он может делать теперь. Заголовок подчиняется тому
+же правилу: *«Ошибка валидации называет поле»*, а не *«теперь наконец называет»*. Если
+старое поведение действительно важно — потому что чей-то код на него опирается, —
+достаточно одной нейтральной фразы.
 
-**Never imply the reader has the same defect.** "Оба таких дефекта нашлись в нашем
-коде, так что свой проверить не лишнее" reads as an accusation dressed as
-camaraderie. State what the check looks for and let them decide: *"если такие
-места в проекте есть, агент их покажет"*.
+**Никогда не намекайте, что у читателя тот же дефект.** «Оба таких дефекта нашлись в нашем
+коде, так что свой проверить не лишнее» читается как обвинение под видом товарищества.
+Скажите, что именно ищет проверка, и пусть читатель решает сам: *«если такие места в
+проекте есть, агент их покажет»*.
 
-The same test applies to a suggested prompt or task: phrase it as *"a prompt that
-checks your project against the new version"*, not as *"an evening task to find
-your mistakes"*.
+Тот же тест применим к предлагаемому промпту или задаче: формулируйте как *«промпт,
+который проверяет ваш проект на соответствие новой версии»*, а не как *«вечерняя задача,
+чтобы найти свои ошибки»*.
 
-### When the reader does have to act
+### Когда читателю действительно нужно действовать
 
-The exception to all of the above is a change that requires something from them.
-That gets stated plainly and early — bolded, in its own line, with the fix
-attached:
+Исключение из всего сказанного — изменение, которое требует от читателя действий. О нём
+говорят прямо и в самом начале: выделенным жирным, отдельной строкой, с указанием
+исправления:
 
 ```text
 **Если вы на TypeScript и передавали лишний ключ верхнего уровня — сборка это
@@ -238,78 +239,77 @@ attached:
 options или убрать.
 ```
 
-Softening a breaking change (§7) means not dramatising it, not hiding it. A
-reader who discovers it from a red build instead of the post was failed by the
-post.
+Смягчить ломающее изменение (§7) значит не драматизировать его, а не скрывать. Читатель,
+который узнал о нём из красной сборки, а не из поста, был подведён постом.
 
-### When a previous post has to be corrected
+### Когда нужно поправить прошлый пост
 
-If an earlier announcement told the community something that is no longer true —
-a deprecation that was withdrawn, a removal that was cancelled — say so in one
-line, with the action: *"В 2.1.0 они были помечены как уходящие в 3.0.0, план
-отозван, делать ничего не нужно."* Leaving it out is not neutrality: those
-readers are still holding the old plan.
+Если прежний анонс сообщил сообществу то, что больше не соответствует действительности —
+отозванную пометку об устаревании, отменённое удаление, — скажите об этом одной строкой
+с указанием действия: *«В 2.1.0 они были помечены как уходящие в 3.0.0, план
+отозван, делать ничего не нужно.»* Умолчать — не значит остаться нейтральным: эти
+читатели всё ещё держат в руках старый план.
 
-## 14. Emoji dictionary
+## 14. Словарь эмодзи
 
-| Section / topic | Emoji |
+| Раздел / тема | Эмодзи |
 | --- | --- |
-| Header / sign-off | 🚀 |
-| v3 methods / access | 🔓 |
-| Filters / selection | 🔎 |
-| Batches / cross-command refs | 🔗 |
-| Pagination / exports | 📄 |
-| CommonJS / modules | 📦 |
-| Bug fixes | 🐛 |
-| Security | 🔐 |
-| Deps / under the hood | 🛠 |
-| Cleanup / dropped | 🧹 |
-| Install | 📦 |
+| Заголовок / подпись | 🚀 |
+| Методы v3 / доступ | 🔓 |
+| Фильтры / выборка | 🔎 |
+| Пакетные запросы / ссылки между командами | 🔗 |
+| Пагинация / выгрузки | 📄 |
+| CommonJS / модули | 📦 |
+| Исправления | 🐛 |
+| Безопасность | 🔐 |
+| Зависимости / под капотом | 🛠 |
+| Уборка / убрано | 🧹 |
+| Установка | 📦 |
 | Changelog | 📝 |
-| Cipher for AI | 🔐 |
+| Шифр для ИИ | 🔐 |
 
-## 15. Fill-in template
+## 15. Шаблон для заполнения
 
 ``````text
-🚀 **b24jssdk vX.Y.Z** — <N> features, <M> fixes and <highlight>.
+🚀 **b24jssdk vX.Y.Z** — <N> возможностей, <M> исправлений и <акцент>.
 
 ---
 
-**<emoji> `<Feature1>` — <short description>.**
-<context, 1–2 lines>:
+**<эмодзи> `<Возможность1>` — <короткое описание>.**
+<контекст, 1–2 строки>:
 
 ```ts
-<Snippet1 — compiles>
+<Фрагмент1 — компилируется>
 ```
 
 ---
 
-**<emoji> `<Feature2>` — <short description>.**
-<context>:
+**<эмодзи> `<Возможность2>` — <короткое описание>.**
+<контекст>:
 
 ```ts
-<Snippet2>
+<Фрагмент2>
 ```
 
 ---
 
 **Ещё по мелочи:**
-- `<api>` — <what>
-- `<api>` — <what>
-- `<api>` — <what>
+- `<api>` — <что>
+- `<api>` — <что>
+- `<api>` — <что>
 
 ---
 
-**🐛 <important fix, if any>**
-<paragraph on the main one>.
+**🐛 <важное исправление, если есть>**
+<абзац об основном>.
 
-Плюс: <the rest, comma-separated>.
+Плюс: <остальное через запятую>.
 
 ---
 
 **🛠 Под капотом:**
-- <versions / runtimes>
-- <dropped / size / migration>
+- <версии / рантаймы>
+- <убрано / размер / миграция>
 
 ---
 
@@ -323,30 +323,29 @@ readers are still holding the old plan.
 🔐 Для вашего ИИ — atob:
 
 ```js
-atob('<base64 on a single line>')
+atob('<base64 в одну строку>')
 ```
 ``````
 
-## 16. Pre-flight checklist
+## 16. Контрольный список перед отправкой
 
-- [ ] Everything in one ` ```` `-markdown block; pastes as a single piece.
-- [ ] Header counts match the CHANGELOG.
-- [ ] Only real REST API methods (verified against the Bitrix24 docs).
-- [ ] Every TS snippet compiles (`skills:typecheck` → 0 errors).
-- [ ] Correct API shapes (`getData()!.result.items`, `batch.make({calls})`, `fetchTail`).
-- [ ] Breaking changes softened; experimental excluded.
-- [ ] Version and `install` command match the release.
-- [ ] Bitrix24 never "crashes" or "lags"; no competitor comparisons.
-- [ ] Sign-off is `🚀`, not `💜`.
-- [ ] The base64 decodes to the correct URL.
-- [ ] **Every URL in the post answers 200** — check them, do not assemble them from
-      the content directory layout. `/docs/getting-started/ai/skills` resolves;
-      the same path with a trailing slash is a 404.
-- [ ] No internal details (PR numbers, CI, model ids).
-- [ ] No claims about testing or verification anywhere in the post (§13).
-- [ ] Each feature is written as what the reader can now do, not as what used to
-      be broken (§13).
-- [ ] Nothing implies the reader made a mistake (§13).
-- [ ] Anything that requires action from the reader is stated plainly, with the
-      fix attached (§13).
-- [ ] A claim from an earlier post that is no longer true is corrected here (§13).
+- [ ] Всё в одном markdown-блоке с ограждением ` ```` `; вставляется одним куском.
+- [ ] Числа в заголовке совпадают с CHANGELOG.
+- [ ] Только реальные методы REST API (сверено с документацией Битрикс24).
+- [ ] Каждый TS-фрагмент компилируется (`skills:typecheck` → 0 ошибок).
+- [ ] Верные формы API (`getData()!.result.items`, `batch.make({calls})`, `fetchTail`).
+- [ ] Ломающие изменения смягчены; экспериментальное исключено.
+- [ ] Версия и команда `install` соответствуют релизу.
+- [ ] Битрикс24 нигде не «падает» и не «тормозит»; сравнений с конкурентами нет.
+- [ ] В подписи `🚀`, а не `💜`.
+- [ ] base64 декодируется в правильный URL.
+- [ ] **Каждый URL в посте отвечает 200** — проверьте их, не собирайте из раскладки
+      каталога content. `/docs/getting-started/ai/skills` открывается; тот же путь со
+      слэшем на конце — 404.
+- [ ] Нет внутренних подробностей (номера PR, CI, идентификаторы моделей).
+- [ ] Нигде в посте нет утверждений о тестировании или проверке (§13).
+- [ ] Каждая возможность описана как то, что читатель может делать теперь, а не как то,
+      что раньше было сломано (§13).
+- [ ] Ничто не намекает, что читатель допустил ошибку (§13).
+- [ ] Всё, что требует действий от читателя, сказано прямо, с указанием исправления (§13).
+- [ ] Утверждение из прошлого поста, переставшее быть верным, здесь исправлено (§13).
