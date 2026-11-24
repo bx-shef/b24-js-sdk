@@ -1,7 +1,7 @@
 // @memo we not use jsonSchema
 import { streamText, convertToModelMessages, smoothStream, stepCountIs, jsonSchema } from 'ai'
-import { getHeader } from 'h3'
 import { createDeepSeek } from '@ai-sdk/deepseek'
+import { assistantGuard, assertMessages, chargeAssistant } from '../../modules/bx-assistant/runtime/server/utils/guard'
 import { z } from 'zod'
 import { tools as mcpToolDefinitions } from '#nuxt-mcp-toolkit/tools.mjs'
 
@@ -62,57 +62,13 @@ function mcpToolsToAiTools() {
   return aiTools
 }
 
-// NOTE: in-memory rate limit — not shared across multiple instances
-const rateLimitMap = new Map<string, { count: number, resetAt: number }>()
-const RATE_LIMIT_WINDOW_MS = 60_000
-const RATE_LIMIT_MAX = 20
-const MAX_MESSAGE_CONTENT_LENGTH = 32_000
-
-// Periodically purge expired entries to prevent unbounded memory growth
-setInterval(() => {
-  const now = Date.now()
-  for (const [ip, entry] of rateLimitMap) {
-    if (now > entry.resetAt) rateLimitMap.delete(ip)
-  }
-}, RATE_LIMIT_WINDOW_MS)
-
-function checkRateLimit(ip: string) {
-  const now = Date.now()
-  const entry = rateLimitMap.get(ip)
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
-    return
-  }
-  if (entry.count >= RATE_LIMIT_MAX) {
-    const retryAfter = Math.ceil((entry.resetAt - now) / 1000)
-    throw createError({ status: 429, message: 'Too many requests. Please try again later.', data: { retryAfter } })
-  }
-  entry.count++
-}
-
 export default defineEventHandler(async (event) => {
-  // Use socket remoteAddress as primary; x-forwarded-for only if behind trusted proxy
-  const ip = event.node.req.socket?.remoteAddress
-    ?? getHeader(event, 'x-forwarded-for')?.split(',')[0]?.trim()
-    ?? 'unknown'
-  checkRateLimit(ip)
+  assistantGuard(event, useRuntimeConfig().public.bxAssistant?.enabled === true)
 
   const { messages, restApiVersion, currentPage } = (await readBody<{ messages?: any, restApiVersion?: string, currentPage?: string }>(event)) || {}
 
-  if (!messages || !Array.isArray(messages)) {
-    throw createError({ status: 400, message: 'Invalid or missing messages array.' })
-  }
-
-  if (messages.length > 30) {
-    throw createError({ status: 400, message: 'Too many messages in conversation.' })
-  }
-
-  for (const msg of messages) {
-    const content = typeof msg?.content === 'string' ? msg.content : JSON.stringify(msg?.content ?? '')
-    if (content.length > MAX_MESSAGE_CONTENT_LENGTH) {
-      throw createError({ status: 400, message: 'Message content exceeds maximum allowed length.' })
-    }
-  }
+  assertMessages(messages)
+  chargeAssistant(event)
 
   const safeRestApiVersion = restApiVersion === 'vue' ? 'vue' : 'nuxt'
 
@@ -174,7 +130,7 @@ Code Style Guidelines for Vue and Nuxt:
     abortSignal: abortController.signal,
     providerOptions: {},
     system,
-    messages: await convertToModelMessages(messages),
+    messages: await convertToModelMessages(messages as Parameters<typeof convertToModelMessages>[0]),
     experimental_transform: smoothStream(),
     stopWhen: stepCountIs(maxStepCount),
     tools: {
