@@ -203,7 +203,7 @@ overrides:
   '@shikijs/core': '>=4.4.2 <5'
   '@shikijs/types': '>=4.4.2 <5'
   '@shikijs/langs': '>=4.4.2 <5'
-  zod: '>=4.6.6 <5'
+  zod@>=4 <4.6.6: '>=4.6.6 <5'
   readdir-glob>minimatch: '>=11.0.1 <12'
 
 importers:
@@ -389,7 +389,7 @@ importers:
         specifier: ^1.6.4
         version: 1.6.4
       zod:
-        specifier: '>=4.6.6 <5'
+        specifier: ^4.6.7
         version: 4.6.7
 
   packages/jssdk:
@@ -7593,6 +7593,9 @@ packages:
     peerDependencies:
       zod: '>=4.6.6 <5'
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
@@ -8592,8 +8595,8 @@ snapshots:
       unist-util-stringify-position: 4.0.0
       unist-util-visit: 5.2.0
       unplugin: 3.7.0(esbuild@0.28.2)(rolldown@1.1.8)(rollup@4.68.8)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.4)(tsx@4.23.15)(yaml@2.9.1))
-      zod: 4.6.7
-      zod-to-json-schema: 3.25.2(zod@4.6.7)
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.2(zod@3.25.76)
     optionalDependencies:
       better-sqlite3: 12.11.1
     transitivePeerDependencies:
@@ -16381,9 +16384,15 @@ snapshots:
       normalize-path: 3.0.0
       readable-stream: 4.8.0
 
+  zod-to-json-schema@3.25.2(zod@3.25.76):
+    dependencies:
+      zod: 3.25.76
+
   zod-to-json-schema@3.25.2(zod@4.6.7):
     dependencies:
       zod: 4.6.7
+
+  zod@3.25.76: {}
 
   zod@4.6.7: {}
 

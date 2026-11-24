@@ -245,8 +245,8 @@ overrides:
   # a 4.3.1 grammar set lingers beside the 4.4.x core above. Same lockstep rule.
   '@shikijs/langs': '>=4.4.2 <5'
   # GHSA-mrhx-c7xc-m3w5 — zod exhausts memory on oversized constrained collections
-  # (docs > @nuxt/content > zod).
-  zod: '>=4.6.6 <5'
+  # (zod 4 only: @nuxt/content stays on zod 3, which zod-to-json-schema needs).
+  'zod@>=4 <4.6.6': '>=4.6.6 <5'
   # GHSA-g3hv-75wg-m249 — minimatch ReDoS via globparts amplification
   # (nuxt > nitropack > archiver > readdir-glob > minimatch).
   'readdir-glob>minimatch': '>=11.0.1 <12'
