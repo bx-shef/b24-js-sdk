@@ -1,0 +1,14 @@
+# Контекст сборки образа сайта документации (deploy/Dockerfile): только исходники.
+**/node_modules
+**/.nuxt
+**/.output
+**/dist
+**/coverage
+.git
+.github
+.claude
+test
+playgrounds
+**/.env
+**/.env.*
+!**/.env.example

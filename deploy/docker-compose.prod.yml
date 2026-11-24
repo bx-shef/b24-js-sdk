@@ -1,0 +1,41 @@
+# Продакшн: сайт документации SDK за обратным прокси с TLS (deploy/README.md). Требует на хосте:
+#   - docker-сеть proxy-net и nginx-proxy + acme-companion в ней — тот же прокси, что у соседей
+#     (bx-shef/toolsai, site/landing/deploy/proxy.compose.yml);
+#   - .env рядом с этим файлом (шаблон — deploy/.env.example);
+#   - общий Watchtower с входом в ghcr — подхватит новый :latest по метке ниже.
+# Наружу сайт выставляет прокси по VIRTUAL_HOST — порта на хосте нет.
+
+name: b24-js-sdk-docs
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+    compress: "true"
+
+services:
+  docs:
+    logging: *default-logging
+    image: ghcr.io/bx-shef/b24-js-sdk-docs:latest
+    container_name: b24-js-sdk-docs
+    expose:
+      - "3000"
+    environment:
+      # ⚠ DNS A-запись DOMAIN должна указывать на сервер до подъёма, иначе сертификат не выпустится.
+      VIRTUAL_HOST: ${DOMAIN:?set DOMAIN}
+      VIRTUAL_PORT: 3000
+      LETSENCRYPT_HOST: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL:-}
+      # Чат помощника: без ключа он скрыт, а /api/ai отвечает 503.
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      NUXT_PUBLIC_BX_ASSISTANT_ENABLED: ${ASSISTANT_ENABLED:-false}
+    restart: unless-stopped
+    networks:
+      - proxy-net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+  proxy-net:
+    external: true

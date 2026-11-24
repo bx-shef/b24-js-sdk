@@ -72,6 +72,10 @@ export default defineEventHandler(async (event) => {
       ? `http://localhost:3000${baseURL}${mcpServer}`
       : `${getRequestURL(event).origin}${baseURL}${mcpServer}`
 
+  if (!process.env.DEEPSEEK_API_KEY) {
+    throw createError({ status: 503, message: 'The AI assistant is not configured on this server.' })
+  }
+
   const httpClient = await createMCPClient({
     transport: { type: 'http', url: mcpUrl }
   })

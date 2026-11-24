@@ -120,6 +120,10 @@ export default defineEventHandler(async (event) => {
     ? currentPage.replace(/[^\w\-/. ]/g, '').slice(0, 300)
     : undefined
 
+  if (!process.env.DEEPSEEK_API_KEY) {
+    throw createError({ status: 503, message: 'The AI assistant is not configured on this server.' })
+  }
+
   const mcpTools = mcpToolsToAiTools()
 
   const deepseek = createDeepSeek({
