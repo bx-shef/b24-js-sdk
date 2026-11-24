@@ -17,7 +17,7 @@ const { copy, copied } = useClipboard()
     :label="props.right"
   >
     <template #trailing>
-      <B24Tooltip text="Copy to clipboard" :content="{ side: 'top' }">
+      <B24Tooltip text="Скопировать" :content="{ side: 'top' }">
         <B24Button
           :b24ui="{
             base: 'size-[14px]',
@@ -27,7 +27,7 @@ const { copy, copied } = useClipboard()
           size="xs"
           color="air-tertiary-no-accent"
           :icon="copied ? CircleCheckIcon : CopyIcon"
-          aria-label="Copy to clipboard"
+          aria-label="Скопировать"
           @click="copy(props.right)"
         />
       </B24Tooltip>

@@ -201,13 +201,13 @@ function closeChat() {
   <B24Sidebar
     v-model:open="open"
     side="right"
-    title="Ask AI"
+    title="Спросить ИИ"
     rail
     :style="{ '--sidebar-width': '26rem' }"
     :b24ui="{ root: 'base-mode bg-(--ui-color-gray-02) dark:bg-(--ui-color-base-black-fixed)', header: '', body: 'scrollbar-thin scrollbar-transparent custom-scrollbar-transparent', actions: 'gap-0.5' }"
   >
     <template #actions>
-      <B24Tooltip v-if="hasThemeChanges" text="Reset theme">
+      <B24Tooltip v-if="hasThemeChanges" text="Сбросить тему">
         <B24Button
           :icon="UndoIcon"
           size="sm"
@@ -217,7 +217,7 @@ function closeChat() {
         />
       </B24Tooltip>
 
-      <B24Tooltip v-if="canClear" text="Clear messages">
+      <B24Tooltip v-if="canClear" text="Очистить переписку">
         <B24Button
           :icon="TrashcanIcon"
           size="sm"
@@ -229,10 +229,10 @@ function closeChat() {
     </template>
 
     <template #close>
-      <B24Tooltip text="Close" :kbds="['meta', 'i']">
+      <B24Tooltip text="Закрыть" :kbds="['meta', 'i']">
         <B24Button
           :icon="CloseChatIcon"
-          aria-label="Close"
+          aria-label="Закрыть"
           size="sm"
           color="air-tertiary"
           :b24ui="{ baseLine: '[--ui-btn-icon-size:26px]' }"
@@ -269,7 +269,7 @@ function closeChat() {
         :user="{ b24ui: { container: 'max-w-full' } }"
       >
         <template #indicator>
-          <B24ChatTool :icon="CopilotAi2Icon" text="Thinking..." streaming />
+          <B24ChatTool :icon="CopilotAi2Icon" text="Думаю…" streaming />
         </template>
 
         <template #content="{ message }">
@@ -322,7 +322,7 @@ function closeChat() {
       <B24ChatPrompt
         v-model="input"
         :error="chat.error"
-        placeholder="Ask me anything..."
+        placeholder="Задайте вопрос…"
         variant="outline"
         size="sm"
         autofocus

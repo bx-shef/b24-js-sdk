@@ -50,6 +50,9 @@ function getSystemPrompt(siteName: string) {
 - Use bullet points for lists
 - Keep code examples focused and minimal
 
+**Language:**
+- The documentation is in Russian. Always answer in Russian, whatever language the question is in; keep code, identifiers and REST method names as they are
+
 **Response style:**
 - Conversational but professional
 - "Here's how you can do that:" instead of "The documentation shows:"

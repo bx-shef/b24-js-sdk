@@ -122,13 +122,13 @@ useSchemaOrg([
 const communityLinks = computed(() => [
   {
     icon: DesignIcon,
-    label: 'Edit this page',
+    label: 'Редактировать страницу',
     to: `${config.public.gitUrl}/edit/main/docs/content/${page?.value?.stem}.md`,
     target: '_blank'
   },
   {
     icon: FavoriteIcon,
-    label: 'Star on GitHub',
+    label: 'Звезда на GitHub',
     to: config.public.gitUrl,
     target: '_blank'
   }
@@ -227,7 +227,7 @@ function makeExplain() {
         <B24Button
           v-if="showExplainWithAi"
           :icon="explainIcon"
-          label="Explain with AI"
+          label="Объяснить с ИИ"
           color="air-selection"
           size="sm"
           @click="makeExplain"

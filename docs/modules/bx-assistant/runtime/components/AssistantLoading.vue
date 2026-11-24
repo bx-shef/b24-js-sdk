@@ -14,13 +14,13 @@ const props = defineProps<{
 }>()
 
 const messages = computed(() => [
-  'Searching the documentation',
-  'Reading through the docs',
-  'Analyzing the content',
-  'Finding the best answer'
+  'Ищу в документации',
+  'Читаю документацию',
+  'Разбираю содержимое',
+  'Подбираю лучший ответ'
 ])
 
-const finishedMessage = computed(() => 'Sources used')
+const finishedMessage = computed(() => 'Использованные источники')
 
 const currentIndex = ref(0)
 const targetText = computed(() => {
@@ -87,11 +87,11 @@ function getToolLabel(toolName: string, args: any) {
   const path = args?.path || ''
 
   if (toolName === 'list-pages') {
-    return 'Listed documentation pages'
+    return 'Просмотрел список страниц'
   }
 
   if (toolName === 'get-page') {
-    return `Read ${path || '...'}`
+    return `Прочитал ${path || '…'}`
   }
 
   return toolName

@@ -21,19 +21,19 @@ export default defineAppConfig({
     },
     faqQuestions: [
       {
-        category: 'Components',
+        category: 'С чего начать',
         items: [
-          'How to build a dashboard layout?',
-          'How to build a table with pagination?',
-          'How to create a form with validation?'
+          'Как подключить SDK к порталу через вебхук?',
+          'Чем B24Hook отличается от B24Frame и B24OAuth?',
+          'Как вызвать метод REST API v3?'
         ]
       },
       {
-        category: 'Composables',
+        category: 'Работа с данными',
         items: [
-          'How to show toast notifications?',
-          'How to define keyboard shortcuts?',
-          'How do I open a modal programmatically?'
+          'Как получить все сделки, если их больше 50?',
+          'Как выполнить пакетный запрос (batch)?',
+          'Как обработать ошибку вызова метода?'
         ]
       }
     ]

@@ -165,7 +165,7 @@ onMounted(async () => {
   const result: Result = await b24Instance.init()
   if (!result.isSuccess) {
     toast.add({
-      title: 'Error',
+      title: 'Ошибка',
       description: result.getErrorMessages().join('\n'),
       color: 'air-primary-alert',
       icon: CloudErrorIcon
@@ -183,7 +183,7 @@ const saveHook = (data: { hook: string }) => {
     const result: Result = b24Instance.set(data.hook)
     if (!result.isSuccess) {
       toast.add({
-        title: 'Error',
+        title: 'Ошибка',
         description: result.getErrorMessages().join('\n'),
         color: 'air-primary-alert',
         icon: CloudErrorIcon
@@ -202,7 +202,7 @@ const clearHook = async () => {
     const result: Result = b24Instance.set(undefined)
     if (!result.isSuccess) {
       toast.add({
-        title: 'Error',
+        title: 'Ошибка',
         description: result.getErrorMessages().join('\n'),
         color: 'air-primary-alert',
         icon: CloudErrorIcon
@@ -246,7 +246,7 @@ const tabs = computed<TabsItem[]>(() => {
           <template v-else>
             <template v-if="!b24Instance.isInit()">
               <B24Alert
-                title="Want to test the example?"
+                title="Хотите проверить пример?"
                 color="air-secondary-accent-2"
                 :icon="CloudSyncIcon"
                 :class="[{
@@ -287,12 +287,12 @@ const tabs = computed<TabsItem[]>(() => {
                   :icon="TerminalIcon"
                   color="air-secondary-accent"
                   :title="`${props.filename ?? data.name}.${props.lang}`"
-                  description="The result of the script execution can be seen in the developer console."
+                  description="Результат выполнения скрипта — в консоли разработчика."
                   class="border-none rounded-b-none"
                   orientation="horizontal"
                   :actions="[
                     {
-                      label: 'Run Action',
+                      label: 'Запустить',
                       loadingAuto: true,
                       color: 'air-boost',
                       onClick: makeAction

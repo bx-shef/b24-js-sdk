@@ -15,7 +15,7 @@ const { open } = useAIChat()
     <B24Button
       :icon="AiStarsIcon"
       target="_blank"
-      label="Explain with AI"
+      label="Объяснить с ИИ"
       color="air-selection"
       size="sm"
       @click="open(`Explain the page ${pageUrl}`, true)"

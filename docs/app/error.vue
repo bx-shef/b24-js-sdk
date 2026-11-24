@@ -70,7 +70,7 @@ function resetHook() {
           >
             <template #actions>
               <B24Button
-                label="Clear"
+                label="Очистить"
                 color="air-secondary-alert"
                 @click="resetHook"
               />

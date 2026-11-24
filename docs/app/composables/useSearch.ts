@@ -39,8 +39,8 @@ export function useSearch() {
 
   const links = computed(() => [
     isAssistantEnabled.value && {
-      label: 'Ask AI',
-      description: 'Ask the AI assistant powered by our custom MCP server for help.',
+      label: 'Спросить ИИ',
+      description: 'Спросите ИИ-помощника: он отвечает по документации через наш MCP-сервер.',
       icon: RobotIcon,
       kbds: ['meta', 'i'],
       b24ui: {
@@ -49,22 +49,22 @@ export function useSearch() {
       onSelect
     },
     {
-      label: 'Get Started',
-      description: 'Learn how to get started with Bitrix24 UI.',
+      label: 'Быстрый старт',
+      description: 'С чего начать работу с SDK.',
       icon: PlayLIcon,
       to: '/docs/getting-started/',
       active: route.path.startsWith('/docs/getting-started')
     },
     {
-      label: 'Working',
-      description: 'Introduction to working with Bitrix24 REST API',
+      label: 'Работа с API',
+      description: 'Введение в работу с REST API Битрикс24.',
       icon: DeveloperResourcesIcon,
       to: '/docs/working-with-the-rest-api/',
       active: route.path.startsWith('/docs/working-with-the-rest-api')
     },
     {
       label: 'GitHub',
-      description: 'Check out the Bitrix24 JS SDK repository and follow development on GitHub.',
+      description: 'Репозиторий SDK на GitHub.',
       icon: GitHubIcon,
       to: 'https://github.com/bitrix24/b24ui',
       target: '_blank'
