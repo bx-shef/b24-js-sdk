@@ -33,7 +33,12 @@ export default defineNuxtModule<BxAssistantModuleOptions>({
     modelDeepSeek: 'deepseek-reasoner'
   },
   setup(options, nuxt) {
+    // The chat is wired in at build time, but the key is read only at run time
+    // (server/api), so a Docker image can be built without the secret:
+    // NUXT_PUBLIC_BX_ASSISTANT_ENABLED=true at build keeps the real components,
+    // and the same variable at run time switches the chat on or off.
     const hasApiKey = !!process.env.DEEPSEEK_API_KEY
+      || process.env.NUXT_PUBLIC_BX_ASSISTANT_ENABLED === 'true'
 
     const { resolve } = createResolver(import.meta.url)
 

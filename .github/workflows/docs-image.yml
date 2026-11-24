@@ -1,0 +1,108 @@
+name: docs-image
+
+# Образ сайта документации (deploy/Dockerfile) в ghcr.io/bx-shef/b24-js-sdk-docs.
+# На PR — сборка и дымовая проверка, на push в main — ещё и публикация. Сервер — deploy/README.md.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-image-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  image:
+    # Только наш репозиторий: в bitrix24/b24jssdk сайт живёт в GitHub Pages.
+    if: github.repository == 'bx-shef/b24-js-sdk'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - name: Собрать образ
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: deploy/Dockerfile
+          load: true
+          tags: b24-js-sdk-docs:ci
+          build-args: |
+            SITE_URL=${{ vars.SITE_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Дымовая проверка
+        shell: bash
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          docker run -d --name docs -e NUXT_PUBLIC_BX_ASSISTANT_ENABLED=false -p 127.0.0.1:3000:3000 b24-js-sdk-docs:ci
+          for _ in $(seq 1 60); do curl -fs localhost:3000/ >/dev/null && break; sleep 1; done
+          check() { got=$(curl -s -o /dev/null -w '%{http_code}' "${@:2}"); echo "$1 → $got"; [ "$1" = "$got" ]; }
+          check 200 localhost:3000/
+          # llms.txt собирается, только когда задан адрес сайта (переменная репозитория SITE_URL)
+          if [ -n "${SITE_URL}" ]; then check 200 localhost:3000/llms.txt; fi
+          check 200 localhost:3000/docs/getting-started/
+          check 200 localhost:3000/.well-known/skills/README.md
+          check 200 -X POST -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' localhost:3000/mcp/
+          # без ключа чат не работает и честно об этом говорит
+          # чат выключен (compose: ASSISTANT_ENABLED по умолчанию false) — серверная часть тоже закрыта
+          check 404 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/api/ai
+          check 404 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/__bx__/assistant
+          docker rm -f docs
+          # включён, но без ключа — 503, в DeepSeek ничего не уходит
+          docker run -d --name docs -e NUXT_PUBLIC_BX_ASSISTANT_ENABLED=true -p 127.0.0.1:3000:3000 b24-js-sdk-docs:ci
+          for _ in $(seq 1 60); do curl -fs localhost:3000/ >/dev/null && break; sleep 1; done
+          check 503 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/api/ai
+          check 503 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/__bx__/assistant
+          docker inspect --format '{{.Config.User}}' docs | grep -qx node
+
+      - name: Журнал контейнера при сбое
+        if: failure()
+        run: docker logs docs || true
+
+      - name: Вход в GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Метки образа
+        if: github.event_name != 'pull_request'
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/bx-shef/b24-js-sdk-docs
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=sha-
+
+      - name: Опубликовать
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: deploy/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SITE_URL=${{ vars.SITE_URL }}
+          cache-from: type=gha
