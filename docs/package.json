@@ -42,7 +42,7 @@
     "motion-v": "^2.4.4",
     "nuxt": "^4.5.2",
     "nuxt-llms": "^0.2.0",
-    "nuxt-og-image": "^6.9.0",
+    "nuxt-og-image": "^7.0.7",
     "nuxt-schema-org": "^6.3.2",
     "pathe": "^2.0.3",
     "prettier": "^3.9.9",
