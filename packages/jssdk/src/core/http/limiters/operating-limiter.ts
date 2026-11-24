@@ -32,7 +32,7 @@ interface OperatingStats {
  * is not refusing calls either. There is no budget to track. `RateLimiter` and
  * `AdaptiveDelayer` are unaffected.
  *
- * @see https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/limiters/#enabling-the-operating-limiter-on-a-self-hosted-portal
+ * @see https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/limiters/#включение-лимитера-времени-операций-на-self-hosted-портале
  *   for how a box owner switches the portal's limiter on, including the
  *   half-configured state in which the counters arrive but never accumulate.
  */

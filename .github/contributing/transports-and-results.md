@@ -244,7 +244,7 @@ before consulting the error-code lists
 (meaning "no delay before the next attempt"), and the caller in `abstract-http.ts`
 then surfaces it as an `AjaxResult` error without consuming any further retry budget.
 
-User-facing reference: [Customizing Error Classification — 77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md#customizing-error-classification).
+User-facing reference: [Customizing Error Classification — 77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md#настройка-классификации-ошибок).
 
 ## Logger Discipline
 
