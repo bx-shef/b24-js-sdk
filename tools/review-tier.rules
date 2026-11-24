@@ -1,0 +1,80 @@
+# Правила уровня ревью bx-shef/b24-js-sdk. Формат и движок — tools/review-tier.sh (копия эталона; здесь правят только этот файл).
+# Первое подходящее правило выигрывает: исключения стоят выше общих. Не подошло ничего — уровень 1.
+
+# --- только по слову владельца: уровень 2 и пометка ---
+hold LICENSE|packages/*/LICENSE
+
+# --- уровень 0: без ревью, только основная проверка ---
+0 .gitattributes|.gitignore
+0 package.json only:^[[:space:]]*"version":
+0 packages/*/package.json only:^[[:space:]]*"version":
+2 skills/*/package.json|skills/*/pnpm-lock.yaml
+0 .github/contributing/*
+2 .github/*                            # CI и шаблоны GitHub, включая .md рядом с воркфлоу
+0 .claude/*|docs/content/*|docs/public/*|skills/*|test/*|scripts/__tests__/*
+0 *.md
+0 *.png|*.jpg|*.svg|*.webp|*.ico
+
+# --- уровень 2, панель из пяти: лицензия и деньги ---
+2 packages/jssdk/src/helper/license-manager.ts|packages/jssdk/src/helper/payment-manager.ts
+
+# --- уровень 2: безопасность и транспорт ---
+2 packages/jssdk/src/core/http/*|packages/jssdk/src/core/actions/*
+2 packages/jssdk/src/oauth/*|packages/jssdk/src/hook/auth.ts|packages/jssdk/src/frame/auth*
+2 packages/jssdk/src/pullClient/*
+
+# --- уровень 2: публичный API ---
+2 packages/jssdk/src/index.ts|packages/jssdk/src/types/*
+2 packages/jssdk/src/core/sdk-error.ts|packages/jssdk/src/core/result.ts
+
+# --- уровень 2: сборка и CI ---
+2 tools/review-tier.*
+2 package.json|pnpm-lock.yaml|pnpm-workspace.yaml|packages/*/package.json
+2 packages/*/build.config.ts|tsconfig*|*/tsconfig*.json|eslint.config.mjs|eslint-rules/*
+2 scripts/*|release-please-config.json
+
+# --- уровень 2: Docker и сервер сайта ---
+2 *docker-compose*|*.dockerignore
+2 docs/server/*|docs/nuxt.config.ts
+
+# --- таблица случаев для --self-test ---
+case 0 README.md
+case 0 AGENTS.md
+case 0 .github/contributing/documentation.md
+case 2 .github/workflows/README.md
+case 0 docs/content/docs/index.md
+case 0 test/integration/core/result.unit.spec.ts
+case 0 skills/b24jssdk-core/SKILL.md
+case 0 scripts/__tests__/ci-gate.test.mjs
+case 0 .claude/skills/review-panel/SKILL.md
+case 0 docs/public/favicon.ico
+case 0 .gitattributes
+case 1 packages/jssdk/src/tools/text.ts
+case 1 packages/jssdk/src/frame/slider.ts
+case 1 docs/app/app.vue
+case 1 playgrounds/cli/package.json
+case 2 packages/jssdk/src/helper/license-manager.ts
+case 2 packages/jssdk/src/helper/payment-manager.ts
+case 2 packages/jssdk/src/core/http/ajax-error.ts
+case 2 packages/jssdk/src/core/actions/v3/batch.ts
+case 2 packages/jssdk/src/oauth/auth.ts
+case 2 packages/jssdk/src/hook/auth.ts
+case 2 packages/jssdk/src/frame/auth.ts
+case 2 packages/jssdk/src/pullClient/client.ts
+case 2 packages/jssdk/src/index.ts
+case 2 packages/jssdk/src/types/auth.ts
+case 2 packages/jssdk/src/core/sdk-error.ts
+case 2 tools/review-tier.sh
+case 2 .github/workflows/ci.yml
+case 2 package.json
+case 2 pnpm-lock.yaml
+case 2 packages/jssdk/package.json
+case 2 packages/jssdk/build.config.ts
+case 2 tsconfig.base.json
+case 2 eslint-rules/no-credential-in-logger.js
+case 2 scripts/docs-lint.mjs
+case 2 skills/b24jssdk-recipes/package.json
+case 2 packages/jssdk/docker-compose.yml
+case 2 docs/server/routes/mcp.ts
+case 2 docs/nuxt.config.ts
+case 2 LICENSE
