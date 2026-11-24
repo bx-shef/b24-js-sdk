@@ -1,21 +1,21 @@
 ---
 name: b24jssdk-core
-description: Pick and initialize the right b24jssdk entry point (B24Hook for backends, B24Frame for in-iframe apps, B24OAuth for OAuth-installed apps), wire up logging, handle errors, and tune restriction-manager retry behaviour (hardErrorCodes, softErrorCodes, retryOnNetworkError). Load first when generating any b24jssdk code.
+description: Выбор и инициализация нужной точки входа b24jssdk (B24Hook для бэкендов, B24Frame для приложений во фрейме, B24OAuth для приложений, установленных по OAuth), настройка логирования, обработка ошибок и настройка повторов менеджера ограничений (hardErrorCodes, softErrorCodes, retryOnNetworkError). Загружайте первым при генерации любого кода на b24jssdk.
 ---
 
-# b24jssdk core
+# Ядро b24jssdk
 
-Three entry points share the same REST surface, exposed via `$b24.actions.v{2,3}.*`. Pick by **where the code runs**:
+Три точки входа используют один и тот же REST API, доступный через `$b24.actions.v{2,3}.*`. Выбирайте по тому, **где выполняется код**:
 
-| Entry point | Where | Auth source |
+| Точка входа | Где | Источник авторизации |
 | --- | --- | --- |
-| `B24Hook` | Node.js / scripts / serverless | inbound webhook URL (`/rest/<userId>/<secret>`) |
-| `B24Frame` | Browser, **inside** a Bitrix24 placement iframe | `postMessage` handshake with the parent window |
-| `B24OAuth` | Server side of an OAuth-installed Bitrix24 app | `accessToken` + `refreshToken` from Bitrix24 install events |
+| `B24Hook` | Node.js / скрипты / serverless | URL входящего вебхука (`/rest/<userId>/<secret>`) |
+| `B24Frame` | Браузер, **внутри** iframe встройки (placement) Битрикс24 | рукопожатие через `postMessage` с родительским окном |
+| `B24OAuth` | Серверная часть приложения Битрикс24, установленного по OAuth | `accessToken` + `refreshToken` из событий установки Битрикс24 |
 
-> Once initialized, write the rest of your code against the abstract type `TypeB24` so the same logic runs on any of the three.
+> После инициализации пишите остальной код против абстрактного типа `TypeB24`, чтобы одна и та же логика работала с любой из трёх.
 
-## B24Hook (backend / scripts)
+## B24Hook (бэкенд / скрипты)
 
 ```ts
 import { B24Hook, ConsoleV2Handler, LogLevel, Logger } from '@bitrix24/b24jssdk'
@@ -37,7 +37,7 @@ const me = await $b24.actions.v2.call.make<{ NAME: string; ID: number }>({
 logger.info(`Hello, ${me.getData()!.result.NAME}`)
 ```
 
-Alternative constructor (manual parts):
+Альтернативный конструктор (части задаются вручную):
 
 ```ts
 import { B24Hook } from '@bitrix24/b24jssdk'
@@ -48,12 +48,12 @@ const $b24 = new B24Hook({
 })
 ```
 
-Notes:
+Примечания:
 
-- Keep `B24Hook` server-side only. The webhook URL contains a long-lived secret.
-- Supported Node: `>=22` (Node 20 was dropped in 3.0.0 — it is EOL).
+- Используйте `B24Hook` только на стороне сервера. URL вебхука содержит долгоживущий секрет.
+- Поддерживаемый Node: `>=22` (Node 20 исключён в 3.0.0 — он EOL).
 
-## B24Frame (in-iframe app)
+## B24Frame (приложение во фрейме)
 
 ```ts
 import { initializeB24Frame, LoggerFactory, type B24Frame } from '@bitrix24/b24jssdk'
@@ -74,12 +74,12 @@ function teardown() {
 }
 ```
 
-`initializeB24Frame()` deduplicates concurrent calls — safe to await it from multiple places.
+`initializeB24Frame()` дедуплицирует параллельные вызовы — его безопасно ожидать из нескольких мест.
 
-**If the app is in install mode, finish the installation.** Until `installFinish()`
-is called the portal treats the app as half-installed and delivers **no events** to
-it — bot handlers, `event.bind` handlers and other outgoing calls never arrive, with
-nothing failing loudly to say so:
+**Если приложение находится в режиме установки, завершите установку.** Пока не вызван `installFinish()`,
+портал считает приложение наполовину установленным и **не доставляет ему событий** —
+обработчики ботов, обработчики `event.bind` и другие исходящие вызовы не приходят, и
+ничто громко об этом не сообщает:
 
 ```ts
 if ($b24.isInstallMode) {
@@ -89,11 +89,11 @@ if ($b24.isInstallMode) {
 }
 ```
 
-See the `b24jssdk-frame-ui` skill for the full rule. Note this is a **lifecycle**
-step, not a security one — an OAuth install/uninstall endpoint still verifies
-`application_token` (see the security checklist below).
+Полное правило см. в навыке `b24jssdk-frame-ui`. Учтите, что это шаг **жизненного цикла**,
+а не безопасности — эндпоинт установки/удаления по OAuth всё равно проверяет
+`application_token` (см. чек-лист безопасности ниже).
 
-## B24OAuth (server side of an OAuth app)
+## B24OAuth (серверная часть OAuth-приложения)
 
 ```ts
 import { B24OAuth } from '@bitrix24/b24jssdk'
@@ -111,11 +111,11 @@ $b24.setCallbackRefreshAuth(async ({ authData, b24OAuthParams }) => {
 await $b24.initIsAdmin() // populates auth.isAdmin
 ```
 
-`B24OAuth` automatically refreshes the access token on 401. **Always register `setCallbackRefreshAuth` on the server** so refreshed tokens are persisted.
+`B24OAuth` автоматически обновляет токен доступа при 401. **Всегда регистрируйте `setCallbackRefreshAuth` на сервере**, чтобы обновлённые токены сохранялись.
 
-## Logging
+## Логирование
 
-In the browser, one factory call is enough:
+В браузере достаточно одного вызова фабрики:
 
 ```ts
 import { LoggerFactory } from '@bitrix24/b24jssdk'
@@ -123,7 +123,7 @@ import { LoggerFactory } from '@bitrix24/b24jssdk'
 const logger = LoggerFactory.createForBrowser('AppName', /* isDev */ true)
 ```
 
-Under Node, build it explicitly so the output is not styled for a browser console:
+В Node собирайте логгер явно, чтобы вывод не был оформлен для консоли браузера:
 
 ```ts
 import { ConsoleV2Handler, LogLevel, Logger } from '@bitrix24/b24jssdk'
@@ -132,10 +132,10 @@ const logger = Logger.create('AppName')
 logger.pushHandler(new ConsoleV2Handler(LogLevel.INFO, { useStyles: false }))
 ```
 
-Either way the logging calls are the same. **The second argument is a context
-object, not a second message** — every level takes `(message: string, context?:
-Record<string, any>)`, so interpolate values into the message or pass them as
-named fields:
+В обоих случаях вызовы логирования одинаковы. **Второй аргумент — объект контекста,
+а не второе сообщение** — каждый уровень принимает `(message: string, context?:
+Record<string, any>)`, поэтому подставляйте значения в сообщение или передавайте их как
+именованные поля:
 
 ```ts
 logger.info('starting up')
@@ -153,16 +153,16 @@ try {
 }
 ```
 
-Note `warning`, not `warn`. `isDev` toggles verbose output. To get SDK-internal
-traces:
+Обратите внимание: `warning`, а не `warn`. `isDev` включает подробный вывод. Чтобы получать внутренние
+трассировки SDK:
 
 ```ts
 $b24.setLogger(logger)
 ```
 
-## Error handling
+## Обработка ошибок
 
-`actions.v{2,3}.call.make` returns an `AjaxResult`. REST-level failures throw `AjaxError`. SDK-level failures (wrong API version for a method, etc.) throw `SdkError`.
+`actions.v{2,3}.call.make` возвращает `AjaxResult`. Сбои на уровне REST бросают `AjaxError`. Сбои на уровне SDK (неверная версия API для метода и т. п.) бросают `SdkError`.
 
 ```ts
 import { AjaxError, SdkError } from '@bitrix24/b24jssdk'
@@ -196,30 +196,30 @@ async function loadDeal() {
 }
 ```
 
-> **`requestInfo` is safe to log because `AjaxError` redacts it, not because
-> the call site is careful.** Its constructor runs the request params through
-> `redactSensitiveParams`, replacing `auth`, `token`, `secret`, `access_token`,
+> **`requestInfo` безопасно логировать, потому что `AjaxError` его очищает, а не
+> потому, что вызывающий код аккуратен.** Его конструктор пропускает параметры запроса через
+> `redactSensitiveParams`, заменяя `auth`, `token`, `secret`, `access_token`,
 > `refresh_token`, `client_secret`, `application_token`, `password`, `sessid`,
-> `key` and `signature` with `***REDACTED***`. So do not rebuild that context by hand from
-> the original params — a hand-assembled `{ method, params }` inherits none of
-> that and will put a live credential into the log.
+> `key` и `signature` на `***REDACTED***`. Поэтому не пересобирайте этот контекст вручную из
+> исходных параметров — вручную собранный `{ method, params }` ничего этого не наследует
+> и занесёт в лог действующие учётные данные.
 
-Common AjaxError codes worth handling:
+Распространённые коды AjaxError, которые стоит обрабатывать:
 
-- `ERROR_NOT_FOUND` — id does not exist (404)
-- `INVALID_CREDENTIALS` / `EXPIRED_TOKEN` (401) — the SDK auto-refreshes the token and retries once on every entry point; for `B24Hook` the refresh is a no-op, so a wrong webhook still fails
-- `QUERY_LIMIT_EXCEEDED` — rate limit. The SDK already throttles, but you may need `batchByChunk` instead of a tight loop.
-- `INTERNAL_SERVER_ERROR` (50x) — transient. The SDK retries automatically up to `maxRetries`.
+- `ERROR_NOT_FOUND` — такого id нет (404)
+- `INVALID_CREDENTIALS` / `EXPIRED_TOKEN` (401) — SDK автоматически обновляет токен и один раз повторяет запрос на любой точке входа; для `B24Hook` обновление — пустая операция, так что неверный вебхук по-прежнему падает
+- `QUERY_LIMIT_EXCEEDED` — ограничение частоты. SDK уже притормаживает запросы, но вместо плотного цикла может понадобиться `batchByChunk`.
+- `INTERNAL_SERVER_ERROR` (50x) — временная ошибка. SDK повторяет запрос автоматически до `maxRetries`.
 
-Common SdkError codes:
+Распространённые коды SdkError:
 
-- `JSSDK_CORE_METHOD_NOT_SUPPORT_IN_API_V3` — thrown only by `AjaxResult.getNext()` / `fetchNext()` against a v3 client — they are `restApi:v2`-only (not deprecated), and v3 has no `next` offset to follow. `actions.v3.*.make` no longer throws it: the SDK dropped its v3 method allowlist, so an unknown v3 method comes back as a `METHODNOTFOUNDEXCEPTION` soft error on the result instead.
+- `JSSDK_CORE_METHOD_NOT_SUPPORT_IN_API_V3` — бросается только `AjaxResult.getNext()` / `fetchNext()` для клиента v3 — они работают только в `restApi:v2` (не устарели), а в v3 нет смещения `next`, по которому можно идти дальше. `actions.v3.*.make` его больше не бросает: SDK отказался от списка разрешённых методов v3, поэтому неизвестный метод v3 возвращается как мягкая ошибка `METHODNOTFOUNDEXCEPTION` в результате.
 
-## Tuning retry / throw behaviour
+## Настройка повторов / поведения при выбросе ошибок
 
-The restriction manager decides how a failed call reaches you: **hard** means the promise rejects and you catch an `AjaxError`; **soft** means it resolves and `response.isSuccess === false`. That is delivery, not severity — neither affects retries (any 4xx except 408/429 stops retrying either way), and **anything not classified soft is thrown**, unlisted codes included.
+Менеджер ограничений решает, как неудачный вызов дойдёт до вас: **hard** означает, что промис отклоняется и вы ловите `AjaxError`; **soft** означает, что он завершается успешно, а `response.isSuccess === false`. Это способ доставки, а не серьёзность — ни то ни другое не влияет на повторы (любой 4xx, кроме 408/429, останавливает повторы в обоих случаях), и **всё, что не отнесено к soft, бросается**, включая коды, которых нет в списках.
 
-Defaults pin the well-known Bitrix24 codes; extend per-app via `RestrictionParams`.
+По умолчанию закреплены известные коды Битрикс24; расширяйте для своего приложения через `RestrictionParams`.
 
 ```ts
 import { B24Hook, ParamsFactory, ApiVersion } from '@bitrix24/b24jssdk'
@@ -254,23 +254,23 @@ await $b24.setRestrictionManagerParams({
 })
 ```
 
-**The category rule needs no configuration.** On `restApi:v3` an error that arrived in the v3 error envelope carrying a 4xx other than 401/408/429 is soft, whatever its code. Through the `2.x` line this was opt-in behind a `classifyV3ErrorsByCategory` parameter; since `3.0.0` it is simply the behaviour and that parameter no longer exists — passing it is a compile error, and the fix is to delete the line.
+**Правило категорий не требует настройки.** В `restApi:v3` ошибка, пришедшая в конверте ошибки v3 с кодом 4xx, отличным от 401/408/429, считается soft независимо от своего кода. В линейке `2.x` это включалось параметром `classifyV3ErrorsByCategory`; с `3.0.0` это просто поведение, а параметра больше нет — его передача приводит к ошибке компиляции, и исправление — удалить строку.
 
-**Why the category rule exists.** The built-in soft list holds nine v3 codes; one on-premise build was measured to ship at least 39, and the set grows with every portal module. So classification by list is per-module-shipping-date, not per-error-kind: `INVALIDSELECTEXCEPTION` is soft while `INVALIDPAGINATIONEXCEPTION` — same caller mistake, same request, same HTTP 400 — throws. Pinned codes (built-in and yours) still outrank the rule; 5xx, 401, 408, 429 and all of `restApi:v2` are untouched; 403 is soft, matching the already-pinned `…ACCESSDENIEDEXCEPTION` — except `…INSUFFICIENTSCOPEEXCEPTION`, pinned hard because it is a missing OAuth grant and its v2 twin `insufficient_scope` has always thrown.
+**Зачем нужно правило категорий.** Встроенный soft-список содержит девять кодов v3; одна сборка для портала на собственной инфраструктуре, как измерено, поставляла как минимум 39, и набор растёт с каждым модулем портала. Поэтому классификация по списку зависит от даты поставки модуля, а не от вида ошибки: `INVALIDSELECTEXCEPTION` — soft, а `INVALIDPAGINATIONEXCEPTION` — та же ошибка вызывающего, тот же запрос, тот же HTTP 400 — бросается. Закреплённые коды (встроенные и ваши) по-прежнему главнее правила; 5xx, 401, 408, 429 и весь `restApi:v2` не затрагиваются; 403 — soft, как и уже закреплённый `…ACCESSDENIEDEXCEPTION` — за исключением `…INSUFFICIENTSCOPEEXCEPTION`, закреплённого как hard, потому что это отсутствие разрешения OAuth, а его двойник в v2 `insufficient_scope` всегда бросался.
 
-**Never match on the `BITRIX_REST_V3_EXCEPTION_` prefix** — modules ship unprefixed codes such as `NOTE_SEARCH_QUERY_TOO_SHORT`. And never match on `message`: it is localised.
+**Никогда не сопоставляйте по префиксу `BITRIX_REST_V3_EXCEPTION_`** — модули поставляют коды без префикса, например `NOTE_SEARCH_QUERY_TOO_SHORT`. И никогда не сопоставляйте по `message`: он локализован.
 
-**`…ACCESSDENIEDEXCEPTION` is not a permission signal.** On v3 it is the catch-all for *every* authentication failure: a wrong credential, a missing one, and a valid one sent over plain HTTP all answer it with **401**, byte-identically — the portal folds any `checkAuth()` failure into this one exception and drops the reason. The same code arrives with **403** for a different thing entirely: a method or controller disabled on the portal. So the code alone says only "not authorised". The SDK delivers it **soft at both statuses** — it sits in the built-in soft list, which `isSoftError` consults before it looks at any status, and a 401 here does not trigger a token refresh either (that path additionally requires `expired_token` / `invalid_token`). So pair the code with `status` to decide what to *do*, not to predict how it arrives, and if the credential is one you trust, check the URL scheme before you check scopes. (`restApi:v2` distinguishes these: `INVALID_CREDENTIALS` vs `INVALID_REQUEST` / *Https required.*)
+**`…ACCESSDENIEDEXCEPTION` — не сигнал о правах.** В v3 это универсальный код для *любого* сбоя аутентификации: неверные учётные данные, отсутствующие и верные, отправленные по обычному HTTP, — все отвечают им с **401**, побайтно одинаково — портал сводит любой сбой `checkAuth()` к этому одному исключению и отбрасывает причину. Тот же код приходит с **403** по совершенно другому поводу: метод или контроллер отключён на портале. Так что сам по себе код говорит лишь «не авторизован». SDK отдаёт его **как soft при обоих статусах** — он входит во встроенный soft-список, который `isSoftError` проверяет раньше любого статуса, и 401 здесь не запускает обновление токена (для этого дополнительно нужны `expired_token` / `invalid_token`). Поэтому сочетайте код со `status`, чтобы решить, что *делать*, а не чтобы предсказать, как он придёт, и если учётные данные вам известны как верные, проверьте схему URL, прежде чем проверять права. (`restApi:v2` их различает: `INVALID_CREDENTIALS` против `INVALID_REQUEST` / *Https required.*)
 
-`hardErrorCodes` and `softErrorCodes` are **additive** — the built-in lists (auth/fatal codes) are always hard, and you can't remove them, only extend (per `packages/jssdk/src/types/limiters.ts:120-146`).
+`hardErrorCodes` и `softErrorCodes` **аддитивны** — встроенные списки (коды авторизации/фатальные) всегда hard, и вы не можете их убрать, только расширить (согласно `packages/jssdk/src/types/limiters.ts:120-146`).
 
-`setRestrictionManagerParams` **replaces the parameters you name and keeps the rest** — `setRestrictionManagerParams({ maxRetries: 5 })` after the block above leaves `hardErrorCodes` and the others intact; a key set to `undefined` counts as not mentioned. The merge is **shallow**: `rateLimit` / `operatingLimit` / `adaptiveConfig` are replaced whole, their types have no optional fields, and a partial block from JavaScript is refused with `JSSDK_LIMITER_INVALID_CONFIG_BLOCK` rather than reaching a limiter half-built. To clear a list pass `hardErrorCodes: []` — spreading `...ParamsFactory.getDefault()` does not clear it, because the factory carries no such key. `getRestrictionManagerParams()` returns a copy, nested blocks included. (The method used to replace the whole configuration, so a partial update reset everything it did not mention — #479.)
+`setRestrictionManagerParams` **заменяет указанные вами параметры и сохраняет остальные** — `setRestrictionManagerParams({ maxRetries: 5 })` после блока выше оставляет `hardErrorCodes` и прочие нетронутыми; ключ со значением `undefined` считается неуказанным. Слияние **поверхностное**: `rateLimit` / `operatingLimit` / `adaptiveConfig` заменяются целиком, у их типов нет необязательных полей, а неполный блок из JavaScript отклоняется с `JSSDK_LIMITER_INVALID_CONFIG_BLOCK`, а не попадает в лимитер недособранным. Чтобы очистить список, передайте `hardErrorCodes: []` — разворачивание `...ParamsFactory.getDefault()` его не очищает, потому что такого ключа у фабрики нет. `getRestrictionManagerParams()` возвращает копию, включая вложенные блоки. (Раньше метод заменял всю конфигурацию, поэтому частичное обновление сбрасывало всё, что не упомянуто, — #479.)
 
-**`OperatingLimiter` does nothing on a default self-hosted portal, and that is correct.** It works from the `operating` / `operating_reset_at` counters in the response's `time` block, which a box sends only while its own `LoadLimiter` is switched on — off by default, and nothing in the product switches it on. The same switch gates enforcement, so such a portal is not refusing calls either: a quiet limiter is matching the portal, not missing something. `RateLimiter` and `AdaptiveDelayer` still apply. A box owner who *wants* the limit has to enable it and wire a Redis by hand — the measured steps, and the misconfiguration that silently looks like success, are in [Limiters → Enabling the operating limiter on a self-hosted portal](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/limiters/#enabling-the-operating-limiter-on-a-self-hosted-portal). Do not read `time.duration` or `time.processing` for timing: on the build this was measured on (`main 26.700.0`) the portal truncates the timestamps they are derived from, which inflates `duration` by up to a second and leaves `processing` reading `0` for almost every call.
+**`OperatingLimiter` ничего не делает на портале на собственной инфраструктуре (self-hosted) с настройками по умолчанию, и это правильно.** Он работает по счётчикам `operating` / `operating_reset_at` в блоке `time` ответа, которые коробка присылает, только пока включён её собственный `LoadLimiter` — по умолчанию он выключен, и в продукте ничто его не включает. Тот же переключатель управляет применением ограничения, поэтому такой портал вызовы тоже не отклоняет: молчащий лимитер соответствует порталу, а не что-то упускает. `RateLimiter` и `AdaptiveDelayer` по-прежнему действуют. Владельцу коробки, который *хочет* это ограничение, нужно включить его и вручную подключить Redis — измеренные шаги и неверную настройку, которая молча выглядит как успех, см. в [Limiters → Enabling the operating limiter on a self-hosted portal](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/limiters/#enabling-the-operating-limiter-on-a-self-hosted-portal). Не читайте `time.duration` или `time.processing` для измерения времени: в сборке, на которой это измерялось (`main 26.700.0`), портал усекает метки времени, из которых они выводятся, что завышает `duration` до секунды и оставляет `processing` равным `0` почти для каждого вызова.
 
-> **Scope:** `setRestrictionManagerParams` updates the policy on the **`$b24` instance**, not on the call you're about to make. Every concurrent or subsequent call on the same `$b24` sees the new params until you set them again. In code paths that mix idempotent reads with non-idempotent writes on the same `$b24`, use a dedicated `$b24` instance for the non-idempotent flow instead of flipping the policy in-flight. On `restApi:v3` there is a better answer than either: pass `idempotencyKey` on the write itself and let the portal deduplicate it — see [Idempotency-Key](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/call-rest-api-ver3/#idempotency-key). On `restApi:v2`, where the portal ignores the header, a per-method idempotency token plus manual reconciliation is still the only option.
+> **Область действия:** `setRestrictionManagerParams` обновляет политику на **экземпляре `$b24`**, а не на вызове, который вы собираетесь сделать. Каждый параллельный или последующий вызов на том же `$b24` видит новые параметры, пока вы не зададите их снова. В путях кода, где на одном `$b24` смешиваются идемпотентные чтения и неидемпотентные записи, используйте для неидемпотентного потока отдельный экземпляр `$b24`, а не переключайте политику на лету. В `restApi:v3` есть ответ лучше обоих: передайте `idempotencyKey` самой записи и позвольте порталу дедуплицировать — см. [Idempotency-Key](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/call-rest-api-ver3/#idempotency-key). В `restApi:v2`, где портал игнорирует заголовок, остаётся лишь токен идемпотентности для каждого метода плюс ручная сверка.
 
-For heavy long-running calls, also raise the axios timeout on the underlying HTTP client:
+Для тяжёлых долгих вызовов также увеличьте таймаут axios у базового HTTP-клиента:
 
 ```ts
 import { ApiVersion } from '@bitrix24/b24jssdk'
@@ -278,11 +278,10 @@ const clientAxios = $b24.getHttpClient(ApiVersion.v2).ajaxClient
 clientAxios.defaults.timeout = 120_000
 ```
 
-There is a second channel, and it is the one to reach for when the setting has to
-apply from the first request: `httpOptions` at construction, on
-`initializeB24Frame` (the frame boot — it forwards the option to `B24Frame`
-unchanged), `B24Hook`, `B24Hook.fromWebhookUrl` and `B24OAuth`, merged over the
-SDK's own axios defaults.
+Есть и второй канал, к которому стоит обратиться, когда настройка должна действовать с первого запроса: `httpOptions` при создании — в
+`initializeB24Frame` (запуск фрейма — он пересылает опцию в `B24Frame`
+без изменений), `B24Hook`, `B24Hook.fromWebhookUrl` и `B24OAuth`; они накладываются поверх
+собственных значений axios по умолчанию в SDK.
 
 ```ts
 import { B24Hook } from '@bitrix24/b24jssdk'
@@ -293,39 +292,37 @@ const b24 = B24Hook.fromWebhookUrl(
 )
 ```
 
-`adapter` is what it exists for. In a browser — or a worker, which the SDK treats
-alike here — it asks axios for `fetch` —
-left alone, axios walks `['xhr', 'http', 'fetch']` and takes XHR by list order,
-not by merit; outside a browser it asks for nothing. Pass `{ adapter: 'xhr' }` to
-go back, which is also the answer for a `jsdom` suite whose test double stubs
+Главное назначение — `adapter`. В браузере — или в воркере, который SDK здесь
+рассматривает так же, — он просит у axios `fetch`: если оставить как есть, axios перебирает `['xhr', 'http', 'fetch']` и берёт XHR по порядку в списке,
+а не по достоинствам; вне браузера он ничего не запрашивает. Передайте `{ adapter: 'xhr' }`, чтобы
+вернуться назад, — это же ответ для набора тестов на `jsdom`, где тестовый двойник подменяет
 `XMLHttpRequest`.
 
-`httpOptions` is a narrow slice of `AxiosRequestConfig` (`TypeHttpOptions`):
+`httpOptions` — узкий срез `AxiosRequestConfig` (`TypeHttpOptions`):
 `adapter`, `timeout`, `timeoutErrorMessage`, `proxy`, `httpAgent`, `httpsAgent`,
 `maxRedirects`, `maxContentLength`, `maxBodyLength`, `decompress`,
 `withCredentials`. `baseURL`, `transformRequest`, `paramsSerializer`
-and `validateStatus` are how the SDK reaches the portal and are not offered
-there — a key outside the list is dropped at construction and its name logged
-(the warning reads `httpOptions: keys not accepted at construction were
-dropped`), since a type cannot stop a value that arrives through a variable or
-from plain JavaScript. `headers` is not offered either — the type rejects it —
-though the transport still merges one that reaches it from untyped code, as it
-has since #144. All of them stay reachable through `defaults` above, where it
-reads as the deliberate act it is.
+и `validateStatus` — это то, как SDK достаёт до портала, и их там нет:
+ключ вне списка отбрасывается при создании, а его имя логируется
+(предупреждение читается как `httpOptions: keys not accepted at construction were
+dropped`), поскольку тип не может остановить значение, пришедшее через переменную или
+из чистого JavaScript. `headers` тоже не предлагается — тип его отклоняет, —
+хотя транспорт по-прежнему сливает его, если он дошёл из нетипизированного кода, как
+это делалось с #144. Всё это остаётся доступным через `defaults` выше, где это
+выглядит как осознанное действие.
 
-The list keeps out what breaks the SDK by accident; it is not a security
-boundary. `adapter` replaces the whole transport and `proxy` / `httpAgent` route
-token-bearing traffic wherever the caller points them — both are on the list,
-because `adapter` is what the option exists for. And it reaches the two REST
-transports only: the OAuth token-refresh client builds its own axios instance, so
-`adapter`, `timeout` and `proxy` do not apply to the request that posts
-`client_secret` to the OAuth server. Note `defaults.headers['Content-Type']` no longer changes
-SDK traffic: the SDK states the JSON content type per request (see the
-`b24jssdk-filtering` skill for why that matters).
+Список отсекает то, что случайно ломает SDK; это не граница
+безопасности. `adapter` заменяет весь транспорт, а `proxy` / `httpAgent` направляют
+трафик с токенами туда, куда укажет вызывающий, — оба в списке,
+потому что `adapter` и есть то, ради чего опция существует. И она действует только на два REST-транспорта: клиент обновления токена OAuth собирает собственный экземпляр axios, поэтому
+`adapter`, `timeout` и `proxy` не применяются к запросу, который отправляет
+`client_secret` на сервер OAuth. Обратите внимание, что `defaults.headers['Content-Type']` больше не меняет
+трафик SDK: SDK указывает тип содержимого JSON в каждом запросе (почему это важно, см. навык
+`b24jssdk-filtering`).
 
-## Enterprise limits
+## Лимиты Enterprise
 
-`LicenseManager` (from `useB24Helper`) automatically swaps in the enterprise restriction params if the portal is enterprise. To do it manually:
+`LicenseManager` (из `useB24Helper`) автоматически подставляет параметры ограничений для enterprise, если портал enterprise. Вручную:
 
 ```ts
 import { ParamsFactory } from '@bitrix24/b24jssdk'
@@ -333,37 +330,37 @@ import { ParamsFactory } from '@bitrix24/b24jssdk'
 await $b24.setRestrictionManagerParams(ParamsFactory.getEnterprise())
 ```
 
-## Security checklist for event-receiver recipes
+## Чек-лист безопасности для рецептов-приёмников событий
 
-When the code RECEIVES events from Bitrix24 (outbound webhook handlers, OAuth install / uninstall endpoints), apply this checklist — both anti-spoof and anti-retry-storm. Concrete worked examples live in recipes `07-webhook-handler.ts` and `12-oauth-install.ts`.
+Когда код ПОЛУЧАЕТ события от Битрикс24 (обработчики исходящих вебхуков, эндпоинты установки / удаления по OAuth), применяйте этот чек-лист — и против подделки, и против лавины повторов. Конкретные разобранные примеры находятся в рецептах `07-webhook-handler.ts` и `12-oauth-install.ts`.
 
-- [ ] **Respond `200` first, verify after.** Bitrix24 retries any non-2xx response for up to 24 h. Send `res.status(200).send('ok')` immediately on payload receipt, then do the verification + business logic asynchronously. Failures in those async steps log + drop, not retry-cascade.
-- [ ] **Verify `application_token` for outbound webhooks.** Compare `payload.auth?.application_token` against the value from your Bitrix24 dev console (typically supplied via env var). On mismatch — log and ignore. Without this, any caller that knows the URL can replay arbitrary events.
-- [ ] **Verify `application_token` against persisted credentials on uninstall.** On `ONAPPUNINSTALL`, look up the stored creds for the incoming `member_id`, compare `application_token`, and only delete on match. Without this, anyone who reaches `/uninstall` can erase credentials for any portal whose `member_id` they guess.
-- [ ] **Persist refreshed OAuth tokens.** Always call `setCallbackRefreshAuth` on every `B24OAuth` instance to write fresh tokens back to your store. The next cold start expects them.
-- [ ] **Keep `B24Hook` server-side.** It bundles a long-lived secret, and nothing in the SDK stops that secret reaching a browser bundle — keeping it out is the application's job. The client-side warning is a smoke alarm, not a guard: it fires wherever the browser's rules apply — the main thread and any Web, Shared or Service Worker (`_checkClientSideWarning` returns early when `isServerSide()`, which is `!isBrowserLikeRuntime()`) — so on Node there is nothing to silence, and `offClientSideWarning()` there is a no-op. Do not call it in application code — per [AGENTS.md](https://github.com/bitrix24/b24jssdk/blob/main/AGENTS.md), suppressing warnings is for testing only. Calling it in a server template is worse than pointless: it silences nothing where it sits, and travels with the code if that code is ever copied into a browser, taking the one signal about the leaked secret with it.
-- [ ] **HTML-escape user input before posting to chat / IM.** When sending CRM text through `parse_mode: 'HTML'` (Telegram) or `im.message.add` HTML, escape `<` / `>` / `&` in the payload.
+- [ ] **Сначала отвечайте `200`, проверяйте потом.** Битрикс24 повторяет любой ответ не из 2xx до 24 часов. Отправляйте `res.status(200).send('ok')` сразу при получении данных, а проверку и бизнес-логику выполняйте асинхронно. Сбои в этих асинхронных шагах логируются и отбрасываются, а не вызывают каскад повторов.
+- [ ] **Проверяйте `application_token` для исходящих вебхуков.** Сравните `payload.auth?.application_token` со значением из вашей консоли разработчика Битрикс24 (обычно передаётся через переменную окружения). При несовпадении — запишите в лог и проигнорируйте. Без этого любой, кто знает URL, может воспроизвести произвольные события.
+- [ ] **Проверяйте `application_token` по сохранённым учётным данным при удалении.** На `ONAPPUNINSTALL` найдите сохранённые данные для пришедшего `member_id`, сравните `application_token` и удаляйте только при совпадении. Без этого любой, кто достанет `/uninstall`, сможет стереть учётные данные любого портала, чей `member_id` угадает.
+- [ ] **Сохраняйте обновлённые токены OAuth.** Всегда вызывайте `setCallbackRefreshAuth` на каждом экземпляре `B24OAuth`, чтобы записывать свежие токены в ваше хранилище. Следующий холодный старт ожидает их.
+- [ ] **Держите `B24Hook` на стороне сервера.** Он содержит долгоживущий секрет, и ничто в SDK не мешает этому секрету попасть в браузерный бандл — не допустить этого должно приложение. Клиентское предупреждение — это датчик дыма, а не защита: оно срабатывает везде, где действуют правила браузера — в основном потоке и в любом Web, Shared или Service Worker (`_checkClientSideWarning` возвращается раньше при `isServerSide()`, то есть `!isBrowserLikeRuntime()`) — поэтому в Node заглушать нечего, и `offClientSideWarning()` там — пустая операция. Не вызывайте его в коде приложения — согласно [AGENTS.md](https://github.com/bitrix24/b24jssdk/blob/main/AGENTS.md), подавление предупреждений предназначено только для тестов. Вызов его в серверном шаблоне хуже, чем бесполезен: он ничего не заглушает там, где стоит, и переезжает вместе с кодом, если тот когда-нибудь скопируют в браузер, унося с собой единственный сигнал об утёкшем секрете.
+- [ ] **Экранируйте HTML во вводе пользователя перед отправкой в чат / IM.** При отправке текста CRM через `parse_mode: 'HTML'` (Telegram) или HTML в `im.message.add` экранируйте `<` / `>` / `&` в данных.
 
-## Picking method names
+## Выбор имён методов
 
-| Need | Method | API version |
+| Задача | Метод | Версия API |
 | --- | --- | --- |
-| CRM entities (deals, contacts, companies, leads, smart processes) | `crm.item.{list,get,add,update,delete}` with `entityTypeId` from `EnumCrmEntityTypeId` | v2 |
-| Tasks read/write/list | `tasks.task.{add,get,update,delete,list}` | **v3** |
-| Tasks extras | `tasks.task.checklistitem.*`, … | v2 |
-| Disk | `disk.storage.getlist`, `disk.folder.{getchildren,addsubfolder}`, `disk.file.get` | v2 |
-| Profile / users | `profile`, `user.get`, `user.current` | v2 |
+| Сущности CRM (сделки, контакты, компании, лиды, смарт-процессы) | `crm.item.{list,get,add,update,delete}` с `entityTypeId` из `EnumCrmEntityTypeId` | v2 |
+| Чтение/запись/список задач | `tasks.task.{add,get,update,delete,list}` | **v3** |
+| Дополнительно по задачам | `tasks.task.checklistitem.*`, … | v2 |
+| Диск | `disk.storage.getlist`, `disk.folder.{getchildren,addsubfolder}`, `disk.file.get` | v2 |
+| Профиль / пользователи | `profile`, `user.get`, `user.current` | v2 |
 | IM | `im.notify`, `im.message.add` | v2 |
-| Event log | `main.eventlog.{list,get,tail}` | **v3** |
-| Mail | `mail.mailbox.*`, `mail.message.*`, `mail.recipient.*` | **v3** |
-| Org structure (HR) | `humanresources.node.*`, `humanresources.employee.*` | **v3** |
-| Time tracking | `timeman.record.*` (read-only) | **v3** |
+| Журнал событий | `main.eventlog.{list,get,tail}` | **v3** |
+| Почта | `mail.mailbox.*`, `mail.message.*`, `mail.recipient.*` | **v3** |
+| Структура организации (HR) | `humanresources.node.*`, `humanresources.employee.*` | **v3** |
+| Учёт рабочего времени | `timeman.record.*` (только чтение) | **v3** |
 
-> The version column is a recommendation, not a gate: the SDK no longer keeps a v3 allowlist, so `actions.v3.*` will send any method to the v3 endpoint (the server validates it) and `actions.v2.*` no longer warns about v3-eligible methods. Pick the version that gives you the representation you want.
+> Столбец версии — рекомендация, а не запрет: SDK больше не хранит список разрешённых методов v3, поэтому `actions.v3.*` отправит любой метод на endpoint v3 (его проверяет сервер), а `actions.v2.*` больше не предупреждает о методах, подходящих для v3. Выбирайте версию, которая даёт нужное вам представление.
 
-## When you don't know which entry point you're in
+## Если вы не знаете, с какой точкой входа имеете дело
 
-Write functions against `TypeB24`:
+Пишите функции против `TypeB24`:
 
 ```ts
 import type { TypeB24 } from '@bitrix24/b24jssdk'
@@ -381,4 +378,4 @@ export async function loadDeal($b24: TypeB24, id: number): Promise<Deal> {
 }
 ```
 
-Same `loadDeal` works unchanged with `B24Hook`, `B24Frame`, and `B24OAuth`.
+Один и тот же `loadDeal` работает без изменений с `B24Hook`, `B24Frame` и `B24OAuth`.

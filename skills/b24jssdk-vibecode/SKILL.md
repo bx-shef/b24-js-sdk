@@ -1,42 +1,42 @@
 ---
 name: b24jssdk-vibecode
-description: How to combine the b24jssdk SDK with the VibeCode HTTP API (vibecode.bitrix24.tech). Most teams should NOT mix the two — pick one. This skill explains why, where they overlap, and the only practical pattern when you need both. Load only when the user explicitly mentions VibeCode.
+description: Как сочетать SDK b24jssdk с HTTP API VibeCode (vibecode.bitrix24.tech). Большинству команд НЕ нужно смешивать их — выберите одно. Навык объясняет почему, где они пересекаются и единственный практичный шаблон, когда нужны оба. Загружайте, только если пользователь прямо упоминает VibeCode.
 ---
 
 # b24jssdk × VibeCode
 
-VibeCode (`https://vibecode.bitrix24.tech`) is a **separate HTTP service** built on top of Bitrix24 REST. It exposes a JSON Entity API (`/v1/deals`, `/v1/contacts`, …), an AI Router (`/v1/ai/chat/completions`), web search (`/v1/search`), and an "infrastructure" API for hosted deployments. It is **not** Bitrix24 REST.
+VibeCode (`https://vibecode.bitrix24.tech`) — это **отдельный HTTP-сервис**, построенный поверх REST Битрикс24. Он предоставляет JSON Entity API (`/v1/deals`, `/v1/contacts`, …), AI Router (`/v1/ai/chat/completions`), веб-поиск (`/v1/search`) и «инфраструктурный» API для размещаемых развёртываний. Это **не** REST Битрикс24.
 
-`@bitrix24/b24jssdk` is a thin TypeScript wrapper around **Bitrix24 REST itself**. The two products solve different problems and use different transports.
+`@bitrix24/b24jssdk` — тонкая TypeScript-обёртка над **самим REST Битрикс24**. Эти два продукта решают разные задачи и используют разные транспорты.
 
-## Decision matrix
+## Матрица выбора
 
-| You want to… | Use |
+| Вы хотите… | Используйте |
 | --- | --- |
-| Read/write Bitrix24 entities (CRM, tasks, disk, IM) from a server or in-frame app | **b24jssdk** (`B24Hook`/`B24Frame`/`B24OAuth`) |
-| Have an LLM bootstrap an app on top of Bitrix24 with its own keys (`vibe_api_…`/`vibe_app_…`) | **VibeCode** directly (no SDK) |
-| Use Bitrix24's hosted AI Router or web-search proxy | **VibeCode** directly |
-| Run on a VibeCode-managed server *and* still read/write Bitrix24 normally | **VibeCode key for AI/search + b24jssdk for Bitrix24** |
+| Читать/писать сущности Битрикс24 (CRM, задачи, диск, IM) с сервера или из приложения во фрейме | **b24jssdk** (`B24Hook`/`B24Frame`/`B24OAuth`) |
+| Чтобы LLM развернула приложение поверх Битрикс24 со своими ключами (`vibe_api_…`/`vibe_app_…`) | **VibeCode** напрямую (без SDK) |
+| Использовать размещённый AI Router или прокси веб-поиска Битрикс24 | **VibeCode** напрямую |
+| Работать на сервере под управлением VibeCode *и* по-прежнему читать/писать Битрикс24 обычным способом | **Ключ VibeCode для AI/поиска + b24jssdk для Битрикс24** |
 
-Default to b24jssdk for anything Bitrix24-shaped. Reach for VibeCode only when you specifically need AI Router, web search, or VibeCode's infra.
+Для всего, что связано с Битрикс24, по умолчанию берите b24jssdk. К VibeCode обращайтесь, только когда вам нужны именно AI Router, веб-поиск или инфраструктура VibeCode.
 
-## Why not mix the two for entity calls
+## Почему не стоит смешивать их для вызовов сущностей
 
-The Entity API field names and filter dialect differ from Bitrix24 REST:
+Имена полей и диалект фильтров в Entity API отличаются от REST Битрикс24:
 
-| Bitrix24 (b24jssdk) | VibeCode |
+| Битрикс24 (b24jssdk) | VibeCode |
 | --- | --- |
-| `actions.v2.callList.make({ method: 'crm.item.list', params: { filter: { '>=opportunity': 50000 } } })` | `POST /v1/deals/search` body `{ "amount": { "$gte": 50000 } }` |
-| Filter operators: `>=`, `<=`, `!`, `%`, `=%` (v2) or `[['fld','>=','v']]` (v3) | MongoDB-style: `$gte`, `$lte`, `$ne`, `$contains`, `$in` |
-| `phone: [{ VALUE, VALUE_TYPE }]` (multi-value) | `phone: "+7..."` (often single string) |
-| `STAGE_ID` / `stageId` (depends on method version) | always camelCase |
-| Auth: webhook secret in URL or OAuth tokens | Auth: `X-Api-Key: vibe_api_…` |
+| `actions.v2.callList.make({ method: 'crm.item.list', params: { filter: { '>=opportunity': 50000 } } })` | `POST /v1/deals/search`, тело `{ "amount": { "$gte": 50000 } }` |
+| Операторы фильтра: `>=`, `<=`, `!`, `%`, `=%` (v2) или `[['fld','>=','v']]` (v3) | В стиле MongoDB: `$gte`, `$lte`, `$ne`, `$contains`, `$in` |
+| `phone: [{ VALUE, VALUE_TYPE }]` (множественное значение) | `phone: "+7..."` (часто одна строка) |
+| `STAGE_ID` / `stageId` (зависит от версии метода) | всегда camelCase |
+| Авторизация: секрет вебхука в URL или токены OAuth | Авторизация: `X-Api-Key: vibe_api_…` |
 
-Translating a working b24jssdk query into a VibeCode body requires **rewriting** the operator syntax and field names. It's not a free swap. Picking one keeps your code consistent.
+Чтобы превратить работающий запрос b24jssdk в тело запроса VibeCode, нужно **переписать** синтаксис операторов и имена полей. Это не бесплатная замена. Выбрав одно, вы сохраняете согласованность кода.
 
-## The "AI add-on" pattern (VibeCode just for AI)
+## Шаблон «AI-надстройка» (VibeCode только для AI)
 
-If your portal has a `vibe_api_…` key and you only want AI Router or Web Search, keep b24jssdk for Bitrix24 and call VibeCode endpoints with plain `fetch`:
+Если у вашего портала есть ключ `vibe_api_…`, а вам нужны только AI Router или веб-поиск, оставьте b24jssdk для Битрикс24 и вызывайте эндпоинты VibeCode обычным `fetch`:
 
 ```ts
 import {
@@ -82,20 +82,20 @@ await $b24.actions.v2.call.make({
 })
 ```
 
-That's all there is to it: VibeCode for AI/search, b24jssdk for everything Bitrix24-shaped. No SDK extension is needed; do not try to teach `B24Hook` how to talk to `/v1/...`.
+Вот и всё: VibeCode — для AI/поиска, b24jssdk — для всего, что связано с Битрикс24. Расширять SDK не нужно; не пытайтесь научить `B24Hook` общаться с `/v1/...`.
 
-## Anti-patterns
+## Антипаттерны
 
-- ❌ Loading `vibe_api_…` into `B24Hook.fromWebhookUrl()` — it expects a Bitrix24 webhook URL, not a VibeCode key.
-- ❌ Passing MongoDB-style filters (`$gt`, `$lt`, `$ne`, `$contains`) to `actions.v{2,3}.*.make` — Bitrix24 REST does not understand them and returns 400 (v3) or returns wrong rows (v2 ignores unknown operators).
-- ❌ Calling `/v1/deals/search` from in-frame code and then calling `crm.item.list` for the same deals "for consistency". Pick one source.
-- ❌ Storing a VibeCode key in `B24Frame.options.appSet` — placement options are visible to all users with access to the placement.
+- ❌ Подставлять `vibe_api_…` в `B24Hook.fromWebhookUrl()` — он ожидает URL вебхука Битрикс24, а не ключ VibeCode.
+- ❌ Передавать фильтры в стиле MongoDB (`$gt`, `$lt`, `$ne`, `$contains`) в `actions.v{2,3}.*.make` — REST Битрикс24 их не понимает и возвращает 400 (v3) или неверные строки (v2 игнорирует неизвестные операторы).
+- ❌ Вызывать `/v1/deals/search` из кода во фрейме, а затем `crm.item.list` для тех же сделок «для согласованности». Выберите один источник.
+- ❌ Хранить ключ VibeCode в `B24Frame.options.appSet` — опции встройки (placement) видны всем пользователям, имеющим доступ к ней.
 
-## When users say "VibeCode" but mean "Bitrix24"
+## Когда пользователи говорят «VibeCode», а имеют в виду «Битрикс24»
 
-VibeCode docs sometimes refer to Bitrix24 REST methods (e.g., `tasks.task.add`) and sometimes to their own Entity API endpoints (e.g., `POST /v1/tasks`). Disambiguate before generating code:
+Документация VibeCode иногда ссылается на методы REST Битрикс24 (например, `tasks.task.add`), а иногда — на собственные эндпоинты Entity API (например, `POST /v1/tasks`). Уточните это, прежде чем генерировать код:
 
-- If the example imports `'@bitrix24/b24jssdk'` or talks about `B24Hook` / `B24Frame` / `B24OAuth` — use the SDK.
-- If the example uses `fetch('https://vibecode.bitrix24.tech/v1/...')` with `X-Api-Key` — that's VibeCode.
+- Если в примере есть импорт `'@bitrix24/b24jssdk'` или речь идёт о `B24Hook` / `B24Frame` / `B24OAuth` — используйте SDK.
+- Если в примере `fetch('https://vibecode.bitrix24.tech/v1/...')` с `X-Api-Key` — это VibeCode.
 
-When in doubt, ask the user which side they want to live on.
+Если сомневаетесь, спросите пользователя, на чьей стороне он хочет жить.

@@ -1,20 +1,20 @@
 ---
 name: b24jssdk-frame-ui
-description: Use B24Frame UI managers (slider, dialog, parent, placement, options, auth) from a Bitrix24 placement iframe app. Covers opening sliders with mobile fallback, picking users and CRM entities, resizing the parent window, placement setValue, persisting app/user options. Load when generating in-frame UI code.
+description: Используйте UI-менеджеры B24Frame (slider, dialog, parent, placement, options, auth) из приложения во встройке (placement iframe) Битрикс24. Охватывает открытие слайдеров с мобильным запасным вариантом, выбор пользователей и сущностей CRM, изменение размера родительского окна, placement setValue, сохранение опций приложения и пользователя. Загружайте при генерации UI-кода внутри фрейма.
 ---
 
-# b24jssdk frame UI
+# UI во фрейме b24jssdk
 
-These managers exist **only** on `B24Frame`. None of them work for `B24Hook` or `B24OAuth`. Always init via:
+Эти менеджеры существуют **только** в `B24Frame`. Ни один из них не работает с `B24Hook` или `B24OAuth`. Всегда инициализируйте так:
 
 ```ts
 import { initializeB24Frame } from '@bitrix24/b24jssdk'
 const $b24 = await initializeB24Frame()
 ```
 
-…and call `$b24.destroy()` when the page/component unmounts.
+…и вызывайте `$b24.destroy()`, когда страница/компонент размонтируется.
 
-## Slider — open paths and app pages
+## Слайдер — открытие путей и страниц приложения
 
 ```ts
 // 1. Open a portal path in a slider
@@ -33,17 +33,17 @@ $b24.slider.openSliderAppPage({ some: 'param' }).then(() => { /* the slider was 
 $b24.slider.closeSliderAppPage().catch(() => {})
 ```
 
-`openPath` returns when the slider closes (or the popup is closed on mobile). Always check `isOpenAtNewWindow` if you depend on close-detection.
+`openPath` возвращается, когда слайдер закрывается (или закрывается всплывающее окно на мобильном). Если вы полагаетесь на определение закрытия, всегда проверяйте `isOpenAtNewWindow`.
 
-`openPath` opens a **portal** path; `openSliderAppPage` re-opens **your own registered handler URL**. Pointing `openPath` at an application page yields a 404 on the portal side.
+`openPath` открывает путь **портала**; `openSliderAppPage` заново открывает **URL вашего собственного зарегистрированного обработчика**. Если направить `openPath` на страницу приложения, портал вернёт 404.
 
-`openSliderAppPage` settles on **close**, never on open, always with `''` (measured, #486). It never settles if the calling page reloads while the slider is open.
+`openSliderAppPage` завершается при **закрытии**, а не при открытии, и всегда со значением `''` (измерено, #486). Он никогда не завершается, если вызывающая страница перезагружается, пока слайдер открыт.
 
-Everything you pass to `openSliderAppPage` is forwarded to the new frame as `PLACEMENT_OPTIONS`, so `place` is an ordinary call parameter — **not** a registered placement, and no `placement.bind` is needed. `bx24_width` below your own mobile breakpoint silently renders the mobile layout.
+Всё, что вы передаёте в `openSliderAppPage`, пересылается в новый фрейм как `PLACEMENT_OPTIONS`, поэтому `place` — обычный параметр вызова, **а не** зарегистрированная встройка, и `placement.bind` не нужен. `bx24_width` ниже вашей собственной мобильной границы молча включает мобильную раскладку.
 
-### Routing the opened slider to the right screen (Nuxt)
+### Маршрутизация открытого слайдера на нужный экран (Nuxt)
 
-The SDK's job ends when the parameter is delivered; routing is yours. In Nuxt, **do not just return `navigateTo()` from route middleware** — that redirect is silently discarded when the entry route is prerendered, which `nuxt build` does for anything in `nitro.prerender.routes` (and, with `crawlLinks`, anything reachable by link). The portal opens the frame with a query string, and for a prerendered page Nuxt hydrates on the bare path and then restores the original URL on `app:suspense:resolve`, bypassing guards. Nothing reports an error; the slider just shows your main page.
+Работа SDK заканчивается, когда параметр доставлен; маршрутизация — ваша забота. В Nuxt **не просто возвращайте `navigateTo()` из middleware маршрута** — этот редирект молча отбрасывается, если входной маршрут пререндерится, а `nuxt build` делает это для всего из `nitro.prerender.routes` (и, при `crawlLinks`, для всего, что достижимо по ссылке). Портал открывает фрейм со строкой запроса, а для пререндеренной страницы Nuxt выполняет гидратацию на голом пути и затем восстанавливает исходный URL по `app:suspense:resolve`, минуя guards. Никакой ошибки не сообщается; слайдер просто показывает вашу главную страницу.
 
 ```ts
 export default defineNuxtRouteMiddleware(async (to) => {
@@ -81,9 +81,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
 })
 ```
 
-`onNuxtReady` works because it hooks the same `app:suspense:resolve` but subscribes later and defers to `requestIdleCallback`, running after the restore. `app:mounted` is too early — it fails with `NavigationFailure: aborted`. `redirectCode` is server-only, `abortNavigation` cannot redirect, and `external: true` means a full reload.
+`onNuxtReady` работает, потому что подключается к тому же `app:suspense:resolve`, но подписывается позже и откладывается до `requestIdleCallback`, выполняясь после восстановления. `app:mounted` слишком рано — он падает с `NavigationFailure: aborted`. `redirectCode` работает только на сервере, `abortNavigation` не умеет перенаправлять, а `external: true` означает полную перезагрузку.
 
-## Dialog — pick users
+## Диалог — выбор пользователей
 
 ```ts
 const single = await $b24.dialog.selectUser()
@@ -93,9 +93,9 @@ const many = await $b24.dialog.selectUsers()
 // many: SelectedUser[]
 ```
 
-## Dialog — pick CRM entities (`selectCRM`)
+## Диалог — выбор сущностей CRM (`selectCRM`)
 
-Active method (re-implemented in `packages/jssdk/src/frame/dialog.ts:175-235`). Returns an object with per-entity-type buckets, each a real `Array` so you can use `.length`/`.map()`/`for..of`. Buckets for entity types you did not request are `undefined`.
+Активный метод (реализован заново в `packages/jssdk/src/frame/dialog.ts:175-235`). Возвращает объект с группами по типам сущностей, каждая из которых — настоящий `Array`, поэтому можно использовать `.length`/`.map()`/`for..of`. Группы для типов сущностей, которые вы не запрашивали, равны `undefined`.
 
 ```ts
 import type { SelectCRMParams, SelectedCRM } from '@bitrix24/b24jssdk'
@@ -121,24 +121,24 @@ for (const deal of picked.deal ?? []) {
 }
 ```
 
-The id format is per entity:
+Формат id зависит от сущности:
 
-- lead → `L_<n>`
-- contact → `C_<n>`
-- company → `CO_<n>`
-- deal → `D_<n>`
-- quote → `Q_<n>`
+- лид → `L_<n>`
+- контакт → `C_<n>`
+- компания → `CO_<n>`
+- сделка → `D_<n>`
+- предложение → `Q_<n>`
 
-## Dialog — pick access targets (`selectAccess`)
+## Диалог — выбор получателей доступа (`selectAccess`)
 
 ```ts
 // The argument is a string[] of permission ids to block, not an options object.
 const access = await $b24.dialog.selectAccess([])
 ```
 
-Less commonly used. Returns the parent window's raw access-selection payload — refer to Bitrix24's selectAccess docs for the shape.
+Используется реже. Возвращает исходные данные выбора доступа от родительского окна — форму см. в документации Битрикс24 по selectAccess.
 
-## Parent — control the iframe in the portal layout
+## Parent — управление iframe в раскладке портала
 
 ```ts
 await $b24.parent.fitWindow()                // shrink-wrap to content
@@ -153,9 +153,9 @@ await $b24.options.appSet('draft', 'value')
 $b24.parent.closeApplication().catch(() => {})
 ```
 
-`setTitle` changes the in-page `#pagetitle`, not the browser tab — to set the browser tab title, open a slider via `slider.openSliderAppPage({ bx24_title: '…' })`.
+`setTitle` меняет `#pagetitle` на странице, а не вкладку браузера — чтобы задать заголовок вкладки браузера, откройте слайдер через `slider.openSliderAppPage({ bx24_title: '…' })`.
 
-For IM:
+Для IM:
 
 ```ts
 await $b24.parent.imCallTo(/* userId */ 5, /* video */ true)
@@ -164,25 +164,25 @@ await $b24.parent.imPhoneTo('+70000000000')
 await $b24.parent.imOpenHistory('chat12')
 ```
 
-**All four are fire-and-forget.** The portal's handlers take no callback, so
-nothing ever answers: the promise resolves on the SDK's own short timer and means
-*the command was posted*, not that the call started or the chat opened. Never
-branch on it as a success signal, and do not treat the `action im… stop by
-timeout` log line that follows as a fault — it is the normal outcome.
+**Все четыре — «отправил и забыл».** Обработчики портала не принимают колбэк, поэтому
+никто никогда не отвечает: промис завершается по собственному короткому таймеру SDK и означает,
+что *команда отправлена*, а не что звонок начался или чат открылся. Никогда не ветвитесь по нему как по
+признаку успеха и не считайте сбоем следующую за ним строку лога `action im… stop by
+timeout` — это нормальный исход.
 
-Calling any of them prints a deprecation notice in the **portal's** console
-recommending `Messenger.startPhoneCall` / `startVideoCall` / `openChat`. Those are
-top-window methods and are **not reachable from an application** — they are not
-part of a placement's command vocabulary. The notice comes from the portal's own
-compatibility layer, which these methods reach anyway; it cannot be avoided, and
-there is nothing to migrate to. See [#331](https://github.com/bitrix24/b24jssdk/issues/331).
+Вызов любого из них печатает уведомление об устаревании в консоли **портала**,
+рекомендующее `Messenger.startPhoneCall` / `startVideoCall` / `openChat`. Это
+методы верхнего окна, и они **недоступны из приложения** — они не входят
+в набор команд встройки. Уведомление исходит из собственного слоя
+совместимости портала, до которого эти методы всё равно доходят; избежать его нельзя,
+и переходить не на что. См. [#331](https://github.com/bitrix24/b24jssdk/issues/331).
 
-`imPhoneTo` accepts a second `params` argument and `imOpenMessenger` a second
-`messageId`, mirroring the portal's own `startPhoneCall(number, params)` and
-`openChat(dialogId, messageId)`. **The portal does not forward either today**, so
-they have no effect yet — send them only so that no change is needed when it does.
+`imPhoneTo` принимает второй аргумент `params`, а `imOpenMessenger` — второй
+`messageId`, повторяя собственные `startPhoneCall(number, params)` и
+`openChat(dialogId, messageId)` портала. **Сегодня портал не передаёт ни тот, ни другой**, так что
+они пока не действуют — отправляйте их, только чтобы не пришлось ничего менять, когда это появится.
 
-## Placement — context the user opened your app from
+## Placement — контекст, из которого пользователь открыл ваше приложение
 
 ```ts
 $b24.placement.title           // string identifier of the placement
@@ -203,9 +203,9 @@ await $b24.placement.callCustomBind('someCommand', { opt: 1 }, (...args) => {
 })
 ```
 
-### `placement.setValue` — send a value back to the host placement
+### `placement.setValue` — отправка значения обратно во встройку-хозяин
 
-Use `setValue` when your iframe is mounted in a "select-value" placement (e.g. a custom CRM-field selector). The host expects a **JSON-serialized string** and calls `JSON.parse` on receipt.
+Используйте `setValue`, когда ваш iframe смонтирован во встройке типа «выбор значения» (например, пользовательский селектор поля CRM). Хост ожидает **JSON-сериализованную строку** и вызывает `JSON.parse` при получении.
 
 ```ts
 // Convenience helper that serializes for you (preferred)
@@ -214,14 +214,14 @@ await $b24.placement.setValue({ id: 1, title: 'demo' })
 await $b24.placement.setValue([1, 2, 3])
 ```
 
-Manual form via `placement.call('setValue', …)` is also supported, but `value` MUST already be a JSON-serialized string — the SDK throws `TypeError` otherwise (see `packages/jssdk/src/frame/placement.ts:104-113`):
+Ручная форма через `placement.call('setValue', …)` тоже поддерживается, но `value` ДОЛЖНО быть уже JSON-сериализованной строкой — иначе SDK бросает `TypeError` (см. `packages/jssdk/src/frame/placement.ts:104-113`):
 
 ```ts
 // Equivalent but requires you to stringify yourself
 await $b24.placement.call('setValue', { value: JSON.stringify({ id: 1 }) })
 ```
 
-## Options — persist app and per-user settings
+## Options — сохранение настроек приложения и пользователя
 
 ```ts
 // App-level (visible to all users of this app on the portal)
@@ -233,11 +233,11 @@ await $b24.options.userSet('theme', 'dark')
 const theme = $b24.options.userGet('theme')
 ```
 
-Values are JSON-serialized server-side. Read returns the parsed value.
+Значения сериализуются в JSON на стороне сервера. Чтение возвращает разобранное значение.
 
-For batched/structured options, prefer the helper-level options manager (see `b24jssdk-helpers`).
+Для пакетных/структурированных опций предпочитайте менеджер опций уровня помощника (см. `b24jssdk-helpers`).
 
-## Auth — env, refresh, language
+## Auth — окружение, обновление, язык
 
 ```ts
 const auth = $b24.auth.getAuthData()
@@ -251,16 +251,16 @@ const lang = $b24.getLang()    // 'ru' | 'en' | …
 const sid = $b24.getAppSid()
 ```
 
-The SDK auto-refreshes auth on 401 — manual `refreshAuth()` is rarely needed.
-Concurrent `refreshAuth()` calls are coalesced into one message to the parent window.
+SDK автоматически обновляет авторизацию при 401 — ручной `refreshAuth()` нужен редко.
+Параллельные вызовы `refreshAuth()` склеиваются в одно сообщение родительскому окну.
 
-### Token keep-alive — for apps that use the token outside the SDK
+### Поддержание токена — для приложений, использующих токен вне SDK
 
-The auto-refresh runs **only on the request path**: an already-expired token is
-renewed before a call (a valid one is used as is), and again on a 401.
-An app that reads the token and sends it to **its own backend** makes no `$b24`
-call, so nothing ever refreshes it: after `AUTH_EXPIRES` seconds of an idle tab
-the token is gone and the app's own requests start answering 401.
+Автообновление работает **только на пути запроса**: уже истёкший токен
+обновляется перед вызовом (действующий используется как есть), а также при 401.
+Приложение, которое читает токен и отправляет его на **собственный бэкенд**, не делает
+вызовов `$b24`, поэтому токен никто не обновляет: через `AUTH_EXPIRES` секунд простоя вкладки
+токен пропадает, и собственные запросы приложения начинают отвечать 401.
 
 ```ts
 import { initializeB24Frame } from '@bitrix24/b24jssdk'
@@ -276,11 +276,11 @@ const $b24 = await initializeB24Frame({ keepAuthFresh: true })
 // keepAuthFresh: { marginMs: 120_000, minDelayMs: 30_000, maxDelayMs: 120_000 }
 ```
 
-Turn it on when the token leaves the SDK, or when the page sits open and idle.
-Leave it off when every request goes through `$b24` — Bitrix warns that
-refreshing too often risks an app being auto-blocked.
+Включайте, когда токен покидает SDK или когда страница долго остаётся открытой без действий.
+Не включайте, если каждый запрос идёт через `$b24` — Битрикс предупреждает, что
+слишком частое обновление грозит автоматической блокировкой приложения.
 
-## Lifecycle template (Vue 3)
+## Шаблон жизненного цикла (Vue 3)
 
 ```ts
 import { onMounted, onBeforeUnmount, ref } from 'vue'
@@ -299,18 +299,18 @@ onBeforeUnmount(() => {
 })
 ```
 
-## Install mode — finish it, or the portal sends you nothing
+## Режим установки — завершите его, иначе портал ничего вам не отправит
 
-An application is "installing" from the moment the user accepts the install dialog
-until it calls `installFinish()`. Until that call lands, the portal treats the app
-as half-installed and **delivers no events to it** — bot handlers, handlers
-registered with `event.bind`, and other outgoing calls never reach your endpoints.
+Приложение «устанавливается» с момента, когда пользователь принимает диалог установки,
+и до вызова `installFinish()`. Пока этот вызов не дошёл, портал считает приложение
+наполовину установленным и **не доставляет ему событий** — обработчики ботов, обработчики,
+зарегистрированные через `event.bind`, и другие исходящие вызовы не доходят до ваших эндпоинтов.
 
-The failure is silent: registration succeeds, `imbot.register` returns a `botId`,
-the handlers are listed when queried, and no traffic arrives. Generated code must
-therefore always finish the install flow.
+Сбой тихий: регистрация проходит, `imbot.register` возвращает `botId`,
+обработчики видны при запросе, а трафик не приходит. Поэтому сгенерированный код
+должен всегда завершать процесс установки.
 
-<!-- Keep in sync: docs 30.frame.md (installFinish), docs 99.examples/20.app-installation-wizard.md, skills/b24jssdk-core/SKILL.md. -->
+<!-- Синхронизировать с: docs 30.frame.md (installFinish), docs 99.examples/20.app-installation-wizard.md, skills/b24jssdk-core/SKILL.md. -->
 
 ```ts
 import { initializeB24Frame } from '@bitrix24/b24jssdk'
@@ -325,31 +325,31 @@ if ($b24.isInstallMode) {
 }
 ```
 
-The opposite holds for an **API-only app with no installation interface**: it must
-*not* call `installFinish()`. Its installation completes automatically, and the
-method works only inside a browser interface frame — so gate the call on
-`isInstallMode`, which is only ever true inside that frame.
+Для **приложения только с API и без интерфейса установки** верно обратное: оно
+*не* должно вызывать `installFinish()`. Его установка завершается автоматически, а
+метод работает только внутри фрейма с браузерным интерфейсом — поэтому ограничивайте вызов
+условием `isInstallMode`, которое истинно только внутри такого фрейма.
 
-Finishing the installation is a **lifecycle** step, not a security one. An app that
-also runs an OAuth install/uninstall endpoint still has to verify `application_token`
-on `ONAPPINSTALL` / `ONAPPUNINSTALL` — see the [Security patterns](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/security/)
-page. Doing one does not cover the other.
+Завершение установки — шаг **жизненного цикла**, а не безопасности. Приложение, которое
+ещё и держит эндпоинт установки/удаления по OAuth, всё равно обязано проверять `application_token`
+в `ONAPPINSTALL` / `ONAPPUNINSTALL` — см. страницу [Security patterns](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/security/).
+Одно не заменяет другое.
 
-To check an app the portal is ignoring, ask whether it considers it installed:
-`app.info` returns `INSTALLED`, and `false` means `installFinish()` never landed.
+Чтобы проверить приложение, которое портал игнорирует, спросите, считает ли он его установленным:
+`app.info` возвращает `INSTALLED`, а `false` означает, что `installFinish()` так и не дошёл.
 
-## Anti-patterns
+## Антипаттерны
 
-- ❌ Using `B24Frame` outside a Bitrix24 placement — `initializeB24Frame()` will hang waiting for the parent handshake. Use `B24Hook` for non-frame contexts.
-- ❌ Calling slider / dialog APIs before `await initializeB24Frame()` resolves.
-- ❌ Provisioning an app in install mode and never calling `installFinish()` — the app stays half-installed and the portal delivers no events to it, with nothing failing loudly to say so.
-- ❌ Putting work after `await installFinish()` — the portal reloads the page in response, so it may never run.
-- ❌ `$b24.placement.call('setValue', { value: { id: 1 } })` — throws because `value` is not a string. Use `$b24.placement.setValue({ id: 1 })` or stringify yourself.
-- ❌ Storing secrets in `options.appSet` — placement options are visible to everyone with access to the placement.
-- ❌ Treating a resolved `parent.im*` promise as proof the call started or the chat opened — nothing answers those commands; the promise only means the message was posted.
-- ❌ Firing `parent.closeApplication()` without `.catch(() => {})` and calling `$b24.destroy()` in the same breath — `destroy()` rejects every in-flight command with `JSSDK_FRAME_DISPOSED`, and a discarded promise becomes an unhandled rejection. Attach a `.catch`.
-- ❌ `await parent.closeApplication()` — on some builds the portal never answers, so it waits forever (#328). Cleanup first, then close without awaiting.
-- ❌ Treating an absent `selectCRM` bucket as an empty array — they are `undefined`. Use `picked.deal ?? []`.
-- ❌ `return navigateTo(target)` from Nuxt route middleware to route an opened slider — discarded without error on a prerendered entry route. Navigate from `onNuxtReady` while hydrating.
-- ❌ Trusting `$b24.placement.options['place']` without narrowing it — values are `unknown`, because the data crosses a postMessage boundary from the portal. Key case is the portal's choice too: for the default placement the object **is** the frame URL query string. (The empty-string and absent wire shapes are normalised by the SDK since 3.0.0 (a JSON string is handled too, though it belongs to the form-resubmit path and was not observed on the handshake), so `?.` is no longer needed.)
-- ❌ Gating slider diagnostics on `placement.isSliderMode` — it is derived from `PLACEMENT_OPTIONS.IFRAME`, so it goes quiet exactly when the placement data you are diagnosing is missing.
+- ❌ Использовать `B24Frame` вне встройки Битрикс24 — `initializeB24Frame()` зависнет в ожидании рукопожатия с родителем. Для контекстов без фрейма используйте `B24Hook`.
+- ❌ Вызывать API слайдера / диалога до того, как `await initializeB24Frame()` завершится.
+- ❌ Подготавливать приложение в режиме установки и никогда не вызывать `installFinish()` — приложение остаётся наполовину установленным, портал не доставляет ему события, и ничто громко об этом не сообщает.
+- ❌ Размещать работу после `await installFinish()` — портал в ответ перезагружает страницу, поэтому она может никогда не выполниться.
+- ❌ `$b24.placement.call('setValue', { value: { id: 1 } })` — бросает исключение, потому что `value` не строка. Используйте `$b24.placement.setValue({ id: 1 })` или сериализуйте сами.
+- ❌ Хранить секреты в `options.appSet` — опции встройки видны всем, кто имеет к ней доступ.
+- ❌ Считать завершившийся промис `parent.im*` доказательством того, что звонок начался или чат открылся, — на эти команды никто не отвечает; промис означает лишь, что сообщение отправлено.
+- ❌ Вызывать `parent.closeApplication()` без `.catch(() => {})` и тут же `$b24.destroy()` — `destroy()` отклоняет каждую выполняющуюся команду с `JSSDK_FRAME_DISPOSED`, а брошенный промис превращается в необработанное отклонение. Добавьте `.catch`.
+- ❌ `await parent.closeApplication()` — в некоторых сборках портал никогда не отвечает, и ожидание бесконечно (#328). Сначала очистка, затем закрытие без await.
+- ❌ Считать отсутствующую группу `selectCRM` пустым массивом — она `undefined`. Используйте `picked.deal ?? []`.
+- ❌ `return navigateTo(target)` из middleware маршрута Nuxt для маршрутизации открытого слайдера — молча отбрасывается на пререндеренном входном маршруте. Переходите из `onNuxtReady` во время гидратации.
+- ❌ Доверять `$b24.placement.options['place']` без сужения типа — значения `unknown`, потому что данные пересекают границу postMessage от портала. Регистр ключей — тоже выбор портала: для встройки по умолчанию объект **и есть** строка запроса URL фрейма. (С 3.0.0 SDK нормализует формы с пустой строкой и с отсутствием значения (JSON-строка тоже обрабатывается, хотя она относится к пути повторной отправки формы и при рукопожатии не наблюдалась), так что `?.` больше не нужен.)
+- ❌ Привязывать диагностику слайдера к `placement.isSliderMode` — он выводится из `PLACEMENT_OPTIONS.IFRAME`, поэтому замолкает ровно тогда, когда данных встройки, которые вы диагностируете, нет.
