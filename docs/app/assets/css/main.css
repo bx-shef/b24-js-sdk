@@ -8,22 +8,67 @@
 }
 
 /*
- * Custom bg
+ * Дизайн «Василёк» (Tools AI v2, «Ледяной неон»): фирменный перелив
+ * #6E5BFF → #3FA9FF → #7CFFE4, заливка под белым — тёмная половина
+ * #4B3CD0 → #1F6FC8 → #137A78, акцент #4B3CD0 / #A9B4FF (тёмная тема).
+ * Источник — bx-shef/toolsai-assistant, docs/design/v2 (tokens.css, spec.md).
+ * Компоненты b24ui берут цвет из своих токенов --ui-color-*: здесь они
+ * переопределены, а не правятся компоненты.
  */
+:root {
+  --tai-iris: linear-gradient(90deg, #6E5BFF, #3FA9FF, #7CFFE4);
+  --tai-iris-fill: linear-gradient(135deg, #4B3CD0, #1F6FC8 55%, #137A78);
+}
+
 @layer base {
+  .light,
+  .edge-light {
+    --ui-color-accent-main-primary: #4B3CD0;
+    --ui-color-accent-main-primary-alt: #3E30B8;
+    --ui-color-accent-main-link: #4B3CD0;
+    --ui-color-accent-main-link-underline: #4B3CD04d;
+    --ui-color-copilot-accent-primary: #4B3CD0;
+    --ui-color-accent-soft-element-violet: #EFEDFF;
+  }
+
+  .dark,
   .edge-dark {
-    --air-theme-bg-image: url(../bg/dawn-harmony-blurred.webp);
-    --air-theme-bg-image-blurred: url(../bg/dawn-harmony-blurred-blurred.webp);
+    --ui-color-accent-main-primary: #4B3CD0;
+    --ui-color-accent-main-primary-alt: #5A4BE0;
+    --ui-color-accent-main-link: #A9B4FF;
+    --ui-color-accent-main-link-underline: #A9B4FF4d;
+    --ui-color-copilot-accent-primary: #A9B4FF;
+    /* шапка сайта: bg-(--ui-color-accent-soft-element-violet)/40, dark:bg-(--ui-color-copilot-bg-content-3)/40 */
+    --ui-color-accent-soft-element-violet: #2A2466;
+    --ui-color-copilot-bg-content-3: #2A2466;
+  }
+
+  /* Фон: пятна перелива на тёмном — вместо фотографии фона b24ui */
+  .edge-dark {
+    --air-theme-bg-image:
+      radial-gradient(60rem 40rem at 10% -10%, rgb(110 91 255 / 0.28), transparent 60%),
+      radial-gradient(50rem 36rem at 95% 10%, rgb(63 169 255 / 0.22), transparent 60%),
+      radial-gradient(48rem 32rem at 50% 110%, rgb(124 255 228 / 0.14), transparent 60%);
+    --air-theme-bg-image-blurred: var(--air-theme-bg-image);
     --air-theme-bg-position: 0 0;
     --air-theme-bg-size: cover;
     --air-theme-bg-repeat: no-repeat;
     --air-theme-bg-attachment: fixed;
-    --air-theme-bg-color: #325ab3;
+    --air-theme-bg-color: #121118;
   }
-}
 
-:root {
+  .edge-light {
+    --air-theme-bg-image:
+      radial-gradient(60rem 40rem at 10% -10%, #ECE8FF, transparent 60%),
+      radial-gradient(50rem 36rem at 95% 10%, #E5F3FF, transparent 60%),
+      radial-gradient(48rem 32rem at 50% 110%, #E6FFFA, transparent 60%);
+    --air-theme-bg-image-blurred: var(--air-theme-bg-image);
+    --air-theme-bg-color: #F7F8FC;
+  }
 
+  ::selection {
+    background: rgb(110 91 255 / 0.25);
+  }
 }
 
 html[data-restapiver="rest-api-ver2"] .rest-api-ver3-only,
