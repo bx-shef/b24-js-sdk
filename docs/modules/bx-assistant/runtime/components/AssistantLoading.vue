@@ -20,7 +20,7 @@ const messages = computed(() => [
   'Подбираю лучший ответ'
 ])
 
-const finishedMessage = computed(() => 'Sources used')
+const finishedMessage = computed(() => 'Использованные источники')
 
 const currentIndex = ref(0)
 const targetText = computed(() => {

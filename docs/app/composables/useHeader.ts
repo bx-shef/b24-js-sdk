@@ -51,28 +51,28 @@ const _useHeader = () => {
       children: [
         {
           label: 'B24 UI',
-          description: 'for REST API web-application development',
+          description: 'для разработки веб-приложений на REST API',
           icon: BrowserIcon,
           to: 'https://bitrix24.github.io/b24ui/',
           target: '_blank'
         },
         {
           label: 'B24 Icons',
-          description: 'Design your applications in the Bitrix24 style.',
+          description: 'Интерфейс приложений в стиле Битрикс24.',
           icon: BarcodeIcon,
           to: 'https://bitrix24.github.io/b24icons/',
           target: '_blank'
         },
         {
           label: 'Сообщество',
-          description: 'Bitrix24 UI on Telegram',
+          description: 'Сообщество в Telegram',
           icon: EarthIcon,
           to: tgLink.value,
           target: '_blank'
         },
         {
           label: 'REST API',
-          description: 'Bitrix24 REST API and Marketplace Applications',
+          description: 'REST API Битрикс24 и приложения Маркета',
           icon: Bitrix24Icon,
           to: b24DocsLink.value,
           target: '_blank'

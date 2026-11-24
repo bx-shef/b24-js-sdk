@@ -36,7 +36,7 @@ const items = [
     target: '_blank',
     to: `${withoutTrailingSlash(`${config.public.baseUrl}/raw${route.path}`)}.md`,
     onSelect() {
-      track('Page Action', { action: 'Открыть как Markdown', page: route.path })
+      track('Page Action', { action: 'View as Markdown', page: route.path })
     }
   },
   {
@@ -45,7 +45,7 @@ const items = [
     target: '_blank',
     to: `https://chatgpt.com/?prompt=${encodeURIComponent(aiPrompt.value)}`,
     onSelect() {
-      track('Page Action', { action: 'Открыть в ChatGPT', page: route.path })
+      track('Page Action', { action: 'Open in ChatGPT', page: route.path })
     }
   },
   {
@@ -54,7 +54,7 @@ const items = [
     target: '_blank',
     to: `https://claude.ai/new?q=${encodeURIComponent(aiPrompt.value)}`,
     onSelect() {
-      track('Page Action', { action: 'Открыть в Claude', page: route.path })
+      track('Page Action', { action: 'Open in Claude', page: route.path })
     }
   }
 ]
