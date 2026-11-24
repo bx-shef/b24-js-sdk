@@ -38,4 +38,4 @@ if (passes.length === 0) {
 }
 
 console.log(`\ntypecheck: ${passes.length} pass(es) green — ${passes.join(', ')}`)
-console.log('typecheck: a per-package run covers ONE of these. See .github/contributing/testing.md#what-type-checks-what\n')
+console.log('typecheck: a per-package run covers ONE of these. See .github/contributing/testing.md#что-чем-проверяется-по-типам\n')
