@@ -121,7 +121,7 @@ earned.
 The option is tagged **`@internal`**: it is the SDK's own migration switch, off
 the documentation site, and it will be removed without a deprecation cycle. That
 is the whole reason it can exist as a runtime option — see the carve-out in
-[`package-structure.md`](package-structure.md#adding-to-the-public-surface).
+[`package-structure.md`](package-structure.md#добавление-в-публичную-поверхность).
 
 A separate entry point (`@bitrix24/b24jssdk/pull-lite`) was the alternative, and
 it is the only shape that banks the 94 kB **today** rather than making it

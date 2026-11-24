@@ -1,60 +1,60 @@
-# Testing
+# Тестирование
 
-<sub>Last reviewed: 2026-09-09.</sub>
+<sub>Последняя проверка: 2026-09-09.</sub>
 
-> **Agent-facing mirror:** recipe `.ts` files under [`skills/b24jssdk-recipes/examples/`](../../skills/b24jssdk-recipes/examples/) are validated by `pnpm run skills:typecheck` against the built SDK types, and their internals by `pnpm run skills:test`. Both install the recipes' own dependencies first — that directory is not a workspace member, so `express` / `grammy` / `node-cron` / `openai` live there rather than in the root manifest; see [README-DEPS.md](../../skills/b24jssdk-recipes/README-DEPS.md) for why. They complement (not replace) the integration suite covered here. When you change the underlying API or its result shapes, refresh both.
+> **Зеркало для агентов:** файлы рецептов `.ts` в [`skills/b24jssdk-recipes/examples/`](../../skills/b24jssdk-recipes/examples/) проверяются командой `pnpm run skills:typecheck` на собранных типах SDK, а их внутреннее устройство — командой `pnpm run skills:test`. Обе сначала устанавливают собственные зависимости рецептов — этот каталог не входит в рабочее пространство, поэтому `express` / `grammy` / `node-cron` / `openai` лежат там, а не в корневом манифесте; почему так, см. в [README-DEPS.md](../../skills/b24jssdk-recipes/README-DEPS.md). Они дополняют (но не заменяют) интеграционный набор, описанный здесь. Когда вы меняете базовый API или формы его результатов, обновите оба.
 
-Tests use Vitest and run against a **real Bitrix24 portal**. The suite validates REST API contracts — a passing mocked test would defeat its purpose. **Never mock REST responses** (with one narrow exception, see [No-mock policy](#what-tests-do-not-do)).
+Тесты используют Vitest и выполняются на **настоящем портале Битрикс24**. Набор проверяет контракты REST API — пройденный тест с подменой ответов лишил бы его смысла. **Никогда не подменяйте ответы REST** (с одним узким исключением, см. [политику запрета подмены](#что-тесты-не-делают)).
 
-## Vitest Projects
+## Проекты Vitest
 
-Defined in [vitest.config.ts](../../vitest.config.ts):
+Определены в [vitest.config.ts](../../vitest.config.ts):
 
-| Project | Location | Timeouts | Mode |
+| Проект | Расположение | Таймауты | Режим |
 | --- | --- | --- | --- |
-| `jsSdk:integration` | `test/integration/**/*.spec.ts` | 30s test / 30s hook | parallel |
-| `jsSdk:underLoad` | `test/under-load/**.spec.ts` | 40 min test / 40 min hook | sequential, no file parallelism |
+| `jsSdk:integration` | `test/integration/**/*.spec.ts` | 30 с тест / 30 с хук | параллельный |
+| `jsSdk:underLoad` | `test/under-load/**.spec.ts` | 40 мин тест / 40 мин хук | последовательный, без параллелизма файлов |
 
-Both projects load `.env.test` (gitignored) via `dotenv`, from [test/0_setup/env-test-precedence.ts](../../test/0_setup/env-test-precedence.ts).
+Оба проекта загружают `.env.test` (в gitignore) через `dotenv` из [test/0_setup/env-test-precedence.ts](../../test/0_setup/env-test-precedence.ts).
 
-## Environment Setup
+## Настройка окружения
 
-1. Copy the example:
+1. Скопируйте пример:
 
    ```bash
    cp .env.test-example .env.test
    ```
 
-2. Set `B24_HOOK` to a real webhook URL:
+2. Задайте в `B24_HOOK` настоящий URL вебхука:
 
    ```text
    B24_HOOK=https://your-domain.bitrix24.com/rest/YOUR_USER_ID/YOUR_WEBHOOK_SECRET/
    ```
 
-   **Never commit `.env.test` to version control.** It holds a real webhook secret. The file is listed in `.gitignore` — keep it that way and never modify the ignore rule.
+   **Никогда не коммитьте `.env.test` в систему контроля версий.** В нём лежит настоящий секрет вебхука. Файл указан в `.gitignore` — оставьте так и никогда не меняйте правило игнорирования.
 
-3. `setupB24Client()` in [test/0_setup/setup-integration-jssdk.ts](../../test/0_setup/setup-integration-jssdk.ts) throws if `B24_HOOK` is missing — that is the intended fast-fail.
+3. `setupB24Client()` в [test/0_setup/setup-integration-jssdk.ts](../../test/0_setup/setup-integration-jssdk.ts) бросает ошибку, если `B24_HOOK` отсутствует, — это задуманный быстрый отказ.
 
-4. On a fresh clone, prepare two things the suites import rather than build:
+4. В свежем клоне подготовьте две вещи, которые наборы импортируют, а не собирают:
 
    ```bash
    pnpm run docs:prepare          # the docs tsconfig that test/integration/docs/* loads
    pnpm run package-jssdk:build   # the contributing/* specs import `@bitrix24/b24jssdk` from dist
    ```
 
-   Without the first, the `docs` specs fail with `Tsconfig not found`; without
-   the second, the `contributing` specs fail with `Failed to resolve entry for
-   package "@bitrix24/b24jssdk"`. Neither is an SDK defect.
+   Без первой спецификации `docs` падают с `Tsconfig not found`; без
+   второй спецификации `contributing` падают с `Failed to resolve entry for
+   package "@bitrix24/b24jssdk"`. Ни то ни другое не является дефектом SDK.
 
-5. `actions-v2-batch.spec.ts` and the `CallListV2` docs spec read CRM companies
-   by id. A portal with fewer than a dozen companies returns empty lists and the
-   specs report `expected 0 to be greater than 0`; add some companies first.
+5. `actions-v2-batch.spec.ts` и спецификация документации `CallListV2` читают
+   компании CRM по id. Портал, где меньше десятка компаний, возвращает пустые списки,
+   и спецификации сообщают `expected 0 to be greater than 0`; сначала добавьте несколько компаний.
 
-### Which `B24_HOOK` wins
+### Какой `B24_HOOK` побеждает
 
-**The environment, not the file.** `dotenv` never overwrites a variable that is already set, so a `B24_HOOK` exported in your shell, baked into a container image or inherited from a CI job takes precedence over `.env.test`. The precedence is deliberate: `B24_HOOK=… pnpm vitest` has to keep working, and [`smoke-retry.yml`](../workflows/smoke-retry.yml) sets the variable from a repository secret on purpose.
+**Окружение, а не файл.** `dotenv` никогда не перезаписывает уже заданную переменную, поэтому `B24_HOOK`, экспортированный в вашей оболочке, вшитый в образ контейнера или унаследованный от задания CI, имеет приоритет над `.env.test`. Приоритет намеренный: `B24_HOOK=… pnpm vitest` должен продолжать работать, а [`smoke-retry.yml`](../workflows/smoke-retry.yml) нарочно задаёт переменную из секрета репозитория.
 
-What is *not* deliberate is not noticing. Before #506 the file was read and its value discarded in silence, and the suite then ran against a portal nobody chose — whose answers read as findings rather than as a misconfiguration. A run now prints one warning when, and only when, the two sources disagree:
+Ненамеренным было то, что этого не замечали. До #506 файл читался, а его значение молча отбрасывалось, и набор затем выполнялся на портале, который никто не выбирал, — и его ответы читались как находки, а не как неверная конфигурация. Теперь запуск выводит одно предупреждение тогда и только тогда, когда два источника расходятся:
 
 ```text
 [.env.test] B24_HOOK comes from the environment, not from the file.
@@ -64,42 +64,42 @@ dotenv does not overwrite a variable that is already set, so the file's value is
 Unset B24_HOOK to use the file. Hosts only are shown here; the secret is not printed.
 ```
 
-`unset B24_HOOK` in that shell to hand control back to the file. Hosts only appear in the message — the webhook secret is a path segment of the URL, and this text reaches terminals and CI logs.
+Выполните `unset B24_HOOK` в этой оболочке, чтобы вернуть управление файлу. В сообщении выводятся только хосты — секрет вебхука является сегментом пути URL, а этот текст попадает в терминалы и журналы CI.
 
-### Webhook scopes
+### Права вебхука (scopes)
 
-The webhook must have at minimum the `crm`, `tasks`, `user`, `im`, and `main` scopes. The `im` scope is required by the issue-23 regression spec (`im.chat.get` inside a batch); `main` is **not exposed in the standard webhook scope picker** in the Bitrix24 UI and must be added manually — it is required by the v3 batch-ref spec that calls `main.eventlog.list`.
+У вебхука должны быть как минимум права `crm`, `tasks`, `user`, `im` и `main`. Право `im` нужно спецификации регрессии issue-23 (`im.chat.get` внутри пакета); `main` **не выводится в стандартном выборе прав вебхука** в интерфейсе Битрикс24 и должно быть добавлено вручную — оно нужно спецификации ссылок пакета v3, которая вызывает `main.eventlog.list`.
 
-`actions-v3-modules.spec.ts` additionally needs `mail`, `humanresources` and
-`timeman`. Unlike the ones above, `mail` and `humanresources` depend on the
-portal's plan and may not be available at all. The spec does not skip itself in
-that case — it reports red — so a portal without those modules is a reason to
-exclude that spec locally, not a failure to chase. On a plan without them the
-portal answers «Функция недоступна на текущем тарифе» / "Feature is not
-available on the current plan". `timeman.record.list` also needs
-`filter.userId` and `humanresources.node.list` needs `type`; the spec passes
-both. Its assertions carry the portal's own error text so the three
-causes stay apart: `insufficient_scope` is a webhook fix, `METHODNOTFOUND` means
-the module is absent, anything else is a real shape problem.
+`actions-v3-modules.spec.ts` дополнительно требует `mail`, `humanresources` и
+`timeman`. В отличие от перечисленных выше, `mail` и `humanresources` зависят от
+тарифа портала и могут быть недоступны вовсе. Спецификация в этом случае сама себя не пропускает —
+она краснеет, — так что портал без этих модулей — повод исключить эту спецификацию
+локально, а не сбой, который нужно гнать. На тарифе без них
+портал отвечает «Функция недоступна на текущем тарифе» / "Feature is not
+available on the current plan". Также `timeman.record.list` требует
+`filter.userId`, а `humanresources.node.list` требует `type`; спецификация передаёт
+оба. Её проверки несут собственный текст ошибки портала, чтобы три
+причины оставались различимыми: `insufficient_scope` — исправление вебхука, `METHODNOTFOUND` означает,
+что модуля нет, всё остальное — настоящая проблема формы.
 
-### Limiter preset
+### Пресет лимитера
 
-The integration test client uses `ParamsFactory.getDefault()`. The under-load setup ([test/0_setup/setup-under-load-jssdk.ts](../../test/0_setup/setup-under-load-jssdk.ts)) uses `ParamsFactory.getBatchProcessing()` — when authoring a new under-load test, do not switch back to `getDefault()` or the load profile will be wrong. To use any other preset locally, pass `restrictionParams` explicitly.
+Клиент интеграционных тестов использует `ParamsFactory.getDefault()`. Настройка под нагрузкой ([test/0_setup/setup-under-load-jssdk.ts](../../test/0_setup/setup-under-load-jssdk.ts)) использует `ParamsFactory.getBatchProcessing()` — при написании нового теста под нагрузкой не возвращайтесь к `getDefault()`, иначе профиль нагрузки будет неверным. Чтобы использовать любой другой пресет локально, передайте `restrictionParams` явно.
 
-## File Location
+## Расположение файлов
 
-| Suite | Location |
+| Набор | Расположение |
 | --- | --- |
-| Integration | `test/integration/<area>/*.spec.ts` (e.g. `core/actions-v3-batch.spec.ts`) |
-| Integration — unit exception | `test/integration/<area>/*.unit.spec.ts` (e.g. `core/http-logger-redaction.unit.spec.ts`) |
-| Under-load | `test/under-load/load-testing-<scenario>.spec.ts` |
-| Snippets mirrored from docs | `test/some-code-from-docs/` (manual reference, not auto-run by Vitest) |
-| UMD browser smoke | `test/umd/browser.html` (manual) |
-| Setup helpers | `test/0_setup/` |
+| Интеграционные | `test/integration/<area>/*.spec.ts` (например, `core/actions-v3-batch.spec.ts`) |
+| Интеграционные — исключение для юнит-тестов | `test/integration/<area>/*.unit.spec.ts` (например, `core/http-logger-redaction.unit.spec.ts`) |
+| Под нагрузкой | `test/under-load/load-testing-<scenario>.spec.ts` |
+| Фрагменты, зеркалирующие документацию | `test/some-code-from-docs/` (ручной справочник, Vitest не запускает автоматически) |
+| Дымовой тест UMD в браузере | `test/umd/browser.html` (вручную) |
+| Помощники настройки | `test/0_setup/` |
 
-Integration test names follow `<area>-<flavor>.spec.ts`. The `core/` group exercises the transport layer (`actions-v2-call`, `actions-v3-batch`, `actions-v3-aggregate`, …); the `frame/`, `js-docs/`, `tools/` groups exercise their respective surfaces.
+Имена интеграционных тестов строятся как `<area>-<flavor>.spec.ts`. Группа `core/` проверяет транспортный слой (`actions-v2-call`, `actions-v3-batch`, `actions-v3-aggregate`, …); группы `frame/`, `js-docs/`, `tools/` проверяют свои поверхности.
 
-## Basic Integration Test Structure
+## Базовая структура интеграционного теста
 
 // @check-ignore: excerpt of a real test file; its imports are relative to `test/integration/<area>/` and those files are compiled by `test:typecheck`
 
@@ -127,19 +127,19 @@ describe('core.actions.call @apiV2', () => {
 })
 ```
 
-Conventions:
+Соглашения:
 
-- **Always import from the package source** (`../../../packages/jssdk/src/`) — never from the built artefact.
-- **Use the shared client** via `setupB24Tests()` rather than constructing your own `B24Hook` in each test. Reusing the global client keeps the limiter stack in a known state.
-- **Tag describes with `@apiV2` / `@apiV3`** so test filters (`-t "@apiV3"`) can target a transport version.
-- **Set a stable `requestId`** per call (`test@apiVx/<method>`) — it ends up in server logs and makes failures traceable.
-- **Never interpolate the `B24_HOOK` URL or any credential into `requestId`, `code`, `description`, or other fields you assert on.** These values appear in Bitrix24 server logs and in failure messages; a leaked webhook secret there is a real incident.
-- **Assert `isSuccess` first**, then drill into `getData()`. Use `getErrors()` to assert specific failure paths.
-- **Use `AjaxResult` instance checks** when batches are expected to return `Result<AjaxResult<T>[]>`.
+- **Всегда импортируйте из исходников пакета** (`../../../packages/jssdk/src/`) — никогда из собранного артефакта.
+- **Используйте общий клиент** через `setupB24Tests()`, а не создавайте собственный `B24Hook` в каждом тесте. Переиспользование глобального клиента держит стек лимитеров в известном состоянии.
+- **Помечайте `describe` тегами `@apiV2` / `@apiV3`**, чтобы фильтры тестов (`-t "@apiV3"`) могли выбирать версию транспорта.
+- **Задавайте стабильный `requestId`** на каждый вызов (`test@apiVx/<method>`) — он попадает в журналы сервера и делает сбои отслеживаемыми.
+- **Никогда не подставляйте URL `B24_HOOK` или любые учётные данные в `requestId`, `code`, `description` или другие поля, которые вы проверяете.** Эти значения попадают в журналы сервера Битрикс24 и в сообщения о сбоях; утёкший там секрет вебхука — настоящий инцидент.
+- **Сначала проверяйте `isSuccess`**, затем углубляйтесь в `getData()`. Используйте `getErrors()`, чтобы проверять конкретные пути сбоев.
+- **Используйте проверки экземпляров `AjaxResult`**, когда пакеты должны возвращать `Result<AjaxResult<T>[]>`.
 
-## Test ID Map (`getMapId`)
+## Карта тестовых ID (`getMapId`)
 
-`setupB24Tests()` returns a `getMapId()` helper that resolves portal-specific IDs (companies, deals, …) used as fixtures. Use it instead of hard-coding IDs — it keeps tests portable across portals.
+`setupB24Tests()` возвращает помощник `getMapId()`, который разрешает специфичные для портала ID (компании, сделки, …), используемые как фикстуры. Используйте его вместо прописанных вручную ID — он сохраняет переносимость тестов между порталами.
 
 ```ts
 const { getB24Client, getMapId } = setupB24Tests()
@@ -148,28 +148,28 @@ const b24 = getB24Client()
 const filter = { '>id': getMapId().crmCompanySuccessMin }
 ```
 
-## Writing a New Integration Test
+## Написание нового интеграционного теста
 
-1. Pick the right group: `core/` (transports / actions), `frame/` (iframe-only flows), `js-docs/` (docs-snippet smoke), `tools/` (utility tests).
-2. Mirror the file naming: `<area>-<flavor>.spec.ts`.
-3. `describe()` with an `@apiV2` or `@apiV3` tag.
-4. Always go through `setupB24Tests()` to get the shared client.
-5. Use a unique `requestId` per call so failures are searchable in server logs.
-6. Assert `Result` / `AjaxResult` shape — `isSuccess`, `getData()`, `getErrors()`. Don't poke at private internals.
-7. For paged endpoints, exercise `isMore()` + `getNext(b24.getHttpClient(ApiVersion.v2))` (v2 only — v3 has no `getNext`; cover its paging via `actions.v3.callList.make()` / `fetchList.make()`).
-8. For error paths, expect `SdkError` (thrown) or an `AjaxError` instance in `getErrors()`.
-9. Keep individual tests under the 30s timeout — split if you need longer.
+1. Выберите нужную группу: `core/` (транспорты / действия), `frame/` (потоки только для iframe), `js-docs/` (дымовой тест фрагментов документации), `tools/` (тесты утилит).
+2. Повторяйте именование файлов: `<area>-<flavor>.spec.ts`.
+3. `describe()` с тегом `@apiV2` или `@apiV3`.
+4. Всегда получайте общий клиент через `setupB24Tests()`.
+5. Используйте уникальный `requestId` на каждый вызов, чтобы сбои можно было найти в журналах сервера.
+6. Проверяйте форму `Result` / `AjaxResult` — `isSuccess`, `getData()`, `getErrors()`. Не лезьте в приватные внутренности.
+7. Для постраничных конечных точек проверяйте `isMore()` + `getNext(b24.getHttpClient(ApiVersion.v2))` (только v2 — в v3 нет `getNext`; его постраничность покрывайте через `actions.v3.callList.make()` / `fetchList.make()`).
+8. Для путей ошибок ожидайте `SdkError` (брошенный) или экземпляр `AjaxError` в `getErrors()`.
+9. Держите отдельные тесты в пределах таймаута 30 с — разделяйте, если нужно дольше.
 
-## Under-Load Tests
+## Тесты под нагрузкой
 
-Files in `test/under-load/` run sequentially with a 40-minute timeout. They are designed to exhaust limiter budgets and validate adaptive backoff.
+Файлы в `test/under-load/` выполняются последовательно с таймаутом 40 минут. Они рассчитаны на исчерпание бюджетов лимитеров и проверку адаптивной задержки.
 
-- One scenario per file (`load-testing-v3-batch-tasks-task-get.spec.ts`).
-- Enable a single scenario with the matching root script (`pnpm run package-jssdk:test:run-underLoad-v3-batch`, etc. — see `package.json` for the full list).
-- Don't run the whole suite during normal development — these are explicit per-scenario runs.
-- Under-load tests use a different setup file: [test/0_setup/hooks-under-load-jssdk.ts](../../test/0_setup/hooks-under-load-jssdk.ts) (not `hooks-integration-jssdk.ts`). It exposes `useB24TestHooks`, `LoadTesterV2`, `LoadTesterV3`, `testConfig`, and `processTests` for scenario authoring.
+- Один сценарий на файл (`load-testing-v3-batch-tasks-task-get.spec.ts`).
+- Включайте один сценарий соответствующим корневым скриптом (`pnpm run package-jssdk:test:run-underLoad-v3-batch` и т. д. — полный список см. в `package.json`).
+- Не запускайте весь набор в обычной разработке — это явные запуски по отдельным сценариям.
+- Тесты под нагрузкой используют другой файл настройки: [test/0_setup/hooks-under-load-jssdk.ts](../../test/0_setup/hooks-under-load-jssdk.ts) (а не `hooks-integration-jssdk.ts`). Он предоставляет `useB24TestHooks`, `LoadTesterV2`, `LoadTesterV3`, `testConfig` и `processTests` для написания сценариев.
 
-## Filtering
+## Фильтрация
 
 ```bash
 # Watch, integration project
@@ -186,254 +186,248 @@ pnpm run package-jssdk:test-integration-js-docs    # filter "js-docs"
 pnpm vitest run --project jsSdk:integration -t "<test name>"
 ```
 
-The `-t` flag matches against the concatenated `describe`/`it` names, so tag tokens like `@apiV3` work as filters.
+Флаг `-t` сопоставляется с объединёнными именами `describe`/`it`, поэтому токены тегов вроде `@apiV3` работают как фильтры.
 
-## Accessibility, UI, Snapshot Testing
+## Доступность, UI, снимки
 
-The SDK has no UI — there are no axe / DOM / snapshot tests. If you find yourself reaching for those, the change probably belongs in a playground (`playgrounds/nuxt`, `playgrounds/cli`) or in the docs site, not in this suite.
+У SDK нет интерфейса — тестов axe / DOM / снимков нет. Если вы обнаружили, что тянетесь к ним, изменение, вероятно, относится к playground (`playgrounds/nuxt`, `playgrounds/cli`) или к сайту документации, а не к этому набору.
 
-## Snippets in Docs
+## Фрагменты в документации
 
-`test/some-code-from-docs/` is a **manual reference** that mirrors a subset of snippets from the docs site. Vitest does not currently pick it up automatically — there is no project covering this directory in [vitest.config.ts](../../vitest.config.ts), and no CI step runs the files. When you change a snippet in `docs/content/docs/`, mirror it here, but treat the mirror as a paired artefact that humans verify, not as a compile-checked guarantee. Tracked separately by [bitrix24/b24jssdk#49](https://github.com/bitrix24/b24jssdk/issues/49).
+`test/some-code-from-docs/` — **ручной справочник**, зеркалирующий часть фрагментов с сайта документации. Vitest сейчас не подхватывает его автоматически — в [vitest.config.ts](../../vitest.config.ts) нет проекта, покрывающего этот каталог, и ни один шаг CI не запускает эти файлы. Когда вы меняете фрагмент в `docs/content/docs/`, отразите его здесь, но считайте зеркало парным артефактом, который проверяют люди, а не гарантией компиляции. Отслеживается отдельно в [bitrix24/b24jssdk#49](https://github.com/bitrix24/b24jssdk/issues/49).
 
-## What Tests Validate
+## Что проверяют тесты
 
-| Layer | Validate |
+| Слой | Что проверять |
 | --- | --- |
-| Transport | `isSuccess`, returned shape, `requestId` round-trip |
-| Paging | `isMore()`, `getNext()`, accumulated record count |
-| Errors | `SdkError` thrown for invariant violations, `AjaxError` surfaced via `Result.getErrors()` |
-| Limiters | Under-load suite confirms QPS caps and backoff |
+| Транспорт | `isSuccess`, форма возвращаемого значения, возврат `requestId` |
+| Постраничность | `isMore()`, `getNext()`, накопленное число записей |
+| Ошибки | `SdkError` брошен при нарушении инвариантов, `AjaxError` выведен через `Result.getErrors()` |
+| Лимитеры | Набор под нагрузкой подтверждает ограничения QPS и задержку |
 
-## What Tests Do **Not** Do
+## Что тесты **не** делают
 
-- They do not mock REST responses.
-- They do not assert on log lines unless the test is specifically about the warning surface (e.g. deprecation warnings).
-- They do not depend on portal-specific data outside what `getMapId()` exposes.
+- Они не подменяют ответы REST.
+- Они не проверяют строки журнала, если только тест не посвящён именно поверхности предупреждений (например, предупреждениям об устаревании).
+- Они не зависят от данных конкретного портала сверх того, что раскрывает `getMapId()`.
 
-### Narrow exception: `*.unit.spec.ts`
+### Узкое исключение: `*.unit.spec.ts`
 
-A number of regression specs live inside `test/integration/<area>/` but are named `*.unit.spec.ts` — `batch-null-result.unit.spec.ts`, `http-logger-redaction.unit.spec.ts`, `retry-client-error.unit.spec.ts`, and everything under `test/integration/docs/`, which covers the documentation app rather than the SDK. They exercise pure-logic invariants — batch response parsing, log-context redaction, retry decision, the docs code-example transform, the page↔worker message contract — that have nothing to verify against a live portal. The list is illustrative, not exhaustive: the suffix is the rule. They use `vi.spyOn(...).mockResolvedValue(...)` / `mockRejectedValue(...)` on the axios client, run without `.env.test` / `B24_HOOK`, and run in the `jsSdk:unit` project — the `*.unit.spec.ts` suffix routes them there, not to `jsSdk:integration`, even though they sit under `test/integration/`.
+Ряд регрессионных спецификаций лежит в `test/integration/<area>/`, но называется `*.unit.spec.ts` — `batch-null-result.unit.spec.ts`, `http-logger-redaction.unit.spec.ts`, `retry-client-error.unit.spec.ts` и всё в `test/integration/docs/`, что покрывает приложение документации, а не SDK. Они проверяют инварианты чистой логики — разбор ответа пакета, скрытие контекста журнала, решение о повторе, преобразование примеров кода документации, контракт сообщений страница↔воркер, — которым нечего сверять с живым порталом. Список иллюстративный, а не исчерпывающий: правило — это суффикс. Они используют `vi.spyOn(...).mockResolvedValue(...)` / `mockRejectedValue(...)` на клиенте axios, выполняются без `.env.test` / `B24_HOOK` и работают в проекте `jsSdk:unit` — суффикс `*.unit.spec.ts` направляет их туда, а не в `jsSdk:integration`, хотя они лежат в `test/integration/`.
 
-### Narrow exception: `*.types.spec.ts`
+### Узкое исключение: `*.types.spec.ts`
 
-Type-level pins written with Vitest's `expectTypeOf` — `test/integration/core/result-chaining.types.spec.ts`, `call-params.types.spec.ts`. They run in their own `jsSdk:types` project, which is the only one with `typecheck` enabled.
+Фиксации на уровне типов, написанные через `expectTypeOf` из Vitest, — `test/integration/core/result-chaining.types.spec.ts`, `call-params.types.spec.ts`. Они работают в собственном проекте `jsSdk:types`, единственном с включённой `typecheck`.
 
-That project is not a stylistic choice. `expectTypeOf` compiles to nothing: under a plain `vitest run` a type assertion **cannot fail**, so a file full of them reports as passing while checking nothing. The project's `typecheck.include` is what makes the assertions real, against [`test/tsconfig.json`](../../test/tsconfig.json); its `include` runs the same files normally so any ordinary `expect()` in them still executes.
+Этот проект — не стилистический выбор. `expectTypeOf` компилируется в ничто: при обычном `vitest run` проверка типов **не может упасть**, так что файл, полный таких проверок, сообщает об успехе, ничего не проверяя. Именно `typecheck.include` проекта делает проверки реальными — относительно [`test/tsconfig.json`](../../test/tsconfig.json); его `include` запускает те же файлы обычным образом, так что любой обычный `expect()` в них по-прежнему выполняется.
 
-If you add type-level assertions, use this suffix — a `*.unit.spec.ts` file's `expectTypeOf` calls are decorative.
+Если вы добавляете проверки на уровне типов, используйте этот суффикс — вызовы `expectTypeOf` в файле `*.unit.spec.ts` декоративны.
 
-**`expectTypeOf` cannot catch a stray property.** What rejects an unknown key is TypeScript's excess property check, which fires only on a fresh object literal — structurally, an object with an extra key is still assignable. For that, assign a literal and mark it `@ts-expect-error`; the directive itself becomes an error the day it stops being needed. [`action-options.types.spec.ts`](../../test/integration/core/action-options.types.spec.ts) is the worked example, and its header records the version of itself that pinned nothing.
+**`expectTypeOf` не поймает лишнее свойство.** Неизвестный ключ отклоняет проверка избыточных свойств TypeScript, которая срабатывает только на свежем литерале объекта — структурно объект с лишним ключом всё равно присваиваем. Для этого присвойте литерал и пометьте его `@ts-expect-error`; сама директива становится ошибкой в тот день, когда перестаёт быть нужной. [`action-options.types.spec.ts`](../../test/integration/core/action-options.types.spec.ts) — разобранный пример, а его заголовок фиксирует версию самого себя, которая ничего не фиксировала.
 
-## What type-checks what
+## Что чем проверяется по типам
 
-`pnpm run typecheck` runs eleven passes. Each row below is what that pass, and only
-that pass, catches — measured in #419 by injecting a deliberate type error into
-each area and recording which passes went red. Nothing here is inferred from
-reading a config.
+`pnpm run typecheck` выполняет одиннадцать проходов. Каждая строка ниже — то, что ловит этот проход и только он, —
+измерено в #419 внесением намеренной ошибки типа в каждую область и записью того, какие проходы покраснели. Ничего здесь не выведено
+из чтения конфигурации.
 
-Every check in `scripts/` reports through
-[`_reporter.mjs`](../../scripts/_reporter.mjs): one line shape
-(`ERROR path:line:col message`), one summary
-(`label: N <noun>(s), M warning(s), …` — the noun stays the check's own, so
-`md-internal-links` counts broken links rather than generic errors), one exit
-rule — errors always fail, warnings only under `--strict` — and a GitHub
-annotation on every problem, so a CI failure lands on the pull request diff
-instead of only in the job log. Add a check, use the reporter.
+Каждая проверка в `scripts/` отчитывается через
+[`_reporter.mjs`](../../scripts/_reporter.mjs): одна форма строки
+(`ERROR path:line:col message`), одна сводка
+(`label: N <noun>(s), M warning(s), …` — существительное остаётся собственным у проверки, так что
+`md-internal-links` считает битые ссылки, а не общие ошибки), одно правило
+выхода — ошибки всегда роняют, предупреждения только под `--strict` — и аннотация GitHub
+на каждой проблеме, так что сбой CI попадает в дифф pull request, а не только в журнал задания. Добавляете проверку — используйте reporter.
 
-This table is the canonical answer to "do I need to add another pass?".
-`package.json` cannot carry the note itself — it is strict JSON, so a comment
-beside each script is not available — which is why [AGENTS.md](../../AGENTS.md)
-points here instead.
+Эта таблица — канонический ответ на вопрос «нужно ли добавлять ещё один проход?».
+`package.json` не может нести примечание сам — это строгий JSON, так что комментарий
+рядом с каждым скриптом недоступен, — поэтому [AGENTS.md](../../AGENTS.md)
+отсылает сюда.
 
-| Pass | The area only it covers |
+| Проход | Область, которую покрывает только он |
 | --- | --- |
 | `package-jssdk:typecheck` | `packages/jssdk/src/` |
-| `test:typecheck` | every `.ts` under `test/`, against [`test/tsconfig.json`](../../test/tsconfig.json) |
+| `test:typecheck` | каждый `.ts` в `test/`, относительно [`test/tsconfig.json`](../../test/tsconfig.json) |
 | `package-jssdk-nuxt:typecheck` | `packages/jssdk-nuxt/src/` |
-| `docs:typecheck` | the docs Nuxt app |
+| `docs:typecheck` | приложение Nuxt документации |
 | `playground-nuxt:typecheck` | `playgrounds/nuxt/` |
 | `playground-cli:typecheck` | `playgrounds/cli/` |
-| `docs:typecheck-blocks` | `ts` fences in `docs/content/**/*.md` |
-| `skills:typecheck` | the recipe `.ts` files under `skills/b24jssdk-recipes/` |
-| `skills:typecheck-blocks` | `ts` fences in `skills/**/*.md` and in `packages/jssdk/README-AI.md` |
-| `jsdoc:typecheck-blocks` | JSDoc `@example` bodies in `packages/jssdk/src/**/*.ts` |
-| `contributing:typecheck-blocks` | `ts` fences in `.github/contributing/**/*.md` |
+| `docs:typecheck-blocks` | блоки `ts` в `docs/content/**/*.md` |
+| `skills:typecheck` | файлы рецептов `.ts` в `skills/b24jssdk-recipes/` |
+| `skills:typecheck-blocks` | блоки `ts` в `skills/**/*.md` и в `packages/jssdk/README-AI.md` |
+| `jsdoc:typecheck-blocks` | тела `@example` JSDoc в `packages/jssdk/src/**/*.ts` |
+| `contributing:typecheck-blocks` | блоки `ts` в `.github/contributing/**/*.md` |
 
-Last verified by injection 2026-09-01, after `jsdoc:typecheck-blocks` was added
-and `README-AI.md` joined the skills gate. The *areas* have not changed since;
-issue #396 put four of these rows on a shared flag set —
-three by `extends` and the recipes by a pinned copy — but by resolved config
-only two had a *checking* flag change:
-`playground-cli:typecheck` and `skills:typecheck`. `package-jssdk:typecheck`
-changed emit options only, and `test:typecheck` changed nothing at all. All four
-were re-probed on 2026-09-18; an injected unused local goes red on each.
+Последняя проверка внесением ошибок — 2026-09-01, после добавления `jsdoc:typecheck-blocks`
+и включения `README-AI.md` в проверку навыков. *Области* с тех пор не менялись;
+задача #396 перевела четыре из этих строк на общий набор флагов —
+три через `extends`, а рецепты — закреплённой копией, — но по разрешённой конфигурации
+*проверяющий* флаг изменился лишь у двух:
+`playground-cli:typecheck` и `skills:typecheck`. `package-jssdk:typecheck`
+изменил только параметры вывода, а `test:typecheck` не изменился вовсе. Все четыре
+были перепроверены 2026-09-18; внесённая неиспользуемая локальная переменная краснеет на каждом.
 
- Re-measure the rows you change: the
-claim is "only this pass", and that is a property of the whole set, not of the
-pass you happen to be editing.
+ Переизмеряйте строки, которые меняете: утверждение —
+«только этот проход», а это свойство всего набора, а не того
+прохода, который вы редактируете.
 
-### Estimating the cost of a type change
+### Оценка стоимости изменения типов
 
-**Measure with `pnpm run typecheck`, not with one pass, and write down which
-command produced the number.**
+**Измеряйте через `pnpm run typecheck`, а не одним проходом, и записывайте, какая
+команда дала число.**
 
-`pnpm --filter ./packages/jssdk typecheck` is one row of the eleven above. A
-change measured with it has been measured against `packages/jssdk/src/` and
-nothing else — not the test tree, not the docs app, not the fenced examples —
-and "the typecheck is green" reads as total either way.
+`pnpm --filter ./packages/jssdk typecheck` — одна строка из одиннадцати выше. Изменение,
+измеренное им, проверено на `packages/jssdk/src/` и больше ни на чём — ни на дереве
+тестов, ни на приложении документации, ни на блоках с примерами — а «проверка типов зелёная» в любом случае читается как полная.
 
-This is not hypothetical. #279 estimated narrowing `TypeCallParams`'s index
-signature at **three sites** and recorded that the full typecheck was green under
-the change. Both numbers came from the package pass alone. The real cost was six
-errors, every one of them in `test/` — where the load-test harness turned out to
-have a genuine mistyping that `any` had been hiding (#516). The estimate was used
-to argue the change was cheap enough to attempt; it happened to be worth doing
-anyway, which is luck rather than method.
+Это не гипотеза. #279 оценил сужение индексной сигнатуры `TypeCallParams`
+в **три места** и записал, что полная проверка типов при изменении зелёная.
+Оба числа получены только проходом пакета. Реальная стоимость — шесть
+ошибок, все в `test/`, где в нагрузочном стенде оказалась настоящая ошибка типизации,
+которую скрывал `any` (#516). Оценка использовалась для довода, что изменение
+достаточно дёшево, чтобы за него браться; оно всё равно оказалось стоящим,
+но это удача, а не метод.
 
-So when an issue records a measured cost, record the command beside it. `three
-sites (pnpm --filter ./packages/jssdk typecheck)` is self-evidently narrow;
-`three sites` is not.
+Поэтому когда задача фиксирует измеренную стоимость, записывайте рядом команду. `three
+sites (pnpm --filter ./packages/jssdk typecheck)` явно узко;
+`three sites` — нет.
 
-Plus the `jsSdk:types` vitest project, which is where the `*.types.spec.ts` pins
-become real — `expectTypeOf` erases at runtime, so under a plain `vitest run` a
-type assertion cannot fail.
+Плюс проект vitest `jsSdk:types`, в котором фиксации `*.types.spec.ts`
+становятся реальными — `expectTypeOf` стирается во время выполнения, так что при обычном `vitest run`
+проверка типов не может упасть.
 
-Two results from that measurement are worth carrying:
+Два результата того измерения стоит запомнить:
 
-- **The two playground passes are not redundant.** They were suspected of being
-  smoke tests for the published package shape rather than typechecks of the
-  playgrounds. An error inside either playground is caught by its own pass and by
-  nothing else.
-- **JSDoc `@example` bodies used to be compiled by nothing** — the ones an IDE
-  shows on hover. `jsdoc:typecheck-blocks` closed that in #439; there were 41
-  then, the first run went red on every single one, and the count moves with the
-  source rather than staying at 41. An `@example` body is extracted from
-  the line after the tag to the next tag or the end of the comment, a Markdown
-  fence wrapping the whole body is unwrapped as presentation, and a
-  `// @check-ignore` first line skips the block. A same-line `@example 'value'`
-  is a value, not code, and is not compiled.
-- **`ts` fences in `.github/contributing/*.md` were compiled by nothing** until
-  #435 closed it — the last gap. Five of the twelve are marked
-  `// @check-ignore` with a reason, because they cannot compile by design: they
-  are templates for files the reader is about to create, or excerpts whose
-  imports are relative to where the real file lives. The real files are compiled
-  where they live. The `test/some-code-from-docs/contributing/` fixtures stay as
-  runnable examples with their own `.spec.ts` tests; nothing now depends on them
-  matching a guide, because the guide is compiled directly.
+- **Два прохода playground не избыточны.** Их подозревали в том, что они дымовые
+  тесты формы опубликованного пакета, а не проверки типов playground. Ошибку внутри
+  любого playground ловит его собственный проход и больше ничто.
+- **Тела `@example` JSDoc раньше не компилировались ничем** — те, что IDE
+  показывает при наведении. `jsdoc:typecheck-blocks` закрыл это в #439; их тогда было 41,
+  первый запуск покраснел на каждом, и число двигается вместе с
+  исходниками, а не остаётся равным 41. Тело `@example` извлекается с
+  строки после тега до следующего тега или конца комментария, блок Markdown,
+  оборачивающий всё тело, снимается как оформление, а первая строка
+  `// @check-ignore` пропускает блок. `@example 'value'` на той же строке —
+  значение, а не код, и не компилируется.
+- **Блоки `ts` в `.github/contributing/*.md` не компилировались ничем**, пока
+  #435 не закрыл это — последний пробел. Пять из двенадцати помечены
+  `// @check-ignore` с причиной, потому что они не могут компилироваться по замыслу: это
+  шаблоны файлов, которые читатель собирается создать, или выдержки, чьи
+  импорты относительны к месту, где лежит настоящий файл. Настоящие файлы компилируются
+  там, где лежат. Фикстуры `test/some-code-from-docs/contributing/` остаются
+  запускаемыми примерами со своими тестами `.spec.ts`; ничто теперь не зависит от того,
+  совпадают ли они с руководством, потому что руководство компилируется напрямую.
 
-A tenth pass, `contributing:typecheck`, was removed once the measurement showed
-it was redundant: it compiled those twelve fixtures alone, and since #428 widened
-`test/tsconfig.json` they are in `test:typecheck`'s program under *stricter*
-settings. Its `requireSdkTypes` guard — the friendly "run `dev:prepare`" message a
-fresh clone gets instead of `TS2307` — moved to
-[`scripts/test-typecheck.mjs`](../../scripts/test-typecheck.mjs) rather than
-disappearing.
+Десятый проход, `contributing:typecheck`, был удалён, когда измерение показало,
+что он избыточен: он компилировал только эти двенадцать фикстур, а после того как #428 расширил
+`test/tsconfig.json`, они входят в программу `test:typecheck` с *более строгими*
+настройками. Его защита `requireSdkTypes` — дружелюбное сообщение «запустите `dev:prepare`», которое
+свежий клон получает вместо `TS2307`, — переехала в
+[`scripts/test-typecheck.mjs`](../../scripts/test-typecheck.mjs), а не исчезла.
 
-Until #428 the first row did not exist: only `*.types.spec.ts` was compiled, and everything else under `test/` was transpiled by esbuild, which strips types without checking them. A spec could assert against a shape the SDK does not have and nothing would say so. That is not hypothetical — six cases in the live skill suite read `getData()!.result` off a `Result<T[]>`, and `.result` on an array went unnoticed until someone ran the suite against a portal by hand (#425).
+До #428 первой строки не существовало: компилировался только `*.types.spec.ts`, а всё остальное в `test/` транспилировалось esbuild, который отбрасывает типы без проверки. Спецификация могла утверждать форму, которой у SDK нет, и ничто бы этого не сказало. Это не гипотеза — шесть случаев в живом наборе навыков читали `getData()!.result` из `Result<T[]>`, а `.result` на массиве оставался незамеченным, пока кто-то не запустил набор на портале вручную (#425).
 
-### Where the compiler flags live
+### Где живут флаги компилятора
 
-[`tsconfig.base.json`](../../tsconfig.base.json) at the repository root is the
-one place the language level, module resolution and the strict-flag set are
-written down. Until #396 there was no such file: `test/tsconfig.json` extended
-`packages/jssdk/tsconfig.json` — the package **build** config — so an edit there
-made for build reasons (`paths`, `moduleResolution`, `lib`, `target`, whether
-declarations are emitted) silently changed what the type-pin gate checks, and
-the person making it had no reason to look in `test/`.
+[`tsconfig.base.json`](../../tsconfig.base.json) в корне репозитория — единственное
+место, где записаны уровень языка, разрешение модулей и набор строгих флагов. До #396 такого файла не было: `test/tsconfig.json` расширял
+`packages/jssdk/tsconfig.json` — конфигурацию **сборки** пакета, — так что правка там,
+сделанная по причинам сборки (`paths`, `moduleResolution`, `lib`, `target`, выводятся ли
+объявления), молча меняла то, что проверяет шлюз фиксаций типов, а
+тому, кто её делал, не было причин заглядывать в `test/`.
 
-| config | relationship to the base | what it overrides |
+| конфигурация | отношение к базе | что переопределяет |
 | --- | --- | --- |
-| `packages/jssdk` | extends | `removeComments`, `stripInternal` — read by unbuild's declaration pass, not by any `tsc` this repo runs |
+| `packages/jssdk` | extends | `removeComments`, `stripInternal` — читаются проходом деклараций unbuild, а не каким-либо `tsc`, который запускает этот репозиторий |
 | `test/` | extends | `noPropertyAccessFromIndexSignature`, `types` |
-| `playgrounds/cli` | extends | `lib` (no `DOM` — it is a Node CLI), `noPropertyAccessFromIndexSignature` |
-| `skills/b24jssdk-recipes` | **copies**, pinned by a test | `target` / `lib` (ES2022), `noPropertyAccessFromIndexSignature`, `ignoreDeprecations` |
+| `playgrounds/cli` | extends | `lib` (без `DOM` — это CLI на Node), `noPropertyAccessFromIndexSignature` |
+| `skills/b24jssdk-recipes` | **копия**, закреплена тестом | `target` / `lib` (ES2022), `noPropertyAccessFromIndexSignature`, `ignoreDeprecations` |
 
-The recipes are the exception, and not for convenience. `docs/nuxt.config.ts`
-serves the whole `skills/` tree at `/.well-known/skills`, so a consumer receives
-that directory with no repository above it and an `extends: "../../"` does not
-resolve. TypeScript reports TS5083 and exits non-zero, so the consumer's own
-`pnpm typecheck` breaks outright — but it breaks *after* falling back to
-compiler **defaults**, and that fallback is the part that bites anyone who
-reads past the first line or wraps `tsc` in something that keeps going:
-`strict` survives, because TypeScript 6 defaults it on, while everything the
-base adds on top of it does not — `noUncheckedIndexedAccess`,
-`noImplicitOverride`, the `noUnused*` pair, `noImplicitReturns`,
-`noFallthroughCasesInSwitch`, and with them `skipLibCheck`, `types`, `lib`,
-`target` and `moduleResolution`. Every in-repo run stays green throughout,
-which is why nothing here would have noticed. The copy is held in step by `#396 — the recipes tsconfig does not drift
-from the shared base` in
+Рецепты — исключение, и не из удобства. `docs/nuxt.config.ts`
+раздаёт всё дерево `skills/` по адресу `/.well-known/skills`, так что потребитель получает
+этот каталог без репозитория над ним, и `extends: "../../"` не
+разрешается. TypeScript сообщает TS5083 и завершается с ненулевым кодом, так что собственный
+`pnpm typecheck` потребителя падает сразу — но падает *после отката* к
+**значениям по умолчанию** компилятора, и именно этот откат кусает всякого,
+кто читает дальше первой строки или оборачивает `tsc` во что-то, что продолжает работу:
+`strict` сохраняется, потому что TypeScript 6 включает его по умолчанию, а всё, что
+база добавляет сверху, — нет: `noUncheckedIndexedAccess`,
+`noImplicitOverride`, пара `noUnused*`, `noImplicitReturns`,
+`noFallthroughCasesInSwitch`, а с ними `skipLibCheck`, `types`, `lib`,
+`target` и `moduleResolution`. Все запуски внутри репозитория всё это время остаются зелёными,
+поэтому здесь ничто бы этого не заметило. Копия удерживается в согласии тестом `#396 — the recipes tsconfig does not drift
+from the shared base` в
 [`recipe-hygiene.unit.spec.ts`](../../test/integration/skills-recipes/recipe-hygiene.unit.spec.ts),
-which fails on any flag outside the departures it names — three of them across
-four keys, since the language level is `target` plus `lib`. It also pins the
-file's whole top-level shape, not a list of keys someone thought to check:
-`exclude` can empty the input set while `include` still reads correctly, and
-`extends`, `files` and `references` are the same blind spot. And because
-comparing two documents assumes both ends are real, it pins the base's own
-shape (an `extends` *there* would hide everything it inherited), the three
-extending configs' `extends` targets (so the base cannot be copied elsewhere
-and the recipes left pinned to a file nobody uses), the recipes package's
-`typecheck` script and its single project file (so a `tsconfig.build.json`
-cannot make the pinned one decoration), and an explicit list of flags that must
-be `true` in both — gutting the two files in step otherwise keeps every
-comparison green, since they still agree, on `false`.
+который падает на любом флаге вне названных им отступлений — три из них по
+четырём ключам, поскольку уровень языка — это `target` плюс `lib`. Он также фиксирует
+всю форму верхнего уровня файла, а не список ключей, о которых кто-то подумал:
+`exclude` может опустошить набор входов, пока `include` всё ещё читается корректно,
+а `extends`, `files` и `references` — то же слепое пятно. И поскольку
+сравнение двух документов предполагает, что оба конца настоящие, он фиксирует форму самой базы
+(`extends` *там* скрыл бы всё унаследованное), цели `extends` трёх
+расширяющих конфигураций (чтобы базу нельзя было скопировать в другое место, а рецепты
+остались привязаны к файлу, которым никто не пользуется), скрипт `typecheck`
+пакета рецептов и его единственный файл проекта (чтобы `tsconfig.build.json`
+не сделал закреплённый файл декорацией), а также явный список флагов, которые должны
+быть `true` в обоих, — иначе опустошение двух файлов синхронно оставляет каждое
+сравнение зелёным, ведь они всё равно согласуются на `false`.
 
-What it does not cover: it compares documents, not resolved programs. Identical
-path-valued options mean different directories in two locations, and
-`types: ["node"]` already resolves to different `@types/node` versions, because
-the recipes package installs its own.
+Чего он не покрывает: он сравнивает документы, а не разрешённые программы. Одинаковые
+параметры-пути означают разные каталоги в двух местах, а
+`types: ["node"]` уже разрешается в разные версии `@types/node`, потому что
+пакет рецептов устанавливает свою.
 
-Two groups stay out of the base:
+Две группы остаются вне базы:
 
-- **The four `.*-typecheck/tsconfig.json`** (`docs`, `jsdoc`, `skills`,
-  `contributing`). These are hand-written and tracked — only their `tmp/`
-  directories are generated by the block-check scripts — and they are
-  `strict: false` because they compile illustrative fragments extracted from
-  markdown, where `noUnusedLocals` alone would reject most snippets. That is a
-  deliberate looseness, not a verified-safe one: those blocks ship to users and
-  to agents, and nothing says the whole base could not be narrowed towards them.
-- **`docs/`, `packages/jssdk-nuxt` and `playgrounds/nuxt`**, which extend a
-  Nuxt-generated `.nuxt/tsconfig.json`. TypeScript 5+ accepts an array of
-  `extends`, so layering the base underneath Nuxt's is possible rather than
-  impossible; it was simply not done here, and what it would add is essentially
-  the `noUnused*` family.
+- **Четыре `.*-typecheck/tsconfig.json`** (`docs`, `jsdoc`, `skills`,
+  `contributing`). Они написаны вручную и отслеживаются — генерируются только их `tmp/`
+  каталоги скриптами проверки блоков, — и у них
+  `strict: false`, потому что они компилируют иллюстративные фрагменты, извлечённые
+  из markdown, где один `noUnusedLocals` отклонил бы большинство фрагментов. Это
+  намеренная нестрогость, а не проверенно безопасная: эти блоки уходят пользователям
+  и агентам, и ничто не говорит, что всю базу нельзя сузить в их сторону.
+- **`docs/`, `packages/jssdk-nuxt` и `playgrounds/nuxt`**, которые расширяют
+  сгенерированный Nuxt `.nuxt/tsconfig.json`. TypeScript 5+ принимает массив
+  `extends`, так что наложить базу под Nuxt возможно, а не
+  невозможно; просто здесь это не сделано, и добавило бы это по сути
+  семейство `noUnused*`.
 
-A note on how the drift is described, because getting it wrong is easy and #396
-got it wrong twice before this wording settled. `strict: true` switches on a
-family of flags, and TypeScript defaults several others on as well —
-`forceConsistentCasingInFileNames` among them — so reading two configs side by
-side and subtracting key lists **overstates** the difference every time. The
-honest measure is the resolved one: `tsc --showConfig -p <config>`, with every
-boolean that is absent filled in from `ts.optionDeclarations` (`strictFlag`
-members follow `strict`, the rest take their own default), compared before and
-after.
+Замечание о том, как описывается дрейф, потому что ошибиться легко, и #396
+ошибся дважды, пока формулировка не устоялась. `strict: true` включает
+семейство флагов, а TypeScript по умолчанию включает и несколько других —
+среди них `forceConsistentCasingInFileNames` — так что чтение двух конфигураций
+рядом и вычитание списков ключей **каждый раз завышает** разницу. Честная мера —
+разрешённая: `tsc --showConfig -p <config>`, где каждый отсутствующий
+булев флаг заполнен из `ts.optionDeclarations` (члены `strictFlag`
+следуют за `strict`, остальные берут свой дефолт), сравнивается до
+и после.
 
-Measured that way for #396, the two hand-copied configs gained:
+Измеренные так для #396, две скопированные вручную конфигурации получили:
 
-| config | checking flags it did not have, in effect |
+| конфигурация | проверяющие флаги, которых у неё не было, в действии |
 | --- | --- |
 | `playgrounds/cli` | `noImplicitOverride` |
 | `skills/b24jssdk-recipes` | `noImplicitReturns`, `noFallthroughCasesInSwitch`, `noUncheckedIndexedAccess`, `noImplicitOverride` |
 
-`noUncheckedIndexedAccess` is the one that then found three unchecked indexed
-reads in shipped recipe code — seven diagnostics, since one of the three is read
-at four call sites. Both configs also picked up `allowJs`,
-`useDefineForClassFields`, `moduleDetection: "force"`, `incremental: false` and
-— the recipes — `resolveJsonModule`. None of those changes a diagnostic on the
-files they compile today: there is no `.js` in either tree, and every file in
-both already has imports, so `moduleDetection` has nothing to decide.
-`noPropertyAccessFromIndexSignature` is on in the base and off in both of these,
-so it is not a gain either.
+`noUncheckedIndexedAccess` — тот, который затем нашёл три непроверенных чтения по индексу
+в поставляемом коде рецептов — семь диагностик, поскольку одно из трёх читается
+в четырёх местах вызова. Обе конфигурации также получили `allowJs`,
+`useDefineForClassFields`, `moduleDetection: "force"`, `incremental: false` и —
+рецепты — `resolveJsonModule`. Ни одно из этих изменений не меняет диагностику
+файлов, которые они компилируют сегодня: в обоих деревьях нет `.js`, а у каждого файла в
+обоих уже есть импорты, так что `moduleDetection` нечего решать.
+`noPropertyAccessFromIndexSignature` включён в базе и выключен в обеих этих,
+так что и это не выигрыш.
 
-Two settings in `test/tsconfig.json` are worth knowing about:
+Две настройки в `test/tsconfig.json` стоит знать:
 
-- **`noPropertyAccessFromIndexSignature` is off here**, as it also is in
-  `playgrounds/cli` and the recipes, and for the same reason. The flag forbids `obj.foo` when `foo` comes from an index signature — right for library source, wrong for a test reaching into a portal payload or a batch result keyed by command name, which is deliberate and happens some 218 times. Turning it on would trade real type coverage for a bracket-notation rewrite that makes assertions harder to read.
-- **`test/integration/docs/**` is excluded.** Those two specs import the docs Nuxt app, whose modules rely on auto-imports and generated types that resolve under `docs:typecheck` and cannot resolve here. Excluding a spec is a real gap rather than a tidy-up — if a third one appears, widen the pass instead of the exclusion.
+- **`noPropertyAccessFromIndexSignature` здесь выключен**, как и в
+  `playgrounds/cli` и рецептах, и по той же причине. Флаг запрещает `obj.foo`, когда `foo` приходит из индексной сигнатуры — верно для исходников библиотеки, неверно для теста, лезущего в данные портала или результат пакета с ключами по имени команды, что делается намеренно и случается около 218 раз. Его включение обменяло бы реальное покрытие типов на переписывание в скобочную нотацию, которая ухудшает читаемость проверок.
+- **`test/integration/docs/**` исключён.** Эти две спецификации импортируют приложение Nuxt документации, чьи модули опираются на автоимпорты и сгенерированные типы, которые разрешаются под `docs:typecheck` и не могут разрешиться здесь. Исключение спецификации — настоящий пробел, а не наведение порядка — если появится третья, расширяйте проход, а не исключение.
 
-Use this naming when the test is about the **SDK's internal behaviour**, not about a REST request/response shape. Document the reason in a JSDoc header at the top of the file — see [`test/integration/core/http-logger-redaction.unit.spec.ts`](../../test/integration/core/http-logger-redaction.unit.spec.ts) (lines 1–19) for the reference shape. For anything that touches a real REST method's request or response shape — no mocks.
+Используйте это именование, когда тест о **внутреннем поведении SDK**, а не о форме запроса/ответа REST. Опишите причину в заголовке JSDoc в начале файла — образец формы см. в [`test/integration/core/http-logger-redaction.unit.spec.ts`](../../test/integration/core/http-logger-redaction.unit.spec.ts) (строки 1–19). Для всего, что касается формы запроса или ответа настоящего метода REST, — без подмен.
 
-## Before Pushing
+## Перед отправкой
 
 ```bash
 pnpm run lint:fix
@@ -441,8 +435,8 @@ pnpm run typecheck
 pnpm run package-jssdk:test:run    # integration project, against a real portal
 ```
 
-If you touched the limiter stack or transport layer, also run the relevant under-load scenario.
+Если вы затрагивали стек лимитеров или транспортный слой, запустите также соответствующий сценарий под нагрузкой.
 
-> **CI runs only the portal-free Vitest projects.** The `test` job runs `jsSdk:unit`, `jsSdk:types` and `skills:unit`. Everything that needs `B24_HOOK` — `jsSdk:integration`, `jsSdk:underLoad`, `skills:live` — is your **local-only** responsibility, so a green CI on a PR does not mean the whole suite passed; the reviewer expects you to confirm a local integration run in the PR description.
+> **CI запускает только проекты Vitest без портала.** Задание `test` выполняет `jsSdk:unit`, `jsSdk:types` и `skills:unit`. Всё, что требует `B24_HOOK` — `jsSdk:integration`, `jsSdk:underLoad`, `skills:live`, — остаётся **только вашей локальной** ответственностью, так что зелёный CI на PR не означает, что прошёл весь набор; ревьюер ожидает, что вы подтвердите локальный интеграционный запуск в описании PR.
 
-See also the [Before Submitting](../../AGENTS.md#перед-отправкой) checklist in `AGENTS.md` for the full per-PR checklist (lint, typecheck, docs sync, contributing-guide sync, commit-message format).
+См. также чек-лист [Перед отправкой](../../AGENTS.md#перед-отправкой) в `AGENTS.md` — полный список для каждого PR (линтер, проверка типов, синхронизация документации, синхронизация руководств для участников, формат сообщения коммита).

@@ -1,43 +1,43 @@
-# Package Structure
+# Структура пакета
 
-<sub>Last reviewed: 2026-09-02.</sub>
+<sub>Последняя проверка: 2026-09-02.</sub>
 
-> **Agent-facing mirror:** the published surface from the angle of agents writing usage code lives in [`b24jssdk-core/`](../../skills/b24jssdk-core/SKILL.md), [`b24jssdk-frame-ui/`](../../skills/b24jssdk-frame-ui/SKILL.md), and [`b24jssdk-helpers/`](../../skills/b24jssdk-helpers/SKILL.md). Keep this guide and those skills in sync when the underlying API changes.
+> **Зеркало для агентов:** опубликованная поверхность с точки зрения агентов, пишущих код использования, лежит в [`b24jssdk-core/`](../../skills/b24jssdk-core/SKILL.md), [`b24jssdk-frame-ui/`](../../skills/b24jssdk-frame-ui/SKILL.md) и [`b24jssdk-helpers/`](../../skills/b24jssdk-helpers/SKILL.md). Держите это руководство и эти навыки синхронными, когда меняется базовый API.
 
-How to author code inside `packages/jssdk/src/`. This is the published `@bitrix24/b24jssdk` surface — every change here ships to consumers.
+Как писать код внутри `packages/jssdk/src/`. Это опубликованная поверхность `@bitrix24/b24jssdk` — каждое изменение здесь попадает к потребителям.
 
-## File Location
+## Расположение файлов
 
-Source files live in `packages/jssdk/src/` and are grouped by responsibility, not by class hierarchy. Pick the directory that matches what the code *does*, not what it *extends*:
+Исходные файлы лежат в `packages/jssdk/src/` и сгруппированы по ответственности, а не по иерархии классов. Выбирайте каталог по тому, что код *делает*, а не по тому, что он *расширяет*:
 
-| Directory | Owns |
+| Каталог | Что в нём |
 | --- | --- |
-| `src/core/` | `AbstractB24`, `Result`, `SdkError`, request-id generation, version manager |
-| `src/core/actions/` | Public action surface, split into `v2/` and `v3/`. File names are kebab-case (`call.ts`, `batch.ts`, `batch-by-chunk.ts`, `call-list.ts`, `fetch-list.ts`); API names are camelCase (`b24.actions.vX.call.make`, `…batch.make`, `…batchByChunk.make`, `…callList.make`, `…fetchList.make`) |
-| `src/core/http/` | `Http` transports (`v2.ts`, `v3.ts`), `AjaxResult`, `AjaxError`, `abstract-http.ts` |
+| `src/core/` | `AbstractB24`, `Result`, `SdkError`, генерация request-id, менеджер версий |
+| `src/core/actions/` | Публичная поверхность действий, разделённая на `v2/` и `v3/`. Имена файлов — kebab-case (`call.ts`, `batch.ts`, `batch-by-chunk.ts`, `call-list.ts`, `fetch-list.ts`); имена API — camelCase (`b24.actions.vX.call.make`, `…batch.make`, `…batchByChunk.make`, `…callList.make`, `…fetchList.make`) |
+| `src/core/http/` | Транспорты `Http` (`v2.ts`, `v3.ts`), `AjaxResult`, `AjaxError`, `abstract-http.ts` |
 | `src/core/http/limiters/` | `RateLimiter`, `OperatingLimiter`, `AdaptiveDelayer`, `ParamsFactory` |
-| `src/frame/` | `B24Frame` and iframe-only managers (`auth`, `parent`, `slider`, `dialog`, `placement`, `options`) |
-| `src/hook/` | `B24Hook` (server-side webhook auth) |
-| `src/oauth/` | `B24OAuth` (OAuth-based local apps) |
-| `src/helper/` | `B24HelperManager`, `useB24Helper`, sub-managers (`profile`, `app`, `payment`, `license`, `currency`, `options`) |
-| `src/pullClient/` | Pull (push) client — WebSocket + long-poll connectors, channel manager, JSON-RPC, protobuf decoders |
-| `src/tools/` | Public utilities — `Text` (Luxon, UUID v7), `Type` (runtime guards), `Browser`, `useFormatters`, `pick`/`omit`/`getEnumValue`, scroll/env utils |
-| `src/types/` | Public types and enums (CRM, catalog, bizproc, event, placement, pull, payloads, …) |
+| `src/frame/` | `B24Frame` и менеджеры, работающие только во фрейме (`auth`, `parent`, `slider`, `dialog`, `placement`, `options`) |
+| `src/hook/` | `B24Hook` (авторизация вебхуком на стороне сервера) |
+| `src/oauth/` | `B24OAuth` (локальные приложения на OAuth) |
+| `src/helper/` | `B24HelperManager`, `useB24Helper`, подчинённые менеджеры (`profile`, `app`, `payment`, `license`, `currency`, `options`) |
+| `src/pullClient/` | Клиент Pull (push) — коннекторы WebSocket + long-poll, менеджер каналов, JSON-RPC, декодеры protobuf |
+| `src/tools/` | Публичные утилиты — `Text` (Luxon, UUID v7), `Type` (проверки во время выполнения), `Browser`, `useFormatters`, `pick`/`omit`/`getEnumValue`, утилиты прокрутки и окружения |
+| `src/types/` | Публичные типы и перечисления (CRM, catalog, bizproc, event, placement, pull, payloads, …) |
 | `src/logger/` | `Logger`, `LoggerFactory` |
-| `src/index.ts` | The single public-export barrel — treat as a contract |
+| `src/index.ts` | Единый публичный баррель экспорта — считайте его контрактом |
 
-File naming is `kebab-case.ts`. Class names inside are `PascalCase`. One primary export per file.
+Файлы называются `kebab-case.ts`. Имена классов внутри — `PascalCase`. Один основной экспорт на файл.
 
-## Standard Module Template
+## Стандартный шаблон модуля
 
-A typical helper-style manager (the dominant shape in `src/helper/` and `src/frame/`) takes the b24 instance and configures its logger through a setter. There are two flavours:
+Типичный менеджер в стиле помощника (преобладающая форма в `src/helper/` и `src/frame/`) принимает экземпляр b24 и настраивает логгер через сеттер. Есть два варианта:
 
-- **Standalone manager** — the shape shown in the template below. Construct it explicitly from caller code or from another manager. No abstract methods to implement.
-- **Sub-manager of `B24HelperManager`** — extends [packages/jssdk/src/helper/abstract-helper.ts](../../packages/jssdk/src/helper/abstract-helper.ts), which adds a required `abstract get data(): any` getter and lifecycle hooks. See [packages/jssdk/src/helper/profile-manager.ts](../../packages/jssdk/src/helper/profile-manager.ts) for the canonical sub-manager example. Do not copy the standalone template below for sub-managers — it will not compile.
+- **Самостоятельный менеджер** — форма, показанная в шаблоне ниже. Создаётся явно из кода вызывающего или из другого менеджера. Абстрактных методов для реализации нет.
+- **Подчинённый менеджер `B24HelperManager`** — расширяет [packages/jssdk/src/helper/abstract-helper.ts](../../packages/jssdk/src/helper/abstract-helper.ts), который добавляет обязательный геттер `abstract get data(): any` и хуки жизненного цикла. Канонический пример подчинённого менеджера — [packages/jssdk/src/helper/profile-manager.ts](../../packages/jssdk/src/helper/profile-manager.ts). Не копируйте самостоятельный шаблон ниже для подчинённых менеджеров — он не скомпилируется.
 
-`B24HelperManager` ([packages/jssdk/src/helper/helper-manager.ts](../../packages/jssdk/src/helper/helper-manager.ts)) is the aggregator that owns those sub-managers and forwards `setLogger` to each; it is not a base class.
+`B24HelperManager` ([packages/jssdk/src/helper/helper-manager.ts](../../packages/jssdk/src/helper/helper-manager.ts)) — агрегатор, который владеет этими подчинёнными менеджерами и пробрасывает им `setLogger`; базовым классом он не является.
 
-The template below is the **standalone** flavour:
+Шаблон ниже — **самостоятельный** вариант:
 
 // @check-ignore: template for a file the reader is about to create; `MyManager` does not exist and the imports are relative to `packages/jssdk/src/<area>/`
 
@@ -93,13 +93,13 @@ export class MyManager {
 }
 ```
 
-> Compile-checked example: [`test/some-code-from-docs/contributing/package-structure-manager.ts`](../../test/some-code-from-docs/contributing/package-structure-manager.ts)
+> Пример с проверкой компиляции: [`test/some-code-from-docs/contributing/package-structure-manager.ts`](../../test/some-code-from-docs/contributing/package-structure-manager.ts)
 
-For transport-layer actions (under `src/core/actions/v2/` and `v3/`) extend `AbstractAction` (`packages/jssdk/src/core/actions/abstract-action.ts`) instead — see [packages/jssdk/src/core/actions/v3/call.ts](../../packages/jssdk/src/core/actions/v3/call.ts) for the canonical example.
+Для действий транспортного уровня (в `src/core/actions/v2/` и `v3/`) вместо этого расширяйте `AbstractAction` (`packages/jssdk/src/core/actions/abstract-action.ts`) — канонический пример см. в [packages/jssdk/src/core/actions/v3/call.ts](../../packages/jssdk/src/core/actions/v3/call.ts).
 
-## Adding to the Public Surface
+## Добавление в публичную поверхность
 
-A symbol is *only* public once it is re-exported from `packages/jssdk/src/index.ts`. Internal-only helpers stay unexported.
+Символ становится публичным *только* после реэкспорта из `packages/jssdk/src/index.ts`. Внутренние помощники остаются неэкспортированными.
 
 // @check-ignore: `./my-area/my-manager` is the file the reader is about to add, not one that exists
 
@@ -109,29 +109,29 @@ export { MyManager } from './my-area/my-manager'
 export type { TypeMyPayload } from './types/payloads'
 ```
 
-- Prefer `export { Foo } from './…'` over star re-exports for public types — it keeps the contract auditable.
-- A member of an exported type is part of that contract too — **unless it is
-  tagged `@internal`**, which is the one carve-out. `@internal` means the SDK's
-  own wiring, exposed because the type is exported and for no other reason: it
-  is kept out of the documentation site, it may be removed in any release, and
-  the deprecation cycle does not apply to it. Use it only where the alternative
-  would be to lock in a switch nobody outside the SDK should be flipping, and
-  say in the JSDoc what makes it temporary and what ends it. `TypePullClientParams.protobufCodec`
-  is the current example — see [`pull-protobuf.md`](pull-protobuf.md).
-- Star re-exports are acceptable for `src/types/index.ts` because that file is an internal aggregator.
-- Removing or renaming a public export is a **breaking change** and must go through a deprecation cycle.
+- Для публичных типов предпочитайте `export { Foo } from './…'` вместо реэкспорта звёздочкой — так контракт остаётся проверяемым.
+- Член экспортируемого типа — тоже часть этого контракта, **если он не помечен
+  `@internal`**, и это единственное исключение. `@internal` означает внутреннюю
+  обвязку SDK, раскрытую только потому, что тип экспортируется, и больше ни по какой причине:
+  её нет на сайте документации, её можно убрать в любом релизе, и
+  цикл устаревания на неё не распространяется. Используйте это только там, где альтернативой
+  было бы закрепить переключатель, которым никому вне SDK не следует щёлкать, и
+  скажите в JSDoc, что делает его временным и что его завершит. `TypePullClientParams.protobufCodec`
+  — текущий пример, см. [`pull-protobuf.md`](pull-protobuf.md).
+- Реэкспорт звёздочкой допустим для `src/types/index.ts`, потому что этот файл — внутренний агрегатор.
+- Удаление или переименование публичного экспорта — **ломающее изменение** и должно пройти цикл устаревания.
 
-  **First decide whether it should be deprecated at all** — see
-  [`deprecations.md`](deprecations.md). The test is whether a replacement exists
-  that costs the caller nothing; a member with no replacement is not a
-  deprecation candidate, it is a breaking change wearing the tag. That page
-  exists because the question was answered wrongly twice in one cycle, after the
-  answer had already shipped.
+  **Сначала решите, нужно ли вообще объявлять его устаревшим** — см.
+  [`deprecations.md`](deprecations.md). Проверка такова: существует ли замена,
+  которая ничего не стоит вызывающему; член без замены — не кандидат
+  на устаревание, а ломающее изменение под видом тега. Эта страница
+  существует потому, что на этот вопрос дважды ответили неверно за один цикл, уже после того, как
+  ответ был выпущен.
 
-  Once the decision is made, three things are required, not one:
+  Когда решение принято, требуются три вещи, а не одна:
 
-  1. **JSDoc**: mark the old symbol with `@deprecated` pointing to the replacement, plus `@removed X.Y.Z` for the target removal version. Add `@memo` if the deprecation has a non-obvious reason (e.g. "only for `restApi:v2`").
-  2. **Runtime warning** (for methods callers might still call): emit a warning via `LoggerFactory.forcedLog`. The signature is `(logger, action, message, context)` — **four arguments**, not three:
+  1. **JSDoc**: пометьте старый символ `@deprecated` с указанием замены, а также `@removed X.Y.Z` с целевой версией удаления. Добавьте `@memo`, если у устаревания есть неочевидная причина (например, «только для `restApi:v2`»).
+  2. **Предупреждение во время выполнения** (для методов, которые вызывающие могут ещё вызывать): выдайте предупреждение через `LoggerFactory.forcedLog`. Сигнатура — `(logger, action, message, context)`, **четыре аргумента**, а не три:
 
       ```ts
       LoggerFactory.forcedLog(
@@ -147,65 +147,65 @@ export type { TypeMyPayload } from './types/payloads'
       )
       ```
 
-      > Compile-checked example: [`package-structure-deprecation-warning.ts`](../../test/some-code-from-docs/contributing/package-structure-deprecation-warning.ts)
+      > Пример с проверкой компиляции: [`package-structure-deprecation-warning.ts`](../../test/some-code-from-docs/contributing/package-structure-deprecation-warning.ts)
 
-      The context key is `removalVersion`, not `removeInVersion`. The canonical pattern lives in [packages/jssdk/src/core/abstract-b24.ts](../../packages/jssdk/src/core/abstract-b24.ts) (search for `@deprecated` + `forcedLog`).
-  3. **Both symbols ship together** for at least one minor release.
+      Ключ контекста — `removalVersion`, а не `removeInVersion`. Канонический образец лежит в [packages/jssdk/src/core/abstract-b24.ts](../../packages/jssdk/src/core/abstract-b24.ts) (ищите `@deprecated` + `forcedLog`).
+  3. **Оба символа выходят вместе** не менее одного минорного релиза.
 
-## How much of a JSDoc block belongs in the code
+## Какую часть блока JSDoc держать в коде
 
-Long comments are not the problem — the ones explaining *why* are the most
-valuable thing in this codebase. **Placement** is (#420).
+Проблема не в длинных комментариях — именно те, что объясняют *почему*, — самое
+ценное в этой кодовой базе. Проблема — **размещение** (#420).
 
-This section used to open with counts — the longest block, how many were over
-thirty. They were wrong within two passes, because nothing measures them. Either
-a script does it, and then the numbers can be quoted, or they should not appear
-in prose at all. Until one exists, measure before you cite.
+Раньше этот раздел начинался с чисел — самый длинный блок, сколько их длиннее
+тридцати строк. Они оказались неверными уже через два прохода, потому что их никто не измеряет. Либо
+это делает скрипт, и тогда числа можно цитировать, либо в прозе их быть не должно.
+Пока такого скрипта нет, измеряйте, прежде чем ссылаться.
 
-### The threshold
+### Порог
 
-> A JSDoc block longer than the function it documents is a prompt to ask where
-> the text belongs.
+> Блок JSDoc, который длиннее функции, которую он описывает, — повод спросить,
+> где этому тексту место.
 
-Not a lint rule and not a limit. Plenty of short functions deserve a long
-explanation; the question is whether *this* reader, opening *this* file, needs
-all of it in front of them.
+Это не правило линтера и не предел. Многим коротким функциям нужно длинное
+объяснение; вопрос в том, нужно ли *этому* читателю, открывшему *этот* файл,
+всё это перед глазами.
 
-### What always stays in the code
+### Что всегда остаётся в коде
 
-The signature contract: parameter meanings, `@returns`, `@throws`,
-`@deprecated` / `@removed`, and **any invariant a reader could break while
-editing that exact file**. If getting it wrong here breaks something, it stays
-here.
+Контракт сигнатуры: смысл параметров, `@returns`, `@throws`,
+`@deprecated` / `@removed` и **любой инвариант, который читатель может нарушить, правя
+именно этот файл**. Если ошибка здесь что-то ломает, это остаётся
+здесь.
 
-### What is better off in a guide
+### Что лучше вынести в руководство
 
-Reasoning, alternatives considered, history, and worked examples. Two reasons,
-one of them measurable:
+Рассуждения, рассмотренные альтернативы, историю и разобранные примеры. Две причины,
+одна из них измерима:
 
-- **A stale claim in the code rots silently.** `docs-lint`, `md-internal-links`
-  and the fence typechecks keep the Markdown guides honest about their links,
-  their freshness stamps and whether their code compiles. Nothing watches a
-  sentence in a comment.
+- **Устаревшее утверждение в коде тихо гниёт.** `docs-lint`, `md-internal-links`
+  и проверки типов в блоках кода следят, чтобы ссылки Markdown-руководств, их отметки
+  свежести и компилируемость их кода были в порядке. За предложением в комментарии
+  никто не следит.
 
-  This is the remaining reason, and it is worth being honest about how the
-  other one went. The original argument here was that JSDoc examples were
-  compiled by nothing while `ts` fences in the guides were compiled on every CI
-  run — 57 `@example` blocks, about 460 lines, unchecked, three of them broken.
-  **That gap is closed:** `jsdoc:typecheck-blocks` has compiled them since #439,
-  43 blocks on every run, and the three broken ones are fixed. An example above
-  a function is now checked exactly as an example in a guide is, so it is no
-  longer a reason to move one.
+  Это оставшаяся причина, и стоит честно сказать, как исчезла
+  другая. Исходный аргумент состоял в том, что примеры JSDoc не компилировал ничто, тогда как блоки `ts`
+  в руководствах компилируются при каждом запуске CI — 57 блоков `@example`, около 460 строк,
+  непроверенных, три из них сломаны.
+  **Этот разрыв закрыт:** `jsdoc:typecheck-blocks` компилирует их с #439,
+  43 блока при каждом запуске, а три сломанных исправлены. Пример над
+  функцией теперь проверяется точно так же, как пример в руководстве, так что это
+  больше не причина что-то переносить.
 
-  Note also what rots and what does not. The paragraph you are reading was
-  itself stale for two days after #439 landed — prose in a guide is no safer
-  from that than prose in a comment. What the gates protect is the *code* in
-  both places; the sentences around it are on us either way.
+  Отметим также, что гниёт, а что нет. Абзац, который вы читаете,
+  сам был устаревшим два дня после того, как #439 влился, — проза в руководстве не безопаснее
+  прозы в комментарии. Проверки защищают *код* в обоих местах;
+  предложения вокруг него остаются на нас в любом случае.
 
-### The shape that works
+### Форма, которая работает
 
-Worked out in #417 and generalised here. Point at the canonical text, then list
-only what matters while editing:
+Отработана в #417 и обобщена здесь. Укажите на канонический текст, затем перечислите
+только то, что важно при редактировании:
 
 ```ts
 /**
@@ -221,18 +221,18 @@ only what matters while editing:
  */
 ```
 
-Twelve lines instead of ninety, the argument in one place under lint, and a
-pointer that survives.
+Двенадцать строк вместо девяноста, аргумент в одном месте под линтером и
+указатель, который переживёт правки.
 
-### Do this opportunistically
+### Делайте это попутно
 
-When a file is next touched for another reason. A mass move would be a large
-diff with no behavioural change and a high chance of losing something in
-transit.
+Когда файл в следующий раз затрагивается по другой причине. Массовый перенос был бы огромным
+диффом без изменения поведения и с высоким риском потерять что-то
+по дороге.
 
-## Class Hierarchies
+## Иерархии классов
 
-The four canonical classes inherit from a single abstract base. When extending, pick the lowest one that fits — do not duplicate logic into `B24Frame`/`B24Hook`/`B24OAuth` if it can live in `AbstractB24`.
+Четыре канонических класса наследуются от одной абстрактной базы. При расширении выбирайте самый нижний подходящий — не дублируйте логику в `B24Frame`/`B24Hook`/`B24OAuth`, если она может жить в `AbstractB24`.
 
 ```text
 AbstractB24                       packages/jssdk/src/core/abstract-b24.ts
@@ -241,86 +241,86 @@ AbstractB24                       packages/jssdk/src/core/abstract-b24.ts
 └── B24OAuth                      packages/jssdk/src/oauth/b24.ts
 ```
 
-`AbstractB24` already owns:
+`AbstractB24` уже владеет:
 
-- the public `actions.vX.<name>` surface (`call`, `batch`, `batchByChunk`, `callList`, `fetchList` for both v2 and v3),
-- the v2 + v3 HTTP clients, reachable via `getHttpClient(version)`,
-- the limiter stack,
-- the logger (replaced via `setLogger(logger)`),
-- the legacy shortcuts `callMethod` / `callBatch` / `callListMethod` / `fetchListMethod` / `callBatchByChunk` — **removed in 3.0.0** (#277). They no longer exist; the replacements are `b24.actions.v{2,3}.{call,batch,callList,fetchList,batchByChunk}.make(options)`.
+- публичной поверхностью `actions.vX.<name>` (`call`, `batch`, `batchByChunk`, `callList`, `fetchList` для v2 и v3),
+- HTTP-клиентами v2 + v3, доступными через `getHttpClient(version)`,
+- стеком лимитеров,
+- логгером (заменяется через `setLogger(logger)`),
+- устаревшими сокращениями `callMethod` / `callBatch` / `callListMethod` / `fetchListMethod` / `callBatchByChunk` — **удалены в 3.0.0** (#277). Их больше нет; замены — `b24.actions.v{2,3}.{call,batch,callList,fetchList,batchByChunk}.make(options)`.
 
-If a new feature is auth-agnostic, put it on `AbstractB24`. Only specialise on a subclass when it requires iframe `postMessage`, webhook URL parsing, or OAuth refresh-token handling.
+Если новая возможность не зависит от типа авторизации, поместите её в `AbstractB24`. Специализируйте в подклассе, только когда нужны iframe `postMessage`, разбор URL вебхука или обработка refresh-токена OAuth.
 
-## Manager Modules
+## Модули-менеджеры
 
-Helper-style managers (under `src/helper/`, iframe managers under `src/frame/`) follow the [Standard Module Template](#standard-module-template) shape:
+Менеджеры в стиле помощника (в `src/helper/`, менеджеры iframe в `src/frame/`) следуют форме [стандартного шаблона модуля](#стандартный-шаблон-модуля):
 
-- Constructor takes `b24: TypeB24`. No raw http injection, no module-level singletons.
-- Logger starts as `LoggerFactory.createNullLogger()` and is swapped via `setLogger(logger: LoggerInterface)`. Sub-managers held inside a manager get the logger forwarded in `setLogger()` — see [packages/jssdk/src/helper/helper-manager.ts](../../packages/jssdk/src/helper/helper-manager.ts) for the canonical fan-out.
-- `loadData()` / `load()` is the convention for one-shot eager initialisation; subsequent calls are no-ops or throw `SdkError`.
-- Lifecycle managers expose `destroy()` if they hold subscriptions (e.g. Pull).
+- Конструктор принимает `b24: TypeB24`. Никакой прямой подстановки http, никаких синглтонов уровня модуля.
+- Логгер начинается как `LoggerFactory.createNullLogger()` и заменяется через `setLogger(logger: LoggerInterface)`. Подчинённые менеджеры внутри менеджера получают логгер, проброшенный в `setLogger()` — канонический разветвлённый проброс см. в [packages/jssdk/src/helper/helper-manager.ts](../../packages/jssdk/src/helper/helper-manager.ts).
+- `loadData()` / `load()` — соглашение для одноразовой жадной инициализации; последующие вызовы ничего не делают или бросают `SdkError`.
+- Менеджеры жизненного цикла предоставляют `destroy()`, если держат подписки (например, Pull).
 
-The composable [`useB24Helper()`](../../packages/jssdk/src/helper/use-b24-helper.ts) is a closure-based composable — it wires init/destroy and Pull subscription. New cross-cutting helpers should plug into it rather than introducing parallel lifecycle code.
+Композабл [`useB24Helper()`](../../packages/jssdk/src/helper/use-b24-helper.ts) — композабл на замыканиях; он связывает init/destroy и подписку Pull. Новые сквозные помощники должны подключаться к нему, а не вводить параллельный код жизненного цикла.
 
 ## Frame, Hook, OAuth
 
-These are the three caller-facing entry points and have stricter rules:
+Это три точки входа для вызывающего кода, и правила для них строже:
 
-- **`B24Frame`** — bootstrap **only** through [`initializeB24Frame()`](../../packages/jssdk/src/loader-b24frame.ts). It deduplicates concurrent inits and parses `window.name` for the portal handshake. Do not export an alternative constructor path.
-- **`B24Hook`** — **must only be used in server-side (Node.js / edge runtime) code**. A webhook URL contains a secret access key; shipping it in a browser bundle exposes the key to every visitor. Construct via the static factory `B24Hook.fromWebhookUrl(url)`. Direct `new B24Hook()` is internal. The class emits a runtime warning when it detects a browser context — do not suppress the warning with `offClientSideWarning()` in production code (it is intended for tests / SSR shims only).
-- **`B24OAuth`** — owns refresh-token error handling. New OAuth flows must reuse its error reporting rather than re-implement token refresh.
+- **`B24Frame`** — инициализируйте **только** через [`initializeB24Frame()`](../../packages/jssdk/src/loader-b24frame.ts). Он дедуплицирует параллельные инициализации и разбирает `window.name` для рукопожатия с порталом. Не экспортируйте альтернативный путь конструктора.
+- **`B24Hook`** — **использовать только в серверном коде (Node.js / edge runtime)**. URL вебхука содержит секретный ключ доступа; отправка его в браузерный бандл раскрывает ключ каждому посетителю. Создавайте через статическую фабрику `B24Hook.fromWebhookUrl(url)`. Прямой `new B24Hook()` — внутренний. Класс выдаёт предупреждение во время выполнения, когда обнаруживает браузерный контекст, — не подавляйте его через `offClientSideWarning()` в рабочем коде (он предназначен только для тестов / SSR-заглушек).
+- **`B24OAuth`** — владеет обработкой ошибок refresh-токена. Новые потоки OAuth должны переиспользовать его сообщения об ошибках, а не заново реализовывать обновление токена.
 
-## Types and Enums
+## Типы и перечисления
 
-- All public types live under `src/types/`, organised by domain (`crm.ts`, `catalog.ts`, `bizproc.ts`, `event.ts`, `placement.ts`, `pull.ts`, `payloads.ts`, …).
-- Prefer importing enums like `EnumCrmEntityTypeId` from the package root, not from a deep path.
-- Type files contain *only* types and enums. No runtime classes — those go to a dedicated module.
-- When adding a new domain, create a new file rather than expanding an unrelated one.
+- Все публичные типы лежат в `src/types/` и организованы по предметным областям (`crm.ts`, `catalog.ts`, `bizproc.ts`, `event.ts`, `placement.ts`, `pull.ts`, `payloads.ts`, …).
+- Перечисления вроде `EnumCrmEntityTypeId` предпочтительно импортировать из корня пакета, а не по глубокому пути.
+- Файлы типов содержат *только* типы и перечисления. Никаких классов времени выполнения — они идут в отдельный модуль.
+- Добавляя новую предметную область, создайте новый файл, а не раздувайте не связанный с ней.
 
-## Tools
+## Инструменты
 
-`src/tools/` is the home for caller-facing utilities:
+`src/tools/` — дом для утилит, ориентированных на вызывающий код:
 
-- `Text` — Luxon-based date helpers, number/format helpers, UUID v7 generation.
-- `Type` — runtime guards (`Type.isString`, `Type.isPlainObject`, …).
-- `Browser` — environment detection.
-- `useFormatters` — currency / locale formatting.
-- Misc: `pick`, `omit`, `getEnumValue`, scroll utilities.
+- `Text` — помощники дат на основе Luxon, помощники чисел/форматов, генерация UUID v7.
+- `Type` — проверки во время выполнения (`Type.isString`, `Type.isPlainObject`, …).
+- `Browser` — определение окружения.
+- `useFormatters` — форматирование валюты / локали.
+- Прочее: `pick`, `omit`, `getEnumValue`, утилиты прокрутки.
 
-Internal-only helpers go to `src/core/tools/`. Do not export those from `index.ts`.
+Внутренние помощники идут в `src/core/tools/`. Не экспортируйте их из `index.ts`.
 
-## Logger
+## Логгер
 
-- Every module that emits diagnostic output holds a `LoggerInterface` (imported from `../logger`) and starts with `LoggerFactory.createNullLogger()`.
-- The active logger is swapped in through a `setLogger(logger)` method, not via the constructor. `AbstractB24` and `B24HelperManager` follow this shape — copy it.
-- A real logger is created with `LoggerFactory.createForBrowser(name, isDev)` (from `packages/jssdk/src/logger/logger-factory.ts`); the `name` becomes the prefix in console output. Callers pass it to `b24.setLogger(...)`.
+- Каждый модуль, выдающий диагностический вывод, держит `LoggerInterface` (импортируется из `../logger`) и начинает с `LoggerFactory.createNullLogger()`.
+- Активный логгер подставляется методом `setLogger(logger)`, а не через конструктор. `AbstractB24` и `B24HelperManager` следуют этой форме — копируйте её.
+- Настоящий логгер создаётся через `LoggerFactory.createForBrowser(name, isDev)` (из `packages/jssdk/src/logger/logger-factory.ts`); `name` становится префиксом в выводе консоли. Вызывающий код передаёт его в `b24.setLogger(...)`.
 
-## Build Tokens
+## Токены сборки
 
-The build replaces these placeholders at bundle time (see [packages/jssdk/build.config.ts](../../packages/jssdk/build.config.ts), and [packages/jssdk-nuxt/build.config.ts](../../packages/jssdk-nuxt/build.config.ts) for the Nuxt module's `meta.version`):
+Сборка подставляет эти заглушки на этапе бандлинга (см. [packages/jssdk/build.config.ts](../../packages/jssdk/build.config.ts) и [packages/jssdk-nuxt/build.config.ts](../../packages/jssdk-nuxt/build.config.ts) для `meta.version` модуля Nuxt):
 
-- `__SDK_VERSION__` → the `version` from `packages/jssdk/package.json` (the Nuxt module injects the same token from `packages/jssdk-nuxt/package.json` into its `meta.version`)
-- `__SDK_USER_AGENT__` → the user-agent string sent on REST calls
+- `__SDK_VERSION__` → `version` из `packages/jssdk/package.json` (модуль Nuxt подставляет тот же токен из `packages/jssdk-nuxt/package.json` в свой `meta.version`)
+- `__SDK_USER_AGENT__` → строка user-agent, отправляемая при вызовах REST
 
-Use the placeholders directly — never read `package.json` at runtime, never hard-code a version string.
+Используйте заглушки напрямую — никогда не читайте `package.json` во время выполнения и не прописывайте строку версии вручную.
 
-## Key Patterns
+## Ключевые паттерны
 
-| Pattern | Usage |
+| Паттерн | Применение |
 | --- | --- |
-| Named exports only | `export class Foo`, `export function bar` — no `export default` |
-| Constructor takes `TypeB24` | Helper-style managers accept `b24: TypeB24` — no module-level singletons |
-| Logger via setter | `LoggerFactory.createNullLogger()` by default; replace via `setLogger(logger)` |
-| `Result` / `AjaxResult` | All transport / domain methods return these — never raw axios responses |
-| `SdkError` | Invariant violations and SDK-level errors, constructed with `{ code, description, status }` |
-| `AjaxError` | HTTP-level errors, surfaced via `Result.getErrors()` |
-| `@deprecated` JSDoc | Mandatory for any public symbol being phased out |
-| Star re-exports | Allowed only in internal aggregators (e.g. `src/types/index.ts`) |
-| Build tokens | `__SDK_VERSION__`, `__SDK_USER_AGENT__` — never literal versions |
+| Только именованные экспорты | `export class Foo`, `export function bar` — без `export default` |
+| Конструктор принимает `TypeB24` | Менеджеры в стиле помощника принимают `b24: TypeB24` — никаких синглтонов уровня модуля |
+| Логгер через сеттер | По умолчанию `LoggerFactory.createNullLogger()`; заменяется через `setLogger(logger)` |
+| `Result` / `AjaxResult` | Все транспортные / предметные методы возвращают их — никогда не сырые ответы axios |
+| `SdkError` | Нарушения инвариантов и ошибки уровня SDK, создаются с `{ code, description, status }` |
+| `AjaxError` | Ошибки уровня HTTP, выводятся через `Result.getErrors()` |
+| JSDoc `@deprecated` | Обязателен для любого публичного символа, который выводится из обращения |
+| Реэкспорт звёздочкой | Разрешён только во внутренних агрегаторах (например, `src/types/index.ts`) |
+| Токены сборки | `__SDK_VERSION__`, `__SDK_USER_AGENT__` — никогда не буквальные версии |
 
-## Export Types
+## Экспорт типов
 
-Add to `packages/jssdk/src/index.ts`:
+Добавьте в `packages/jssdk/src/index.ts`:
 
 // @check-ignore: same hypothetical module as above
 
@@ -329,12 +329,12 @@ export { MyManager } from './my-area/my-manager'
 export type { MyManagerOptions } from './my-area/my-manager'
 ```
 
-## Cross-Package Awareness
+## Учёт соседних пакетов
 
-The Nuxt module ([packages/jssdk-nuxt/src/module.ts](../../packages/jssdk-nuxt/src/module.ts)) is intentionally tiny — it only registers `runtime/plugin`. Any new SDK surface that needs Nuxt auto-import or SSR handling must be wired through that runtime plugin.
+Модуль Nuxt ([packages/jssdk-nuxt/src/module.ts](../../packages/jssdk-nuxt/src/module.ts)) намеренно крошечный — он лишь регистрирует `runtime/plugin`. Любая новая поверхность SDK, которой нужны автоимпорт Nuxt или обработка SSR, должна подключаться через этот runtime-плагин.
 
-When you change the core SDK API:
+Когда вы меняете API ядра SDK:
 
-1. Re-run `pnpm run package-jssdk-nuxt:typecheck`.
-2. If the new surface is Nuxt-relevant (composables, app-config integration, plugin-time setup), update `packages/jssdk-nuxt/src/runtime/plugin` in the same PR.
-3. If [packages/jssdk/README-AI.md](../../packages/jssdk/README-AI.md) shows usage of the changed surface, update it — but note this file is **transitional** (being absorbed into `AGENTS.md` and the contributing guides by future PRs). When the README-AI content disagrees with `AGENTS.md`, `AGENTS.md` wins. See the conflict-resolution note in [AGENTS.md Resources](../../AGENTS.md#ресурсы).
+1. Заново запустите `pnpm run package-jssdk-nuxt:typecheck`.
+2. Если новая поверхность связана с Nuxt (композаблы, интеграция с app-config, настройка на этапе плагина), обновите `packages/jssdk-nuxt/src/runtime/plugin` в том же PR.
+3. Если [packages/jssdk/README-AI.md](../../packages/jssdk/README-AI.md) показывает использование изменённой поверхности, обновите его — но учтите, что этот файл **переходный** (будет поглощён `AGENTS.md` и руководствами для участников в будущих PR). Когда содержимое README-AI расходится с `AGENTS.md`, побеждает `AGENTS.md`. См. примечание о разрешении конфликтов в [AGENTS.md Resources](../../AGENTS.md#ресурсы).

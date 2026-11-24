@@ -1,94 +1,94 @@
-# Suggested examples to add
+# Предлагаемые примеры для добавления
 
-Gaps in the current skill set, re-prioritised after the 2026-05 migration to `actions.v{2,3}.*`. Each entry: who benefits, why it matters, and an estimate (S = small, half-day; M = medium; L = large) of effort to write a polished version.
+Пробелы в текущем наборе навыков, пересмотренные по приоритету после миграции в мае 2026 на `actions.v{2,3}.*`. Каждая запись: кому это полезно, почему это важно и оценка трудоёмкости (S — малая, полдня; M — средняя; L — большая) для написания качественной версии.
 
-## Done (in `b24jssdk-recipes/examples/`)
+## Сделано (в `b24jssdk-recipes/examples/`)
 
-- ~~OAuth install handshake~~ → recipe 12 (`12-oauth-install.ts`)
-- ~~Error-handling cookbook~~ → recipe 10 (`10-error-handling.ts`)
-- ~~Outbound event registration~~ → recipe 11 (`11-event-registration.ts`)
+- ~~Обмен данными при установке OAuth~~ → рецепт 12 (`12-oauth-install.ts`)
+- ~~Сборник приёмов обработки ошибок~~ → рецепт 10 (`10-error-handling.ts`)
+- ~~Регистрация исходящих событий~~ → рецепт 11 (`11-event-registration.ts`)
 
-## High-impact, missing entirely
+## Высокий эффект, отсутствует полностью
 
-### 2. Per-portal multi-tenant backend pattern — **M**
+### 2. Паттерн мультитенантного бэкенда по порталам — **M**
 
-Recipe 12 (OAuth install) is the foundation. The next step is a production-grade variant: LRU-cached `B24OAuth` factory keyed by `member_id`, transactional storage for token refresh (Postgres `ON CONFLICT UPDATE` so concurrent workers don't lose tokens), structured handling of revoked installs.
+Рецепт 12 (установка OAuth) — основа. Следующий шаг — вариант для продакшена: фабрика `B24OAuth` с LRU-кешем по ключу `member_id`, транзакционное хранилище для обновления токенов (Postgres `ON CONFLICT UPDATE`, чтобы параллельные воркеры не теряли токены), структурированная обработка отозванных установок.
 
-### 3. Frame app boot template (Vue 3 + Nuxt) — **M**
+### 3. Шаблон запуска приложения во фрейме (Vue 3 + Nuxt) — **M**
 
-We have the docs site Nuxt module, and `useB24Helper`, but no end-to-end "scaffold a working in-frame Vue page" recipe. Showing:
+У нас есть Nuxt-модуль сайта документации и `useB24Helper`, но нет сквозного рецепта «соберите рабочую страницу Vue во фрейме». Он должен показать:
 
-- `initializeB24Frame()` with an error-state UI
-- `parent.fitWindow()` after content renders
-- `helper.profileInfo` for the greeting
-- `slider.openPath` + mobile fallback
-- Save/restore via `options.appSet`
+- `initializeB24Frame()` с интерфейсом для состояния ошибки
+- `parent.fitWindow()` после отрисовки содержимого
+- `helper.profileInfo` для приветствия
+- `slider.openPath` + запасной вариант для мобильных устройств
+- сохранение и восстановление через `options.appSet`
 
-The current `playgrounds/nuxt` is a manual smoke harness, not a teaching example.
+Текущий `playgrounds/nuxt` — ручной стенд для проверки «на дым», а не обучающий пример.
 
-### 4. Pull-driven CRM mirror — **M**
+### 4. Зеркало CRM на основе Pull — **M**
 
-`useB24Helper` + Pull subscription that reflects deal updates in real time without polling. Recipe 3 polls today; the Pull-based variant would be a strict upgrade for in-frame apps, and showcases a feature we don't currently demonstrate end-to-end.
+`useB24Helper` + подписка Pull, отражающая обновления сделок в реальном времени без опроса. Рецепт 3 сегодня опрашивает; вариант на Pull был бы строгим улучшением для приложений во фрейме и показал бы возможность, которую мы сейчас не демонстрируем от начала до конца.
 
-### 5. `batchByChunk.make` bulk import — **S**
+### 5. Массовый импорт через `batchByChunk.make` — **S**
 
-Right now no recipe uses `batchByChunk.make`. The most natural example: import 5000 contacts from a CSV. Also covers `Type` runtime guards and `Text.numberFormat` for progress.
+Сейчас ни один рецепт не использует `batchByChunk.make`. Самый естественный пример: импорт 5000 контактов из CSV. Заодно покрывает защитные проверки `Type` во время выполнения и `Text.numberFormat` для прогресса.
 
-### 6. CRM duplicate detection / dedup — **S**
+### 6. Поиск дубликатов CRM / дедупликация — **S**
 
-`crm.duplicate.findbycomm` is a one-call solution for "is this email/phone already a contact?". Comes up in every lead-import workflow.
+`crm.duplicate.findbycomm` — решение одним вызовом для вопроса «этот email/телефон уже есть в контакте?». Встречается в каждом сценарии импорта лидов.
 
-### 7. `actions.v3.aggregate.make` for analytics — **M** (blocked on a portal module)
+### 7. `actions.v3.aggregate.make` для аналитики — **M** (заблокировано модулем портала)
 
-The SDK exposes a typed `actions.v3.aggregate.make`, and its contract is measured — values come back as strings, and `null` over a filter that matched no rows. What is missing is a module to call it on: no shipped Bitrix24 module publishes an `*.aggregate` action yet. Once one does, Recipe 1 (CRM analytics) becomes a one-call query instead of loading all deals into memory.
+SDK предоставляет типизированный `actions.v3.aggregate.make`, и его контракт измерен: значения приходят строками, а `null` — для фильтра, под который не попало ни одной строки. Не хватает модуля, на котором это вызвать: ни один из поставляемых модулей Битрикс24 пока не публикует действие `*.aggregate`. Когда такой появится, рецепт 1 (аналитика CRM) станет запросом в один вызов вместо загрузки всех сделок в память.
 
-## Lower-impact but useful
+## Менее значимое, но полезное
 
-### 10. Reading custom fields (UF) and listing field metadata — **S**
+### 10. Чтение пользовательских полей (UF) и списка метаданных полей — **S**
 
-`crm.item.fields` with `entityTypeId`, then filtering by `'>=ufCrmInn': '7700000000'`. Comes up every time a customer says "we use a custom field for…".
+`crm.item.fields` с `entityTypeId`, затем фильтрация по `'>=ufCrmInn': '7700000000'`. Возникает каждый раз, когда клиент говорит: «мы используем пользовательское поле для…».
 
-### 11. File upload (multipart) — **M**
+### 11. Загрузка файла (multipart) — **M**
 
-The Disk recipe explicitly skips this. A recipe showing how to upload a binary via `disk.folder.uploadfile` (multipart) is well within the SDK's wheelhouse — the underlying `Http` accepts `FormData`. Worth a separate recipe because it's the one Disk operation people actually need.
+Рецепт по Диску явно пропускает это. Рецепт о загрузке бинарного файла через `disk.folder.uploadfile` (multipart) вполне по силам SDK — базовый `Http` принимает `FormData`. Стоит сделать отдельным рецептом, поскольку это единственная операция Диска, которая людям действительно нужна.
 
-### 12. Calendar events bulk export — **S**
+### 12. Массовый экспорт событий календаря — **S**
 
-`calendar.event.get` with type/ownerId, week-window paging. A two-page recipe covering ICS-style export.
+`calendar.event.get` с type/ownerId, постраничная выборка недельными окнами. Рецепт на две страницы, охватывающий экспорт в стиле ICS.
 
-### 13. Deal pipeline migration — **M**
+### 13. Миграция воронки сделок — **M**
 
-Move N deals from one funnel category to another, preserving stage by base name. Real-world ops task; uses `batchByChunk.make` and the `baseStage()` helper.
+Перенос N сделок из одной воронки в другую с сохранением стадии по базовому имени. Реальная эксплуатационная задача; использует `batchByChunk.make` и помощник `baseStage()`.
 
-### 14. Currency-aware revenue dashboard — **S**
+### 14. Дашборд выручки с учётом валют — **S**
 
-Recipe 1 (CRM analytics) treats every amount as the same currency. A `helper.currency` + `crm.currency.list` extension that converts to a base currency before summing is small but useful.
+Рецепт 1 (аналитика CRM) считает все суммы в одной валюте. Расширение с `helper.currency` + `crm.currency.list`, которое переводит в базовую валюту перед суммированием, небольшое, но полезное.
 
-### 15. Telegram bot with grammy `inlineKeyboard` actions — **S**
+### 15. Telegram-бот с действиями `inlineKeyboard` из grammy — **S**
 
-Recipe 6 sends notifications. An interactive variant ("take ownership", "mark as junk" buttons) is a one-screen extension.
+Рецепт 6 отправляет уведомления. Интерактивный вариант (кнопки «взять в работу», «пометить как мусор») — расширение на один экран.
 
-### 16. AI assistant: function-calling loop — **M**
+### 16. Ассистент на ИИ: цикл вызова функций — **M**
 
-Recipe 8 is one-shot. A version that lets GPT call back into Bitrix24 (via OpenAI tool-calling for `getDeal`, `createTask`, `updateDeal`) is the modern shape and shows how to bridge LLM tool schemas with `actions.v{2,3}.call.make`.
+Рецепт 8 — одноразовый. Версия, которая позволяет GPT обращаться обратно в Битрикс24 (через вызов инструментов OpenAI для `getDeal`, `createTask`, `updateDeal`), — это современная форма, она показывает, как связать схемы инструментов LLM с `actions.v{2,3}.call.make`.
 
-### 17. Frame placement: a "select value" picker — **S**
+### 17. Встройка (placement) во фрейме: выбор значения — **S**
 
-Use `dialog.selectCRM` + `placement.setValue` to build a custom CRM-field picker. Shows the `setValue` JSON-stringify-on-the-way-back flow end-to-end.
+Использовать `dialog.selectCRM` + `placement.setValue`, чтобы собрать собственный выбор значения для поля CRM. Показывает от начала до конца путь `setValue` с JSON-сериализацией на обратном пути.
 
-## Documentation-only
+## Только документация
 
-### 18. "When to use which list method" decision flow chart — **S**
+### 18. Блок-схема «Какой метод списка когда использовать» — **S**
 
-We have prose in `b24jssdk-rest`. A small ASCII flow chart inline (`select.length > 1000?` → `callList.make`; `> 10k?` → `fetchList.make`; `parallel chunks?` → `batchByChunk.make`) makes it scannable.
+У нас есть текст в `b24jssdk-rest`. Небольшая ASCII-блок-схема прямо в тексте (`select.length > 1000?` → `callList.make`; `> 10k?` → `fetchList.make`; `parallel chunks?` → `batchByChunk.make`) делает его удобным для беглого просмотра.
 
-### 19. Per-method version mapping table — **M**
+### 19. Таблица соответствия методов и версий — **M**
 
-A table showing, for each common Bitrix24 method, whether to use `actions.v2.*` or `actions.v3.*` today and which will move to v3 in the future. The current table is split across two skills (`b24jssdk-core`, `b24jssdk-rest`) and the version-manager source.
+Таблица, показывающая для каждого распространённого метода Битрикс24, какой вариант использовать сегодня — `actions.v2.*` или `actions.v3.*` — и какие методы в будущем перейдут на v3. Сейчас таблица разделена между двумя навыками (`b24jssdk-core`, `b24jssdk-rest`) и исходным кодом менеджера версий.
 
-## Recommended next picks
+## Рекомендуемые следующие шаги
 
-1. **#3** — Vue/Nuxt frame boot template. Biggest remaining gap for in-frame app authors.
-2. **#5** — `batchByChunk.make` bulk import. Demonstrates a feature no recipe currently exercises.
-3. **#2** — Per-portal multi-tenant backend (builds on recipe 12).
-4. **#7** — `aggregate.make` (when a shipped module publishes an `*.aggregate` action).
+1. **#3** — шаблон запуска Vue/Nuxt во фрейме. Самый большой оставшийся пробел для авторов приложений во фрейме.
+2. **#5** — массовый импорт через `batchByChunk.make`. Демонстрирует возможность, которую сейчас не задействует ни один рецепт.
+3. **#2** — мультитенантный бэкенд по порталам (опирается на рецепт 12).
+4. **#7** — `aggregate.make` (когда поставляемый модуль опубликует действие `*.aggregate`).

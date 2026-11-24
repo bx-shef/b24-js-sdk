@@ -1,177 +1,173 @@
-# Deciding whether to deprecate
+# Как решать, объявлять ли устаревшим
 
-<sub>Last reviewed: 2026-09-08.</sub>
+<sub>Последняя проверка: 2026-09-08.</sub>
 
-[`package-structure.md`](package-structure.md#adding-to-the-public-surface) covers **how** to
-deprecate — the `@deprecated` / `@removed` tags, the `forcedLog` runtime warning,
-and shipping both symbols for at least one minor. This page covers the question
-that comes first: **should this be deprecated at all?**
+[`package-structure.md`](package-structure.md#добавление-в-публичную-поверхность) описывает, **как**
+объявлять устаревшим — теги `@deprecated` / `@removed`, предупреждение времени выполнения через `forcedLog`
+и выпуск обоих символов не менее одного минорного релиза. Эта страница отвечает на вопрос,
+который стоит раньше: **нужно ли вообще объявлять это устаревшим?**
 
-It exists because that question was answered wrongly twice in one cycle, and
-both answers had already shipped in a release changelog before anyone noticed.
+Она появилась потому, что на этот вопрос дважды ответили неверно за один цикл, и
+оба ответа успели попасть в журнал изменений релиза, прежде чем кто-либо это заметил.
 
-## The test
+## Проверка
 
-> **Does a replacement exist that costs the caller nothing?**
+> **Существует ли замена, которая ничего не стоит вызывающему коду?**
 
-If yes, deprecate: the caller rewrites one line, and the old surface is real
-duplication worth removing. If no, you are not deprecating anything — you are
-planning a breaking change, and the `@deprecated` tag makes it look routine.
+Если да — объявляйте устаревшим: вызывающий код переписывает одну строку, а старая поверхность — это настоящее
+дублирование, которое стоит убрать. Если нет — вы ничего не объявляете устаревшим, вы
+планируете ломающее изменение, а тег `@deprecated` делает его похожим на рутину.
 
-Three ways to fail the test. All of them count as *no*.
+Проверка не проходится тремя способами. Все они считаются ответом *нет*.
 
-### 1. No replacement exists
+### 1. Замены не существует
 
-The obvious one, and the one most likely to be missed, because a member that is
-clearly tied to something old *feels* replaceable.
+Самый очевидный вариант и тот, который чаще всего упускают, потому что член, явно связанный
+с чем-то старым, *кажется* заменимым.
 
-`AjaxResult.getTotal()` reads the `restApi:v2` envelope's `total` field. Under
-`restApi:v2` there is no other way to obtain a row count: `SuccessPayload` omits
-`total` by design, the list helpers iterate without exposing it, and the
-`aggregate` action exists for `restApi:v3` only. Removing it would have turned
-"how many deals match this filter?" into "download every deal and count them" —
-a capability regression inside what read as a cleanup.
+`AjaxResult.getTotal()` читает поле `total` конверта `restApi:v2`. В `restApi:v2`
+другого способа получить число строк нет: `SuccessPayload` по замыслу опускает
+`total`, помощники списков итерируют, не раскрывая его, а действие
+`aggregate` существует только для `restApi:v3`. Удаление превратило бы
+«сколько сделок подходит под этот фильтр?» в «скачайте все сделки и посчитайте их» —
+регресс возможностей внутри того, что выглядело как наведение порядка.
 
-Before tagging anything, write down the line of code the caller replaces it
-with. If you cannot write that line, stop.
+Прежде чем ставить тег, запишите строку кода, которой вызывающий код это заменит.
+Если не можете записать эту строку — остановитесь.
 
-### 2. The replacement does not cover the same ground
+### 2. Замена не покрывает то же самое
 
-A replacement that works somewhere else is not a replacement.
+Замена, которая работает где-то в другом месте, заменой не является.
 
-A `restApi:v3`-only replacement does nothing for a `restApi:v2` caller.
-`restApi:v2` is where most of the Bitrix24 REST surface still lives, and
-Bitrix24's migration to `restApi:v3` is real but slow — so a schedule written as
-though the migration were finished deletes methods that work today, for the
-majority of callers.
+Замена только для `restApi:v3` ничего не даёт вызывающему коду на `restApi:v2`.
+В `restApi:v2` по-прежнему живёт большая часть поверхности REST Битрикс24, а
+миграция Битрикс24 на `restApi:v3` реальна, но медленна — поэтому график, составленный
+так, будто миграция завершена, удаляет методы, которые сегодня работают у
+большинства вызывающих.
 
-**"Tied to `restApi:v2`" is not by itself a reason to remove anything**, and will
-not be for as long as `restApi:v2` is the version most portals answer on.
+**«Привязано к `restApi:v2`» само по себе не причина что-либо удалять** и не будет ею до тех пор,
+пока `restApi:v2` остаётся версией, на которой отвечает большинство порталов.
 
-### 3. The replacement is not proven
+### 3. Замена не подтверждена
 
-`@experimental` means nobody has run it. It cannot be cited as the replacement in
-a deprecation notice — you would be telling callers to migrate onto something you
-have not verified works.
+`@experimental` означает, что никто это не запускал. Такую замену нельзя указывать как замену
+в уведомлении об устаревании — вы бы предлагали вызывающим мигрировать на то, что
+вы не проверили.
 
-`actions.v3.aggregate` was written from the published reference and, at the time
-it was named as the successor to `getTotal()`, had never been run against a
-portal. That is the third failure mode, and it is the easiest to talk yourself
-past, because the replacement exists in the source tree and can be pointed at.
+`actions.v3.aggregate` был написан по опубликованному справочнику и на момент,
+когда его назвали преемником `getTotal()`, ни разу не запускался на
+портале. Это третий способ провала, и о нём проще всего самому себя убедить,
+потому что замена есть в дереве исходников, и на неё можно указать.
 
-The example still stands after the contract was measured, because measuring it
-did not create the thing it was supposed to replace: no shipped module publishes
-an `*.aggregate` method, so there is still nothing to count with. Verifying a
-contract and having a use case are different claims, and only the first one got
-settled.
+Пример остаётся в силе и после того, как контракт был измерен, потому что измерение
+не создало то, что он должен был заменить: ни один поставляемый модуль не публикует
+метод `*.aggregate`, так что считать по-прежнему нечем. Проверенный
+контракт и наличие сценария использования — разные утверждения, и закрыто было только первое.
 
-## Judge per member, not per batch
+## Оценивайте каждый член отдельно, а не пачкой
 
-The failure that produced this page was not a mistake of fact about any single
-method. It was **batching**.
+Сбой, породивший эту страницу, не был фактической ошибкой относительно какого-то одного
+метода. Это было **пакетирование**.
 
-Five `AjaxResult` paging members were tagged together on a shared trait — "reads
-a `restApi:v2` envelope field" — which is true of all five and decisive for none
-of them. That criterion describes the protocol, not the user.
+Пять членов постраничной выборки `AjaxResult` были помечены вместе на общем трейте — «читает
+поле конверта `restApi:v2`» — что верно для всех пяти и не решает ничего ни для одного
+из них. Этот критерий описывает протокол, а не пользователя.
 
-**All five were eventually kept** (#408). But they are not alike, and treating
-them as one thing is what went wrong:
+**В итоге все пять были сохранены** (#408). Но они не одинаковы, и именно то, что их
+рассматривали как одно целое, и стало ошибкой:
 
-| Members | What they do | Against the test |
+| Члены | Что делают | По отношению к проверке |
 | --- | --- | --- |
-| `isMore()` / `hasMore()` / `getTotal()` | only report what the portal sent | fail it outright — nothing replaces reading a field, **so they stay** |
-| `getNext()` / `fetchNext()` | issue a follow-up request, duplicating `callList` / `fetchList` | arguably pass it — but deleting them would break working `restApi:v2` code for no gain, **so they stay too** |
+| `isMore()` / `hasMore()` / `getTotal()` | только сообщают то, что прислал портал | не проходят её совсем — чтение поля нечем заменить, **поэтому остаются** |
+| `getNext()` / `fetchNext()` | выполняют дополнительный запрос, дублируя `callList` / `fetchList` | пожалуй, проходят — но их удаление сломало бы работающий код на `restApi:v2` без выгоды, **поэтому остаются тоже** |
 
-The lesson is not where the line landed. It is that **a shared trait is a reason
-to review a group together, never to decide it together.** Apply the test to each
-member and write down the answer for each.
+Урок не в том, где легла граница. А в том, что **общий трейт — повод рассмотреть группу
+вместе, но никогда — решать по ней вместе.** Применяйте проверку к каждому
+члену и записывайте ответ для каждого.
 
-The same batch also contained `callMethod`, `callListMethod`, `fetchListMethod`,
-`callBatch`, `callBatchByChunk`, `batchSize`, and `LoggerBrowser` / `LoggerType`
-— all of which pass the test cleanly, each mapping one-for-one onto
-`actions.v{2,3}.*` or `LoggerFactory`, both of which work under either protocol
-version. The batch was not wrong about everything. It was wrong about the members
-nobody checked individually.
+В ту же пачку входили также `callMethod`, `callListMethod`, `fetchListMethod`,
+`callBatch`, `callBatchByChunk`, `batchSize`, а также `LoggerBrowser` / `LoggerType`
+— все они чисто проходят проверку, каждый один в один соответствует
+`actions.v{2,3}.*` или `LoggerFactory`, а те работают на любой версии
+протокола. Пачка ошибалась не во всём. Она ошибалась в тех членах,
+которые никто не проверил по отдельности.
 
-## The cost of getting it wrong
+## Цена ошибки
 
-`@deprecated` in a released version is **published**. Walking it back is not free:
+`@deprecated` в выпущенной версии — **опубликован**. Откатить его бесплатно не выйдет:
 
-- a changelog entry saying the removal set narrowed, since the released entry is
-  history and does not get edited;
-- a migration-guide section explaining the reversal to someone who is mid-migration
-  and needs to know whether their work was wasted;
-- every doc, skill file and JSDoc block that repeated the claim.
+- запись в журнале изменений о том, что набор удаляемого сузился, поскольку выпущенная запись
+  — это история, и её не редактируют;
+- раздел руководства по миграции, объясняющий отмену тому, кто в разгаре миграции
+  и должен знать, не пропал ли его труд;
+- все документы, файлы навыков и блоки JSDoc, которые повторяли это утверждение.
 
-PR #408 had to write all three. That cost belongs on the near side of the decision:
-it is cheaper to check whether a replacement exists than to explain later why it
-did not.
+PR #408 пришлось написать все три. Эту цену нужно заплатить до принятия решения:
+дешевле проверить, существует ли замена, чем потом объяснять, почему
+её не было.
 
-A related asymmetry worth knowing: a **stale** deprecation is embarrassing, but a
-**wrong** one breaks working code. When unsure, ship the tag one release later
-rather than one release earlier.
+Родственная асимметрия, о которой стоит знать: **устаревшее** объявление об устаревании — это
+неловко, а **неверное** ломает работающий код. Если не уверены, ставьте тег на один релиз позже,
+а не на один релиз раньше.
 
-That bias has a boundary, though, and it is worth naming before someone leans on
-this page to defer every borderline call. **Near a major version, "wait" is
-itself a decision**: it means the member survives into `3.0.0` and cannot be
-removed until `4.0.0`. Deferring is cheap in the middle of a minor series and
-expensive at a major boundary, where it either commits the member for a whole
-major cycle or invites a scramble of hasty removals just before the cut. Neither
-is what "when unsure, wait" is meant to license. Close to a cut, decide — and if
-the decision is genuinely not ready, say the member is staying and give it the
-treatment below rather than leaving it tagged and unresolved.
+Но у этого смещения есть граница, и о ней стоит сказать, прежде чем кто-то сошлётся на
+эту страницу, чтобы отложить любое пограничное решение. **Рядом с мажорной версией «подождать» —
+само по себе решение**: оно означает, что член доживёт до `3.0.0` и не может быть
+удалён до `4.0.0`. Откладывать дёшево в середине минорной серии и дорого на границе мажорной,
+где это либо закрепляет член на весь мажорный цикл, либо провоцирует спешку с поспешными удалениями прямо перед
+выпуском. Ни то ни другое не имеется в виду под «если не уверены — подождите». Рядом с выпуском
+решайте — и если решение действительно не готово, скажите, что член остаётся, и примените к нему
+описанное ниже, а не оставляйте его помеченным и нерешённым.
 
-## If the answer is "keep it"
+## Если ответ — «оставить»
 
-Keeping a member is not the same as saying nothing about it. Record:
+Сохранить член — не значит ничего о нём не сказать. Зафиксируйте:
 
-- **What it is scoped to.** If it only works under one protocol version, say so
-  in the JSDoc, and say what it returns under the other — including whether that
-  value is distinguishable from a real answer. `getTotal()` returns `0` under
-  `restApi:v3` because the field is absent, which is not "no rows matched"; a
-  caller who does not know that will read it as one.
-- **The exit condition.** "Stays for as long as `restApi:v2` does" is fine as a
-  decision and useless as a promise unless it names a trigger. Which event would
-  make you revisit? Write it down, and note that the trigger may differ between
-  members that look alike — a member with a working replacement is waiting on the
-  protocol alone, while one without is also waiting on a replacement appearing.
-- **Tests.** A member slated for deletion tends to have no coverage, because
-  nobody pins something that is leaving. The moment it is staying, its behaviour
-  is a contract — including whatever it does in the situation that motivated the
-  deprecation in the first place.
+- **Чем он ограничен.** Если он работает только в одной версии протокола, скажите об этом
+  в JSDoc и скажите, что он возвращает в другой, — включая то, отличимо ли
+  это значение от настоящего ответа. `getTotal()` возвращает `0` в
+  `restApi:v3`, потому что поля нет, а это не «ни одна строка не подошла»; вызывающий код, не знающий этого,
+  прочтёт это именно так.
+- **Условие выхода.** «Остаётся, пока существует `restApi:v2`» годится как
+  решение и бесполезно как обещание, если не называет триггер. Какое событие
+  заставит вас вернуться к вопросу? Запишите его и учтите, что триггер может различаться у
+  членов, которые выглядят одинаково: член с рабочей заменой ждёт только
+  протокол, а член без замены ждёт ещё и появления замены.
+- **Тесты.** Член, намеченный к удалению, обычно не покрыт тестами, потому что
+  никто не фиксирует то, что уходит. В момент, когда он остаётся, его поведение
+  становится контрактом — включая то, что он делает в ситуации, которая
+  первоначально вызвала объявление об устаревании.
 
-## Where this is asked, and what still is not enforced
+## Где об этом спрашивают и что до сих пор не обеспечивается автоматически
 
-The failure this page describes was not someone believing the wrong thing. It was
-a question nobody asked. So the question is now asked in the three places
-someone passes on the way to writing a tag (#414):
+Сбой, который описывает эта страница, не был результатом того, что кто-то верил в неверное. Это был
+вопрос, который никто не задал. Поэтому теперь вопрос задаётся в трёх местах,
+мимо которых проходят перед тем, как написать тег (#414):
 
-- the **PR Review Checklist** in `AGENTS.md` — the entry immediately after the
-  deprecation-cycle line, which asks for the replacement line of code **per
-  member**;
-- the **Code Conventions** row for Deprecation, which puts the decision ahead of
-  the `@deprecated` / `@removed` / `forcedLog` mechanics it used to describe on
-  its own;
-- the **public-contract bullet** under SDK Source, where "needs a deprecation
-  cycle" now carries "and a deprecation needs a replacement".
+- **Чек-лист ревью PR** в `AGENTS.md` — пункт сразу после строки
+  о цикле устаревания, который требует строку кода замены **для каждого
+  члена**;
+- строка **Code Conventions** про устаревание, которая ставит решение перед
+  механикой `@deprecated` / `@removed` / `forcedLog`, которую она раньше описывала
+  сама по себе;
+- пункт **о публичном контракте** в разделе «SDK Source», где «требует цикла
+  устаревания» теперь дополнено «а устаревание требует замены».
 
-All three previously described **how** to deprecate and never asked **whether**.
-That was the gap: the mechanics assume a decision that nothing prompted anyone to
-make.
+Все три раньше описывали, **как** объявлять устаревшим, и никогда не спрашивали, **нужно ли**.
+В этом и был пробел: механика предполагает решение, которое ничто не побуждало принять.
 
-**None of it is enforced.** Nothing fails when a pull request adds `@deprecated`
-and skips the question — these are prompts in a document, read by whoever reads
-documents. A CI nudge on a diff that tags more than one export at once was
-considered and not built: it is the only option that targets the actual failure
-(batching), and also the only one that produces false alarms, since a genuine
-batch of one-for-one replacements is legitimate and would trip it every time. For
-a failure that has happened once, prompts first; revisit if it happens again.
+**Ничто из этого не обеспечивается автоматически.** Ничего не падает, когда pull request добавляет `@deprecated`
+и пропускает вопрос — это подсказки в документе, который читает тот, кто читает документы. Подсказка в CI
+на дифф, который помечает несколько экспортов сразу, рассматривалась и не была сделана: это единственный
+вариант, нацеленный на реальный сбой (пакетирование), и он же единственный, который даёт ложные срабатывания, поскольку
+настоящая пачка замен «один в один» легитимна и срабатывала бы каждый раз. Для
+сбоя, случившегося один раз, сначала подсказки; вернёмся к вопросу, если он повторится.
 
-## Related
+## См. также
 
-- [`package-structure.md`](package-structure.md#adding-to-the-public-surface) — the mechanics,
-  once the decision is made
-- [`docs-fork.md`](docs-fork.md) — the same pattern applied to a different kind of
-  decision record: what is deliberate, why, and what would end it
-- #409 — where this page was asked for, with the full account
-- #408 — the walk-back that prompted it; #277 — what remains scheduled for `3.0.0`
+- [`package-structure.md`](package-structure.md#добавление-в-публичную-поверхность) — механика,
+  когда решение принято
+- [`docs-fork.md`](docs-fork.md) — тот же паттерн, применённый к записи решений другого рода:
+  что сделано намеренно, почему и что это изменит
+- #409 — где была запрошена эта страница, с полным описанием
+- #408 — откат, который её вызвал; #277 — что остаётся запланированным на `3.0.0`
