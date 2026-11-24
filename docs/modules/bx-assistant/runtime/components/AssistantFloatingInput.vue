@@ -12,7 +12,7 @@ const inputRef = ref<{ inputRef: HTMLInputElement } | null>(null)
 const isDocsRoute = computed(() => route.path.startsWith('/docs/'))
 const isFloatingInputEnabled = computed(() => appConfig.bxAssistant?.floatingInput !== false)
 const focusInputShortcut = computed(() => appConfig.bxAssistant?.shortcuts?.focusInput || 'meta_i')
-const placeholder = computed(() => 'Ask a question...')
+const placeholder = computed(() => 'Задайте вопрос…')
 
 const shortcutDisplayKeys = computed(() => {
   const shortcut = focusInputShortcut.value

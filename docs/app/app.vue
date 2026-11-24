@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ToasterProps } from '@bitrix24/b24ui-nuxt'
+import { ru } from '@bitrix24/b24ui-nuxt/locale'
 
 const route = useRoute()
 const appConfig = useAppConfig()
@@ -38,7 +39,7 @@ useHead({
     ...link.value
   ]),
   style,
-  htmlAttrs: { lang: 'en', class: '' }
+  htmlAttrs: { lang: 'ru', class: '' }
 })
 
 if (import.meta.server) {
@@ -60,7 +61,7 @@ provide('files', files)
 </script>
 
 <template>
-  <B24App :toaster="appConfig.toaster as ToasterProps">
+  <B24App :toaster="appConfig.toaster as ToasterProps" :locale="ru">
     <NuxtLoadingIndicator color="var(--ui-color-design-filled-warning-bg)" :height="3" />
 
     <div class="flex">

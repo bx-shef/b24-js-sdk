@@ -53,12 +53,12 @@ defineShortcuts({
 
     <template #right>
       <!-- @memo @memo this for NUXT.UI.docs -->
-      <B24Tooltip text="Ask AI for help">
+      <B24Tooltip text="Спросить ИИ">
         <B24Button
           v-if="isAssistantEnabled"
           color="air-selection"
           :icon="AiStarsIcon"
-          aria-label="Ask AI for help"
+          aria-label="Спросить ИИ"
           @click="toggleChat"
         />
       </B24Tooltip>

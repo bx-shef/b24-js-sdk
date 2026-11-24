@@ -31,22 +31,22 @@ const _useHeader = () => {
 
   const desktopLinks = computed<NavigationMenuItem[]>(() => [
     {
-      label: 'Docs',
+      label: 'Документация',
       to: '/docs/getting-started',
       active: route.path.startsWith('/docs/getting-started')
     },
     {
-      label: 'Working',
+      label: 'Работа с API',
       to: '/docs/working-with-the-rest-api',
       active: route.path.startsWith('/docs/working-with-the-rest-api')
     },
     {
-      label: 'Examples',
+      label: 'Примеры',
       to: '/docs/examples',
       active: route.path === '/docs/examples' || route.path.startsWith('/docs/examples/')
     },
     {
-      label: 'Resources',
+      label: 'Ресурсы',
       type: 'trigger',
       children: [
         {
@@ -64,7 +64,7 @@ const _useHeader = () => {
           target: '_blank'
         },
         {
-          label: 'Community',
+          label: 'Сообщество',
           description: 'Bitrix24 UI on Telegram',
           icon: EarthIcon,
           to: tgLink.value,
@@ -83,19 +83,19 @@ const _useHeader = () => {
 
   const mobileLinks = computed<NavigationMenuItem[]>(() => [
     {
-      label: 'Get Started',
+      label: 'Быстрый старт',
       to: '/docs/getting-started',
       icon: PlayLIcon,
       active: route.path.startsWith('/docs/getting-started')
     },
     {
-      label: 'Working',
+      label: 'Работа с API',
       to: '/docs/working-with-the-rest-api',
       icon: TerminalIcon,
       active: route.path.startsWith('/docs/working-with-the-rest-api')
     },
     {
-      label: 'Examples',
+      label: 'Примеры',
       to: '/docs/examples',
       icon: ItemIcon,
       active: route.path === '/docs/examples' || route.path.startsWith('/docs/examples/')

@@ -5,7 +5,7 @@ import RocketIcon from '@bitrix24/b24icons-vue/outline/RocketIcon'
 <template>
   <B24Banner
     id="v3-0-0-released-banner"
-    title="Bitrix24 JS SDK 3.0.0 is out — see what changed and how to upgrade"
+    title="Вышел JS SDK 3.0.0 — что изменилось и как обновиться"
     to="/docs/getting-started/migration/v3/"
     :icon="RocketIcon"
     close

@@ -39,8 +39,8 @@ export function useSearch() {
 
   const links = computed(() => [
     isAssistantEnabled.value && {
-      label: 'Ask AI',
-      description: 'Ask the AI assistant powered by our custom MCP server for help.',
+      label: 'Спросить ИИ',
+      description: 'Спросите ИИ-помощника: он отвечает по документации через наш MCP-сервер.',
       icon: RobotIcon,
       kbds: ['meta', 'i'],
       b24ui: {
@@ -49,14 +49,14 @@ export function useSearch() {
       onSelect
     },
     {
-      label: 'Get Started',
+      label: 'Быстрый старт',
       description: 'Learn how to get started with Bitrix24 UI.',
       icon: PlayLIcon,
       to: '/docs/getting-started/',
       active: route.path.startsWith('/docs/getting-started')
     },
     {
-      label: 'Working',
+      label: 'Работа с API',
       description: 'Introduction to working with Bitrix24 REST API',
       icon: DeveloperResourcesIcon,
       to: '/docs/working-with-the-rest-api/',

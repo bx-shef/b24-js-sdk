@@ -37,7 +37,7 @@ defineExpose({
     />
 
     <B24Button
-      label="Save"
+      label="Сохранить"
       color="air-primary"
       :disabled="userInput.length < 10"
       @click="saveHook"

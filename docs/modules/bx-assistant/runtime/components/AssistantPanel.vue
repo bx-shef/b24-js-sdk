@@ -26,8 +26,8 @@ const toast = useToast()
 const { track } = useAnalytics()
 const input = ref('')
 
-const displayTitle = computed(() => 'Ask AI')
-const displayPlaceholder = computed(() => 'Ask me a question about Bitrix24 UI...')
+const displayTitle = computed(() => 'Спросить ИИ')
+const displayPlaceholder = computed(() => 'Задайте вопрос о JS SDK…')
 
 const chat = new Chat({
   messages: messages.value,
@@ -158,8 +158,8 @@ const stopDictation = async () => {
 defineShortcuts({
   'r-r': () => {
     toast.add({
-      title: 'Speech',
-      description: 'Use ru-RU for speech',
+      title: 'Озвучка',
+      description: 'Голос: русский (ru-RU)',
       duration: 1000,
       progress: false
     })
@@ -167,8 +167,8 @@ defineShortcuts({
   },
   'e-e': () => {
     toast.add({
-      title: 'Speech',
-      description: 'Use en-US for speech',
+      title: 'Озвучка',
+      description: 'Голос: английский (en-US)',
       duration: 1000,
       progress: false
     })
@@ -218,7 +218,7 @@ onMounted(() => {
           </B24Tooltip>
           <B24Tooltip
             v-if="chat.messages.length > 0"
-            text="Clear chat"
+            text="Очистить чат"
           >
             <B24Button
               :icon="TrashcanIcon"
@@ -227,7 +227,7 @@ onMounted(() => {
               @click="resetChat"
             />
           </B24Tooltip>
-          <B24Tooltip text="Close">
+          <B24Tooltip text="Закрыть">
             <B24Button
               :icon="CrossMIcon"
               color="air-tertiary"
@@ -356,7 +356,7 @@ onMounted(() => {
         >
           <template #footer>
             <div class="flex items-center gap-1 text-xs text-muted">
-              <span>Line break</span>
+              <span>Новая строка</span>
               <B24Kbd
                 size="sm"
                 value="shift"
@@ -395,7 +395,7 @@ onMounted(() => {
           </template>
         </B24ChatPrompt>
         <div class="mt-1 flex items-center justify-between">
-          <ProseP accent="less-more" small class="mb-0">Chat is cleared on refresh</ProseP>
+          <ProseP accent="less-more" small class="mb-0">Чат очищается при обновлении страницы</ProseP>
           <ProseP accent="less-more" small class="mb-0">
             {{ input.length }}/1000
           </ProseP>
@@ -434,7 +434,7 @@ onMounted(() => {
     side="right"
     inset
     :title="displayTitle"
-    description="Get help navigating the documentation, understanding concepts, and finding answers."
+    description="Помощь по документации: где что лежит, как устроено и ответы на вопросы."
     :b24ui="{ content: 'ring-0 base-mode bg-default' }"
   >
     <template #content>

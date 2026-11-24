@@ -33,13 +33,13 @@ const { copy, copied } = useClipboard()
         :b24ui="{ base: 'disabled:opacity-90', trailing: 'pr-0.5' }"
       >
         <template v-if="docsUrl?.length" #trailing>
-          <B24Tooltip text="Copy to clipboard" :content="{ side: 'top' }">
+          <B24Tooltip text="Скопировать" :content="{ side: 'top' }">
             <B24Button
               :b24ui="{ leadingIcon: [copied ? 'text-(--ui-color-accent-main-success)' : 'text-(--ui-btn-color)'] }"
               size="sm"
               color="air-tertiary-no-accent"
               :icon="copied ? CircleCheckIcon : CopyIcon"
-              aria-label="Copy to clipboard"
+              aria-label="Скопировать"
               @click="copy(docsUrl)"
             />
           </B24Tooltip>
