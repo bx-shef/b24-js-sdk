@@ -1,210 +1,209 @@
-# Releasing `@bitrix24/b24jssdk`
+# Выпуск релиза `@bitrix24/b24jssdk`
 
-<sub>Last reviewed: 2026-08-29.</sub>
+<sub>Последняя сверка: 2026-08-29.</sub>
 
-> **Releases are moving to release-please (#347).** The routine release is:
-> review the standing release PR, merge it, then **start the two publish
-> workflows by hand** — merging does not start them (see
-> [The last step is manual](#the-last-step-is-manual)). Everything in *Step by
-> step* stays valid as the fallback path and as the description of what the
-> automation does on your behalf.
+> **Релизы переходят на release-please (#347).** Обычный релиз выглядит так:
+> просмотрите постоянно открытый release PR, слейте его, затем **запустите два
+> workflow публикации вручную** — слияние их не запускает (см.
+> [Последний шаг — вручную](#последний-шаг--вручную)). Всё, что описано в разделе
+> «Пошаговая инструкция», остаётся в силе как запасной путь и как описание того,
+> что автоматика делает за вас.
 
-## The release PR flow
+## Поток через release PR
 
-[`release-please.yml`](.github/workflows/release-please.yml) keeps **one** open
-PR titled `chore(main): release X.Y.Z` up to date on every push to `main`. It
-carries the version bump across all three `package.json` files plus
-`.release-please-manifest.json`, and the `CHANGELOG.md` section assembled from
-the conventional-commit subjects merged since the last tag. Fifteen merged fixes
-update that one PR fifteen times; they do not cut fifteen releases.
+[`release-please.yml`](.github/workflows/release-please.yml) поддерживает **один**
+открытый PR с названием `chore(main): release X.Y.Z` в актуальном состоянии при
+каждом push в `main`. В нём — повышение версии во всех трёх `package.json` плюс
+`.release-please-manifest.json`, а также раздел `CHANGELOG.md`, собранный из
+заголовков conventional-коммитов, слитых после последнего тега. Пятнадцать слитых
+исправлений обновляют этот единственный PR пятнадцать раз; пятнадцать релизов они
+не создают.
 
-Merging it tags `vX.Y.Z` and publishes a GitHub Release. **No npm-side change is
-needed**: the Trusted Publisher entries stay keyed to their own filenames,
-untouched. What merging does *not* do is publish to npm — see below.
+Слияние создаёт тег `vX.Y.Z` и публикует GitHub Release. **Никаких изменений на
+стороне npm не требуется**: записи Trusted Publisher остаются привязанными к
+своим именам файлов и не затрагиваются. Чего слияние *не* делает — не
+публикует в npm; см. ниже.
 
-### The last step is manual
+### Последний шаг — вручную
 
-The two `npm-publish-*.yml` workflows listen for `release: published`, and
-release-please does publish a release. They still do not start, and this is not a
-misconfiguration that can be tuned away: **GitHub does not start workflows from
-events raised with the built-in `GITHUB_TOKEN`.** release-please runs with that
-token, so the release it publishes reaches no workflow. Observed on the 2.1.0
-release: the tag and the GitHub Release appeared, and neither publish workflow
-ran until dispatched by hand.
+Два workflow `npm-publish-*.yml` слушают событие `release: published`, а
+release-please релиз публикует. Тем не менее они не запускаются, и это не
+ошибка конфигурации, которую можно исправить настройкой: **GitHub не запускает
+workflow по событиям, созданным встроенным `GITHUB_TOKEN`.** release-please
+работает с этим токеном, поэтому опубликованный им релиз не доходит ни до одного
+workflow. Наблюдалось на релизе 2.1.0: тег и GitHub Release появились, а ни один
+workflow публикации не запустился, пока его не запустили вручную.
 
-So after merging the release PR, start both, in this order:
+Поэтому после слияния release PR запустите оба, в таком порядке:
 
-1. Actions → **NPM publish JS SDK 🚀** → *Run workflow* on `main`
-2. wait for it to finish, then Actions → **NPM publish JS SDK Nuxt 🚀** → *Run
-   workflow* on `main`
+1. Actions → **NPM publish JS SDK 🚀** → *Run workflow* на `main`
+2. дождитесь завершения, затем Actions → **NPM publish JS SDK Nuxt 🚀** → *Run
+   workflow* на `main`
 
-Both accept `workflow_dispatch` from `main` by design, `main` already carries the
-released version, and every guard still applies — version lockstep, the
-already-published check, and a full CI run before the publish step. Only the
-`Verify package version matches release tag` step is skipped, since a dispatch
-has no release tag to compare against; the lockstep check covers the same ground.
+Оба по замыслу принимают `workflow_dispatch` из `main`, `main` уже содержит
+выпускаемую версию, и все проверки по-прежнему действуют — синхронность версий,
+проверка «уже опубликовано» и полный прогон CI перед шагом публикации.
+Пропускается только шаг `Verify package version matches release tag`, так как у
+ручного запуска нет тега релиза для сравнения; ту же задачу решает проверка
+синхронности версий.
 
-Switching a tag push in for the release event does **not** help — the tag is
-created by the same token, so it is suppressed for the same reason. The only way
-to automate this step is to give release-please a GitHub App token or a PAT, so
-the release is raised by an identity that is not `GITHUB_TOKEN`. That is a
-deliberate trade: a stored credential in exchange for two clicks per release.
+Замена события релиза на push тега **не** помогает — тег создаётся тем же токеном,
+поэтому подавляется по той же причине. Единственный способ автоматизировать этот
+шаг — дать release-please токен GitHub App или PAT, чтобы релиз создавался
+идентичностью, отличной от `GITHUB_TOKEN`. Это осознанный компромисс: хранимые
+учётные данные в обмен на два клика за релиз.
 
-### Announcing it
+### Объявление релиза
 
-Once both packages are on npm, the release is announced to the community. That
-post has its own rules — what belongs in it, what does not, and the framing
-mistakes that keep recurring — in
+Когда оба пакета оказались в npm, релиз анонсируется сообществу. У этого поста
+свои правила — что в него входит, что нет и какие ошибки подачи повторяются — в
 [`.github/contributing/telegram-release-post.md`](.github/contributing/telegram-release-post.md).
-Read it **before** drafting, not after: the most common failures (advertising how
-carefully we tested, narrating the bug rather than the new capability, implying
-the reader has the same defect) all read as helpful while writing.
+Прочитайте его **до** черновика, а не после: самые частые промахи (рассказ о том,
+как тщательно мы тестировали; пересказ бага вместо новой возможности; намёк, что
+у читателя такой же дефект) во время написания выглядят полезными.
 
-### The release notes are not the changelog
+### Примечания к релизу — это не журнал изменений
 
-The GitHub Release body is rendered by release-please from its own changeset, not
-read from `CHANGELOG.md`. An edit made to `CHANGELOG.md` on the release branch
-therefore lands in the repository but **not** in the release notes — the two
-diverge.
+Тело GitHub Release release-please формирует из собственного набора изменений, а
+не читает из `CHANGELOG.md`. Поэтому правка `CHANGELOG.md` в ветке релиза попадает
+в репозиторий, но **не** в примечания к релизу — они расходятся.
 
-**Decided: do not mirror them.** Pasting the changelog section into the release
-body was considered and rejected. It is a manual step with no gate, so it would
-be skipped and the divergence would become unpredictable instead of merely known;
-and it creates a second copy of an argument that will drift, which is the failure
-this repository has already documented elsewhere (#420).
+**Решено: не зеркалировать их.** Вставку раздела журнала изменений в тело релиза
+рассматривали и отвергли. Это ручной шаг без контроля, его бы пропускали, и
+расхождение стало бы непредсказуемым вместо просто известного; к тому же
+создаётся вторая копия текста, которая будет расходиться, — именно этот сбой уже
+описан в этом репозитории в другом месте (#420).
 
-What follows from that decision is a discipline, not a chore:
+Из этого решения следует дисциплина, а не рутина:
 
-> **Anything a reader must act on has to be legible from the commit subject
-> alone.** The subject is the only text that reaches the release page.
+> **Всё, на что читатель должен отреагировать, должно быть понятно из одного
+> заголовка коммита.** Заголовок — единственный текст, который попадает на
+> страницу релиза.
 
-`feat(core): an unknown option on any action is now a compile error` passes — an
-upgrader reading nothing else knows their build may complain. `fix(core): tidy up
-action options` would not have. Check this when writing the squash message, where
-it is free; the release page cannot be fixed afterwards without the manual step
-this section just rejected.
+`feat(core): an unknown option on any action is now a compile error` подходит —
+обновляющийся, не читая больше ничего, знает, что сборка может выдать ошибку.
+`fix(core): tidy up action options` не подошёл бы. Проверяйте это при написании
+сообщения squash-коммита, где это бесплатно; страницу релиза потом не исправить
+без ручного шага, который этот раздел только что отверг.
 
-The long form — the paragraph explaining what to do about it — belongs in
-`CHANGELOG.md`, which is where a reader who needs the detail is sent by the
-subject line.
+Развёрнутая форма — абзац с объяснением, что с этим делать, — относится в
+`CHANGELOG.md`: туда заголовок коммита отсылает читателя, которому нужны детали.
 
-What this changes for everyday work:
+Что это меняет в повседневной работе:
 
-- **Commit subjects are the changelog.** `feat:` and a `BREAKING CHANGE:` footer
-  (or `!`) are the only things that raise the version above a patch — verified
-  in release-please's own `determineReleaseType`. Every other type, known or
-  not, contributes a patch. Force a specific version with a `Release-As: 2.1.0`
-  footer in the commit body.
-- **Use a type the config maps.** `changelog-sections` in
-  [release-please-config.json](release-please-config.json) **replaces** the
-  preset's list rather than extending it, so a type missing from that list is
-  invisible in the changelog. `deps` and `security` are mapped there because
-  this repo uses them; the one-off types this repo has also used (`platform`,
-  `dx`, `http`) are not — pick from the mapped list instead.
-- **Never start a line of the commit body with `word:`.** release-please parses
-  the body line by line, and any line shaped like a conventional commit becomes
-  its **own changelog entry**. This is not hypothetical — 2.1.0 shipped with two
-  of them. A body line reading `docs: @comark/vue ^0.3.1 -> ^0.5.1` turned into a
-  changelog bullet, and so did a line opening with `docs:lint`, where that was
-  meant as the name of the pnpm script and got read as type `docs` plus a
-  description. Put a script name mid-sentence — `run docs:lint` — or reword the
-  line so it does not begin with a bare word and a colon.
-- **`ci`, `chore`, `test` and `style` are mapped but hidden.** They keep the
-  commit history honest without filling a consumer-facing changelog with runner
-  bumps and lockfile churn. They still count toward the release (a patch), they
-  just do not print. Anything a consumer of the SDK should read about belongs
-  under a visible type.
-- **`[Unreleased]` is no longer hand-maintained.** Write the explanation in the
-  commit subject and body of the PR that makes the change.
+- **Заголовки коммитов — это журнал изменений.** Только `feat:` и подвал
+  `BREAKING CHANGE:` (или `!`) поднимают версию выше патча — проверено по
+  `determineReleaseType` самого release-please. Любой другой тип, известный или
+  нет, даёт патч. Конкретную версию можно задать подвалом `Release-As: 2.1.0` в
+  теле коммита.
+- **Используйте тип, который есть в конфиге.** `changelog-sections` в
+  [release-please-config.json](release-please-config.json) **заменяет** список
+  пресета, а не расширяет его, поэтому тип, которого нет в списке, в журнале
+  изменений невидим. `deps` и `security` там перечислены, потому что репозиторий
+  их использует; разовые типы, которые тоже встречались (`platform`, `dx`,
+  `http`), не перечислены — выбирайте из списка.
+- **Никогда не начинайте строку тела коммита с `слово:`.** release-please
+  разбирает тело построчно, и любая строка в форме conventional-коммита становится
+  **отдельной записью журнала изменений**. Это не гипотеза — в 2.1.0 попали две
+  такие. Строка `docs: @comark/vue ^0.3.1 -> ^0.5.1` превратилась в пункт
+  журнала, как и строка, начинавшаяся с `docs:lint`, где имелось в виду имя
+  pnpm-скрипта, а прочиталось как тип `docs` плюс описание. Ставьте имя скрипта
+  внутри предложения — `run docs:lint` — или перефразируйте строку так, чтобы она
+  не начиналась с одного слова и двоеточия.
+- **`ci`, `chore`, `test` и `style` сопоставлены, но скрыты.** Они сохраняют
+  честную историю коммитов, не засоряя журнал изменений для потребителей
+  обновлениями раннеров и шумом в lock-файле. Они по-прежнему учитываются в
+  релизе (патч), просто не печатаются. Всё, о чём должен прочитать потребитель
+  SDK, относится к видимому типу.
+- **`[Unreleased]` больше не ведётся вручную.** Пишите объяснение в заголовке и
+  теле коммита PR, вносящего изменение.
 
-  The subject is now the whole entry: the body does not reach the changelog at
-  all. Where a change genuinely needs a paragraph — a migration, a behaviour
-  change, a "verified live against a portal" note — add that paragraph to the
-  release PR's `CHANGELOG.md` by hand before merging it. That is a deliberate
-  edit on the release branch, not a return to maintaining `[Unreleased]`.
+  Теперь заголовок — вся запись: тело в журнал изменений не попадает вообще. Если
+  изменению действительно нужен абзац — миграция, смена поведения, пометка
+  «проверено вживую на портале», — добавьте этот абзац в `CHANGELOG.md` release PR
+  вручную до слияния. Это осознанная правка в ветке релиза, а не возврат к
+  ведению `[Unreleased]`.
 
-### Handover — one-time, on the first release PR
+### Передача — один раз, на первом release PR
 
-**`bootstrap-sha` does not limit the scan when a previous release exists.** The
-config carries one, but the first run showed it is only consulted when
-release-please finds no prior release; here it found the `v2.0.0` tag and scanned
-from there. So the first release PR describes **every** commit since `v2.0.0`,
-not just those after the bootstrap commit.
+**`bootstrap-sha` не ограничивает просмотр, если предыдущий релиз существует.** В
+конфиге он есть, но первый запуск показал: он учитывается, только когда
+release-please не находит предыдущего релиза; здесь он нашёл тег `v2.0.0` и
+просматривал историю от него. Поэтому первый release PR описывает **все** коммиты
+после `v2.0.0`, а не только после bootstrap-коммита.
 
-That is the better outcome — no final manual release is needed, because the
-generated section already covers the work. Two things do need doing **on the
-release PR itself**, before merging it:
+Это лучший исход — финальный ручной релиз не нужен, так как сгенерированный
+раздел уже покрывает работу. Две вещи всё же нужно сделать **в самом release PR**
+до слияния:
 
-1. **Fold in or drop the hand-written `## Unreleased` block.** Its entries
-   explain causes and consequences the commit subjects do not, so folding the
-   ones worth keeping into the generated section is usually better than deleting
-   them.
+1. **Влить или убрать написанный вручную блок `## Unreleased`.** Его записи
+   объясняют причины и последствия, которых нет в заголовках коммитов, поэтому
+   лучше перенести нужные в сгенерированный раздел, а не удалять.
 
-   **The generated section lands *below* it, not above.** release-please treats
-   everything before the first version heading as the file's header, and
-   `## Unreleased` matches no version pattern — so it is header, and each new
-   release is inserted after it. Measured on the 2.2.0 release PR: `## Unreleased`
-   at line 3, `## [2.2.0]` at line 17. The block is therefore not stranded below a
-   release; it floats permanently above **every** future one until someone folds
-   it in. (An earlier version of this page said the opposite. The consequence is
-   the same — fold it in — but the reason matters if you go looking for the block
-   and expect to find it at the bottom.)
-2. **Check the version.** The bot proposes a patch unless it sees a `feat:` or a
-   breaking marker, and this repo has merged neither for a long time — so a
-   release that adds public API will still be proposed as a patch. Raise it with
-   a `Release-As: 2.1.0` footer, or edit the PR directly.
+   **Сгенерированный раздел ложится *под* ним, а не над.** release-please считает
+   всё до первого заголовка версии шапкой файла, а `## Unreleased` не подходит под
+   шаблон версии — значит, это шапка, и каждый новый релиз вставляется после неё.
+   Измерено на release PR 2.2.0: `## Unreleased` на строке 3, `## [2.2.0]` на
+   строке 17. Блок, таким образом, не остаётся под релизом; он навсегда плавает над
+   **каждым** будущим, пока его кто-нибудь не вольёт. (Прежняя версия этой
+   страницы утверждала обратное. Вывод тот же — влить, — но причина важна, если вы
+   ищете блок и ожидаете найти его внизу.)
+2. **Проверить версию.** Бот предлагает патч, пока не увидит `feat:` или признак
+   несовместимого изменения, а в этом репозитории давно не сливали ни того, ни
+   другого — поэтому релиз с новым публичным API всё равно будет предложен как
+   патч. Поднимите его подвалом `Release-As: 2.1.0` или правкой самого PR.
 
-#### The order matters, because the bot force-pushes
+#### Порядок важен, потому что бот делает force-push
 
-`updatePullRequest` in release-please rebuilds the whole changeset from the
-commits and pushes it with `force: true`. It is not a merge — **every manual edit
-to the release branch is discarded**, and it re-runs on *every* push to `main`.
+`updatePullRequest` в release-please пересобирает весь набор изменений из коммитов
+и отправляет его с `force: true`. Это не слияние — **каждая ручная правка ветки
+релиза отбрасывается**, и он срабатывает при *каждом* push в `main`.
 
-So the two steps above are not interchangeable, and the fold-in is not something
-to do early:
+Поэтому два шага выше не взаимозаменяемы, и вливать блок рано нельзя:
 
-1. **Set the version first.** `Release-As:` lives in a commit on `main`, which
-   means using it is itself a push to `main` and therefore triggers a re-run.
-   Doing it after the fold-in destroys the fold-in.
-2. **Fold in last**, as the final action before clicking merge, with no push to
-   `main` in between. If someone merges anything while the release PR is open,
-   redo the fold — the previous attempt is recoverable from the branch's
-   reflog/history on GitHub, but it will not be in the PR any more.
+1. **Сначала задайте версию.** `Release-As:` живёт в коммите на `main`, то есть его
+   использование само является push в `main` и вызывает повторный запуск. Если
+   сделать это после вливания блока, вливание будет уничтожено.
+2. **Вливайте последним**, как заключительное действие перед нажатием «слить», без
+   push в `main` между ними. Если кто-то слил что-то, пока release PR был открыт,
+   повторите вливание — прежнюю попытку можно восстановить из reflog/истории ветки
+   на GitHub, но в PR её уже не будет.
 
-This is also why the hand-written `## [Unreleased]` block stays in
-[CHANGELOG.md](CHANGELOG.md) on `main` until that moment: it is the only copy of
-those entries, and deleting it before the fold-in survives would lose them.
+Именно поэтому написанный вручную блок `## [Unreleased]` остаётся в
+[CHANGELOG.md](CHANGELOG.md) на `main` до этого момента: это единственная копия
+его записей, и удаление до того, как вливание сохранилось, потеряло бы их.
 
-> **Observed vs projected.** Verified on the first run (PR #353): the release PR
-> is opened, all three `package.json` files and the manifest are bumped together
-> via `extra-files`, the `security:` / `deps:` sections appear, the generated
-> section is prepended above `## [Unreleased]`, and the proposed bump is a patch.
-> Read from the release-please source rather than observed: the `force: true`
-> overwrite above. **Not yet observed at all:** what the next run does once a
-> release has actually been cut, and whether `Release-As:` behaves as documented
-> here — nothing in this repo has exercised either.
+> **Наблюдалось и предполагается.** Проверено на первом запуске (PR #353): release
+> PR открывается, все три `package.json` и манифест повышаются вместе через
+> `extra-files`, появляются разделы `security:` / `deps:`, сгенерированный раздел
+> добавляется над `## [Unreleased]`, предлагаемое повышение — патч. Прочитано в
+> исходниках release-please, но не наблюдалось: перезапись с `force: true`
+> выше. **Вообще не наблюдалось:** что делает следующий запуск после реального
+> выпуска релиза и ведёт ли себя `Release-As:` так, как описано здесь, — ни то ни
+> другое в этом репозитории не проверялось.
 
-How to cut a release of the two published packages — `@bitrix24/b24jssdk` (core
-SDK) and `@bitrix24/b24jssdk-nuxt` (Nuxt module). They ship **in lockstep at one
-shared version**; there is no independent release of either package.
+Как выпустить релиз двух публикуемых пакетов — `@bitrix24/b24jssdk` (ядро SDK) и
+`@bitrix24/b24jssdk-nuxt` (модуль Nuxt). Они выходят синхронно с **одной общей
+версией**; независимого релиза каждого из пакетов нет.
 
-Publishing is done by two sibling workflows —
-[`npm-publish-js-sdk.yml`](.github/workflows/npm-publish-js-sdk.yml) (core) and
+Публикацию выполняют два парных workflow —
+[`npm-publish-js-sdk.yml`](.github/workflows/npm-publish-js-sdk.yml) (ядро) и
 [`npm-publish-js-sdk-nuxt.yml`](.github/workflows/npm-publish-js-sdk-nuxt.yml)
-(Nuxt). Both start on a published GitHub Release **when a person publishes it**,
-and both also accept a manual `workflow_dispatch` from `main`. The human steps
-are: bump the version, finalise the changelog, tag, and publish a GitHub Release.
-A release published by automation reaches neither workflow — see
-[The last step is manual](#the-last-step-is-manual).
+(Nuxt). Оба запускаются при публикации GitHub Release **человеком**, а также
+принимают ручной `workflow_dispatch` из `main`. Шаги человека: повысить версию,
+завершить журнал изменений, поставить тег и опубликовать GitHub Release. Релиз,
+опубликованный автоматикой, не доходит ни до одного из workflow — см.
+[Последний шаг — вручную](#последний-шаг--вручную).
 
-> **Why two workflows, not one `release.yml`?** npm OIDC trusted publishing keys
-> each package's Trusted Publisher entry to **one exact workflow filename**. The two
-> packages were registered under these two filenames, so a single `release.yml`
-> publishing both fails the OIDC token exchange with a 404 (`ERR_PNPM_AUTH_TOKEN_EXCHANGE`).
-> Folding them back into one file requires a repo/org admin to update the Trusted
-> Publisher filename on npm for both packages first — see [Handover](#handover-171).
+> **Почему два workflow, а не один `release.yml`?** Trusted publishing npm через
+> OIDC привязывает запись Trusted Publisher каждого пакета к **одному точному
+> имени файла workflow**. Два пакета зарегистрированы под этими двумя именами,
+> поэтому единый `release.yml`, публикующий оба, проваливает обмен OIDC-токена с
+> ошибкой 404 (`ERR_PNPM_AUTH_TOKEN_EXCHANGE`). Чтобы вернуть их в один файл,
+> администратор репозитория или организации сначала должен обновить имя файла
+> Trusted Publisher в npm для обоих пакетов — см. [Передача дел](#передача-дел-171).
 
-## TL;DR
+## Коротко
 
 ```bash
 git switch main && git pull origin main
@@ -220,99 +219,105 @@ git commit -m "chore(release): v<version>"
 git push origin main
 ```
 
-Then, on GitHub: **Releases → Draft a new release →** create tag `v<version>`
-targeting `main`, paste the changelog section as the notes, and **Publish**. That
-fires both publish workflows — each runs CI, then publishes its package.
+Затем на GitHub: **Releases → Draft a new release →** создайте тег `v<version>`
+на `main`, вставьте раздел журнала изменений как примечания и нажмите
+**Publish**. Это запускает оба workflow публикации — каждый прогоняет CI, затем
+публикует свой пакет.
 
-## Prerequisites (per releaser)
+## Требования (к каждому, кто выпускает релиз)
 
-- **Push access to `main`** and rights to **create GitHub Releases**.
-- **npm** — publishing is via **OIDC trusted publishing**, not a personal token:
-  - **One-time admin setup:** each package on npm (Settings → Publishing → Trusted
-    Publishers) must list `bitrix24/b24jssdk` + the **matching workflow filename** —
-    `npm-publish-js-sdk.yml` for `@bitrix24/b24jssdk`, `npm-publish-js-sdk-nuxt.yml`
-    for `@bitrix24/b24jssdk-nuxt`, with **Environment left empty** (the publish jobs
-    set no `environment:`). If the filename/environment doesn't match, the OIDC token
-    exchange fails with a 404 (`ERR_PNPM_AUTH_TOKEN_EXCHANGE`) and the publish step
-    falls back to an unauthenticated `PUT` that npm rejects — not something a releaser
-    can fix mid-run.
-  - **Per releaser:** you need **no npm token or credential** on your machine — the
-    CI runner authenticates with a short-lived OIDC token (the publish jobs grant
-    `id-token: write` and set no `NPM_TOKEN`/`NODE_AUTH_TOKEN`, so there is no
-    long-lived secret to rotate or leak).
-- A working **CI** — each publish workflow reuses `ci.yml` and will not publish if CI is red.
+- **Право push в `main`** и право **создавать GitHub Releases**.
+- **npm** — публикация идёт через **OIDC trusted publishing**, а не личный токен:
+  - **Разовая настройка администратором:** у каждого пакета в npm (Settings →
+    Publishing → Trusted Publishers) должны быть указаны `bitrix24/b24jssdk` и
+    **соответствующее имя файла workflow** — `npm-publish-js-sdk.yml` для
+    `@bitrix24/b24jssdk`, `npm-publish-js-sdk-nuxt.yml` для
+    `@bitrix24/b24jssdk-nuxt`, с **пустым Environment** (в jobs публикации
+    `environment:` не задан). Если имя файла или environment не совпадают, обмен
+    OIDC-токена завершается ошибкой 404 (`ERR_PNPM_AUTH_TOKEN_EXCHANGE`), и шаг
+    публикации откатывается на неаутентифицированный `PUT`, который npm
+    отклоняет, — исправить это посреди запуска релизер не может.
+  - **На каждого релизера:** **токен или учётные данные npm на вашей машине не
+    нужны** — раннер CI аутентифицируется короткоживущим OIDC-токеном (jobs
+    публикации выдают `id-token: write` и не задают `NPM_TOKEN`/`NODE_AUTH_TOKEN`,
+    так что долгоживущего секрета, который надо ротировать или который может
+    утечь, нет).
+- Рабочий **CI** — каждый workflow публикации переиспользует `ci.yml` и не
+  опубликует при красном CI.
 
-> ⚠️ **Bus factor (#171).** At least two people should hold the rights above, so a
-> security patch or release never blocks on one person being away. See
-> [Handover](#handover-171).
+> ⚠️ **Bus factor (#171).** Права выше должны быть как минимум у двух человек,
+> чтобы патч безопасности или релиз не зависел от отсутствия одного. См.
+> [Передача дел](#передача-дел-171).
 
-## Versioning
+## Версионирование
 
-- **SemVer.** `patch` for bug fixes, `minor` for backward-compatible features,
-  `major` for breaking changes. Decide from what sits under `## [Unreleased]` in
-  [`CHANGELOG.md`](CHANGELOG.md) (a `Features` block ⇒ at least a minor; any
-  `BREAKING CHANGE` ⇒ major).
-- **`@experimental` is outside SemVer.** Correcting a symbol tagged
-  `@experimental` — its type, its return shape, the arguments it refuses — is
-  **not** a breaking change, and must not carry a `!` or a `BREAKING CHANGE:`
-  footer. The tag is the contract: it says the shape is provisional and asks a
-  caller who depends on it to pin a version. Without this carve-out every
-  correction to an unverified surface would cost a major, which is precisely the
-  bar `@experimental` exists to lower — the tag would deter callers without
-  buying the project any freedom. Land such a change as `fix:` (or `feat:` if it
-  also adds something), and describe the change in `CHANGELOG.md` under
-  `### Changed` with the same care a breaking note would get, naming what a
-  caller has to rewrite. The release post already follows this rule:
-  [telegram-release-post.md](.github/contributing/telegram-release-post.md)
-  excludes experimental surfaces from its breaking-changes block.
+- **SemVer.** `patch` — исправления ошибок, `minor` — обратно совместимые
+  возможности, `major` — несовместимые изменения. Решайте по содержимому
+  `## [Unreleased]` в [`CHANGELOG.md`](CHANGELOG.md) (блок `Features` ⇒ минимум
+  minor; любой `BREAKING CHANGE` ⇒ major).
+- **`@experimental` — вне SemVer.** Исправление символа с тегом `@experimental` —
+  его типа, формы возвращаемого значения, отвергаемых аргументов — **не**
+  является несовместимым изменением и не должно нести `!` или подвал
+  `BREAKING CHANGE:`. Тег и есть контракт: он говорит, что форма предварительная,
+  и просит зависящего от неё вызывающего закрепить версию. Без этого исключения
+  каждое исправление непроверенной поверхности стоило бы мажорной версии — а
+  именно эту планку `@experimental` и призван снизить: тег отпугивал бы
+  вызывающих, не давая проекту свободы. Выпускайте такое изменение как `fix:` (или
+  `feat:`, если оно ещё и что-то добавляет) и описывайте его в `CHANGELOG.md` в
+  разделе `### Changed` с той же тщательностью, что и заметка о несовместимости,
+  называя то, что вызывающему придётся переписать. Пост о релизе уже следует этому
+  правилу: [telegram-release-post.md](.github/contributing/telegram-release-post.md)
+  исключает экспериментальные поверхности из блока о несовместимых изменениях.
 
-    This does **not** extend to `@deprecated`. A deprecated symbol is a promise
-    that kept working; an experimental one never made the promise. See
+    Это **не** распространяется на `@deprecated`. Устаревший символ — это обещание,
+    которое выполнялось; экспериментальный такого обещания никогда не давал. См.
     [deprecations.md](.github/contributing/deprecations.md).
-- **Lockstep.** The root `package.json`, `packages/jssdk/package.json`, and
-  `packages/jssdk-nuxt/package.json` always carry the **same** version.
-  `pnpm run release:bump` rewrites all three and refuses to run if they are already
-  out of sync — resolve the drift by hand first, then retry.
-- **Pre-releases** (`1.3.0-rc.1`) bump cleanly — the script accepts a `-prerelease`
-  suffix — and publish safely: each publish workflow detects the `-` in the version
-  and ships the package under the **`next`** dist-tag instead of `latest`, so a plain
-  `npm install` (which follows `latest`) stays on the last stable release. Promote a
-  pre-release to stable later with `npm dist-tag add <pkg>@<version> latest`.
+- **Синхронность версий.** Корневой `package.json`, `packages/jssdk/package.json`
+  и `packages/jssdk-nuxt/package.json` всегда несут **одну и ту же** версию.
+  `pnpm run release:bump` переписывает все три и отказывается работать, если они
+  уже расходятся, — сначала устраните расхождение вручную, затем повторите.
+- **Пре-релизы** (`1.3.0-rc.1`) повышаются без проблем — скрипт принимает суффикс
+  `-prerelease` — и публикуются безопасно: каждый workflow публикации находит `-`
+  в версии и выпускает пакет под dist-tag **`next`** вместо `latest`, поэтому
+  обычный `npm install` (следующий за `latest`) остаётся на последнем стабильном
+  релизе. Позже пре-релиз в стабильный переводится командой
+  `npm dist-tag add <pkg>@<version> latest`.
 
-## Step by step
+## Пошаговая инструкция
 
-1. **Start clean.**
+1. **Начните с чистого состояния.**
 
    ```bash
    git switch main && git pull origin main
    ```
 
-   Make sure `## [Unreleased]` in `CHANGELOG.md` reflects everything merged since
-   the last tag (each PR should have added its own entry).
+   Убедитесь, что `## [Unreleased]` в `CHANGELOG.md` отражает всё, что слито с
+   последнего тега (каждый PR должен был добавить свою запись).
 
-2. **Bump the version.**
+2. **Повысьте версию.**
 
    ```bash
    pnpm run release:bump <version>
    ```
 
-   This rewrites the `version` field in all three `package.json` files and runs
-   `pnpm install --lockfile-only` to refresh `pnpm-lock.yaml`. Review the diff.
+   Команда переписывает поле `version` во всех трёх `package.json` и запускает
+   `pnpm install --lockfile-only`, чтобы обновить `pnpm-lock.yaml`. Просмотрите
+   diff.
 
-3. **Finalise the changelog.** In `CHANGELOG.md`, rename the `## [Unreleased]`
-   heading to the released version with a compare link and the date, e.g.:
+3. **Завершите журнал изменений.** В `CHANGELOG.md` переименуйте заголовок
+   `## [Unreleased]` в выпускаемую версию со ссылкой сравнения и датой, например:
 
    ```md
    ## [1.3.0](https://github.com/bitrix24/b24jssdk/compare/v1.2.0...v1.3.0) (2026-06-15)
    ```
 
-   Then add a new empty `## [Unreleased]` section above it for the next cycle.
-   Keep the keep-a-changelog grouping the `[Unreleased]` buffer uses —
-   `Added` / `Changed` / `Fixed` / `Docs` / `Deprecations`. (Released sections
-   from the `1.x` era used the older `Features` / `Bug Fixes` / `Security` /
-   `Chore` grouping; don't reintroduce it for new sections.)
+   Затем добавьте над ним новый пустой раздел `## [Unreleased]` для следующего
+   цикла. Сохраняйте группировку keep-a-changelog, которую использует буфер
+   `[Unreleased]`, — `Added` / `Changed` / `Fixed` / `Docs` / `Deprecations`.
+   (Выпущенные разделы эпохи `1.x` использовали прежнюю группировку `Features` /
+   `Bug Fixes` / `Security` / `Chore`; в новых разделах её не возвращайте.)
 
-4. **Commit and push to `main`.**
+4. **Закоммитьте и отправьте в `main`.**
 
    ```bash
    git add package.json packages/jssdk/package.json packages/jssdk-nuxt/package.json pnpm-lock.yaml CHANGELOG.md
@@ -320,94 +325,102 @@ fires both publish workflows — each runs CI, then publishes its package.
    git push origin main
    ```
 
-   The version-bump commit **must** land on `main` before the release — the
-   workflow verifies that `package.json` matches the tag.
+   Коммит с повышением версии **должен** оказаться в `main` до релиза — workflow
+   проверяет, что `package.json` совпадает с тегом.
 
-5. **Publish a GitHub Release.** Releases → *Draft a new release* → create the tag
-   `v<version>` on `main`, title `v<version>`, body = the changelog block you just
-   wrote (the whole `## [<version>]` section, including its `Features` / `Bug Fixes`
-   / … subsections). Click **Publish release**. (Equivalently: `git tag v<version> && git push origin
-   v<version>`, then publish a release from that existing tag.)
+5. **Опубликуйте GitHub Release.** Releases → *Draft a new release* → создайте тег
+   `v<version>` на `main`, название `v<version>`, тело — только что написанный блок
+   журнала изменений (весь раздел `## [<version>]` вместе с подразделами
+   `Features` / `Bug Fixes` / …). Нажмите **Publish release**. (Равнозначно:
+   `git tag v<version> && git push origin v<version>`, затем публикация релиза из
+   существующего тега.)
 
-6. **Watch the runs.** Open Actions. The release fires **both** workflows —
-   **NPM publish JS SDK 🚀** (`@bitrix24/b24jssdk`) and **NPM publish JS SDK Nuxt 🚀**
-   (`@bitrix24/b24jssdk-nuxt`). Each runs CI, then its `publish` job. Both must go
-   green; if one fails, the two packages can drift out of lockstep on npm (see
-   [If something goes wrong](#if-something-goes-wrong)).
+6. **Следите за запусками.** Откройте Actions. Релиз запускает **оба** workflow —
+   **NPM publish JS SDK 🚀** (`@bitrix24/b24jssdk`) и **NPM publish JS SDK Nuxt 🚀**
+   (`@bitrix24/b24jssdk-nuxt`). Каждый прогоняет CI, затем свой job `publish`. Оба
+   должны стать зелёными; если один упадёт, пакеты в npm могут разойтись по
+   версиям (см. [Если что-то пошло не так](#если-что-то-пошло-не-так)).
 
-7. **Verify on npm.**
+7. **Проверьте в npm.**
 
    ```bash
    npm view @bitrix24/b24jssdk version
    npm view @bitrix24/b24jssdk-nuxt version
    ```
 
-   Both should report `<version>`. (For a pre-release, `version` shows only the
-   `latest` tag — use `npm dist-tag ls <pkg>` instead.)
+   Оба должны вернуть `<version>`. (Для пре-релиза `version` показывает только тег
+   `latest` — используйте `npm dist-tag ls <pkg>`.)
 
-8. **The docs site redeploys itself.** The `chore(release)` commit pushed to `main`
-   in step 4 also triggers `ci.yml`, which redeploys the docs site to GitHub Pages
-   as part of normal CI — no manual action. (The CI *reused inside* each publish
-   workflow deliberately skips the deploy; the direct push to `main` is what ships
-   the site.)
+8. **Сайт документации перевыкладывается сам.** Коммит `chore(release)`, отправленный
+   в `main` на шаге 4, также запускает `ci.yml`, который в рамках обычного CI
+   перевыкладывает сайт документации на GitHub Pages — вручную ничего делать не
+   нужно. (CI, *переиспользуемый внутри* каждого workflow публикации, намеренно
+   пропускает деплой; сайт выкладывает прямой push в `main`.)
 
-## What the publish workflows do
+## Что делают workflow публикации
 
-Each is triggered by a **published GitHub Release**, or by a manual
-**workflow_dispatch on `main`** (for a re-run). In order, per workflow:
+Каждый запускается **опубликованным GitHub Release** или ручным
+**workflow_dispatch на `main`** (для повторного запуска). По порядку, в каждом
+workflow:
 
-| Job | What it does |
+| Job | Что делает |
 | --- | --- |
-| `ci` | Reuses [`ci.yml`](.github/workflows/ci.yml) — one full CI pass. A red CI stops the publish. |
-| `publish` | Publishes the package (`@bitrix24/b24jssdk` or `@bitrix24/b24jssdk-nuxt`) via OIDC, after the guards below. |
+| `ci` | Переиспользует [`ci.yml`](.github/workflows/ci.yml) — один полный прогон CI. Красный CI останавливает публикацию. |
+| `publish` | Публикует пакет (`@bitrix24/b24jssdk` или `@bitrix24/b24jssdk-nuxt`) через OIDC после проверок ниже. |
 
-Both workflows fire on the same release event and run in parallel. The published
-Nuxt module depends on `@bitrix24/b24jssdk` at the released version, so in the brief
-window before the core publish lands an external `npm install` of the Nuxt module
-could miss the matching core version — the package contents are still correct (the
-build resolves core via the workspace). npm has no cross-package transaction, so
-this ordering gap is unavoidable while the two packages publish from separate
-trusted-publisher filenames.
+Оба workflow запускаются одним событием релиза и идут параллельно. Опубликованный
+модуль Nuxt зависит от `@bitrix24/b24jssdk` выпускаемой версии, поэтому в краткий
+промежуток до завершения публикации ядра внешний `npm install` модуля Nuxt может
+не найти подходящую версию ядра — содержимое пакета при этом корректно (сборка
+находит ядро через workspace). В npm нет транзакций между пакетами, так что этот
+разрыв по порядку неизбежен, пока два пакета публикуются под разными именами
+файлов trusted publisher.
 
-Each publish job guards itself before shipping:
+Каждый job публикации проверяет себя перед выпуском:
 
-- **version lockstep** across the three `package.json` files;
-- **tag matches version** (`v1.3.0` ⇒ `1.3.0`) on a real release;
-- **not already published** (`npm view <pkg>@<ver>` must exit non-zero);
-- **`__SDK_VERSION__` token replaced** in the built Nuxt `module.mjs` (#119).
+- **синхронность версий** во всех трёх `package.json`;
+- **тег соответствует версии** (`v1.3.0` ⇒ `1.3.0`) на настоящем релизе;
+- **ещё не опубликовано** (`npm view <pkg>@<ver>` должен завершиться с ненулевым
+  кодом);
+- **токен `__SDK_VERSION__` заменён** в собранном `module.mjs` Nuxt (#119).
 
-## If something goes wrong
+## Если что-то пошло не так
 
-- **Partial release** (one package published, the other failed): fix the cause, then
-  **re-run only the failed workflow** (Actions → the red workflow → *Re-run failed
-  jobs*, or *Run workflow* on `main`). The already-published package's own
-  "already published" guard would fail it, so never re-run the workflow that already
-  succeeded — re-run only the one that failed.
-- **CI failed before any publish:** nothing reached npm. Fix `main`, then re-cut
-  (a fresh release, or `workflow_dispatch` on `main` once `main` is green).
-- **Wrong/broken version published:** npm does **not** allow re-publishing the same
-  version (and unpublish is restricted to a 72-hour window with a 24-hour
-  re-publish block). Don't fight it — bump a new `patch`, fix forward, and release
-  again.
-- **Tag/version mismatch or version already published:** the guards fail the job
-  early with a clear `::error::` message — bump correctly and re-tag.
+- **Частичный релиз** (один пакет опубликован, второй упал): устраните причину,
+  затем **перезапустите только упавший workflow** (Actions → красный workflow →
+  *Re-run failed jobs* или *Run workflow* на `main`). Проверка «уже опубликовано»
+  у уже выпущенного пакета завершила бы его ошибкой, поэтому никогда не
+  перезапускайте workflow, который уже успешно завершился, — только тот, что
+  упал.
+- **CI упал до какой-либо публикации:** в npm ничего не попало. Исправьте `main`,
+  затем выпустите заново (новый релиз или `workflow_dispatch` на `main`, когда
+  `main` зелёный).
+- **Опубликована неверная/сломанная версия:** npm **не** позволяет опубликовать
+  ту же версию повторно (а отмена публикации ограничена окном в 72 часа с
+  блокировкой повторной публикации на 24 часа). Не боритесь с этим — повысьте
+  новый `patch`, исправьте вперёд и выпустите снова.
+- **Тег не совпадает с версией или версия уже опубликована:** проверки рано
+  завершают job с понятным сообщением `::error::` — повысьте версию правильно и
+  поставьте тег заново.
 
-## Handover (#171)
+## Передача дел (#171)
 
-This runbook is one half of de-risking the release process. The account-level half
-is **not** code and must be done by a repo/org admin:
+Этот регламент — половина снижения рисков процесса выпуска. Вторая половина — на
+уровне учётных записей, это не код, и её должен выполнить администратор
+репозитория или организации:
 
-- [ ] Add a **second npm publisher** to the `@bitrix24` packages' trusted-publisher
-      config (and as a fallback maintainer), so releases survive one person being
-      away.
-- [ ] *(Optional cleanup)* To re-consolidate publishing into a single `release.yml`,
-      first update the **Trusted Publisher workflow filename** on npm to `release.yml`
-      (Environment empty) for **both** `@bitrix24/b24jssdk` and
-      `@bitrix24/b24jssdk-nuxt`, then merge the two `npm-publish-*.yml` files back
-      into one. Without the npm-side change first, the consolidated workflow's OIDC
-      token exchange 404s.
-- [ ] Add a **second GitHub releaser** (push to `main` + create releases).
-- [ ] Add a **`CODEOWNERS`** file so reviews are routed and ownership is explicit.
-- [ ] Provision a shared/secondary integration-test environment (`.env.test`,
-      webhook scopes per [AGENTS.md](AGENTS.md)) so release validation isn't tied
-      to one machine.
+- [ ] Добавить **второго публикатора npm** в конфигурацию trusted publisher
+      пакетов `@bitrix24` (и как резервного мейнтейнера), чтобы релизы не
+      зависели от отсутствия одного человека.
+- [ ] *(Необязательная уборка)* Чтобы вернуть публикацию в один `release.yml`,
+      сначала обновите **имя файла workflow Trusted Publisher** в npm на
+      `release.yml` (Environment пустой) для **обоих** пакетов —
+      `@bitrix24/b24jssdk` и `@bitrix24/b24jssdk-nuxt`, затем слейте два файла
+      `npm-publish-*.yml` в один. Без предварительной правки на стороне npm обмен
+      OIDC-токена объединённого workflow завершится ошибкой 404.
+- [ ] Добавить **второго релизера на GitHub** (push в `main` + создание релизов).
+- [ ] Добавить файл **`CODEOWNERS`**, чтобы ревью направлялись и владение было
+      явным.
+- [ ] Подготовить общую/вторую среду интеграционных тестов (`.env.test`, права
+      вебхука по [AGENTS.md](AGENTS.md)), чтобы проверка релиза не зависела от
+      одной машины.

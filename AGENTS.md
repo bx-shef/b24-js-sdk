@@ -1,290 +1,290 @@
 # AGENTS.md
 
-<sub>Last reviewed: 2026-11-24.</sub>
+<sub>Последняя сверка: 2026-11-24.</sub>
 
-This file is the single source of truth for AI coding agents and human contributors working on the `@bitrix24/b24jssdk` repository. The detailed guides under `.github/contributing/` are referenced from the relevant sections below — load them only when they apply to your task.
+Этот файл — единый источник истины для ИИ-агентов и людей-контрибьюторов, работающих с репозиторием `@bitrix24/b24jssdk`. Подробные руководства в `.github/contributing/` указаны в соответствующих разделах ниже — загружайте их, только когда они относятся к вашей задаче.
 
-## Project Overview
+## Обзор проекта
 
-`@bitrix24/b24jssdk` is a JS/TS SDK for the Bitrix24 REST API. It is a pnpm 12 monorepo that ships:
+`@bitrix24/b24jssdk` — JS/TS SDK для REST API Битрикс24. Это монорепозиторий на pnpm 12, который поставляет:
 
-- a framework-agnostic core SDK (`packages/jssdk`, published as `@bitrix24/b24jssdk`, shipping ESM, CommonJS, and UMD; ESM is the recommended entry point),
-- a thin Nuxt module wrapper (`packages/jssdk-nuxt`),
-- a public docs site (`docs/`, deployed to GitHub Pages),
-- manual smoke playgrounds (`playgrounds/cli`, `playgrounds/nuxt`),
-- workspace-level Vitest projects under `test/` that hit a real Bitrix24 portal.
+- не зависящее от фреймворков ядро SDK (`packages/jssdk`, публикуется как `@bitrix24/b24jssdk`, поставляется в ESM, CommonJS и UMD; рекомендуемая точка входа — ESM),
+- тонкую обёртку-модуль для Nuxt (`packages/jssdk-nuxt`),
+- публичный сайт документации (`docs/`, выкладывается на GitHub Pages),
+- песочницы для ручной проверки (`playgrounds/cli`, `playgrounds/nuxt`),
+- проекты Vitest уровня рабочего пространства в `test/`, обращающиеся к настоящему порталу Битрикс24.
 
-The core SDK exposes three concrete entry points over a shared abstract base — `B24Frame` (iframe apps), `B24Hook` (server-side webhooks), `B24OAuth` (local OAuth apps) — plus cross-cutting modules for HTTP, limiting, helpers, push (Pull), logging, and types.
+Ядро SDK предоставляет три конкретные точки входа поверх общего абстрактного базового класса — `B24Frame` (iframe-приложения), `B24Hook` (серверные вебхуки), `B24OAuth` (локальные OAuth-приложения) — плюс сквозные модули для HTTP, ограничения скорости, хелперов, push (Pull), логирования и типов.
 
-## Project Structure
+## Структура проекта
 
 ```text
 packages/
-├── jssdk/                          # core SDK (published)
+├── jssdk/                          # ядро SDK (публикуется)
 │   ├── src/
 │   │   ├── core/                   # AbstractB24, Result, SdkError
 │   │   │   ├── actions/            # b24.actions.vX.<call|batch|batchByChunk|callList|fetchList>.make()
-│   │   │   ├── http/               # transports + limiters
-│   │   │   │   ├── limiters/       # rate / operating / adaptive delay
+│   │   │   ├── http/               # транспорты и лимитеры
+│   │   │   │   ├── limiters/       # частота / время операций / адаптивная задержка
 │   │   │   │   ├── ajax-result.ts
 │   │   │   │   ├── ajax-error.ts
 │   │   │   │   ├── v2.ts
 │   │   │   │   └── v3.ts
-│   │   │   └── tools/              # internal helpers
-│   │   ├── frame/                  # B24Frame + iframe managers (auth, slider, dialog, …)
-│   │   ├── hook/                   # B24Hook (server-side webhook auth)
-│   │   ├── oauth/                  # B24OAuth (local OAuth apps)
-│   │   ├── helper/                 # B24HelperManager, useB24Helper composable
-│   │   ├── pullClient/             # WebSocket / long-poll Pull client
-│   │   ├── tools/                  # public tools (Text, Type, Browser, formatters)
-│   │   ├── types/                  # public types and enums
+│   │   │   └── tools/              # внутренние хелперы
+│   │   ├── frame/                  # B24Frame и менеджеры iframe (auth, slider, dialog, …)
+│   │   ├── hook/                   # B24Hook (серверная авторизация по вебхуку)
+│   │   ├── oauth/                  # B24OAuth (локальные OAuth-приложения)
+│   │   ├── helper/                 # B24HelperManager, композабл useB24Helper
+│   │   ├── pullClient/             # клиент Pull (WebSocket / long-poll)
+│   │   ├── tools/                  # публичные инструменты (Text, Type, Browser, форматтеры)
+│   │   ├── types/                  # публичные типы и перечисления
 │   │   ├── logger/                 # Logger / LoggerFactory
 │   │   ├── loader-b24frame.ts      # initializeB24Frame()
-│   │   └── index.ts                # public surface — treat as a contract
-│   ├── README-AI.md                # caller-facing API guide (being absorbed into this guide)
-│   └── build.config.ts             # unbuild config (replaces __SDK_VERSION__ etc.)
-├── jssdk-nuxt/                     # Nuxt module (registers runtime/plugin; build.config.ts injects __SDK_VERSION__ into meta.version)
+│   │   └── index.ts                # публичная поверхность — считайте контрактом
+│   ├── README-AI.md                # руководство по API для вызывающего кода (переносится в это руководство)
+│   └── build.config.ts             # конфигурация unbuild (подставляет __SDK_VERSION__ и т. п.)
+├── jssdk-nuxt/                     # модуль Nuxt (регистрирует runtime/plugin; build.config.ts подставляет __SDK_VERSION__ в meta.version)
 playgrounds/
-├── cli/                            # Node smoke
-└── nuxt/                           # Nuxt smoke (live SDK)
+├── cli/                            # проверка в Node
+└── nuxt/                           # проверка в Nuxt (живой SDK)
 docs/
-└── content/docs/                   # documentation site (English only)
-                                    # (fork divergences from upstream nuxt/ui: .github/contributing/docs-fork.md)
+└── content/docs/                   # сайт документации (только русский)
+                                    # (отличия форка от upstream nuxt/ui: .github/contributing/docs-fork.md)
 test/
-├── 0_setup/                        # integration + under-load setup, env loading
-├── integration/                    # *.spec.ts — 30s timeouts, real portal
-├── under-load/                     # sequential, 40-min timeouts
-├── some-code-from-docs/            # manually mirrored snippets from docs/ (not auto-run)
-└── umd/                            # browser smoke (browser.html)
+├── 0_setup/                        # настройка интеграционных и нагрузочных тестов, загрузка окружения
+├── integration/                    # *.spec.ts — таймауты 30 с, настоящий портал
+├── under-load/                     # последовательно, таймауты 40 мин
+├── some-code-from-docs/            # вручную зеркалируемые фрагменты из docs/ (автоматически не запускаются)
+└── umd/                            # проверка в браузере (browser.html)
 scripts/
-└── b24-self-task/                  # Python automation that drives Claude Code
+└── b24-self-task/                  # автоматизация на Python, управляющая Claude Code
 ```
 
-## Architecture
+## Архитектура
 
-The core SDK is organised around one abstract base + three concrete entry points:
+Ядро SDK построено вокруг одного абстрактного базового класса и трёх конкретных точек входа:
 
-- [packages/jssdk/src/core/abstract-b24.ts](packages/jssdk/src/core/abstract-b24.ts) — `AbstractB24` exposes the action surface (`b24.actions.vX.<name>.make()`) and owns the v2 + v3 HTTP clients, the restriction/rate-limiter stack, the logger, and helper sub-managers. The legacy shortcuts (`callMethod`, `callBatch`, `callListMethod`, `fetchListMethod`, `callBatchByChunk`) were removed from this class in 3.0.0 (#277).
-- [packages/jssdk/src/frame](packages/jssdk/src/frame) — `B24Frame`, used inside the Bitrix24 iframe. Talks to the parent window via `postMessage`, auto-refreshes auth on 401, and exposes UI managers (`auth`, `parent`, `slider`, `dialog`, `placement`, `options`). **Bootstrap only via `initializeB24Frame()`** in [packages/jssdk/src/loader-b24frame.ts](packages/jssdk/src/loader-b24frame.ts) — it deduplicates concurrent inits and parses `window.name` for the portal handshake. Do not expose an alternative constructor path.
-- [packages/jssdk/src/hook](packages/jssdk/src/hook) — `B24Hook` for server-side webhook auth (`B24Hook.fromWebhookUrl(url)`). **Must only be used in server-side (Node.js / edge runtime) code.** A webhook URL contains a secret access key; shipping it in a browser bundle exposes the key to every visitor. The class emits a runtime warning when it detects a browser context — do not suppress it with `offClientSideWarning()`.
-- [packages/jssdk/src/oauth](packages/jssdk/src/oauth) — `B24OAuth` for OAuth-based local apps; manages refresh-token errors.
+- [packages/jssdk/src/core/abstract-b24.ts](packages/jssdk/src/core/abstract-b24.ts) — `AbstractB24` предоставляет поверхность действий (`b24.actions.vX.<name>.make()`) и владеет HTTP-клиентами v2 и v3, стеком ограничений и лимитеров, логгером и вложенными менеджерами-хелперами. Прежние сокращения (`callMethod`, `callBatch`, `callListMethod`, `fetchListMethod`, `callBatchByChunk`) удалены из этого класса в 3.0.0 (#277).
+- [packages/jssdk/src/frame](packages/jssdk/src/frame) — `B24Frame`, используется внутри iframe Битрикс24. Общается с родительским окном через `postMessage`, автоматически обновляет авторизацию при 401 и предоставляет менеджеры интерфейса (`auth`, `parent`, `slider`, `dialog`, `placement`, `options`). **Запускать только через `initializeB24Frame()`** из [packages/jssdk/src/loader-b24frame.ts](packages/jssdk/src/loader-b24frame.ts) — он дедуплицирует одновременные инициализации и разбирает `window.name` для рукопожатия с порталом. Не добавляйте альтернативный путь через конструктор.
+- [packages/jssdk/src/hook](packages/jssdk/src/hook) — `B24Hook` для серверной авторизации по вебхуку (`B24Hook.fromWebhookUrl(url)`). **Использовать только в серверном коде (Node.js / edge runtime).** URL вебхука содержит секретный ключ доступа; если положить его в браузерный бандл, ключ станет доступен каждому посетителю. Класс выдаёт предупреждение времени выполнения, когда обнаруживает браузерный контекст, — не подавляйте его через `offClientSideWarning()`.
+- [packages/jssdk/src/oauth](packages/jssdk/src/oauth) — `B24OAuth` для локальных приложений на OAuth; обрабатывает ошибки обновления токена.
 
-Cross-cutting modules:
+Сквозные модули:
 
-- [packages/jssdk/src/core/http](packages/jssdk/src/core/http) — `AbstractHttp` transport (axios-based) implementing `TypeHttp`, `AjaxResult` / `AjaxError`, and the limiter stack: `RateLimiter`, `OperatingLimiter`, `AdaptiveDelayer`, `ParamsFactory`. URL patterns: v2 → `/rest/<method>.json`, v3 → `/rest/v3/<method>`. `Result` and `AjaxResult` are the uniform return types — v2 paging uses `isMore()` + `getNext(b24.getHttpClient(ApiVersion.v2))`; v3 has no `getNext` and uses `actions.v3.callList.make` / `fetchList.make` instead. There is no `b24.http` field — always go through `b24.getHttpClient(version)`. Credentials in request payloads are redacted before reaching the logger via [packages/jssdk/src/core/http/redact.ts](packages/jssdk/src/core/http/redact.ts).
-- [packages/jssdk/src/helper](packages/jssdk/src/helper) — `B24HelperManager` aggregates `profile`, `app`, `payment`, `license`, `currency`, and `options` sub-managers (each extending [packages/jssdk/src/helper/abstract-helper.ts](packages/jssdk/src/helper/abstract-helper.ts)). `useB24Helper()` is a closure-based composable that wires lifecycle (init/destroy) and Pull client subscription. `LicenseManager` automatically swaps in enterprise restriction params.
-- [packages/jssdk/src/pullClient](packages/jssdk/src/pullClient) — Pull (push) client with WebSocket + long-polling connectors, channel manager, JSON-RPC, and protobuf decoders (the protobuf JS files are eslint-ignored — see [eslint.config.mjs](eslint.config.mjs)).
-- [packages/jssdk/src/types](packages/jssdk/src/types) — public types and enums (CRM, catalog, bizproc, event, placement, pull, payloads, etc.). Prefer importing enums like `EnumCrmEntityTypeId` from the package root.
-- [packages/jssdk/src/tools](packages/jssdk/src/tools) — `Text` (Luxon dates, number/format helpers, UUID v7), `Type` runtime guards, `Browser`, `useFormatters`, `pick / omit / getEnumValue`, scroll/environment utilities.
-- [packages/jssdk/src/logger](packages/jssdk/src/logger) — `Logger` + `LoggerFactory.createForBrowser(name, isDev)`. `AbstractB24` defaults to `LoggerFactory.createNullLogger()`; a real logger is installed via `b24.setLogger(logger)`.
-- The build-time tokens `__SDK_VERSION__` and `__SDK_USER_AGENT__` are replaced by unbuild ([packages/jssdk/build.config.ts](packages/jssdk/build.config.ts)). The Nuxt module replaces `__SDK_VERSION__` the same way for its `meta.version` ([packages/jssdk-nuxt/build.config.ts](packages/jssdk-nuxt/build.config.ts)).
+- [packages/jssdk/src/core/http](packages/jssdk/src/core/http) — транспорт `AbstractHttp` (на axios), реализующий `TypeHttp`, `AjaxResult` / `AjaxError`, и стек лимитеров: `RateLimiter`, `OperatingLimiter`, `AdaptiveDelayer`, `ParamsFactory`. Шаблоны URL: v2 → `/rest/<method>.json`, v3 → `/rest/v3/<method>`. `Result` и `AjaxResult` — единые возвращаемые типы: постраничная выборка в v2 использует `isMore()` + `getNext(b24.getHttpClient(ApiVersion.v2))`; в v3 `getNext` нет, вместо него `actions.v3.callList.make` / `fetchList.make`. Поля `b24.http` нет — всегда обращайтесь через `b24.getHttpClient(version)`. Учётные данные в теле запросов скрываются до попадания в логгер через [packages/jssdk/src/core/http/redact.ts](packages/jssdk/src/core/http/redact.ts).
+- [packages/jssdk/src/helper](packages/jssdk/src/helper) — `B24HelperManager` объединяет вложенные менеджеры `profile`, `app`, `payment`, `license`, `currency` и `options` (каждый наследует [packages/jssdk/src/helper/abstract-helper.ts](packages/jssdk/src/helper/abstract-helper.ts)). `useB24Helper()` — композабл на замыканиях, связывающий жизненный цикл (init/destroy) и подписку клиента Pull. `LicenseManager` автоматически подставляет параметры ограничений для enterprise.
+- [packages/jssdk/src/pullClient](packages/jssdk/src/pullClient) — клиент Pull (push) с коннекторами WebSocket и long-polling, менеджером каналов, JSON-RPC и декодерами protobuf (JS-файлы protobuf исключены из eslint — см. [eslint.config.mjs](eslint.config.mjs)).
+- [packages/jssdk/src/types](packages/jssdk/src/types) — публичные типы и перечисления (CRM, catalog, bizproc, event, placement, pull, payloads и т. д.). Перечисления вроде `EnumCrmEntityTypeId` предпочтительно импортировать из корня пакета.
+- [packages/jssdk/src/tools](packages/jssdk/src/tools) — `Text` (даты Luxon, хелперы чисел и форматирования, UUID v7), проверки типов времени выполнения `Type`, `Browser`, `useFormatters`, `pick / omit / getEnumValue`, утилиты прокрутки и окружения.
+- [packages/jssdk/src/logger](packages/jssdk/src/logger) — `Logger` + `LoggerFactory.createForBrowser(name, isDev)`. `AbstractB24` по умолчанию использует `LoggerFactory.createNullLogger()`; настоящий логгер устанавливается через `b24.setLogger(logger)`.
+- Токены времени сборки `__SDK_VERSION__` и `__SDK_USER_AGENT__` подставляет unbuild ([packages/jssdk/build.config.ts](packages/jssdk/build.config.ts)). Модуль Nuxt подставляет `__SDK_VERSION__` так же — в свой `meta.version` ([packages/jssdk-nuxt/build.config.ts](packages/jssdk-nuxt/build.config.ts)).
 
-The Nuxt module ([packages/jssdk-nuxt/src/module.ts](packages/jssdk-nuxt/src/module.ts)) is intentionally tiny — it only registers [packages/jssdk-nuxt/src/runtime/plugin.ts](packages/jssdk-nuxt/src/runtime/plugin.ts). Any new SDK surface that needs Nuxt auto-import / SSR handling has to be wired through that runtime plugin.
+Модуль Nuxt ([packages/jssdk-nuxt/src/module.ts](packages/jssdk-nuxt/src/module.ts)) намеренно крошечный — он лишь регистрирует [packages/jssdk-nuxt/src/runtime/plugin.ts](packages/jssdk-nuxt/src/runtime/plugin.ts). Любая новая поверхность SDK, которой нужны автоимпорт Nuxt или обработка SSR, должна подключаться через этот runtime-плагин.
 
-> **Keep this section current.** When you add a new cross-cutting module or change the responsibility boundary of an existing one, update this Architecture section in the same PR — the contributing guides are detailed references, but Architecture is the only top-level map agents read by default.
+> **Поддерживайте этот раздел в актуальном состоянии.** Когда вы добавляете новый сквозной модуль или меняете границу ответственности существующего, обновляйте этот раздел «Архитектура» в том же PR — руководства для контрибьюторов являются подробными справочниками, но «Архитектура» — единственная карта верхнего уровня, которую агенты читают по умолчанию.
 
-## Agent Skills (`skills/`)
+## Навыки агентов (`skills/`)
 
-For AI coding agents, the canonical task-focused skills live under `skills/`. Load them by topic — **do not load everything at once**, the skill descriptions are designed for selective consumption.
+Для ИИ-агентов, пишущих код, канонические навыки (skills) под конкретные задачи лежат в `skills/`. Загружайте их по теме — **не загружайте всё сразу**: описания навыков рассчитаны на выборочное использование.
 
-| Skill | When to use |
+| Навык | Когда использовать |
 | --- | --- |
-| `b24jssdk-core` | First skill to load — entry point pick (`B24Hook` / `B24Frame` / `B24OAuth`), boot/teardown, error taxonomy, `hardErrorCodes` / `softErrorCodes` / `retryOnNetworkError` tuning |
-| `b24jssdk-rest` | `actions.v{2,3}.*.make()` — `call` / `batch` / `callList` / `fetchList` / `callTail` / `fetchTail` / `batchByChunk`; `AjaxResult` shape; v2/v3 routing (no v3 allowlist — the server validates) |
-| `b24jssdk-filtering` | v2 prefix-keyed filter (`'>=createdTime'`) vs v3 array-of-triples (`[['fld','>=',v]]`); operators; dates via `Text.toB24Format`; `order`-stripping rule of `callList` |
-| `b24jssdk-frame-ui` | iframe-only managers: slider / dialog (`selectUser/Users/CRM/Access`) / parent / placement (with `setValue`) / options / auth |
-| `b24jssdk-helpers` | `useB24Helper`, `B24HelperManager`, Pull client, currency formatting, app/user options |
-| `b24jssdk-recipes` | 12 end-to-end TypeScript mini-apps, type-checked in CI via `pnpm run skills:typecheck` and unit-tested via `pnpm run skills:test`. Both install this directory's own dependencies first — it is deliberately not a workspace member, so a root `pnpm install` does not provide them (see [README-DEPS.md](skills/b24jssdk-recipes/README-DEPS.md)) |
-| `b24jssdk-vibecode` | When to combine the SDK with the VibeCode HTTP API (rarely — keeps them apart by default) |
+| `b24jssdk-core` | Первый навык для загрузки — выбор точки входа (`B24Hook` / `B24Frame` / `B24OAuth`), запуск и остановка, классификация ошибок, настройка `hardErrorCodes` / `softErrorCodes` / `retryOnNetworkError` |
+| `b24jssdk-rest` | `actions.v{2,3}.*.make()` — `call` / `batch` / `callList` / `fetchList` / `callTail` / `fetchTail` / `batchByChunk`; форма `AjaxResult`; маршрутизация v2/v3 (белого списка v3 нет — проверяет сервер) |
+| `b24jssdk-filtering` | фильтр v2 с префиксами в ключах (`'>=createdTime'`) и фильтр v3 в виде массива троек (`[['fld','>=',v]]`); операторы; даты через `Text.toB24Format`; правило удаления `order` в `callList` |
+| `b24jssdk-frame-ui` | менеджеры только для iframe: slider / dialog (`selectUser/Users/CRM/Access`) / parent / placement (с `setValue`) / options / auth |
+| `b24jssdk-helpers` | `useB24Helper`, `B24HelperManager`, клиент Pull, форматирование валют, опции приложения и пользователя |
+| `b24jssdk-recipes` | 12 сквозных мини-приложений на TypeScript; типы проверяются в CI через `pnpm run skills:typecheck`, модульные тесты — через `pnpm run skills:test`. Обе команды сначала устанавливают собственные зависимости этого каталога — он намеренно не входит в рабочее пространство, поэтому корневой `pnpm install` их не ставит (см. [README-DEPS.md](skills/b24jssdk-recipes/README-DEPS.md)) |
+| `b24jssdk-vibecode` | Когда сочетать SDK с HTTP API VibeCode (редко — по умолчанию их держат раздельно) |
 
-Maintenance / audit docs sit alongside in `.github/contributing/maintenance.md` (weekly `docs/llms-full.txt` review playbook), `.github/contributing/report.md` (anchor-facts citing `packages/jssdk/src/...` lines), and `.github/contributing/suggested-examples.md` (prioritised gaps).
+Документы по сопровождению и аудиту лежат рядом: `.github/contributing/maintenance.md` (еженедельный сценарий проверки `docs/llms-full.txt`), `.github/contributing/report.md` (опорные факты со ссылками на строки `packages/jssdk/src/...`) и `.github/contributing/suggested-examples.md` (приоритизированные пробелы).
 
-Skills under `skills/` mirror the `.github/contributing/` guides from the agent angle — when you change the underlying API, update **both** in the same PR.
+Навыки в `skills/` повторяют руководства из `.github/contributing/` с точки зрения агента — когда вы меняете лежащий в основе API, обновляйте **оба** в одном PR.
 
-## Commands
+## Команды
 
-Run from the repo root unless noted. All scripts go through pnpm workspaces — never `npm`/`yarn`. Use `pnpm --filter <path>` for package-scoped commands.
+Запускайте из корня репозитория, если не указано иное. Все скрипты идут через рабочие пространства pnpm — никогда не `npm`/`yarn`. Для команд в рамках пакета используйте `pnpm --filter <path>`.
 
 ```bash
 pnpm install
-pnpm run dev:prepare                # build/stub all packages so workspaces resolve
+pnpm run dev:prepare                # собрать или создать заглушки всех пакетов, чтобы рабочие пространства разрешались
 
-# Core SDK
-pnpm run package-jssdk:build        # esm + umd + umd-min via unbuild
+# Ядро SDK
+pnpm run package-jssdk:build        # esm + umd + umd-min через unbuild
 pnpm run package-jssdk:typecheck
 pnpm run package-jssdk:lint
 
-# Nuxt module
+# Модуль Nuxt
 pnpm run package-jssdk-nuxt:build
 pnpm run package-jssdk-nuxt:typecheck
 
-# Docs / playgrounds
+# Документация и песочницы
 pnpm run docs:dev
 pnpm run playground-nuxt:dev
 
-# Repo-wide
+# Весь репозиторий
 pnpm run lint
-pnpm run lint:fix                   # run before commit
-pnpm run typecheck                  # every workspace, sequential
+pnpm run lint:fix                   # запускайте перед коммитом
+pnpm run typecheck                  # каждое рабочее пространство, последовательно
 ```
 
-### Tests
+### Тесты
 
-Three Vitest projects, defined in [vitest.config.ts](vitest.config.ts):
+Три проекта Vitest, заданные в [vitest.config.ts](vitest.config.ts):
 
-- `jsSdk:unit` — `test/integration/**/*.unit.spec.ts`, 10s timeouts, **no portal required**. Runs in CI.
-- `jsSdk:integration` — `test/integration/**/*.spec.ts` (excluding `*.unit.spec.ts`), 30s timeouts, hits a real portal.
-- `jsSdk:underLoad` — `test/under-load/**.spec.ts`, sequential, 40-min timeouts.
+- `jsSdk:unit` — `test/integration/**/*.unit.spec.ts`, таймауты 10 с, **портал не нужен**. Запускается в CI.
+- `jsSdk:integration` — `test/integration/**/*.spec.ts` (кроме `*.unit.spec.ts`), таймауты 30 с, обращается к настоящему порталу.
+- `jsSdk:underLoad` — `test/under-load/**.spec.ts`, последовательно, таймауты 40 мин.
 
-`jsSdk:integration` and `jsSdk:underLoad` load `.env.test` (gitignored). Copy `.env.test-example` and set `B24_HOOK` to a real webhook URL — the underlying client constructor in [test/0_setup/setup-integration-jssdk.ts](test/0_setup/setup-integration-jssdk.ts) throws without it. **The environment outranks the file**: `dotenv` never overwrites a variable that is already set, so a `B24_HOOK` exported in your shell or inherited from a container wins over `.env.test`. That is deliberate — it keeps `B24_HOOK=… pnpm vitest` working — and since #506 the run prints one warning naming both hosts when the two disagree, instead of discarding the file in silence. In tests, reach this client through `setupB24Tests()` from [test/0_setup/hooks-integration-jssdk.ts](test/0_setup/hooks-integration-jssdk.ts) — see [`.github/contributing/testing.md`](.github/contributing/testing.md) for the canonical pattern.
+`jsSdk:integration` и `jsSdk:underLoad` загружают `.env.test` (в gitignore). Скопируйте `.env.test-example` и задайте в `B24_HOOK` URL настоящего вебхука — без него конструктор клиента в [test/0_setup/setup-integration-jssdk.ts](test/0_setup/setup-integration-jssdk.ts) бросает исключение. **Окружение главнее файла**: `dotenv` никогда не перезаписывает уже заданную переменную, поэтому `B24_HOOK`, экспортированный в вашей оболочке или унаследованный из контейнера, перекрывает `.env.test`. Это сделано намеренно — так продолжает работать `B24_HOOK=… pnpm vitest`, — а начиная с #506 при расхождении запуск выводит одно предупреждение с названиями обоих хостов, вместо того чтобы молча отбрасывать файл. В тестах обращайтесь к этому клиенту через `setupB24Tests()` из [test/0_setup/hooks-integration-jssdk.ts](test/0_setup/hooks-integration-jssdk.ts) — канонический шаблон см. в [`.github/contributing/testing.md`](.github/contributing/testing.md).
 
-**Webhook scopes.** The webhook needs at minimum `crm`, `tasks`, `user`, `im`, and `main`. The `im` scope is required by the issue-23 regression spec (`im.chat.get` inside a batch); `main` is a non-obvious scope (not exposed in the standard webhook scope picker) required by the v3 batch-ref spec that calls `main.eventlog.list`. Add it manually.
+**Права вебхука.** Вебхуку нужны как минимум `crm`, `tasks`, `user`, `im` и `main`. Право `im` требуется регрессионной спецификации issue-23 (`im.chat.get` внутри пакета); `main` — неочевидное право (его нет в стандартном выборе прав вебхука), которое нужно спецификации batch-ref для v3, вызывающей `main.eventlog.list`. Добавьте его вручную.
 
 ```bash
-pnpm run package-jssdk:test:run-unit              # one-shot, unit project (no portal — also runs in CI)
-pnpm run pull:test-codec                          # unit subset: the two Pull protobuf codecs agree, and the switch selects them
+pnpm run package-jssdk:test:run-unit              # однократно, проект unit (без портала — тоже запускается в CI)
+pnpm run pull:test-codec                          # подмножество unit: два кодека Pull protobuf согласуются, а переключатель выбирает их
 
-pnpm run package-jssdk:test                       # watch, integration project
-pnpm run package-jssdk:test:run                   # one-shot, integration project
-pnpm run package-jssdk:test-integration-core      # filter by name "core"
-pnpm run package-jssdk:test-integration-js-docs   # filter by name "js-docs"
+pnpm run package-jssdk:test                       # режим наблюдения, проект integration
+pnpm run package-jssdk:test:run                   # однократно, проект integration
+pnpm run package-jssdk:test-integration-core      # фильтр по имени «core»
+pnpm run package-jssdk:test-integration-js-docs   # фильтр по имени «js-docs»
 
-# Under-load runners (each targets one named scenario — see package.json for the full list)
+# Нагрузочные запуски (каждый нацелен на один именованный сценарий — полный список в package.json)
 pnpm run package-jssdk:test:run-underLoad-v3-call
 pnpm run package-jssdk:test:run-underLoad-v3-batch
 pnpm run package-jssdk:test:run-underLoad-v2-call-with-operating
 
-# Single test by name from the root:
+# Один тест по имени из корня:
 pnpm vitest run --project jsSdk:integration -t "<test name>"
 pnpm vitest run --project jsSdk:unit -t "<test name>"
 ```
 
-**Tests hit real Bitrix24 REST endpoints — never mock responses.** They validate API contracts, so a passing mocked test would defeat the suite's purpose.
+**Тесты обращаются к настоящим конечным точкам REST Битрикс24 — никогда не подменяйте ответы.** Они проверяют контракты API, так что проходящий тест с подменой лишил бы набор смысла.
 
-**`*.unit.spec.ts` files inside `test/integration/`.** A small number of regression specs (`batch-null-result.unit.spec.ts`, `http-logger-redaction.unit.spec.ts`, `retry-client-error.unit.spec.ts`) exercise pure-logic invariants that have nothing to verify against a live portal. They belong to the `jsSdk:unit` project, mock the axios client / construct SDK primitives in isolation, and run without `.env.test` / `B24_HOOK`. Use this naming when the test is about the **SDK's internal behaviour**, not about the REST contract.
+**Файлы `*.unit.spec.ts` внутри `test/integration/`.** Небольшое число регрессионных спецификаций (`batch-null-result.unit.spec.ts`, `http-logger-redaction.unit.spec.ts`, `retry-client-error.unit.spec.ts`) проверяют инварианты чистой логики, которые нечем сверять на живом портале. Они относятся к проекту `jsSdk:unit`, подменяют клиент axios или изолированно создают примитивы SDK и работают без `.env.test` / `B24_HOOK`. Используйте такое именование, когда тест касается **внутреннего поведения SDK**, а не контракта REST.
 
-**CI runs `jsSdk:unit` automatically** (`pnpm run package-jssdk:test:run-unit`) — no portal needed. `jsSdk:integration` and `jsSdk:underLoad` are your local-only responsibility — make sure the relevant test filter is green against a real portal before pushing.
+**CI запускает `jsSdk:unit` автоматически** (`pnpm run package-jssdk:test:run-unit`) — портал не нужен. `jsSdk:integration` и `jsSdk:underLoad` — ваша локальная ответственность: убедитесь, что нужный фильтр тестов зелёный на настоящем портале, прежде чем отправлять изменения.
 
-A nightly **[`smoke-retry.yml`](.github/workflows/smoke-retry.yml)** workflow runs the `playgrounds/cli` retry-policy smoke scenarios against a live portal. It reuses the existing `NUXT_BITRIX24_TEST_WEBHOOK_URL` **repository secret** (a webhook URL), mapping it onto the `B24_HOOK` env var the CLI reads — so no new secret is needed; it skips with a warning when that secret is absent and never runs on pull requests. It fails (non-zero exit) on a definitive PR #45 regression. See [playgrounds/cli/README.md](playgrounds/cli/README.md#running-in-ci-nightly).
+Ночной workflow **[`smoke-retry.yml`](.github/workflows/smoke-retry.yml)** запускает сценарии проверки политики повторов из `playgrounds/cli` на живом портале. Он переиспользует существующий **секрет репозитория** `NUXT_BITRIX24_TEST_WEBHOOK_URL` (URL вебхука), передавая его в переменную окружения `B24_HOOK`, которую читает CLI, — поэтому новый секрет не нужен; при отсутствии секрета он пропускается с предупреждением и никогда не запускается на pull request. Он завершается ошибкой (ненулевой код) при однозначной регрессии PR #45. См. [playgrounds/cli/README.md](playgrounds/cli/README.md#running-in-ci-nightly).
 
-### Releasing
+### Выпуск релиза
 
-Cutting a release (bump → changelog → tag → publish) is documented in **[RELEASING.md](RELEASING.md)**. In brief: `pnpm run release:bump <version>` sets all three `package.json` files in lockstep (+ refreshes the lockfile), and publishing a GitHub Release on the `v<version>` tag triggers two sibling workflows — [`npm-publish-js-sdk.yml`](.github/workflows/npm-publish-js-sdk.yml) (`@bitrix24/b24jssdk`) and [`npm-publish-js-sdk-nuxt.yml`](.github/workflows/npm-publish-js-sdk-nuxt.yml) (`@bitrix24/b24jssdk-nuxt`) — each running CI then publishing its package. Publishing uses npm OIDC trusted publishing — there is no `NPM_TOKEN` to manage. The two files exist because each package's npm Trusted Publisher entry is keyed to one exact workflow filename; see RELEASING.md for the consolidation path.
+Выпуск релиза (повышение версии → журнал изменений → тег → публикация) описан в **[RELEASING.md](RELEASING.md)**. Вкратце: `pnpm run release:bump <version>` синхронно задаёт версию во всех трёх `package.json` (и обновляет lock-файл), а публикация GitHub Release на теге `v<version>` запускает два парных workflow — [`npm-publish-js-sdk.yml`](.github/workflows/npm-publish-js-sdk.yml) (`@bitrix24/b24jssdk`) and [`npm-publish-js-sdk-nuxt.yml`](.github/workflows/npm-publish-js-sdk-nuxt.yml) (`@bitrix24/b24jssdk-nuxt`) — каждый прогоняет CI и затем публикует свой пакет. Публикация использует npm OIDC trusted publishing — `NPM_TOKEN` вести не нужно. Два файла существуют потому, что запись Trusted Publisher каждого пакета в npm привязана к одному точному имени файла workflow; путь объединения см. в RELEASING.md.
 
-## Key Conventions
+## Основные соглашения
 
-- **Conventional Commits**: the commit subject IS the changelog entry — release-please assembles `CHANGELOG.md` from the subjects merged since the last tag (#347). Use a type mapped in `changelog-sections` ([release-please-config.json](release-please-config.json)): `feat`, `fix`, `perf`, `revert`, `security`, `deps`, `refactor`, `build`, `docs`, `test`, `ci`, `chore`, `style`. That list **replaces** the preset's rather than extending it, so an unmapped type is invisible in the changelog — the ad-hoc `platform:` / `dx:` / `http:` subjects this repo has used are not mapped. Only `feat` and a breaking marker raise the version above a patch; force one with a `Release-As: 2.1.0` footer. Write the subject so a reader of the release notes understands the change without opening the diff. The hand-written `## [Unreleased]` block in [CHANGELOG.md](CHANGELOG.md) is being retired on the first release PR — see the handover note in [RELEASING.md](RELEASING.md); do not add to it.
-- **No default exports**: every export is named so consumers stay tree-shakeable (`sideEffects: false`).
-- **TypeScript strict**: `tsc` for the core SDK; `vue-tsc` for the Nuxt / docs / playground projects.
-- **Public contract**: exports from [packages/jssdk/src/index.ts](packages/jssdk/src/index.ts) are a public API. Any breaking change needs a deprecation cycle, not a silent rename — and a deprecation needs a replacement that costs the caller nothing, or it is a breaking change with a friendlier tag on it ([`deprecations.md`](.github/contributing/deprecations.md)).
-- **Cross-package awareness**: when you change the core SDK API, check whether [packages/jssdk-nuxt/src/runtime/plugin.ts](packages/jssdk-nuxt/src/runtime/plugin.ts) needs an update.
-- **Code formatting**: `@nuxt/eslint-config` (flat) with stylistic overrides — 2-space indent, no trailing commas, 1tbs braces. `.editorconfig` enforces LF + 2 spaces. The protobuf JS files in `packages/jssdk/src/pullClient` are eslint-ignored intentionally.
-- **Build tokens**: `__SDK_VERSION__` and `__SDK_USER_AGENT__` are replaced at build time by [packages/jssdk/build.config.ts](packages/jssdk/build.config.ts); the Nuxt module's `meta.version` uses the same `__SDK_VERSION__` token via [packages/jssdk-nuxt/build.config.ts](packages/jssdk-nuxt/build.config.ts). Do not hard-code versions.
-- **Pinned Actions**: third-party GitHub Actions in `.github/workflows/` are pinned to a full commit SHA with a `# vX.Y.Z` comment — a moved or compromised mutable tag on a publish-privileged action is a supply-chain risk (#152). Dependabot (weekly, grouped) bumps the SHAs; don't introduce `@vN` tag refs in new steps.
-- **Local ESLint rules**: a convention that matters is enforced by a rule, not by remembering it in review. When a mistake is mechanical, repeats across files, and a reviewer would have to catch it by eye every time, write one — `eslint-rules/` holds them, and the two below are the worked examples to copy. A rule ships in four parts: (1) the rule module in `eslint-rules/<name>.js`, with a `@fileoverview` stating what it catches, **what it deliberately does not catch**, and why the vocabulary/scope is drawn where it is; (2) wiring in [eslint.config.mjs](eslint.config.mjs) — import it, add it to the `local` plugin's `rules`, and set its severity in the `files`-scoped block at the end; (3) a lock spec in `test/integration/core/<name>.unit.spec.ts` that runs the **real** rule module through ESLint's `Linter` over must-fire and must-stay-silent snippets, one case per arm, and asserts the rule is actually wired in `eslint.config.mjs` — so a narrowed matcher or an unwired rule reddens CI, not just a broken build; (4) a bullet here saying what the convention is, so the rule explains a decision rather than appearing as an unexplained obstacle. Prefer syntax-only rules: type-aware linting is not enabled, and both existing rules work purely on the AST. Add a `fix` only when it is mechanical and idempotent. Document the escape hatch in the rule's own message (`// eslint-disable-next-line local/<name>` with a reason), because a rule with no stated exit is one people work around silently.
-- **Reporting a vulnerability**: privately, through [SECURITY.md](SECURITY.md) — never a public issue. That file also records what the SDK already defends against and, more usefully when triaging, the residual risks it accepts: the redaction walk stops two object levels down, the query-string pass does not match a bracketed key, and `SdkError` descriptions are not redacted at all.
-- **No secrets in logs**: anywhere in the SDK source (`packages/jssdk/src/**`) and the Nuxt module (`packages/jssdk-nuxt/src/**`), never pass a URL- or credential-shaped variable into a logger context object — log the bare REST method name (not the formatted URL) and let `redactSensitiveParams()` handle params. The custom `local/no-credential-in-logger` ESLint rule ([eslint-rules/no-credential-in-logger.js](eslint-rules/no-credential-in-logger.js)) enforces this against the #39/#40 webhook-secret-leak class across both packages; it offers an **opt-in IDE suggestion** that removes the offending entry (removal only — never a guessed replacement — and never applied by `--fix`, unlike the auto-fixing rule below, because a wrong autofix on a security rule is worse than none). Use `// eslint-disable-next-line local/no-credential-in-logger` with a reason for a genuine exception (#42, #226, #262, #308).
-- **Logger calls are fire-and-forget**: every logging method returns a promise, and the SDK calls them as bare statements. An unawaited rejection is an unhandled rejection, which terminates the Node process by default — so a failing log sink would take the operation with it. End every such callsite with `.catch(() => {})`; the custom `local/require-catch-on-logger-call` ESLint rule ([eslint-rules/require-catch-on-logger-call.js](eslint-rules/require-catch-on-logger-call.js)) enforces it across both packages and auto-fixes with `--fix`. A call that is awaited, returned, or assigned is left alone — there the promise has an owner (#346).
-- **English only** in code, comments, and documentation pages.
+- **Conventional Commits**: заголовок коммита И ЕСТЬ запись журнала изменений — release-please собирает `CHANGELOG.md` из заголовков, слитых после последнего тега (#347). Используйте тип, перечисленный в `changelog-sections` ([release-please-config.json](release-please-config.json)): `feat`, `fix`, `perf`, `revert`, `security`, `deps`, `refactor`, `build`, `docs`, `test`, `ci`, `chore`, `style`. Этот список **заменяет** список пресета, а не расширяет его, поэтому тип вне списка в журнале изменений невидим — разовые заголовки `platform:` / `dx:` / `http:`, которые встречались в репозитории, в списке отсутствуют. Только `feat` и признак несовместимого изменения поднимают версию выше патча; задать версию принудительно можно подвалом `Release-As: 2.1.0`. Пишите заголовок так, чтобы читатель примечаний к релизу понимал изменение, не открывая diff. Написанный вручную блок `## [Unreleased]` в [CHANGELOG.md](CHANGELOG.md) выводится из употребления на первом release PR — см. заметку о передаче в [RELEASING.md](RELEASING.md); не дописывайте в него.
+- **Без экспорта по умолчанию**: каждый экспорт именованный, чтобы потребители сохраняли tree-shaking (`sideEffects: false`).
+- **Строгий TypeScript**: `tsc` для ядра SDK; `vue-tsc` для проектов Nuxt, документации и песочниц.
+- **Публичный контракт**: экспорты из [packages/jssdk/src/index.ts](packages/jssdk/src/index.ts) — публичный API. Любое несовместимое изменение требует цикла устаревания, а не тихого переименования — а устаревание требует замены, которая ничего не стоит вызывающему коду, иначе это несовместимое изменение с более дружелюбной меткой ([`deprecations.md`](.github/contributing/deprecations.md)).
+- **Учёт соседних пакетов**: меняя API ядра SDK, проверьте, не нужно ли обновить [packages/jssdk-nuxt/src/runtime/plugin.ts](packages/jssdk-nuxt/src/runtime/plugin.ts).
+- **Форматирование кода**: `@nuxt/eslint-config` (flat) со стилистическими переопределениями — отступ в 2 пробела, без хвостовых запятых, скобки 1tbs. `.editorconfig` задаёт LF и 2 пробела. JS-файлы protobuf в `packages/jssdk/src/pullClient` намеренно исключены из eslint.
+- **Токены сборки**: `__SDK_VERSION__` и `__SDK_USER_AGENT__` подставляются при сборке через [packages/jssdk/build.config.ts](packages/jssdk/build.config.ts); `meta.version` модуля Nuxt использует тот же токен `__SDK_VERSION__` через [packages/jssdk-nuxt/build.config.ts](packages/jssdk-nuxt/build.config.ts). Не вписывайте версии в код.
+- **Закреплённые Actions**: сторонние GitHub Actions в `.github/workflows/` закреплены на полный SHA коммита с комментарием `# vX.Y.Z` — сдвинутый или скомпрометированный изменяемый тег у action с правом публикации — риск для цепочки поставки (#152). Dependabot (еженедельно, группами) обновляет SHA; не вводите в новых шагах ссылки-теги `@vN`.
+- **Локальные правила ESLint**: важное соглашение обеспечивается правилом, а не памятью на ревью. Когда ошибка механическая, повторяется в разных файлах и ревьюеру пришлось бы каждый раз ловить её глазами, напишите правило — они лежат в `eslint-rules/`, а два перечисленных ниже — готовые образцы для копирования. Правило поставляется в четырёх частях: (1) модуль правила в `eslint-rules/<name>.js` с `@fileoverview`, где сказано, что оно ловит, **что намеренно не ловит** и почему словарь или область проведены именно так; (2) подключение в [eslint.config.mjs](eslint.config.mjs) — импортируйте его, добавьте в `rules` плагина `local` и задайте серьёзность в блоке с `files` в конце; (3) фиксирующая спецификация в `test/integration/core/<name>.unit.spec.ts`, которая прогоняет **настоящий** модуль правила через `Linter` ESLint на фрагментах «должно сработать» и «должно промолчать», по одному случаю на ветку, и проверяет, что правило действительно подключено в `eslint.config.mjs`, — чтобы суженное сопоставление или неподключённое правило краснили CI, а не просто ломали сборку; (4) пункт здесь, говорящий, в чём соглашение, чтобы правило объясняло решение, а не выглядело необъяснимым препятствием. Предпочитайте правила только по синтаксису: линтинг с учётом типов не включён, и оба существующих правила работают чисто по AST. Добавляйте `fix` только когда он механический и идемпотентный. Описывайте лазейку в самом сообщении правила (`// eslint-disable-next-line local/<name>` с причиной), потому что правило без заявленного выхода люди обходят молча.
+- **Сообщение об уязвимости**: приватно, через [SECURITY.md](SECURITY.md) — никогда не публичным issue. Этот файл также фиксирует, от чего SDK уже защищается, и — что полезнее при разборе — какие остаточные риски он принимает: обход скрытия останавливается на втором уровне вложенности объектов, проход по строке запроса не ловит ключ в скобках, а описания `SdkError` не скрываются вовсе.
+- **Никаких секретов в логах**: нигде в исходниках SDK (`packages/jssdk/src/**`) и модуля Nuxt (`packages/jssdk-nuxt/src/**`) не передавайте переменную в виде URL или учётных данных в объект контекста логгера — логируйте только имя REST-метода (а не сформированный URL), а параметры оставьте `redactSensitiveParams()`. Собственное правило ESLint `local/no-credential-in-logger` ([eslint-rules/no-credential-in-logger.js](eslint-rules/no-credential-in-logger.js)) обеспечивает это против класса утечек секрета вебхука #39/#40 в обоих пакетах; оно предлагает **подсказку IDE по желанию**, удаляющую нарушающую запись (только удаление — никогда не угаданная замена — и `--fix` её не применяет, в отличие от автоисправляющего правила ниже, потому что неверное автоисправление правила безопасности хуже, чем его отсутствие). Для настоящего исключения используйте `// eslint-disable-next-line local/no-credential-in-logger` с причиной (#42, #226, #262, #308).
+- **Вызовы логгера — «выстрелил и забыл»**: каждый метод логирования возвращает промис, а SDK вызывает их как простые операторы. Неожиданное отклонение без ожидания — необработанное отклонение, которое по умолчанию завершает процесс Node, — так что упавший приёмник логов утащил бы за собой операцию. Завершайте каждое такое место вызова `.catch(() => {})`; собственное правило ESLint `local/require-catch-on-logger-call` ([eslint-rules/require-catch-on-logger-call.js](eslint-rules/require-catch-on-logger-call.js)) обеспечивает это в обоих пакетах и автоисправляется через `--fix`. Вызов, который ожидается через await, возвращается или присваивается, не трогается — там у промиса есть владелец (#346).
+- **Код и комментарии в коде — на английском, страницы документации — на русском.**
 
-## SDK Source (`packages/jssdk/src/` and `test/`)
+## Исходники SDK (`packages/jssdk/src/` и `test/`)
 
-The references and code conventions below apply specifically when working on files under `packages/jssdk/src/` or `test/`. They do not apply to `docs/`, `playgrounds/`, or the Nuxt module.
+Приведённые ниже справочники и соглашения о коде относятся именно к работе с файлами в `packages/jssdk/src/` или `test/`. К `docs/`, `playgrounds/` и модулю Nuxt они не относятся.
 
-### References
+### Справочники
 
-Load these based on your task. **Do not load all files at once** — only load what's relevant.
+Загружайте их в зависимости от задачи. **Не загружайте все файлы сразу** — только то, что относится к делу.
 
-| File | Topics |
+| Файл | Темы |
 | --- | --- |
-| **[.github/contributing/package-structure.md](.github/contributing/package-structure.md)** | File layout in `packages/jssdk/src/`, AbstractB24-derived classes, managers, public-export rules |
-| **[.github/contributing/transports-and-results.md](.github/contributing/transports-and-results.md)** | `AbstractHttp` v2 / v3 transports, `Result` / `AjaxResult` / `AjaxError` / `SdkError`, the limiter stack, `ParamsFactory` presets, paging, batch semantics, log redaction |
-| **[.github/contributing/deprecations.md](.github/contributing/deprecations.md)** | Whether a public member should be deprecated at all: the replacement test, its three failure modes, judging per member rather than per batch, and what to record when the answer is "keep it" |
-| **[.github/contributing/docs-csp.md](.github/contributing/docs-csp.md)** | The documentation site's Content Security Policy: why it is a `<meta>` tag, which relaxations are load-bearing, and how to verify a change in a real browser (`scripts/check-docs-csp.mjs`) |
-| **[.github/contributing/testing.md](.github/contributing/testing.md)** | Vitest projects (integration + under-load), `.env.test`, `setupB24Tests()`, naming filters, no-mock policy + `*.unit.spec.ts` exception |
-| **[.github/contributing/documentation.md](.github/contributing/documentation.md)** | `docs/content/docs/` Markdown structure, frontmatter (`links`, `category`, `restApiVersion`), MDC blocks (`::warning`, `::caution`, `::rest-api-version-only`), examples |
-| **[.github/contributing/reproducing-user-reports.md](.github/contributing/reproducing-user-reports.md)** | Turning a user report into a runnable REST chain via the nuxt playground `IssueReproHarness.vue`, running it in the app OAuth context, reading the request/response transcript, and deciding SDK-bug vs caller-context vs platform |
-| **[.github/contributing/pull-protobuf.md](.github/contributing/pull-protobuf.md)** | The Pull wire format: the restored [`pull.proto`](.github/contributing/pull.proto), the vendored protobuf.js and what it costs, the `protobufCodec` switch between it and the hand-written codec, and what has to be true before the vendored copy can be deleted |
-| **[.github/contributing/telegram-release-post.md](.github/contributing/telegram-release-post.md)** | Drafting the Russian Telegram release announcement for the community: single paste-ready block, structure, verified + compiling code examples, soft breaking-change framing, tone/safety rules, the base64 docs cipher |
+| **[.github/contributing/package-structure.md](.github/contributing/package-structure.md)** | Раскладка файлов в `packages/jssdk/src/`, классы-наследники AbstractB24, менеджеры, правила публичного экспорта |
+| **[.github/contributing/transports-and-results.md](.github/contributing/transports-and-results.md)** | Транспорты `AbstractHttp` v2 / v3, `Result` / `AjaxResult` / `AjaxError` / `SdkError`, стек лимитеров, пресеты `ParamsFactory`, постраничная выборка, семантика пакетов (batch), скрытие данных в логах |
+| **[.github/contributing/deprecations.md](.github/contributing/deprecations.md)** | Стоит ли вообще объявлять публичный член устаревшим: проверка заменой, три способа её провала, оценка по каждому члену, а не по группе, и что записать, если ответ — «оставить» |
+| **[.github/contributing/docs-csp.md](.github/contributing/docs-csp.md)** | Политика безопасности содержимого (CSP) сайта документации: почему это тег `<meta>`, какие послабления несущие и как проверить изменение в настоящем браузере (`scripts/check-docs-csp.mjs`) |
+| **[.github/contributing/testing.md](.github/contributing/testing.md)** | Проекты Vitest (integration и under-load), `.env.test`, `setupB24Tests()`, фильтры по именам, политика «без подмен» и исключение `*.unit.spec.ts` |
+| **[.github/contributing/documentation.md](.github/contributing/documentation.md)** | Структура Markdown в `docs/content/docs/`, frontmatter (`links`, `category`, `restApiVersion`), блоки MDC (`::warning`, `::caution`, `::rest-api-version-only`), примеры |
+| **[.github/contributing/reproducing-user-reports.md](.github/contributing/reproducing-user-reports.md)** | Превращение сообщения пользователя в исполняемую цепочку REST через `IssueReproHarness.vue` в песочнице Nuxt, запуск в контексте OAuth приложения, чтение журнала запросов и ответов и решение: ошибка SDK, контекст вызывающего кода или платформа |
+| **[.github/contributing/pull-protobuf.md](.github/contributing/pull-protobuf.md)** | Формат обмена Pull: восстановленный [`pull.proto`](.github/contributing/pull.proto), вендоренный protobuf.js и во что он обходится, переключатель `protobufCodec` между ним и рукописным кодеком и что должно выполняться, прежде чем вендоренную копию можно удалить |
+| **[.github/contributing/telegram-release-post.md](.github/contributing/telegram-release-post.md)** | Составление анонса релиза для сообщества в Telegram на русском: единый готовый к вставке блок, структура, проверенные и компилируемые примеры кода, мягкая подача несовместимых изменений, правила тона и безопасности, шифр документации в base64 |
 
-### Code Conventions
+### Соглашения о коде
 
-| Convention | Description |
+| Соглашение | Описание |
 | --- | --- |
-| Named exports only | No `export default` in `src/`; keeps the package tree-shakeable |
-| Type imports | Always separate: `import type { X } from '…'` |
-| Public surface | Every type / symbol meant for callers must re-export from [packages/jssdk/src/index.ts](packages/jssdk/src/index.ts) |
-| Action surface | Reach REST through `b24.actions.vX.<name>.make({ method, params, requestId })`. The top-level shortcuts (`b24.callMethod`, `callBatch`, `callListMethod`, `fetchListMethod`, `callBatchByChunk`) were removed in 3.0.0 — they do not exist |
-| Result types | All transport methods return `Result` or `AjaxResult` — never raw axios responses |
-| Paging | v2: `result.isMore()` + `result.getNext(b24.getHttpClient(ApiVersion.v2))`. v3: use `b24.actions.v3.callList.make(...)` / `fetchList.make(...)` (v3 has no `getNext`) |
-| Errors | Throw `SdkError({ code, description, status })` for SDK-level invariants; HTTP errors are `AjaxError` and surface via `Result.getErrors()` |
-| Logger | New modules hold a `LoggerInterface`, default to `LoggerFactory.createNullLogger()`, and accept a real logger through `setLogger(logger)` — not via the constructor. Suppression of warnings (e.g. `offClientSideWarning()`) is for testing only — never call it in production code |
-| Limiters | New transport code paths must respect the limiter stack (`RateLimiter`, `OperatingLimiter`, `AdaptiveDelayer`) — do not bypass it. HTTP 4xx is automatically classified as non-retryable; `hardErrorCodes` is for HTTP 2xx domain-level error codes the SDK doesn't recognise as terminal |
-| Enterprise | Treat the enterprise restriction params from `LicenseManager` as load-time switches; do not duplicate them |
-| Build tokens | Use `__SDK_VERSION__` / `__SDK_USER_AGENT__` placeholders, never literal version strings |
-| Deprecation | **First decide whether to deprecate at all** — does a replacement exist that costs the caller nothing? See [`deprecations.md`](.github/contributing/deprecations.md). Then: JSDoc `@deprecated`, `@removed X.Y.Z` and (if useful) `@memo` tags, and a runtime warning via `LoggerFactory.forcedLog(this._logger, 'warning', { … })`. See `abstract-b24.ts` for the canonical pattern |
-| Pull protobuf | The auto-generated protobuf JS is intentionally eslint-ignored — do not "clean it up" |
+| Только именованные экспорты | Никакого `export default` в `src/`; пакет остаётся пригодным для tree-shaking |
+| Импорты типов | Всегда отдельно: `import type { X } from '…'` |
+| Публичная поверхность | Каждый тип или символ, предназначенный вызывающему коду, должен реэкспортироваться из [packages/jssdk/src/index.ts](packages/jssdk/src/index.ts) |
+| Поверхность действий | Обращайтесь к REST через `b24.actions.vX.<name>.make({ method, params, requestId })`. Сокращения верхнего уровня (`b24.callMethod`, `callBatch`, `callListMethod`, `fetchListMethod`, `callBatchByChunk`) удалены в 3.0.0 — их не существует |
+| Типы результата | Все методы транспорта возвращают `Result` или `AjaxResult` — никогда не «сырые» ответы axios |
+| Постраничная выборка | v2: `result.isMore()` + `result.getNext(b24.getHttpClient(ApiVersion.v2))`. v3: используйте `b24.actions.v3.callList.make(...)` / `fetchList.make(...)` (в v3 нет `getNext`) |
+| Ошибки | Для инвариантов уровня SDK бросайте `SdkError({ code, description, status })`; ошибки HTTP — это `AjaxError`, они попадают в `Result.getErrors()` |
+| Логгер | Новые модули держат `LoggerInterface`, по умолчанию используют `LoggerFactory.createNullLogger()` и принимают настоящий логгер через `setLogger(logger)` — а не через конструктор. Подавление предупреждений (например, `offClientSideWarning()`) — только для тестов, в рабочем коде не вызывайте |
+| Лимитеры | Новые пути кода транспорта должны соблюдать стек лимитеров (`RateLimiter`, `OperatingLimiter`, `AdaptiveDelayer`) — не обходите его. HTTP 4xx автоматически считается не подлежащим повтору; `hardErrorCodes` — для кодов ошибок уровня предметной области при HTTP 2xx, которые SDK не распознаёт как окончательные |
+| Enterprise | Считайте параметры ограничений enterprise из `LicenseManager` переключателями времени загрузки; не дублируйте их |
+| Токены сборки | Используйте заполнители `__SDK_VERSION__` / `__SDK_USER_AGENT__`, никогда не буквальные строки версий |
+| Устаревание | **Сначала решите, нужно ли вообще объявлять устаревшим** — есть ли замена, которая ничего не стоит вызывающему коду? См. [`deprecations.md`](.github/contributing/deprecations.md). Затем: теги JSDoc `@deprecated`, `@removed X.Y.Z` и (при пользе) `@memo`, а также предупреждение времени выполнения через `LoggerFactory.forcedLog(this._logger, 'warning', { … })`. Канонический образец — в `abstract-b24.ts` |
+| Pull protobuf | Автоматически сгенерированный JS protobuf намеренно исключён из eslint — не «наводите в нём порядок» |
 
-## Workflows
+## Рабочие процессы
 
-### Adding a New Surface (manager, action, transport, helper, type module)
+### Добавление новой поверхности (менеджер, действие, транспорт, хелпер, модуль типов)
 
-Copy this checklist and track progress:
+Скопируйте этот чек-лист и отмечайте ход выполнения:
 
 ```text
-Surface: [name]
-Progress:
-- [ ] 1. Decide the entry point that owns it (B24Frame, B24Hook, B24OAuth, or shared in core)
-- [ ] 2. Implement under packages/jssdk/src/<area>/  (named exports only)
-- [ ] 3. Add / extend types under packages/jssdk/src/types/
-- [ ] 4. Re-export from packages/jssdk/src/index.ts if part of the public contract
-- [ ] 5. If transport-related: respect RateLimiter / OperatingLimiter / AdaptiveDelayer
-- [ ] 6. Add integration test under test/integration/<area>/  (real portal, no mocks)
-- [ ] 7. Add or update the matching docs page under docs/content/docs/
-- [ ] 8. If the public API changed: check packages/jssdk-nuxt/src/runtime/plugin.ts
-- [ ] 9. Run pnpm run lint:fix
-- [ ] 10. Run pnpm run typecheck
-- [ ] 11. Run the relevant test filter (e.g. pnpm run package-jssdk:test-integration-core)
+Поверхность: [имя]
+Ход работы:
+- [ ] 1. Решить, какая точка входа ей владеет (B24Frame, B24Hook, B24OAuth или общая в ядре)
+- [ ] 2. Реализовать в packages/jssdk/src/<area>/  (только именованные экспорты)
+- [ ] 3. Добавить или расширить типы в packages/jssdk/src/types/
+- [ ] 4. Реэкспортировать из packages/jssdk/src/index.ts, если это часть публичного контракта
+- [ ] 5. Если связано с транспортом: соблюдать RateLimiter / OperatingLimiter / AdaptiveDelayer
+- [ ] 6. Добавить интеграционный тест в test/integration/<area>/  (настоящий портал, без подмен)
+- [ ] 7. Добавить или обновить соответствующую страницу в docs/content/docs/
+- [ ] 8. Если изменился публичный API: проверить packages/jssdk-nuxt/src/runtime/plugin.ts
+- [ ] 9. Выполнить pnpm run lint:fix
+- [ ] 10. Выполнить pnpm run typecheck
+- [ ] 11. Выполнить нужный фильтр тестов (например, pnpm run package-jssdk:test-integration-core)
 ```
 
-### Adding a REST Method to an Existing Action
+### Добавление REST-метода в существующее действие
 
-The lightweight path for the most common change — calling a new REST method from caller code or wrapping it in a tiny helper. The full New Surface workflow above is overkill here.
+Облегчённый путь для самого частого изменения — вызова нового REST-метода из вызывающего кода или обёртки его в небольшой хелпер. Полный процесс «Добавление новой поверхности» выше здесь избыточен.
 
 ```text
-Method: [rest.method.name]
-Progress:
-- [ ] 1. Determine v2 or v3 (default v3 if available; v2 logs a deprecation warning when v3 exists)
-- [ ] 2. Call b24.actions.vX.call.make({ method, params, requestId }) from your code, or add a typed helper if used in 3+ places
-- [ ] 3. Add an integration test under test/integration/<area>/ tagged @apiVx (real portal, no mocks)
-- [ ] 4. Update the matching docs page under docs/content/docs/ — parameter table, signature block, examples
-- [ ] 5. Run pnpm run lint:fix and pnpm run typecheck
-- [ ] 6. Run the relevant test filter locally
+Метод: [rest.method.name]
+Ход работы:
+- [ ] 1. Определить v2 или v3 (по умолчанию v3, если доступен; v2 пишет предупреждение об устаревании, когда существует v3)
+- [ ] 2. Вызвать b24.actions.vX.call.make({ method, params, requestId }) из своего кода или добавить типизированный хелпер, если он используется в 3+ местах
+- [ ] 3. Добавить интеграционный тест в test/integration/<area>/ с тегом @apiVx (настоящий портал, без подмен)
+- [ ] 4. Обновить соответствующую страницу в docs/content/docs/ — таблицу параметров, блок сигнатуры, примеры
+- [ ] 5. Выполнить pnpm run lint:fix и pnpm run typecheck
+- [ ] 6. Выполнить нужный фильтр тестов локально
 ```
 
-**Switch to the New Surface workflow** if step 2 grows beyond a single typed helper — i.e. the change introduces a new public type, a new manager class, or a new re-export from `packages/jssdk/src/index.ts`. At that point you owe the full lifecycle (types, Nuxt-module check, README-AI sync).
+**Перейдите на процесс «Добавление новой поверхности»**, если шаг 2 разрастается за пределы одного типизированного хелпера — то есть изменение вводит новый публичный тип, новый класс менеджера или новый реэкспорт из `packages/jssdk/src/index.ts`. С этого момента вам нужен полный жизненный цикл (типы, проверка модуля Nuxt, синхронизация README-AI).
 
-## PR Review Checklist
+## Чек-лист ревью PR
 
-When reviewing PRs that touch `packages/jssdk/src/` or `test/`, verify:
+При ревью PR, затрагивающих `packages/jssdk/src/` или `test/`, проверьте:
 
 ```text
-PR Review:
-- [ ] Follows the file layout in .github/contributing/package-structure.md
-- [ ] No default exports introduced
-- [ ] Transport changes respect the limiter stack and return Result / AjaxResult
-- [ ] Errors use SdkError ({ code, description, status }) / AjaxError — no bare throws or string-form SdkError
-- [ ] Public API changes are re-exported from src/index.ts
-- [ ] Public API changes have a deprecation cycle (no silent renames): JSDoc @deprecated + @removed tag + LoggerFactory.forcedLog warning
-- [ ] **Adding `@deprecated`? Name the replacement for each member, one at a time.** Write the line of code the caller replaces it with. Cannot write that line, or it only works under one protocol version, or it is `@experimental`? Then this is a breaking change wearing a deprecation tag — see [`deprecations.md`](.github/contributing/deprecations.md). Judge per member: a shared trait is a reason to review a group together, never to decide it together
-- [ ] Frame changes bootstrap only through initializeB24Frame() (no alternative constructor paths)
-- [ ] Helper sub-managers extend AbstractHelper and follow the constructor(b24: TypeB24) + setLogger() shape
-- [ ] B24Hook usage is server-side only; no logs of raw request URLs (which contain webhook secrets in the path)
-- [ ] Integration tests added / updated and hit a real portal (no response mocks, except *.unit.spec.ts for pure-logic invariants)
-- [ ] Matching docs page under docs/content/docs/ updated in the same PR
-- [ ] If the change alters a pattern documented in .github/contributing/, the relevant guide is updated in the same PR
-- [ ] Conventional commit message
-- [ ] All local checks pass (lint, typecheck, relevant test filter)
+Ревью PR:
+- [ ] Соответствует раскладке файлов из .github/contributing/package-structure.md
+- [ ] Не введён экспорт по умолчанию
+- [ ] Изменения транспорта соблюдают стек лимитеров и возвращают Result / AjaxResult
+- [ ] Ошибки используют SdkError ({ code, description, status }) / AjaxError — без голых throw и SdkError в строковой форме
+- [ ] Изменения публичного API реэкспортированы из src/index.ts
+- [ ] Изменения публичного API проходят цикл устаревания (без тихих переименований): JSDoc @deprecated + тег @removed + предупреждение LoggerFactory.forcedLog
+- [ ] **Добавляете `@deprecated`? Назовите замену для каждого члена, по одному.** Напишите строку кода, на которую вызывающий код это заменит. Не получается написать такую строку, или замена работает только в одной версии протокола, или это `@experimental`? Тогда это несовместимое изменение под меткой устаревания — см. [`deprecations.md`](.github/contributing/deprecations.md). Оценивайте каждый член отдельно: общая черта — повод рассмотреть группу вместе, но никогда — решать для всех вместе
+- [ ] Изменения Frame запускаются только через initializeB24Frame() (без альтернативных путей через конструктор)
+- [ ] Вложенные менеджеры-хелперы наследуют AbstractHelper и следуют форме constructor(b24: TypeB24) + setLogger()
+- [ ] B24Hook используется только на сервере; в логах нет «сырых» URL запросов (в их пути лежат секреты вебхука)
+- [ ] Интеграционные тесты добавлены или обновлены и обращаются к настоящему порталу (без подмены ответов, кроме *.unit.spec.ts для инвариантов чистой логики)
+- [ ] Соответствующая страница в docs/content/docs/ обновлена в том же PR
+- [ ] Если изменение меняет паттерн, описанный в .github/contributing/, соответствующее руководство обновлено в том же PR
+- [ ] Сообщение коммита по Conventional Commits
+- [ ] Все локальные проверки проходят (lint, typecheck, нужный фильтр тестов)
 ```
 
 ## Ревью PR
@@ -356,100 +356,100 @@ PR Review:
 **Штатный режим** (возвращает владелец): Opus, высокое — деньги, лицензии, безопасность, установщик,
 сложный дизайн; Sonnet — механика (ветки, тексты, снимки, чек-листы); низкое усилие — неприоритетное.
 
-### Signs the process is generating work rather than catching problems
+### Признаки того, что процесс порождает работу, а не ловит проблемы
 
-Check these before adding to the repository, not after:
+Проверяйте это до добавления в репозиторий, а не после:
 
-- **A new script in `scripts/`.** Eleven checks already exist over five shared
-  modules; see #418. Ask whether an existing one should grow instead, and report
-  through [`_reporter.mjs`](scripts/_reporter.mjs) if it is genuinely new.
-- **A new `tsconfig.json` or another `typecheck` pass.** #419 measured what
-  every existing pass uniquely catches — by injection, not by reading configs —
-  and the table is in
-  [testing.md](.github/contributing/testing.md#what-type-checks-what). Read it
-  before adding one, and add a row to it if you do. Each pass is defensible
-  alone; that is exactly why the total needs watching. For a config, check first
-  whether it should extend [`tsconfig.base.json`](tsconfig.base.json) rather
-  than restate a strict-flag set: `strict: true` implies neither
-  `noUnusedLocals` nor `noImplicitReturns` nor
-  `noPropertyAccessFromIndexSignature`, and both hand-copied subsets in this
-  repository had silently drifted by the time #396 dealt with them — one now
-  extends the base, and the one that ships standalone and cannot is a copy
-  pinned by a test.
-- **A JSDoc block longer than the function it documents.** The longest in the SDK
-  is 55 lines. If the reasoning is that long it belongs in
-  `.github/contributing/`, with a pointer from the code — see #420 for the
-  shape that works.
-- **Code written for a use case that does not exist yet.** `aggregate.ts` is the
-  standing example: written from a published reference and named as the
-  successor to a method it could not replace. Its contract has since been
-  measured — against a module written for the purpose, because no shipped module
-  publishes an `*.aggregate` method — which fixed the first half and left the
-  second exactly where it was.
+- **Новый скрипт в `scripts/`.** Одиннадцать проверок уже существуют поверх пяти
+  общих модулей; см. #418. Спросите себя, не стоит ли вместо этого расширить
+  существующую, а если новая действительно нужна — отчитывайтесь через
+  [`_reporter.mjs`](scripts/_reporter.mjs).
+- **Новый `tsconfig.json` или ещё один проход `typecheck`.** В #419 измерено, что
+  именно уникально ловит каждый существующий проход — внедрением ошибок, а не
+  чтением конфигов, — и таблица находится в
+  [testing.md](.github/contributing/testing.md#what-type-checks-what). Прочитайте её
+  перед добавлением и добавьте в неё строку, если добавляете. Каждый проход по
+  отдельности оправдан; именно поэтому за общим числом нужно следить. Для
+  конфигурации сначала проверьте, не стоит ли наследовать
+  [`tsconfig.base.json`](tsconfig.base.json), а не пересказывать набор строгих
+  флагов: `strict: true` не подразумевает ни `noUnusedLocals`, ни
+  `noImplicitReturns`, ни `noPropertyAccessFromIndexSignature`, а оба вручную
+  скопированных подмножества в этом репозитории незаметно разошлись к моменту, когда
+  с ними разбирался #396, — один теперь наследует базу, а тот, что поставляется
+  отдельно и не может, — это копия, закреплённая тестом.
+- **Блок JSDoc длиннее функции, которую он описывает.** Самый длинный в SDK —
+  55 строк. Если обоснование такое длинное, оно относится в
+  `.github/contributing/`, с указателем из кода — подходящую форму см. в #420.
+- **Код, написанный под вариант использования, которого ещё нет.** Стоящий пример —
+  `aggregate.ts`: написан по опубликованному справочнику и назван преемником
+  метода, который не мог заменить. Его контракт с тех пор измерен — на модуле,
+  написанном для этой цели, потому что ни один поставляемый модуль не публикует
+  метод `*.aggregate`, — что исправило первую половину и оставило вторую ровно на
+  месте.
 
-Test coverage is not a target and is not a CI threshold. Tests exist to pin
-behaviour that would otherwise regress silently; a test that only restates the
-implementation is a liability, because it has to be edited every time the
-implementation legitimately changes.
+Покрытие тестами — не цель и не порог CI. Тесты нужны, чтобы закрепить поведение,
+которое иначе незаметно регрессировало бы; тест, лишь пересказывающий реализацию,
+— обуза, потому что его приходится править каждый раз, когда реализация
+законно меняется.
 
-## Documentation Upkeep
+## Сопровождение документации
 
-After any code change that alters a public API (signatures, accepted parameters, return shapes, runtime behaviour, error codes, or warnings emitted), update the matching Markdown page under `docs/content/docs/`. The docs site is the public source of truth — out-of-date docs are treated as a bug equal to a broken test.
+После любого изменения кода, которое меняет публичный API (сигнатуры, принимаемые параметры, формы возвращаемых значений, поведение во время выполнения, коды ошибок или выдаваемые предупреждения), обновляйте соответствующую страницу Markdown в `docs/content/docs/`. Сайт документации — публичный источник истины, устаревшая документация считается ошибкой наравне со сломанным тестом.
 
-- Find the page that documents the changed surface (e.g. `2.call-list-rest-api-ver2.md` for `CallListV2`, `2.fetch-list-rest-api-ver3.md` for `FetchListV3`). Each page links to its source file in the front-matter `links:` section — use that to confirm the mapping.
-- All documentation prose, parameter tables, code samples, and notes must be written in **English**.
-- Sync these sections in particular: the parameter table (types and descriptions), the **Method Signature** block, the **Limitations** / **Key Concepts** notes, and any runnable example that uses the changed surface.
-- If the change introduces a new `warning`/`error` log message or a new `SdkError` code, mention it in the relevant section (Limitations, Error Handling, or Key Concepts) so users can recognise it.
-- Documentation updates belong in the same commit/PR as the code change. Use a `docs:` commit only when the change is documentation-only.
+- Найдите страницу, описывающую изменённую поверхность (например, `2.call-list-rest-api-ver2.md` для `CallListV2`, `2.fetch-list-rest-api-ver3.md` для `FetchListV3`). Каждая страница ссылается на свой исходный файл в разделе `links:` frontmatter — по нему подтверждайте соответствие.
+- Весь текст документации, таблицы параметров и примечания пишутся на **русском**; код в примерах, комментарии в коде и идентификаторы остаются английскими.
+- Особенно синхронизируйте разделы: таблицу параметров (типы и описания), блок **«Сигнатура метода»**, заметки **«Ограничения»** / **«Ключевые понятия»** и любой исполняемый пример, использующий изменённую поверхность.
+- Если изменение вводит новое сообщение журнала уровня `warning`/`error` или новый код `SdkError`, упомяните его в соответствующем разделе («Ограничения», «Обработка ошибок» или «Ключевые понятия»), чтобы пользователи могли его узнать.
+- Обновления документации относятся в тот же коммит и PR, что и изменение кода. Коммит `docs:` используйте, только когда изменение касается одной документации.
 
-### REST page skeleton (action / tools categories)
+### Скелет страницы REST (категории action / tools)
 
-Pages with `category: actions` or `category: tools` follow a fixed section order. The lint script `pnpm run docs:lint-pages` enforces this. **Required, in order:**
+Страницы с `category: actions` или `category: tools` следуют фиксированному порядку разделов. Его проверяет скрипт линтера `pnpm run docs:lint-pages`. **Обязательные, по порядку:**
 
-1. `## Overview`
-2. `## Method Signature`
-3. `## Examples`
-4. `## Alternatives and Recommendations`
+1. `## Обзор` (`## Overview`)
+2. `## Сигнатура метода` (`## Method Signature`)
+3. `## Примеры` (`## Examples`)
+4. `## Альтернативы и рекомендации` (`## Alternatives and Recommendations`)
 
-`## Error Handling` is recommended (warned if missing) and conventionally placed between `## Method Signature` and `## Examples`. `## Key Concepts`, `## Limitations`, and `## Performance Optimization` are optional but, when present, conventionally appear before `## Examples`.
+`## Обработка ошибок` (`## Error Handling`) рекомендуется (при отсутствии — предупреждение) и по соглашению стоит между `## Сигнатура метода` и `## Примеры`. `## Ключевые понятия` (`## Key Concepts`), `## Ограничения` (`## Limitations`) и `## Оптимизация производительности` (`## Performance Optimization`) необязательны, но, если есть, по соглашению идут перед `## Примеры`. Линтер принимает и русские, и английские заголовки.
 
-Cookbook recipes under `docs/content/docs/99.examples/` follow a separate, lighter skeleton and are not skeleton-linted. **Required** sections, in order: `## Goal`, `## Stack & Prerequisites`, `## Full Example`, `## Run It`, `## How It Works`, `## See also`. **Optional**: `## Limitations` (drop it only if the recipe has no known sharp edges).
+Рецепты кулинарной книги в `docs/content/docs/99.examples/` следуют отдельному, более лёгкому скелету и скелет-линтером не проверяются. **Обязательные** разделы, по порядку: `## Цель` (`## Goal`), `## Стек и требования` (`## Stack & Prerequisites`), `## Полный пример` (`## Full Example`), `## Запуск` (`## Run It`), `## Как это работает` (`## How It Works`), `## Смотрите также` (`## See also`). **Необязательный**: `## Ограничения` (`## Limitations`) — опускайте его, только если у рецепта нет известных острых углов.
 
-### `audited:` frontmatter
+### Frontmatter `audited:`
 
-Every action / tools page should carry an `audited: YYYY-MM-DD` field stating the date its content was verified against the linked source. `pnpm run docs:lint-pages` extracts every `https://github.com/bitrix24/b24jssdk/blob/main/<path>` from the page's `links:` array, runs `git log -1 --format=%cI -- <path>`, and warns if any source's last commit is newer than `audited`. Only non-Markdown sources drive this check — `.md` / `.mdx` link targets (skills, `AGENTS.md`, `CHANGELOG.md`) are parallel docs, not the API source of truth, so editing them never ages a page's audit (a one-line skill edit shouldn't staleify every page that cites it). When you sync a page after a code change, bump `audited` to today's date in the same commit. Use `pnpm run docs:lint-pages:strict` in CI gates that should fail on stale pages.
+Каждая страница action / tools должна нести поле `audited: YYYY-MM-DD` с датой, когда её содержимое сверяли со связанным исходником. `pnpm run docs:lint-pages` извлекает из массива `links:` страницы каждый `https://github.com/bitrix24/b24jssdk/blob/main/<path>` запускает `git log -1 --format=%cI -- <path>` и предупреждает, если последний коммит любого источника новее `audited`. Эту проверку определяют только не-Markdown источники — цели ссылок `.md` / `.mdx` (навыки, `AGENTS.md`, `CHANGELOG.md`) — параллельные документы, а не источник истины по API, поэтому их правка никогда не «старит» аудит страницы (правка одной строки навыка не должна делать устаревшей каждую страницу, которая на него ссылается). Когда вы синхронизируете страницу после изменения кода, поднимайте `audited` до сегодняшней даты в том же коммите. Используйте `pnpm run docs:lint-pages:strict` в проверках CI, которые должны падать на устаревших страницах.
 
-**In a shallow clone the check does not run at all** (#524). `git log -1 -- <path>` has no honest answer for a file that was not touched inside the downloaded commits, and returns the date of the truncation boundary instead — which both invents stale pages and hides real ones. Rather than report that, the lint skips freshness, says so on its own line, and the summary reads `audit freshness NOT CHECKED (partial git history)` instead of a page count. It does **not** fail the run, including under `--strict`: the only people a shallow checkout can reach are those who cannot fix it by changing the code. Run `git fetch --unshallow` to get the check back. On a full clone the summary names what was compared — `49 of 52 page(s) with audited: compared against git` — so neither outcome can be mistaken for the other.
+**В неполном (shallow) клоне проверка не выполняется вовсе** (#524). У `git log -1 -- <path>` нет честного ответа для файла, который не менялся в скачанных коммитах, и он возвращает дату границы обрезки — это и выдумывает устаревшие страницы, и скрывает настоящие. Вместо такого отчёта линтер пропускает проверку свежести, говорит об этом отдельной строкой, а итог гласит `audit freshness NOT CHECKED (partial git history)` вместо числа страниц. Запуск при этом **не** падает, в том числе под `--strict`: до неполного клона добираются только те, кто не может исправить это изменением кода. Выполните `git fetch --unshallow`, чтобы вернуть проверку. В полном клоне итог называет, что сравнивалось, — `49 of 52 page(s) with audited: compared against git`, — так что один исход нельзя принять за другой.
 
-`pnpm run docs:lint-links` is the companion check — validates every internal `](/docs/...)` and frontmatter `to: /docs/...` against the actual file tree, and validates `#fragment` parts against actual page headings (slugified the way Nuxt Content does at runtime, including the `-1` / `-2` suffixes github-slugger emits on duplicate headings).
+`pnpm run docs:lint-links` — парная проверка: сверяет каждую внутреннюю ссылку `](/docs/...)` и frontmatter `to: /docs/...` с реальным деревом файлов, а части `#fragment` — с реальными заголовками страниц (слаги строятся так же, как Nuxt Content во время выполнения, включая суффиксы `-1` / `-2`, которые github-slugger добавляет к повторяющимся заголовкам).
 
-Directory walking (`scripts/_docs-utils.mjs` → `walkFiles`) is shared for one reason: the symlink guard. A directory symlink pointing at an ancestor makes a naive walk recurse forever, which **hangs** CI rather than failing it, and a hung job is diagnosed much later than a red one. Three scripts had written their own walk and two of them lacked that guard (#418). Pass `skipDirs: ['node_modules']` when walking `skills/` — `skills/b24jssdk-recipes` is its own npm package (#65), so its dependencies sit inside the tree. `walkMarkdownFiles` remains as the default-extension shorthand. Nothing in the repository has a symlink cycle, so the guard has no natural regression test — `scripts/__tests__/docs-utils-walk.test.mjs` builds one.
+Обход каталогов (`scripts/_docs-utils.mjs` → `walkFiles`) общий по одной причине: защита от символических ссылок. Символическая ссылка на каталог, указывающая на предка, заставляет наивный обход рекурсировать бесконечно, что **подвешивает** CI, а не роняет его, а зависшее задание обнаруживают намного позже, чем красное. Три скрипта написали собственный обход, и у двух из них этой защиты не было (#418). При обходе `skills/` передавайте `skipDirs: ['node_modules']` — `skills/b24jssdk-recipes` — отдельный npm-пакет (#65), поэтому его зависимости лежат внутри дерева. `walkMarkdownFiles` остаётся сокращением для расширений по умолчанию. В репозитории нет ни одного цикла символических ссылок, так что у защиты нет естественного регрессионного теста — его создаёт `scripts/__tests__/docs-utils-walk.test.mjs`.
 
-Frontmatter parsing (`scripts/_docs-utils.mjs` → `parseFrontmatter`) is a thin wrapper around `js-yaml` (root `devDependency`), which replaced a hand-rolled mini-parser. The wrapper still owns the boundary concerns: BOM strip, CRLF→LF, a `__proto__`/`constructor`/`prototype` guard, and `Object.create(null)` return. Two deliberate choices keep behaviour identical to the old parser: `yaml.load` runs with `JSON_SCHEMA` so `audited: YYYY-MM-DD` stays a string (the default schema's YAML timestamp type coerces it to a JS `Date`, breaking the `audited + 'T…'` concat); and each `links:` array item (an object under `js-yaml`) is re-serialised to the legacy `label: …\nto: …` multi-line-string form the link extractors consume.
+Разбор frontmatter (`scripts/_docs-utils.mjs` → `parseFrontmatter`) — тонкая обёртка над `js-yaml` (корневая `devDependency`), заменившая рукописный мини-парсер. Обёртка по-прежнему отвечает за граничные задачи: удаление BOM, CRLF→LF, защиту от `__proto__`/`constructor`/`prototype` и возврат `Object.create(null)`. Два сознательных решения сохраняют поведение прежнего парсера: `yaml.load` запускается с `JSON_SCHEMA`, чтобы `audited: YYYY-MM-DD` оставалось строкой (тип timestamp YAML в схеме по умолчанию приводит его к JS `Date`, ломая конкатенацию `audited + 'T…'`); и каждый элемент массива `links:` (объект под `js-yaml`) повторно сериализуется в прежнюю многострочную строковую форму `label: …\nto: …`, которую потребляют извлекатели ссылок.
 
-## Git Workflow
+## Работа с git
 
-- Branch from `main` before code changes. Naming: `ai/<description>` (lowercase, hyphens) — e.g. `ai/add-auth-helper`, `ai/fix-validation`. Branches created automatically by Claude Code on the web carry a `claude/<description>` prefix instead — both prefixes are acceptable.
-- No branch needed for search / read / exploration.
-- Before commit: `pnpm run lint:fix` and `pnpm run typecheck` must both pass.
-- Keep commit messages clear and Conventional-Commits compliant.
+- Перед изменениями кода создавайте ветку от `main`. Именование: `ai/<description>` (строчные буквы, дефисы) — например, `ai/add-auth-helper`, `ai/fix-validation`. Ветки, которые Claude Code в вебе создаёт автоматически, несут префикс `claude/<description>` — допустимы оба префикса.
+- Для поиска, чтения и изучения ветка не нужна.
+- Перед коммитом: должны проходить и `pnpm run lint:fix`, и `pnpm run typecheck`.
+- Сообщения коммитов — ясные и соответствующие Conventional Commits.
 
-## Before Submitting
+## Перед отправкой
 
-- [ ] `pnpm run lint:fix` clean
-- [ ] `pnpm run typecheck` passes
-- [ ] Relevant Vitest project run is green against a real portal (CI does not run tests)
-- [ ] Documentation updated in the same PR if the public surface changed
-- [ ] If a pattern documented in `.github/contributing/*.md` changed, the matching guide is updated in the same PR
-- [ ] If you touched `AGENTS.md` or any guide under `.github/contributing/`, refresh the `Last reviewed` stamp at the top to today's date
-- [ ] Commit messages follow Conventional Commits
+- [ ] `pnpm run lint:fix` без замечаний
+- [ ] `pnpm run typecheck` проходит
+- [ ] Нужный проект Vitest зелёный на настоящем портале (CI тесты не запускает)
+- [ ] Документация обновлена в том же PR, если изменилась публичная поверхность
+- [ ] Если изменился паттерн, описанный в `.github/contributing/*.md`, соответствующее руководство обновлено в том же PR
+- [ ] Если вы трогали `AGENTS.md` или любое руководство в `.github/contributing/`, обновите отметку «Последняя сверка» (`Last reviewed`) вверху до сегодняшней даты
+- [ ] Сообщения коммитов соответствуют Conventional Commits
 
-Multiple commits are fine — PRs are squash-merged, so no need to rebase or force-push.
+Несколько коммитов — это нормально: PR сливаются через squash, поэтому rebase и force-push не нужны.
 
-## Resources
+## Ресурсы
 
-> **Conflict resolution.** This `AGENTS.md` is the canonical agent-facing guide. The four guides under `.github/contributing/` are authoritative for their respective scopes. [packages/jssdk/README-AI.md](packages/jssdk/README-AI.md) is the current caller-facing API guide and is being progressively absorbed into this guide and the contributing files — when its content disagrees with this guide, this guide wins.
+> **Разрешение конфликтов.** Этот `AGENTS.md` — каноническое руководство для агентов. Четыре руководства в `.github/contributing/` авторитетны каждое в своей области. [packages/jssdk/README-AI.md](packages/jssdk/README-AI.md) — текущее руководство по API для вызывающего кода, которое постепенно переносится в это руководство и файлы для контрибьюторов, — при расхождении его содержимого с этим руководством верх берёт это руководство.
 
-- [packages/jssdk/README-AI.md](packages/jssdk/README-AI.md) — current caller-facing API guide (transitional)
-- [Bitrix24 REST API docs](https://apidocs.bitrix24.com/)
-- [Repository on GitHub](https://github.com/bitrix24/b24jssdk)
+- [packages/jssdk/README-AI.md](packages/jssdk/README-AI.md) — текущее руководство по API для вызывающего кода (переходное)
+- [Документация REST API Битрикс24](https://apidocs.bitrix24.com/)
+- [Репозиторий на GitHub](https://github.com/bitrix24/b24jssdk)

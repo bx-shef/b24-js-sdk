@@ -1,94 +1,97 @@
-# Bitrix24 JS SDK — AI Guide
+# Bitrix24 JS SDK — руководство для ИИ
 
-> ⚠️ **This file is transitional and will be removed.**
+> ⚠️ **Этот файл переходный и будет удалён.**
 >
-> Its content is being progressively absorbed into [`AGENTS.md`](../../AGENTS.md) (the root agent-facing guide) and the four focused guides under [`.github/contributing/`](../../.github/contributing/). Future PRs will continue migrating sections out of here until the file can be deleted.
+> Его содержимое постепенно переносится в [`AGENTS.md`](../../AGENTS.md) (корневое руководство для агентов) и четыре тематических руководства в [`.github/contributing/`](../../.github/contributing/). Следующие PR продолжат переносить разделы отсюда, пока файл не удастся удалить.
 >
-> **Until then:**
+> **Пока этого не произошло:**
 >
-> - When this guide disagrees with `AGENTS.md` or the `.github/contributing/` guides, **`AGENTS.md` wins**. Do not "fix" `AGENTS.md` to match this file.
-> - **Do not add new material here.** New conventions, examples, and patterns belong in `AGENTS.md` or the matching contributing guide.
-> - Bug-fix edits to existing sections are fine (e.g. correcting a stale API name) but should be mirrored into the canonical location as part of the same PR when possible.
+> - Если это руководство расходится с `AGENTS.md` или руководствами в `.github/contributing/`, **верх берёт `AGENTS.md`**. Не «исправляйте» `AGENTS.md`, подгоняя его под этот файл.
+> - **Не добавляйте сюда новый материал.** Новые соглашения, примеры и паттерны относятся в `AGENTS.md` или в соответствующее руководство для контрибьюторов.
+> - Исправления ошибок в существующих разделах допустимы (например, поправить устаревшее имя API), но по возможности их нужно отразить в каноническом месте в том же PR.
 
 ---
 
-Purpose: give AI agents a precise, code-oriented overview of the SDK to generate working Bitrix24 apps. This SDK lets you:
+Назначение: дать ИИ-агентам точный, ориентированный на код обзор SDK, чтобы они генерировали рабочие приложения Битрикс24. С помощью этого SDK можно:
 
-- Call Bitrix24 REST API from apps embedded in Bitrix24 (iframe) and from backend services
-- Interact with Bitrix24 UI: open sliders, dialogs, resize frame, set in-app page title (`#pagetitle`, not the browser tab), IM integrations, etc.
-- Manage app/user options via the parent portal
-- Use helpers (profile/app/options/currencies/licenses/payments) and Pull client
+- вызывать REST API Битрикс24 из приложений, встроенных в Битрикс24 (iframe), и из серверных сервисов;
+- работать с интерфейсом Битрикс24: открывать слайдеры и диалоги, менять размер фрейма, задавать заголовок страницы внутри приложения (`#pagetitle`, а не вкладки браузера), интеграции с IM и т. д.;
+- управлять опциями приложения и пользователя через родительский портал;
+- использовать хелперы (профиль, приложение, опции, валюты, лицензии, платежи) и клиент Pull.
 
-Core building blocks:
+Основные строительные блоки:
 
-- Frontend in frame: B24Frame + initializeB24Frame()
-- Backend/service: B24Hook (webhook-based)
-- REST utilities: actions.v{2,3}.{call,callList,fetchList,batch,batchByChunk}.make
-- UI managers: parent, slider, dialog, placement, options, auth
-- Helpers: B24HelperManager and useB24Helper hook; Pull client
+- Фронтенд во фрейме: B24Frame + initializeB24Frame()
+- Бэкенд/сервис: B24Hook (на основе вебхука)
+- Утилиты REST: actions.v{2,3}.{call,callList,fetchList,batch,batchByChunk}.make
+- Менеджеры интерфейса: parent, slider, dialog, placement, options, auth
+- Хелперы: B24HelperManager и хук useB24Helper; клиент Pull
 
-Note: the package ships ESM, CommonJS, and UMD builds. ESM is the recommended entry point; CommonJS is supported via `require('@bitrix24/b24jssdk')`, and the UMD build is for `<script>` usage in the browser.
+Примечание: пакет поставляется в сборках ESM, CommonJS и UMD. Рекомендуемая точка входа — ESM; CommonJS поддерживается через `require('@bitrix24/b24jssdk')`, а UMD-сборка предназначена для подключения через `<script>` в браузере.
 
-## Removed in 3.0.0 — never generate these
+## Удалено в 3.0.0 — никогда не генерируйте это
 
-The following surface was `@deprecated` through `2.x` and **no longer exists**.
-Generating any of it produces code that does not compile. If you are asked to
-work on a `2.x` codebase that still uses it, the replacement column is the
-rewrite. Full checklist:
+Следующая поверхность была помечена `@deprecated` на протяжении `2.x` и **больше
+не существует**. Генерация любой её части даёт код, который не компилируется. Если
+вас просят работать с кодовой базой на `2.x`, где она ещё используется, столбец
+«Замена» — это то, на что нужно переписать. Полный чек-лист:
 [Migration to v3](https://bitrix24.github.io/b24jssdk/docs/getting-started/migration/v3/).
 
-| Removed in 3.0.0 | Replacement |
+| Удалено в 3.0.0 | Замена |
 |---|---|
 | `b24.callMethod(method, params, start?)` | `b24.actions.v2.call.make({ method, params })` / `b24.actions.v3.call.make({ method, params })` |
 | `b24.callBatch(calls, isHaltOnError?, returnAjaxResult?)` | `b24.actions.v2.batch.make({ calls, options })` / `b24.actions.v3.batch.make(...)` |
 | `b24.callBatchByChunk(calls, isHaltOnError)` | `b24.actions.v2.batchByChunk.make({ calls, options })` / `b24.actions.v3.batchByChunk.make(...)` |
 | `b24.callListMethod(method, params, progress?, customKey?)` | `b24.actions.v2.callList.make({ method, params, customKeyForResult })` / `b24.actions.v3.callList.make(...)` |
 | `b24.fetchListMethod(method, params, idKey?, customKey?)` | `b24.actions.v2.fetchList.make({ method, params, idKey, customKeyForResult })` / `b24.actions.v3.fetchList.make(...)` |
-| `LoggerBrowser`, `LoggerType` | `LoggerFactory.createForBrowser(title, isDev)` — `LoggerType` has no replacement (drop the import; `LoggerFactory` manages levels). |
-**The `AjaxResult` paging members are NOT deprecated.** `#isMore()`, `#hasMore()`,
-`#getTotal()`, `#getNext()` and `#fetchNext()` were once listed for removal in
-`3.0.0`; that plan was withdrawn. `restApi:v2` is not going away soon, and
-deleting methods that work there would break running code for no gain — while
-`#getTotal()` in particular has no replacement at all, since `SuccessPayload`
-omits `total` by design, the list helpers iterate without exposing it, and the
-`aggregate` action is `restApi:v3`-only.
+| `LoggerBrowser`, `LoggerType` | `LoggerFactory.createForBrowser(title, isDev)` — у `LoggerType` замены нет (уберите импорт; уровнями управляет `LoggerFactory`). |
+**Члены `AjaxResult` для постраничной выборки НЕ объявлены устаревшими.** `#isMore()`,
+`#hasMore()`, `#getTotal()`, `#getNext()` и `#fetchNext()` когда-то числились к
+удалению в `3.0.0`; этот план отозван. `restApi:v2` в ближайшее время не уйдёт, а
+удаление работающих там методов сломало бы действующий код без выгоды — при этом
+у `#getTotal()` замены нет вовсе: `SuccessPayload` намеренно опускает `total`,
+хелперы списков итерируют, не раскрывая его, а действие `aggregate` есть только в
+`restApi:v3`.
 
-All five are **`restApi:v2`-only**, and that is what to generate against. Under
-`restApi:v3`: `#getTotal()` returns `0` and `#isMore()` returns `false` **because
-the field is absent** (not "no rows" / "no more pages" — do not branch on them),
-and `#getNext()` / `#fetchNext()` **throw**
-`JSSDK_CORE_METHOD_NOT_SUPPORT_IN_API_V3`. For new paging code prefer
-`actions.v{2,3}.{callList,fetchList}` — they hide the offset bookkeeping and work
-under both versions. For a `restApi:v3` count use `actions.v3.aggregate.make`
-(`@experimental` — the contract is measured, but **no shipped module publishes
-an `*.aggregate` action on any of the four portals checked**) with `count` /
-`countDistinct` on a method that exposes an `*.aggregate` action — check
-`rest.documentation.openapi` and look for paths ending in `.aggregate` to confirm
-the endpoint exists; otherwise reduce a `callList` client-side.
-**Every aggregated field must be `filterable`**, which is not the same as
-selectable: a field that `list` returns quite normally is still refused by an
-aggregate `select` unless `<entity>.field.list` reports `filterable: true` for
-it. On `tasks.task` that is one field of ninety-five, so ask rather than assume.
-The refusal arrives **soft** (`isSuccess === false`, not thrown — a 4xx in the v3
-envelope) as `BITRIX_REST_V3_EXCEPTION_VALIDATION_REQUESTVALIDATIONEXCEPTION`,
-naming the field in `validation[].field`. Match on the code and the field, never
-on the message: it is localised.
+Все пять методов — **только для `restApi:v2`**, именно под это и нужно генерировать
+код. В `restApi:v3`: `#getTotal()` возвращает `0`, а `#isMore()` — `false`, **потому
+что поле отсутствует** (а не «нет строк» / «больше нет страниц» — не ветвитесь по
+ним), а `#getNext()` / `#fetchNext()` **бросают**
+`JSSDK_CORE_METHOD_NOT_SUPPORT_IN_API_V3`. Для нового кода постраничной выборки
+предпочитайте `actions.v{2,3}.{callList,fetchList}` — они скрывают учёт смещения
+и работают в обеих версиях. Для подсчёта в `restApi:v3` используйте
+`actions.v3.aggregate.make` (`@experimental` — контракт измерен, но **ни один
+поставляемый модуль не публикует действие `*.aggregate` ни на одном из четырёх
+проверенных порталов**) с `count` / `countDistinct` для метода, у которого есть
+действие `*.aggregate` — проверьте `rest.documentation.openapi` и найдите пути,
+оканчивающиеся на `.aggregate`, чтобы убедиться, что конечная точка существует;
+иначе сводите `callList` на стороне клиента.
+**Каждое агрегируемое поле должно быть `filterable`**, а это не то же самое, что
+доступное для выборки: поле, которое `list` спокойно возвращает, всё равно
+отклоняется в `select` агрегации, если `<entity>.field.list` не сообщает для него
+`filterable: true`. В `tasks.task` это одно поле из девяноста пяти, так что
+спрашивайте, а не предполагайте. Отказ приходит **мягко** (`isSuccess === false`,
+без исключения — 4xx в оболочке v3) как
+`BITRIX_REST_V3_EXCEPTION_VALIDATION_REQUESTVALIDATIONEXCEPTION` с указанием поля
+в `validation[].field`. Сопоставляйте по коду и полю, но не по сообщению: оно
+локализовано.
 
-`AjaxResult.getData()` returns exactly `{ result: T, time: PayloadTime }` — the
-v2-only `next` and `total` fields are no longer surfaced through the public type.
+`AjaxResult.getData()` возвращает ровно `{ result: T, time: PayloadTime }` —
+поля `next` и `total`, существующие только в v2, больше не раскрываются в
+публичном типе.
 
 
-## Frontend in Bitrix24 (TypeScript, ESM)
+## Фронтенд в Битрикс24 (TypeScript, ESM)
 
-Use when your app runs inside Bitrix24 as an iframe placement. The SDK initializes by messaging with the parent window and supplies auth tokens automatically.
+Используйте, когда приложение работает внутри Битрикс24 как iframe-встройка (placement). SDK инициализируется обменом сообщениями с родительским окном и автоматически подставляет токены авторизации.
 
-Minimal contract
+Минимальный контракт
 
-- `initializeB24Frame(options?: { restrictionParams?, httpOptions? }): Promise<B24Frame>` — `httpOptions` is axios config (`adapter` above all: a browser gets `fetch`, `{ adapter: 'xhr' }` goes back) — allowlisted keys only, others are dropped at construction and their names logged; the first call's options win, a later call returns the frame already built
-- `B24Frame.isInit`: boolean (after init)
-- Auth auto-refresh on 401 (expired/invalid token)
+- `initializeB24Frame(options?: { restrictionParams?, httpOptions? }): Promise<B24Frame>` — `httpOptions` — конфигурация axios (прежде всего `adapter`: браузер получает `fetch`, `{ adapter: 'xhr' }` возвращает прежнее поведение) — допускаются только ключи из белого списка, остальные отбрасываются при создании, а их имена логируются; побеждают параметры первого вызова, повторный вызов возвращает уже созданный фрейм
+- `B24Frame.isInit`: boolean (после инициализации)
+- Автоматическое обновление авторизации при 401 (токен истёк или недействителен)
 
-Example: initialize, call REST, cleanup
+Пример: инициализация, вызов REST, освобождение ресурсов
 
 ```ts
 import {
@@ -153,30 +156,30 @@ function teardown() {
 }
 ```
 
-Useful getters and services on B24Frame
+Полезные геттеры и сервисы B24Frame
 
 - auth: getAuthData(), refreshAuth(), isAdmin; getAppSid()
 - parent: fitWindow(), resizeWindow(w,h), resizeWindowAuto(node?, minH?, minW?), setTitle(title), closeApplication(), reloadWindow(), scrollParentWindow(scroll)
 - slider: getUrl(path), openPath(url[, width]), openSliderAppPage(params), closeSliderAppPage()
-- dialog: selectUser(), selectUsers()  [selectAccess(), selectCRM() are deprecated]
+- dialog: selectUser(), selectUsers()  [selectAccess(), selectCRM() устарели]
 - placement: title, options, isSliderMode, getInterface(), bindEvent(event, cb), call(command, params), callCustomBind(command, params?, cb)
 - options: appGet/set, userGet/set
-- getLang(): portal UI language
+- getLang(): язык интерфейса портала
 
-Patterns
+Паттерны
 
-- Always await initializeB24Frame() before any call.
-- Destroy on page/component unmount with $b24.destroy().
-- For large result sets prefer `actions.v{2,3}.callList.make` (collect) or `actions.v{2,3}.fetchList.make` (stream).
-- For big batches use `actions.v{2,3}.batchByChunk.make` to respect limits.
-- For thousands of commands on a plan that has deferred batches, `actions.v3.deferredBatch.make({ calls, onStatus })` runs them as one background job on the portal and resolves with the decoded rows; `add` / `get` / `waitFor` / `download` / `delete` are the single steps. Commands must be v3 methods (a v2 method is refused with `INVALID_METHOD`), and one failing command fails the whole job with no result file — use list pages, not a `get` per id. See docs: working-with-the-rest-api/deferred-batch-rest-api-ver3.
-- A per-command `result` inside a batch can be `null` when the underlying REST method legitimately returns `null` (e.g. `im.chat.get` with non-matching params). Declare the generic as `T | null` and handle the `null` branch — the SDK no longer coerces it to `{}` (see issue #23).
-- `restApi:v3` batch is all-or-nothing: per-command errors are not returned. If any call fails, the whole batch fails and `response.getErrorMessages()` carries the error.
+- Всегда дожидайтесь initializeB24Frame() перед любым вызовом.
+- Уничтожайте фрейм при размонтировании страницы или компонента через $b24.destroy().
+- Для больших выборок предпочитайте `actions.v{2,3}.callList.make` (сбор) или `actions.v{2,3}.fetchList.make` (потоковая передача).
+- Для больших пакетов используйте `actions.v{2,3}.batchByChunk.make`, чтобы соблюдать лимиты.
+- Для тысяч команд на тарифе с отложенными пакетами (deferred batch) `actions.v3.deferredBatch.make({ calls, onStatus })` выполняет их одним фоновым заданием на портале и возвращает декодированные строки; `add` / `get` / `waitFor` / `download` / `delete` — отдельные шаги. Команды должны быть методами v3 (метод v2 отклоняется с `INVALID_METHOD`), а одна упавшая команда проваливает всё задание без файла результата — используйте страницы списков, а не `get` на каждый id. См. документацию: working-with-the-rest-api/deferred-batch-rest-api-ver3.
+- `result` отдельной команды внутри пакета (batch) может быть `null`, когда нижележащий REST-метод законно возвращает `null` (например, `im.chat.get` с неподходящими параметрами). Объявляйте дженерик как `T | null` и обрабатывайте ветку `null` — SDK больше не приводит его к `{}` (см. issue #23).
+- Пакет (batch) в `restApi:v3` — всё или ничего: ошибки отдельных команд не возвращаются. Если падает любой вызов, падает весь пакет, а ошибка доступна в `response.getErrorMessages()`.
 
 
-## Frontend via UMD (CDN)
+## Фронтенд через UMD (CDN)
 
-When you can’t bundle ESM, load the global B24Js from a CDN inside your iframe app.
+Если собрать ESM нельзя, загрузите глобальный B24Js из CDN внутри iframe-приложения.
 
 ```html
 <script src="https://unpkg.com/@bitrix24/b24jssdk@3/dist/umd/index.min.js"></script>
@@ -208,23 +211,23 @@ When you can’t bundle ESM, load the global B24Js from a CDN inside your iframe
 </script>
 ```
 
-Globals exposed by UMD
+Глобальные объекты UMD
 
 - B24Js.initializeB24Frame
-- B24Js.B24Frame and managers via properties (auth, parent, slider, dialog, placement, options)
-- Utilities: LoggerFactory, Text, Type, enums (e.g., EnumCrmEntityTypeId), Result, AjaxError/AjaxResult, etc.
+- B24Js.B24Frame и менеджеры через свойства (auth, parent, slider, dialog, placement, options)
+- Утилиты: LoggerFactory, Text, Type, перечисления (например, EnumCrmEntityTypeId), Result, AjaxError/AjaxResult и др.
 
 
-## Backend/Services (Node.js, ESM) with B24Hook
+## Бэкенд и сервисы (Node.js, ESM) с B24Hook
 
-Use B24Hook when calling Bitrix24 REST from servers or scripts via incoming webhook. Auth is embedded in the webhook path and no frame is required.
+Используйте B24Hook для вызова REST Битрикс24 с серверов и из скриптов через входящий вебхук. Авторизация встроена в путь вебхука, фрейм не нужен.
 
-Minimal contract
+Минимальный контракт
 
 - new B24Hook({ b24Url, userId, secret }) or B24Hook.fromWebhookUrl(url)
 - actions.v{2,3}.{call,callList,fetchList,batch,batchByChunk}.make
 
-Example: construct from webhook URL and call API
+Пример: создание из URL вебхука и вызов API
 
 ```ts
 import {
@@ -262,7 +265,7 @@ const batch: Result = await $b24.actions.v2.batch.make({
 logger.info('batch', { batch: batch.getData() })
 ```
 
-Listing helpers
+Хелперы списков
 
 ```ts
 import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
@@ -288,17 +291,17 @@ for await (const chunk of $b24.actions.v2.fetchList.make({
 }
 ```
 
-Notes
+Примечания
 
-- Supported Node versions: >=22. Node 20 was dropped in 3.0.0 (EOL 2026-04-30).
-- B24Hook warns if used on the client; keep it server-side.
+- Поддерживаемые версии Node: >=22. Node 20 исключён в 3.0.0 (EOL 2026-04-30).
+- B24Hook предупреждает при использовании на клиенте; держите его на сервере.
 
 
-## UI Integrations in Frame (sliders, dialogs, parent window)
+## Интеграции с интерфейсом во фрейме (слайдеры, диалоги, родительское окно)
 
-These require a B24Frame (i.e., running inside Bitrix24 placement iframe).
+Для них нужен B24Frame (то есть работа внутри iframe встройки Битрикс24).
 
-Sliders
+Слайдеры
 
 ```ts
 // Open a portal path in a slider
@@ -314,7 +317,7 @@ $b24.slider.openSliderAppPage({ some: 'params' }).then(() => { /* the slider was
 $b24.slider.closeSliderAppPage().catch(() => {})
 ```
 
-Dialogs
+Диалоги
 
 ```ts
 const user = await $b24.dialog.selectUser()         // null | { id, name, ... }
@@ -322,7 +325,7 @@ const users = await $b24.dialog.selectUsers()       // SelectedUser[]
 // selectAccess() and selectCRM() exist but are deprecated
 ```
 
-Parent window and IM integrations
+Родительское окно и интеграции с IM
 
 ```ts
 await $b24.parent.fitWindow()
@@ -332,7 +335,7 @@ await $b24.parent.imCallTo(5, true)          // video call to user 5
 await $b24.parent.imOpenMessenger('chat12')  // open messenger
 ```
 
-Placement API
+API встройки (placement)
 
 ```ts
 // Placement meta
@@ -347,7 +350,7 @@ await $b24.placement.call('someCommand', { foo: 'bar' })
 await $b24.placement.callCustomBind('someCommand', { opt: 1 }, (...args) => {})
 ```
 
-Options
+Опции
 
 ```ts
 // App-level
@@ -359,7 +362,7 @@ await $b24.options.userSet('theme', 'dark')
 const theme = $b24.options.userGet('theme')
 ```
 
-Auth and environment
+Авторизация и окружение
 
 ```ts
 const auth = $b24.auth.getAuthData() // { access_token, refresh_token, expires_in, domain, member_id } | false
@@ -371,11 +374,11 @@ const sid = $b24.getAppSid()         // app SID in current session
 ```
 
 
-## Helpers and Pull Client
+## Хелперы и клиент Pull
 
-The SDK ships a high-level helper to preload portal and app data and to work with Pull client.
+SDK поставляется с высокоуровневым хелпером для предзагрузки данных портала и приложения и для работы с клиентом Pull.
 
-Initialization pattern (after B24Frame is initialized)
+Шаблон инициализации (после инициализации B24Frame)
 
 ```ts
 import { initializeB24Frame, useB24Helper, LoadDataType, type TypePullMessage } from '@bitrix24/b24jssdk'
@@ -411,36 +414,36 @@ const userId = helper.profileInfo.data.id
 const uniq = $b24.auth.getUniq('prefix') // unique per member
 ```
 
-Notes
+Примечания
 
-- Helper managers: profile, app, payment, license, currency, options
-- Currency and options managers internally use `actions.v2.batch` / `actions.v2.batchByChunk`
+- Менеджеры хелпера: profile, app, payment, license, currency, options
+- Менеджеры валют и опций внутри используют `actions.v2.batch` / `actions.v2.batchByChunk`
 
 
-## REST calling model and error handling
+## Модель вызова REST и обработка ошибок
 
-Core REST utilities live on `b24.actions.v{2,3}.*`, one action per primitive:
+Основные утилиты REST находятся в `b24.actions.v{2,3}.*`, по одному действию на примитив:
 
 - `call.make({ method, params, requestId? })` => `Promise<AjaxResult>`
 - `batch.make({ calls, options })` => `Promise<Result>`
-  - `calls` can be an object `{ key: { method, params } }` or an array `[ [method, params], ... ]`
-  - `options.isHaltOnError = false` accumulates errors (object-form calls are keyed by request label — read via `getErrorsByKey()` / `getErrorMessagesByKey()`); `true` stops at the first
-  - `options.returnAjaxResult = true` gives you an `AjaxResult` per command
-- `callList.make({ method, params, idKey?, cursorIdKey?, customKeyForResult? })` => `Promise<Result>` (auto-paging)
-- `fetchList.make({ … same options … })` => `AsyncGenerator<any[]>`
-- `batchByChunk.make({ calls, options })` => `Promise<Result>` (chunks any number of commands)
+  - `calls` может быть объектом `{ key: { method, params } }` или массивом `[ [method, params], ... ]`
+  - `options.isHaltOnError = false` накапливает ошибки (вызовы в форме объекта индексируются по метке запроса — читайте через `getErrorsByKey()` / `getErrorMessagesByKey()`); `true` останавливается на первой
+  - `options.returnAjaxResult = true` возвращает `AjaxResult` для каждой команды
+- `callList.make({ method, params, idKey?, cursorIdKey?, customKeyForResult? })` => `Promise<Result>` (автоматическая постраничная выборка)
+- `fetchList.make({ … те же параметры … })` => `AsyncGenerator<any[]>`
+- `batchByChunk.make({ calls, options })` => `Promise<Result>` (разбивает на части любое число команд)
 
-### Choosing list retrieval strategy (recommendations)
+### Выбор стратегии получения списка (рекомендации)
 
-- `callList.make`: fetches the entire dataset into memory — there is no item ceiling, so the bound is what you are willing to hold. Use it for selections small enough to keep in memory, and `fetchList.make` otherwise. On v3, `limit` sizes a **page**, not the total, and each method applies its own maximum: `tasks.task.list` answers 50 whatever is asked.
-- `fetchList.make`: streams data in chunks via async iterator. Use for large datasets to keep memory usage low.
-- `call.make` (manual pagination): control paging via the `start` cursor, `restApi:v2` only. Use when you need precise batching and custom flow. For big data it’s typically less efficient/convenient than `fetchList.make`.
+- `callList.make`: загружает весь набор данных в память — потолка по числу элементов нет, так что граница определяется тем, сколько вы готовы держать. Используйте для выборок, достаточно малых, чтобы поместиться в памяти, а в остальных случаях — `fetchList.make`. В v3 `limit` задаёт размер **страницы**, а не общего итога, и каждый метод применяет свой максимум: `tasks.task.list` отдаёт 50 независимо от запроса.
+- `fetchList.make`: передаёт данные частями через асинхронный итератор. Используйте для больших наборов, чтобы расходовать меньше памяти.
+- `call.make` (ручная постраничная выборка): управление страницами через курсор `start`, только `restApi:v2`. Используйте, когда нужен точный контроль над пакетами и собственный порядок работы. Для больших данных это обычно менее эффективно и удобно, чем `fetchList.make`.
 
-Below are complete examples that iterate until all data are fetched.
+Ниже приведены полные примеры, которые итерируют, пока не будут получены все данные.
 
-#### A) Small datasets: callList.make (all-in-memory)
+#### A) Малые наборы данных: callList.make (всё в памяти)
 
-Assumes `$b24` is already initialized (either B24Frame or B24Hook).
+Предполагается, что `$b24` уже инициализирован (B24Frame или B24Hook).
 
 ```ts
 import { EnumCrmEntityTypeId, Result } from '@bitrix24/b24jssdk'
@@ -469,9 +472,9 @@ async function loadAllCompaniesSmall($b24: any) {
 }
 ```
 
-#### B) Large datasets: fetchList.make (streaming by chunks)
+#### B) Большие наборы данных: fetchList.make (потоковая передача частями)
 
-For `crm.item.list`, use `idKey: 'id'` so the fast-iterator strategy works reliably with v3 entities.
+Для `crm.item.list` используйте `idKey: 'id'`, чтобы стратегия быстрого итератора надёжно работала с сущностями v3.
 
 ```ts
 import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
@@ -498,15 +501,16 @@ async function loadAllDealsStreaming($b24: any) {
 }
 ```
 
-#### C) Manual pagination: call.make + next pages
+#### C) Ручная постраничная выборка: call.make + следующие страницы
 
-> `isMore()` and `getNext()` are **not** deprecated, but both are
-> `restApi:v2`-only: they rely on the envelope field `next`, which `restApi:v3`
-> does not return, and `getNext()` throws against a v3 client. Prefer
-> `b24.actions.v{2,3}.fetchList.make` for custom-throttled iteration; that helper
-> hides pagination for both API versions.
+> `isMore()` и `getNext()` **не** объявлены устаревшими, но оба работают только в
+> `restApi:v2`: они опираются на поле оболочки `next`, которое `restApi:v3` не
+> возвращает, а `getNext()` бросает исключение у клиента v3. Для итерации с
+> собственным ограничением скорости предпочитайте
+> `b24.actions.v{2,3}.fetchList.make`: этот хелпер скрывает постраничную выборку
+> для обеих версий API.
 
-Use when you need to control page sizes, pauses, or add custom throttling. Iterate until `isMore()` returns false, using `getNext($b24.getHttpClient())`.
+Используйте, когда нужно управлять размерами страниц, паузами или добавить собственное ограничение скорости. Итерируйте, пока `isMore()` не вернёт false, используя `getNext($b24.getHttpClient())`.
 
 ```ts
 import { EnumCrmEntityTypeId, AjaxResult } from '@bitrix24/b24jssdk'
@@ -544,7 +548,7 @@ async function loadAllContactsManual($b24: any) {
 }
 ```
 
-Result and AjaxResult basics
+Основы Result и AjaxResult
 
 ```ts
 import { AjaxError } from '@bitrix24/b24jssdk'
@@ -567,71 +571,71 @@ try {
 ```
 
 
-## Recommended generation patterns (for AI)
+## Рекомендуемые паттерны генерации (для ИИ)
 
-- Frontend
-  - Always guard for frame context; initialize via await initializeB24Frame()
-  - On component unmount call $b24.destroy()
-  - For UI actions: prefer $b24.slider.openPath and handle mobile fallback via isOpenAtNewWindow in the returned StatusClose
-  - Use $b24.parent.fitWindow() after content changes
-  - Use $b24.options.appSet/userSet for settings persistence
-- Backend
-  - Construct B24Hook with B24Hook.fromWebhookUrl() when possible
-  - Use `actions.v{2,3}.callList` / `fetchList` for large lists
-  - Batch related calls with `actions.v{2,3}.batch`; chunk big arrays with `batchByChunk`
-- Logging
-  - Build once via LoggerFactory.createForBrowser(appName, isDev) and set to instances if needed
-  - Pass context as an object: `logger.info('message', { key: value })`, not as extra arguments
-- Types and enums
-  - Prefer exported enums (e.g., EnumCrmEntityTypeId) and types (ISODate, payload types)
-
-
-## UMD vs ESM quick cheat sheet
-
-- UMD: window.B24Js global; load via unpkg CDN; use inside Bitrix24 iframe
-- ESM: import from '@bitrix24/b24jssdk'; works in browsers with bundlers and in Node (server-side) for B24Hook
-- CommonJS: const { B24Hook } = require('@bitrix24/b24jssdk'); works in Node.js CJS projects (first-class CJS build with external deps, deduped against your node_modules)
+- Фронтенд
+  - Всегда проверяйте контекст фрейма; инициализируйте через await initializeB24Frame()
+  - При размонтировании компонента вызывайте $b24.destroy()
+  - Для действий с интерфейсом: предпочитайте $b24.slider.openPath и обрабатывайте мобильный запасной вариант через isOpenAtNewWindow в возвращаемом StatusClose
+  - Вызывайте $b24.parent.fitWindow() после изменения содержимого
+  - Для сохранения настроек используйте $b24.options.appSet/userSet
+- Бэкенд
+  - По возможности создавайте B24Hook через B24Hook.fromWebhookUrl()
+  - Для больших списков используйте `actions.v{2,3}.callList` / `fetchList`
+  - Связанные вызовы объединяйте в пакет через `actions.v{2,3}.batch`; большие массивы разбивайте через `batchByChunk`
+- Логирование
+  - Создайте один раз через LoggerFactory.createForBrowser(appName, isDev) и при необходимости передайте экземплярам
+  - Передавайте контекст объектом: `logger.info('message', { key: value })`, а не дополнительными аргументами
+- Типы и перечисления
+  - Предпочитайте экспортируемые перечисления (например, EnumCrmEntityTypeId) и типы (ISODate, типы полезной нагрузки)
 
 
-## Caveats and constraints
+## UMD и ESM: краткая шпаргалка
 
-- Frame-only APIs (dialogs, sliders, placement, parent, options, auth refresh) require running in Bitrix24 placement context
-- openPath automatically handles mobile devices by opening a new tab and polling for close status; check the returned StatusClose
-- Webhook (B24Hook) is not safe on the client; keep it on the server
-- Batch limits apply (SDK default chunk size is 50)
+- UMD: глобальный window.B24Js; загрузка через CDN unpkg; используйте внутри iframe Битрикс24
+- ESM: импорт из '@bitrix24/b24jssdk'; работает в браузерах со сборщиками и в Node (на сервере) для B24Hook
+- CommonJS: const { B24Hook } = require('@bitrix24/b24jssdk'); работает в проектах Node.js на CJS (полноценная CJS-сборка с внешними зависимостями, дедуплицируемыми с вашим node_modules)
 
 
-## Export map (selected)
+## Оговорки и ограничения
 
-- initializeB24Frame, B24Frame and its managers: auth, parent, slider, dialog, placement, options
+- API, доступные только во фрейме (диалоги, слайдеры, placement, parent, options, обновление авторизации), требуют работы в контексте встройки Битрикс24
+- openPath автоматически обрабатывает мобильные устройства: открывает новую вкладку и опрашивает статус закрытия; проверяйте возвращаемый StatusClose
+- Вебхук (B24Hook) небезопасен на клиенте; держите его на сервере
+- Действуют лимиты пакетов (размер части по умолчанию в SDK — 50)
+
+
+## Карта экспорта (избранное)
+
+- initializeB24Frame, B24Frame и его менеджеры: auth, parent, slider, dialog, placement, options
 - B24Hook (+ B24Hook.fromWebhookUrl)
-- Actions surface: `actions.v{2,3}.{call,batch,callList,fetchList,batchByChunk}.make`; `chunkArray` helper on AbstractB24
-- HTTP types and classes: AjaxResult, AjaxError, Result
+- Поверхность действий: `actions.v{2,3}.{call,batch,callList,fetchList,batchByChunk}.make`; хелпер `chunkArray` в AbstractB24
+- HTTP-типы и классы: AjaxResult, AjaxError, Result
 - LoggerFactory, Logger, Text, Type, Browser, tools/use-formatters
-- Types/enums: http, b24, auth, payloads, user, slider, handler, placement, crm, catalog, bizproc, event, pull, b24-helper
+- Типы и перечисления: http, b24, auth, payloads, user, slider, handler, placement, crm, catalog, bizproc, event, pull, b24-helper
 
 
 ---
-This document is based on the SDK source in packages/jssdk/src and the docs under docs/reference and docs/guide. Use it as the authoritative prompt for generating code with this SDK.
+Этот документ основан на исходниках SDK в packages/jssdk/src и документации в docs/reference и docs/guide. Используйте его как авторитетный промпт для генерации кода с этим SDK.
 
 
-## Extras for AI agents (helpers, pull, core, tools)
+## Дополнительно для ИИ-агентов (хелперы, pull, ядро, инструменты)
 
-### Helper Methods (high-level data access)
+### Методы хелпера (высокоуровневый доступ к данным)
 
-- useB24Helper: lifecycle for helpers and Pull client in frame apps (see section above)
-- B24HelperManager: container for helper managers (profile/app/payment/license/currency/options) exposed via useB24Helper
-- ProfileManager: `helper.profileInfo.data` provides current user info
-- AppManager: `helper.appInfo.data` and `helper.appInfo.statusCode`
-- LicenseManager: adjusts Http Restriction Manager for enterprise automatically
-- CurrencyManager: formats amounts for a currency and language
+- useB24Helper: жизненный цикл хелперов и клиента Pull в приложениях во фрейме (см. раздел выше)
+- B24HelperManager: контейнер менеджеров хелпера (profile/app/payment/license/currency/options), доступных через useB24Helper
+- ProfileManager: `helper.profileInfo.data` содержит сведения о текущем пользователе
+- AppManager: `helper.appInfo.data` и `helper.appInfo.statusCode`
+- LicenseManager: автоматически настраивает менеджер ограничений Http для enterprise
+- CurrencyManager: форматирует суммы для валюты и языка
   
   ```ts
   const name = helper.currency.getCurrencyFullName('USD', 'en')
   const literal = helper.currency.getCurrencyLiteral('USD', 'en') // currency symbol/wording
   const price = helper.currency.format(1234.56, 'USD', 'en')
   ```
-- OptionsManager (helper level): bulk save options to REST + optional pull notification
+- OptionsManager (уровень хелпера): массовое сохранение опций через REST + необязательное уведомление через pull
  
   
   ```ts
@@ -643,9 +647,9 @@ This document is based on the SDK source in packages/jssdk/src and the docs unde
   const cfg = helper.appOptions.getJsonObject('featureFlags', {})
   ```
 
-### Push and Pull
+### Push и Pull
 
-- Pull client helpers are provided via useB24Helper
+- Хелперы клиента Pull предоставляются через useB24Helper
   
   ```ts
   const { usePullClient, useSubscribePullClient, startPullClient } = useB24Helper()
@@ -654,11 +658,11 @@ This document is based on the SDK source in packages/jssdk/src and the docs unde
   startPullClient()
   ```
 
-### Core utilities
+### Утилиты ядра
 
-- AbstractB24: owns the HTTP clients, the actions surface (`actions.v{2,3}.*`) and the tools surface
-- Http: low-level transport; supports restriction throttling and auth refresh
-- RestrictionManager: automatic throttling to respect Bitrix24 limits
+- AbstractB24: владеет HTTP-клиентами, поверхностью действий (`actions.v{2,3}.*`) и поверхностью инструментов
+- Http: низкоуровневый транспорт; поддерживает ограничение скорости и обновление авторизации
+- RestrictionManager: автоматическое ограничение скорости для соблюдения лимитов Битрикс24
 
 // fix
   ```ts
@@ -666,14 +670,14 @@ This document is based on the SDK source in packages/jssdk/src and the docs unde
   // $b24.setRestrictionManagerParams(ParamsFactory.getEnterprise())
   ```
  
-- Unique ID Generator: request IDs are appended automatically via Http
-- Result / AjaxResult: uniform result objects, error aggregation. (The paging members `isMore`/`hasMore`/`getTotal`/`getNext`/`fetchNext` are not deprecated, but are `restApi:v2`-only — see Deprecation notice.)
-- Language List and LoggerFactory / Logger
+- Генератор уникальных ID: идентификаторы запросов добавляются автоматически через Http
+- Result / AjaxResult: единообразные объекты результата, агрегация ошибок. (Члены постраничной выборки `isMore`/`hasMore`/`getTotal`/`getNext`/`fetchNext` не объявлены устаревшими, но работают только в `restApi:v2` — см. раздел «Удалено в 3.0.0».)
+- Список языков и LoggerFactory / Logger
 
-### Tools
+### Инструменты
 
-- Type: runtime type helpers (isStringFilled, etc.)
-- Text: dates (Luxon), numbers (numberFormat), UUID v7, encode/decode, case transforms
+- Type: хелперы типов времени выполнения (isStringFilled и др.)
+- Text: даты (Luxon), числа (numberFormat), UUID v7, кодирование/декодирование, преобразование регистра
   
   ```ts
   import Text from '@bitrix24/b24jssdk'
@@ -682,6 +686,6 @@ This document is based on the SDK source in packages/jssdk/src and the docs unde
   const id = Text.getUuidRfc4122()
   ```
  
-- Browser: lightweight browser utilities
-- useFormatters: number/date formatting hooks
-- pick/omit/getEnumValue: object and enum helpers
+- Browser: лёгкие утилиты для браузера
+- useFormatters: хуки форматирования чисел и дат
+- pick/omit/getEnumValue: хелперы для объектов и перечислений

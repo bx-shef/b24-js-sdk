@@ -1,1 +1,1 @@
-> See [AGENTS.md](AGENTS.md) — this file has been merged there.
+> См. [AGENTS.md](AGENTS.md) — этот файл объединён с ним.

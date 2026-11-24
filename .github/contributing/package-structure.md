@@ -337,4 +337,4 @@ When you change the core SDK API:
 
 1. Re-run `pnpm run package-jssdk-nuxt:typecheck`.
 2. If the new surface is Nuxt-relevant (composables, app-config integration, plugin-time setup), update `packages/jssdk-nuxt/src/runtime/plugin` in the same PR.
-3. If [packages/jssdk/README-AI.md](../../packages/jssdk/README-AI.md) shows usage of the changed surface, update it — but note this file is **transitional** (being absorbed into `AGENTS.md` and the contributing guides by future PRs). When the README-AI content disagrees with `AGENTS.md`, `AGENTS.md` wins. See the conflict-resolution note in [AGENTS.md Resources](../../AGENTS.md#resources).
+3. If [packages/jssdk/README-AI.md](../../packages/jssdk/README-AI.md) shows usage of the changed surface, update it — but note this file is **transitional** (being absorbed into `AGENTS.md` and the contributing guides by future PRs). When the README-AI content disagrees with `AGENTS.md`, `AGENTS.md` wins. See the conflict-resolution note in [AGENTS.md Resources](../../AGENTS.md#ресурсы).

@@ -328,7 +328,7 @@ A checklist mirroring the steps verified by code review. The canonical example i
 - [ ] Matching docs page under docs/content/docs/ added or updated
 ```
 
-See also the [Adding a REST Method to an Existing Action](../../AGENTS.md#adding-a-rest-method-to-an-existing-action) lightweight checklist in `AGENTS.md` when you only need to call a new method from caller code, without adding a new action class.
+See also the [Adding a REST Method to an Existing Action](../../AGENTS.md#добавление-rest-метода-в-существующее-действие) lightweight checklist in `AGENTS.md` when you only need to call a new method from caller code, without adding a new action class.
 
 ## Quick Reference
 

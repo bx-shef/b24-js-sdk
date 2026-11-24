@@ -1,192 +1,198 @@
-# Security policy
+# Политика безопасности
 
-<sub>Last reviewed: 2026-09-04.</sub>
+<sub>Последняя сверка: 2026-09-04.</sub>
 
-## Reporting a vulnerability
+## Сообщение об уязвимости
 
-**Use GitHub's private vulnerability reporting:**
-[Report a vulnerability](https://github.com/bitrix24/b24jssdk/security/advisories/new).
+**Воспользуйтесь приватными сообщениями об уязвимостях GitHub:**
+[Сообщить об уязвимости](https://github.com/bitrix24/b24jssdk/security/advisories/new).
 
-It is private between you and the maintainers, it does not require you to know
-an email address, and it keeps the report out of public view while a fix is
-prepared. You need a GitHub account, but the report is not visible to other
-users.
+Сообщение видно только вам и мейнтейнерам, адрес электронной почты знать не
+нужно, а пока готовится исправление, сообщение скрыто от посторонних. Нужна
+учётная запись GitHub, но другим пользователям сообщение не видно.
 
-**Please do not open a public issue for a security problem.** A public issue is
-indexed within minutes, and for a client SDK the window between disclosure and a
-released fix is time in which every consumer is exposed with no way to act.
+**Пожалуйста, не создавайте публичный issue по проблеме безопасности.** Публичный
+issue индексируется за минуты, а для клиентского SDK время между раскрытием и
+выходом исправления — это время, когда все пользователи уязвимы и ничего не
+могут сделать.
 
-If private reporting is unavailable to you for any reason, open a normal issue
-saying only *"security report, please advise a private channel"* — with no
-detail, no reproduction, and no affected version — and a maintainer will follow
-up.
+Если приватные сообщения вам по какой-то причине недоступны, создайте обычный
+issue с единственной фразой *«security report, please advise a private channel»*
+— без подробностей, воспроизведения и затронутой версии — и мейнтейнер свяжется
+с вами.
 
-### What helps
+### Что поможет
 
-- The SDK version, the Node or browser version, and which entry point
+- Версия SDK, версия Node или браузера и точка входа
   (`B24Hook`, `B24Frame`, `B24OAuth`).
-- What an attacker gains, concretely. "A webhook secret reaches a log sink the
-  application did not intend" is actionable; "the logger is unsafe" is not.
-- A reproduction, however rough. A failing snippet is worth more than a careful
-  description of one.
+- Что именно получает атакующий. «Секрет вебхука попадает в приёмник логов, не
+  предусмотренный приложением» — по этому можно работать; «логгер небезопасен» —
+  нельзя.
+- Воспроизведение, пусть даже грубое. Падающий фрагмент кода ценнее аккуратного
+  его описания.
 
-**Never include a real credential.** Not a webhook URL, not an
-`access_token`, not an `application_token` — advisories can become public later,
-and the report itself becomes an artefact worth protecting. Redact the secret
-and describe its shape instead.
+**Никогда не прикладывайте настоящие учётные данные.** Ни URL вебхука, ни
+`access_token`, ни `application_token` — advisory может позже стать публичным, а
+само сообщение превращается в артефакт, который стоит защищать. Скройте секрет и
+опишите его вид.
 
-### What to expect
+### Чего ожидать
 
-We aim to acknowledge a report within a few working days. That is an intention,
-not a contract — this is a small team, and pretending to a fixed SLA would be
-worse than saying so.
+Мы стремимся подтвердить получение сообщения в течение нескольких рабочих дней.
+Это намерение, а не обязательство: команда небольшая, и изображать
+фиксированный SLA было бы хуже, чем честно об этом сказать.
 
-After acknowledgement you can expect: confirmation of whether we reproduce it, a
-view on severity, and an outline of the fix. If we decide it is not a
-vulnerability we will say why rather than closing quietly, and you are free to
-disagree.
+После подтверждения вы получите: сведения о том, воспроизвели ли мы проблему,
+оценку серьёзности и набросок исправления. Если мы решим, что это не уязвимость,
+мы объясним почему, а не закроем сообщение молча; вы вправе не согласиться.
 
-Credit in the advisory and the changelog by default; tell us if you would rather
-not be named.
+По умолчанию вы указываетесь в advisory и в журнале изменений; скажите, если
+предпочитаете остаться неназванным.
 
-## Scope
+## Область действия
 
-This repository is a **client library**. That boundary decides where a report
-should go, and getting it wrong costs everyone time.
+Этот репозиторий — **клиентская библиотека**. Эта граница определяет, куда
+направлять сообщение, а ошибка в выборе стоит времени всем.
 
-**In scope** — anything in this repository:
+**В области действия** — всё, что находится в этом репозитории:
 
-- Credential handling in the SDK: leaking a webhook secret or token into logs,
-  error messages, serialised errors, or telemetry.
-- Flaws in what the SDK does with a REST response — parsing, batch fan-out,
-  retry and rate-limit handling.
-- Anything the SDK does that lets a caller be attacked by a malicious portal
-  response.
-- The published npm package: its integrity, its dependency tree, its build.
-- The documentation site in `docs/` and the guidance in `skills/`, when a
-  documented pattern is itself insecure. Guidance that leads a reader into a
-  vulnerability is a vulnerability with extra steps.
+- Работа SDK с учётными данными: утечка секрета или токена вебхука в логи,
+  сообщения об ошибках, сериализованные ошибки или телеметрию.
+- Недостатки в том, что SDK делает с ответом REST: разбор, разворачивание
+  пакетных запросов (batch), повторы и учёт лимитов частоты запросов.
+- Всё, что позволяет атаковать вызывающий код с помощью вредоносного ответа
+  портала.
+- Опубликованный npm-пакет: его целостность, дерево зависимостей, сборка.
+- Сайт документации в `docs/` и руководства в `skills/`, если описанный в них
+  приём сам небезопасен. Руководство, которое подводит читателя к уязвимости, —
+  это уязвимость с дополнительными шагами.
 
-**Not in scope here** — report these to Bitrix24 directly, through
-[the Bitrix24 developer channels](https://apidocs.bitrix24.com/):
+**Вне области действия** — об этом сообщайте напрямую в Битрикс24, через
+[каналы для разработчиков Битрикс24](https://apidocs.bitrix24.com/):
 
-- Vulnerabilities in the Bitrix24 REST API, in a portal, or in the platform.
-- Issues in an application built with this SDK, where the SDK behaves as
-  documented.
-- The behaviour of a Bitrix24 method itself — what it returns, who it lets you
-  reach, what it permits.
+- Уязвимости в REST API Битрикс24, в портале или в платформе.
+- Проблемы в приложении, созданном с помощью этого SDK, когда SDK ведёт себя так,
+  как описано в документации.
+- Поведение самого метода Битрикс24: что он возвращает, к кому даёт доступ, что
+  разрешает.
 
-If you are unsure which side a problem falls on, report it here and say you are
-unsure. Misrouting it in good faith is not a mistake worth worrying about.
+Если вы не уверены, на чьей стороне проблема, сообщите о ней здесь и скажите,
+что не уверены. Ошибиться адресом добросовестно — не та ошибка, из-за которой
+стоит волноваться.
 
-## Supported versions
+## Поддерживаемые версии
 
-| Version | Supported |
+| Версия | Поддерживается |
 | --- | --- |
-| `2.x` | Yes — security fixes land here |
-| `1.x` | No |
+| `2.x` | Да — исправления безопасности выходят здесь |
+| `1.x` | Нет |
 
-`1.x` reached end of life with the `2.0.0` release. It receives no security
-fixes.
+Поддержка `1.x` закончилась с выходом `2.0.0`. Исправлений безопасности для неё
+нет.
 
-> **This boundary is a policy, not an enforcement.** The `1.x` releases are still
-> published on npm and are not marked deprecated, so `npm i @bitrix24/b24jssdk@1`
-> installs one today without a warning. Marking them is a registry action rather
-> than a repository change, so it cannot land in a pull request; it is tracked in
-> [#406](https://github.com/bitrix24/b24jssdk/issues/406). Until that happens, do
-> not read "unsupported" as "unavailable" — check the version you actually
-> resolved.
+> **Эта граница — политика, а не техническое ограничение.** Релизы `1.x` всё ещё
+> опубликованы в npm и не помечены как устаревшие (deprecated), поэтому
+> `npm i @bitrix24/b24jssdk@1` и сегодня установит такой релиз без
+> предупреждения. Пометка — действие в реестре, а не изменение репозитория,
+> поэтому в pull request её не внести; она отслеживается в
+> [#406](https://github.com/bitrix24/b24jssdk/issues/406). Пока этого не
+> произошло, не читайте «не поддерживается» как «недоступно» — проверяйте версию,
+> которая реально установилась.
 
-A `3.0.0` is in preparation. When it ships, this table changes and the change
-will be announced in the release notes rather than only here.
+Готовится `3.0.0`. Когда она выйдет, эта таблица изменится, и об этом сообщат в
+примечаниях к релизу, а не только здесь.
 
-## What the SDK already does
+## Что SDK уже делает
 
-Listed so a report can say "this defence has a hole" rather than rediscovering
-the defence. None of this is a guarantee — each exists because something went
-wrong once.
+Перечислено, чтобы в сообщении можно было написать «в этой защите есть дыра», а
+не открывать защиту заново. Ничто из этого не является гарантией — каждый пункт
+появился потому, что однажды что-то пошло не так.
 
-- **Credentials are redacted before logging.** `redactSensitiveParams()`
-  ([`core/http/redact.ts`](packages/jssdk/src/core/http/redact.ts)) strips
+- **Учётные данные скрываются перед логированием.** `redactSensitiveParams()`
+  ([`core/http/redact.ts`](packages/jssdk/src/core/http/redact.ts)) удаляет
   `auth`, `token`, `secret`, `access_token`, `refresh_token`, `client_secret`,
-  `application_token`, `password`, `sessid`, `key` and `signature` from request
-  params — including inside a query string, and two object levels deep, which is
-  what a batch payload needs — before they can reach a log sink. It also masks
-  the secret segment of a Bitrix24 webhook URL, `/rest/<userId>/<secret>/`,
-  which is neither a key nor a `key=value` pair and so is not something the
-  other two passes can see. `AjaxError.requestInfo` carries no request URL at all
-  (#39, #40, #287).
-- **The redactor runs over response bodies as well as request params.** A portal
-  method can return a URL with a webhook secret in its path —
-  `rest.deferredbatch.downloadresult` does — so the `post/response` record is in
-  scope for redaction exactly as `post/send` is.
-- **`SdkError.originalError` is non-enumerable.** It stays readable for local
-  debugging, but a spread, `Object.keys()`, `JSON.stringify()` or a
-  Sentry-style capture skips it, so a raw transport error carrying a secret in
-  its `config` cannot leak through generic serialisation (#189).
-- **Three lint rules guard the logging callsites.**
-  [`no-credential-in-logger`](eslint-rules/no-credential-in-logger.js) rejects a
-  URL- or credential-shaped value in a logger context;
+  `application_token`, `password`, `sessid`, `key` и `signature` из параметров
+  запроса — в том числе внутри строки запроса и на глубину два уровня объектов,
+  что нужно для пакетного (batch) запроса, — до того, как они попадут в приёмник
+  логов. Она также маскирует секретный сегмент URL вебхука Битрикс24,
+  `/rest/<userId>/<secret>/`: это ни ключ, ни пара `key=value`, поэтому два
+  других прохода его не видят. `AjaxError.requestInfo` вообще не содержит URL
+  запроса (#39, #40, #287).
+- **Скрытие применяется и к телам ответов, и к параметрам запроса.** Метод
+  портала может вернуть URL с секретом вебхука в пути —
+  `rest.deferredbatch.downloadresult` так и делает, — поэтому запись
+  `post/response` подпадает под скрытие так же, как `post/send`.
+- **`SdkError.originalError` неперечислимо.** Оно остаётся доступным для
+  локальной отладки, но spread, `Object.keys()`, `JSON.stringify()` или
+  захват в духе Sentry его пропускают, так что сырая ошибка транспорта с секретом
+  в `config` не утечёт через обычную сериализацию (#189).
+- **Три правила линтера охраняют места вызова логгера.**
+  [`no-credential-in-logger`](eslint-rules/no-credential-in-logger.js) отклоняет
+  значение в виде URL или учётных данных в контексте логгера;
   [`require-catch-on-logger-call`](eslint-rules/require-catch-on-logger-call.js)
-  keeps a rejecting log sink from taking the process down;
+  не даёт отклонённому приёмнику логов уронить процесс;
   [`logger-context-must-be-object`](eslint-rules/logger-context-must-be-object.js)
-  keeps the context argument a record, so an error does not serialise to `{}`.
-- **Dependencies are audited in CI.** `pnpm audit --audit-level=moderate` runs
-  on every push, for the workspace and separately for the recipe package, which
-  has its own lockfile. Dependabot covers both.
-- **Constant-time token comparison is documented, with the reason.** See
-  [Security patterns](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/security/)
-  for verifying an `application_token` without leaking it through response
-  timing, and for the reply-`2xx`-first ordering an event receiver needs.
+  требует, чтобы аргумент контекста был объектом-записью, иначе ошибка
+  сериализуется в `{}`.
+- **Зависимости проверяются в CI.** `pnpm audit --audit-level=moderate`
+  запускается при каждом push — для рабочего пространства и отдельно для пакета
+  рецептов, у которого свой lock-файл. Dependabot покрывает оба.
+- **Сравнение токенов за постоянное время описано с обоснованием.** См.
+  [Security patterns](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/security/):
+  как проверять `application_token`, не выдавая его временем ответа, и какой
+  порядок (сначала ответ `2xx`) нужен получателю событий.
 
-### Known limits
+### Известные ограничения
 
-- **Redaction stops two object levels down.** That depth is chosen to cover a
-  batch payload (`{ cmd: [{ method, params: { … } }] }`); a credential nested
-  deeper is **not** masked. Redact at the callsite for those.
-- **The query-string pass only matches a bare `key=value`.** A bracketed or
-  encoded key — `auth[application_token]=` — is not caught by the string pass,
-  and a credential appearing after a newline inside a multi-line string value is
-  not caught either.
-- The lint rules are syntax-only: they cannot see a credential through string
-  interpolation, so `` logger.debug(`GET ${url}`) `` passes them. Log the bare
-  method name. `no-credential-in-logger` also leaves `auth` and `sessid` out of
-  its vocabulary on purpose, to avoid false positives, and relies on the runtime
-  redactor for those two.
-- Redaction applies to `AjaxError`. An `SdkError` you construct yourself is not
-  redacted — do not interpolate params, a filter, or a URL into its description.
-- A `filter` legitimately carries user data. It is not treated as a credential,
-  and it is not redacted.
-- **The path pass matches one shape**, Bitrix24's own webhook URL. "A credential
-  somewhere in a path" is not a decidable question, so a credential that some
-  other service puts in a path is not covered.
-- **Response bodies are logged at `info`, redacted.** Redaction is not omission
-  — a portal answer is user data. If your sink should not hold it, filter at the
-  sink or do not wire one at `info`.
+- **Скрытие останавливается на втором уровне вложенности объектов.** Такая
+  глубина выбрана, чтобы покрыть пакетный (batch) запрос
+  (`{ cmd: [{ method, params: { … } }] }`); учётные данные глубже **не**
+  маскируются. В таких случаях скрывайте их в месте вызова.
+- **Проход по строке запроса находит только простое `key=value`.** Ключ в
+  скобках или закодированный — `auth[application_token]=` — этот проход не
+  ловит; учётные данные после перевода строки внутри многострочного строкового
+  значения тоже не ловятся.
+- Правила линтера только синтаксические: они не видят учётные данные внутри
+  интерполяции строк, поэтому `` logger.debug(`GET ${url}`) `` их проходит.
+  Логируйте только имя метода. `no-credential-in-logger` также намеренно не
+  включает `auth` и `sessid` в свой словарь, чтобы избежать ложных срабатываний, и
+  для этих двух полагается на скрытие во время выполнения.
+- Скрытие применяется к `AjaxError`. `SdkError`, который вы создаёте сами, не
+  скрывается — не подставляйте в его описание параметры, фильтр или URL.
+- `filter` по определению содержит пользовательские данные. Он не считается
+  учётными данными и не скрывается.
+- **Проход по пути соответствует одной форме** — URL вебхука самого Битрикс24.
+  Вопрос «есть ли где-то в пути учётные данные» неразрешим, поэтому данные,
+  которые какой-то другой сервис кладёт в путь, не покрыты.
+- **Тела ответов логируются на уровне `info` в скрытом виде.** Скрытие — не
+  исключение: ответ портала — это пользовательские данные. Если ваш приёмник не
+  должен их хранить, фильтруйте на стороне приёмника или не подключайте его на
+  уровне `info`.
 
-The first two are recorded as accepted residual risk in
-[`redact.ts`](packages/jssdk/src/core/http/redact.ts) itself, with the reasoning.
-They are listed here so a report about them arrives knowing that, rather than
-being told afterwards — and so a leak that falls *outside* them is not dismissed
-as already-known.
+Первые два пункта записаны как принятый остаточный риск в самом
+[`redact.ts`](packages/jssdk/src/core/http/redact.ts) вместе с обоснованием. Они
+перечислены здесь, чтобы сообщение о них приходило уже с этим знанием, а не
+получало его в ответ, — и чтобы утечка, которая лежит *вне* их, не отвергалась
+как уже известная.
 
-## Public disclosure
+## Публичное раскрытие
 
-We prefer coordinated disclosure: a fix released, then an advisory. If you plan
-to publish on your own schedule, tell us the date — we would rather work to your
-timeline than be surprised by it.
+Мы предпочитаем скоординированное раскрытие: сначала выходит исправление, затем
+advisory. Если вы планируете опубликовать информацию по собственному графику,
+сообщите нам дату — мы лучше подстроимся под ваши сроки, чем будем застигнуты
+врасплох.
 
-If a report has gone unanswered long enough that you are wondering whether it
-was seen — a fortnight is a reasonable point to stop wondering — escalate
-through [the Bitrix24 developer channels](https://apidocs.bitrix24.com/) rather
-than waiting indefinitely. Read that as permission to stop being patient, not as
-a deadline we are promising to meet; the section above says why we do not commit
-to one, and it would be incoherent to commit to one here.
+Если на сообщение долго нет ответа и вы сомневаетесь, видели ли его, — две
+недели разумный срок, чтобы перестать сомневаться, — обратитесь через
+[каналы для разработчиков Битрикс24](https://apidocs.bitrix24.com/), а не
+ждите бесконечно. Воспринимайте это как разрешение перестать терпеть, а не как
+срок, который мы обещаем соблюсти; выше объяснено, почему мы не берём на себя
+такое обязательство, и брать его здесь было бы непоследовательно.
 
 ---
 
-<sub>This document cites specific internals — the redaction key list, three lint
-rules, an end-of-life date. `docs-lint --strict` does not reach root files, so
-nothing fails when those drift. Re-read it against the source whenever
-`redact.ts`, `eslint-rules/` or the supported-version table changes, and move the
-stamp above.</sub>
+<sub>Этот документ ссылается на конкретные внутренности: список скрываемых
+ключей, три правила линтера, дату окончания поддержки. `docs-lint --strict` не
+проверяет корневые файлы, поэтому при расхождении ничего не упадёт. Перечитывайте
+документ по исходникам при каждом изменении `redact.ts`, `eslint-rules/` или
+таблицы поддерживаемых версий и обновляйте отметку выше.</sub>

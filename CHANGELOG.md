@@ -367,7 +367,7 @@ that need more than a line.
 * **`AggregateResultV3` values are `string | number | null`, not `number`.**
   `AggregateV3` is `@experimental`, so this is a correction inside the `2.x`
   line, not a breaking change — see the
-  [`@experimental` carve-out](RELEASING.md#versioning). It is also unlikely to
+  [`@experimental` carve-out](RELEASING.md#версионирование). It is also unlikely to
   have broken anyone in practice: no shipped Bitrix24 module publishes an
   `*.aggregate` action on any of four portals, so there is nothing on a real portal
   to call. The contract was therefore measured against a module written for the

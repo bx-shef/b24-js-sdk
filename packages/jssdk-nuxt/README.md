@@ -1,15 +1,15 @@
 # @bitrix24/b24jssdk-nuxt
 
-Bitrix24 REST API JS SDK for Nuxt
+JS SDK для REST API Битрикс24 в Nuxt
 
-## Quick Setup
+## Быстрая установка
 
-Install the module to your Nuxt application with one command:
+Подключите модуль к приложению на Nuxt одной командой:
 
 ```bash
 npx nuxi module add @bitrix24/b24jssdk-nuxt
 ```
 
-That's it! You can now use `@bitrix24/b24jssdk-nuxt` in your Nuxt app
+Это всё! Теперь `@bitrix24/b24jssdk-nuxt` можно использовать в приложении на Nuxt
 
-Find more details in the [documentation](https://bitrix24.github.io/b24jssdk/guide/getting-started-nuxt.html)
+Подробности — в [документации](https://bitrix24.github.io/b24jssdk/guide/getting-started-nuxt.html)
