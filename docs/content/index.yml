@@ -1,10 +1,10 @@
-title: 'Bitrix24 JS SDK'
-description: Bitrix24 JS SDK for using Bitrix24 REST API in local, production applications or via webhooks.
+title: 'JS SDK Битрикс24'
+description: JS SDK Битрикс24 для работы с REST API Битрикс24 в локальных и промышленных приложениях или через вебхуки.
 hero:
   title: '@bitrix24/b24jssdk'
-  description: for using Bitrix24 REST API in local, production applications or via webhooks
+  description: для работы с REST API Битрикс24 в локальных и промышленных приложениях или через вебхуки
   links:
-    - label: Get started
+    - label: Быстрый старт
       to: /docs/getting-started/
       color: 'air-secondary-accent-2'
       iconName: 'PlayLIcon'
