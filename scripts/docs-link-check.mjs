@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { readFileSync } from 'node:fs'
+import { readFileSync, realpathSync } from 'node:fs'
 import { join, resolve, relative, dirname } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 import { walkMarkdownFiles, parseFrontmatter } from './_docs-utils.mjs'
 import { createReporter } from './_reporter.mjs'
 
@@ -39,19 +39,17 @@ function fileToUrl(file) {
   return `${URL_PREFIX}${segments.join('/')}${segments.length ? '/' : ''}`
 }
 
-// Slug a heading the way `github-slugger` (used by Nuxt Content) does:
-// lowercase, strip everything that isn't a word char, whitespace or hyphen,
-// then turn each whitespace char into a single hyphen. Adjacent hyphens are
-// preserved so "A  B" -> "a--b" (matches Nuxt Content's runtime behaviour).
-// Same rule as github-slugger, which @nuxtjs/mdc uses for heading ids: letters and
-// numbers of any script survive, so a Russian heading keeps its Cyrillic anchor.
-// `\w` here would strip it to an empty anchor that the rendered page never has.
+// Slug a heading the way `github-slugger` does — @nuxtjs/mdc builds heading ids
+// with it: lowercase, drop everything except letters, marks and numbers of any
+// script, `_`, `-` and the plain space, then turn each space into a hyphen. No
+// trim and no other whitespace: "A  B" -> "a--b", "🚀 Start" -> "-start",
+// "a\u00a0b" -> "ab", exactly as on the rendered page. A Russian heading keeps its
+// Cyrillic anchor; `\w` would strip it to an empty one the page never has.
 export function slugifyHeading(text) {
   return text
     .toLowerCase()
-    .replace(/[^\p{L}\p{M}\p{N}_\s-]/gu, '')
-    .trim()
-    .replace(/\s/g, '-')
+    .replace(/[^\p{L}\p{M}\p{N}_ -]/gu, '')
+    .replace(/ /g, '-')
 }
 
 // Build the slug set, mirroring github-slugger's collision behaviour: the
@@ -191,6 +189,8 @@ function main() {
   process.exit(report.finish())
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Run only as a script, not on import (the slug test imports slugifyHeading).
+// Compare real paths: a symlinked launcher must still run the check, not skip it.
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   main()
 }
