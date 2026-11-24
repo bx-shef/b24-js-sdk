@@ -1,6 +1,6 @@
 # AGENTS.md
 
-<sub>Last reviewed: 2026-09-09.</sub>
+<sub>Last reviewed: 2026-11-24.</sub>
 
 This file is the single source of truth for AI coding agents and human contributors working on the `@bitrix24/b24jssdk` repository. The detailed guides under `.github/contributing/` are referenced from the relevant sections below — load them only when they apply to your task.
 
@@ -287,34 +287,74 @@ PR Review:
 - [ ] All local checks pass (lint, typecheck, relevant test filter)
 ```
 
-## How much review a change is worth
+## Ревью PR
 
-Review is not free, and applying the heaviest form to everything has a specific
-failure mode: the same configuration files get rewritten across dozens of
-iterations, each one defensible, and the result is a codebase nobody can hold in
-their head. It is worth naming because it looks like diligence the whole way
-down.
+Объём ревью задаёт **уровень** PR по путям изменённых файлов: `tools/review-tier.sh --action`
+(`--explain` — по файлам). Правила репозитория — `tools/review-tier.rules`; сам движок — копия
+эталона bx-shef/toolsai, здесь его не правят. Уровень PR — наибольший из уровней его файлов; не
+подошло ни одно правило — уровень 1. Порядок действий — навык `review-panel`
+([SKILL.md](.claude/skills/review-panel/SKILL.md)). Основная проверка — `pnpm run lint`, `pnpm run typecheck`, `pnpm run package-jssdk:test:run-unit` и `node --test "scripts/__tests__/**/*.test.mjs"`; последняя же сверяет правила уровней.
 
-**Convene the full panel** — five reviewers plus `/code-review` — for a change
-that alters:
+| уровень | что меняется | ревью | примеры |
+| --- | --- | --- | --- |
+| 0 | документы и переводы (`*.md`, `docs/content`, `skills/`), тесты, версии, `.gitattributes` | без ревью: основная проверка | перевод главы, строка в CHANGELOG, подъём версии, новый тест |
+| 1 | мелкое поведение: всё, что не 0 и не 2 | `/code-review medium --max-findings 5`; уровень `max` запрещён | исправление в одном хелпере, страница сайта документации, playground |
+| 2 | деньги, лицензия, безопасность, транспорт и авторизация, сборка, CI, Docker и образы, публичный API | двое проверяющих параллельно: «Безопасность» и «Инженер/QA»; панель из пяти — для денег и лицензий и по правилу панели на задачу; `/code-review` при ревью уровня 2 не зовём | `core/http`, `oauth`, `actions` (batch), `index.ts`, `package.json`, воркфлоу, сервер сайта |
 
-- runtime behaviour of `packages/jssdk/src/`;
-- the public API surface, including a deprecation decision (see
-  [`deprecations.md`](.github/contributing/deprecations.md));
-- how the SDK talks to a portal — transports, limiters, auth, batching;
-- anything with a security dimension.
+- **Ручной уровень** главнее автоматического: `tools/review-tier.sh --level N` или `REVIEW_TIER=N`; его же
+  задаёт слово владельца («уровень 2», «панель», «без ревью») или строка «Уровень ревью: N» в описании PR.
+  Вывод показывает оба: «вручную N, по путям M». Легенда уровней — `tools/review-tier.sh --levels`.
+- Агент вправе **поднять** уровень сам (сомнение; правка выросла из рассуждения, а не из замера; в тексте
+  цена или условия лицензии), **понизить** вправе только владелец: ручной уровень ниже автоматического
+  печатает предупреждение. Пути с пометкой «слово владельца» — стоп до слова владельца.
+- Ревью уровня 2 — двое проверяющих параллельно: «Безопасность» и «Инженер/QA» (QA — внутри роли
+  инженера, мутаций не больше 3 на PR). В Codex Безопасность — `gpt-6.2-sol`, высокое усилие, Инженер/QA — `gpt-6.2-sol`, среднее; максимум усилия — никогда. Ревью проверяет образ, Dockerfile, ключи, порты, выкладку.
+  Панель из пяти (Документация, Инженер, QA, Безопасность, CTO; в Codex Безопасность и CTO — `gpt-6.2-sol`, высокое усилие,
+  остальные — `gpt-6.2-sol`, среднее) — если PR трогает деньги или лицензии, а также минимум раз на задачу перед последним PR, кроме задач только уровня 0.
+- Повтор: после правок перепроверяет только нашедший замечание — продолжением того же агента, а не новым;
+  полное ревью заново — только если PR переписан; серия связанных PR — одно ревью (двое или панель) на
+  общий дифф.
+- Находки чинятся в том же PR; отклонённая находка — с доводом и замером, а не молча. Отчёт —
+  по-русски, коротко.
 
-**`/code-review` alone is enough** for documentation, contributing guides,
-configuration, styling, and dependency bumps. If it turns up something with a
-behavioural edge, escalate then — that is cheaper than convening six reviewers
-for a page of prose.
+Если `/code-review` недоступен, сообщить владельцу и согласовать замену; не называть ручную проверку запуском скилла.
 
-The panel earns its keep on the first list. Two examples from one session: a
-Content Security Policy that covered only the tail of every page, and a
-verification tool whose headline feature validated conclusions it could not
-actually reach. Neither is visible by reading a diff. But both were **behaviour**
-— and a documentation-only PR reviewed by six agents in the same session produced
-findings about wording.
+### Режим агентов: «экономия» и штатный
+
+**Режим «экономия»** (с 14.11.2026, до слова владельца):
+
+**Повод.** 14.11.2026 к 16:00 кончился недельный лимит токенов на все модели, и работа встала посреди
+задач. Больше всего токенов ушло на то, что названо в правилах ниже, — цифры там же.
+
+**Основная сессия** — та, где с вами разговаривает владелец. **Исполнитель** — сессия или агент
+(субагент), который работает по заданию рядом с ней: пишет код и тексты, гоняет проверки. Проверяющие
+ревью — не исполнители: их число задаёт уровень PR (правило 5).
+
+1. **Один фоновый исполнитель.** Кроме основной сессии работает не больше одного исполнителя — одна
+   фоновая сессия или один агент. Параллельные сессии шли по 3–3,6 тыс. сообщений каждая.
+2. **Новые сессии и агентов запускают только по слову владельца.** Сессия, которую владелец сам попросил
+   запустить, — в порядке. Чужую сессию останавливают, только спросив: она может работать по просьбе
+   владельца.
+3. **Исполнители — на Sonnet, усилие среднее.** Для ревью безопасности и CTO в согласованной Codex-панели — `gpt-6.2-sol`, высокое. Максимальное
+   усилие — никогда. Один агент-исполнитель на Opus потратил 560 тыс. токенов.
+4. **Проверки считают.** Мутаций — не больше 3 на PR (мутация — намеренная поломка кода, чтобы убедиться,
+   что тест краснеет). Основная проверка репозитория в Linux — один прогон на PR; по ходу работы —
+   точечные локальные запуски нужных тестов. На стенде — одна сборка за раз. Два агента, дорабатывавшие
+   PR, сделали 38 и 63 мутации и потратили по 440–545 тыс. токенов.
+5. **Ревью — по уровню PR.** Состав проверяющих, их модель и усилие, повтор — в таблице уровней и списке
+   под ней выше. Одна панель из пяти стоила около 1,8 млн токенов.
+6. **Узкие задания.** Исполнителю и проверяющему — файлы и строки, которые смотреть, а не «прочитай всё
+   дерево». Отчёт — не больше 8 находок, коротко. Лишних прогонов — проверок, мутаций, агентов — нет.
+7. **Основную сессию начинают заново каждое утро.** Контекст в 400 тыс. токенов и больше не тянут: каждый
+   вызов перечитывает его целиком, а основная сессия на Opus с контекстом около 450 тыс. токенов платила
+   за это на каждом вызове.
+8. **Состояние сессий читают, а не будят.** Что делает сессия — в её событиях (`list_events`); каждое
+   сообщение — новый ход сессии с перечитыванием её контекста. В цикле не опрашивают.
+9. **Упёрлись в лимит — продолжают, а не начинают.** После сброса лимита — того же агента или ту же сессию
+   сообщением; новых не запускают.
+
+**Штатный режим** (возвращает владелец): Opus, высокое — деньги, лицензии, безопасность, установщик,
+сложный дизайн; Sonnet — механика (ветки, тексты, снимки, чек-листы); низкое усилие — неприоритетное.
 
 ### Signs the process is generating work rather than catching problems
 
