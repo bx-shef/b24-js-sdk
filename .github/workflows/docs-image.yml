@@ -42,11 +42,13 @@ jobs:
           tags: b24-js-sdk-docs:ci
           build-args: |
             SITE_URL=${{ vars.SITE_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Дымовая проверка
         shell: bash
         run: |
-          docker run -d --name docs -p 127.0.0.1:3000:3000 b24-js-sdk-docs:ci
+          docker run -d --name docs -e NUXT_PUBLIC_BX_ASSISTANT_ENABLED=false -p 127.0.0.1:3000:3000 b24-js-sdk-docs:ci
           for i in $(seq 1 60); do curl -fs localhost:3000/llms.txt >/dev/null && break; sleep 1; done
           check() { got=$(curl -s -o /dev/null -w '%{http_code}' "${@:2}"); echo "$1 → $got"; [ "$1" = "$got" ]; }
           check 200 localhost:3000/
@@ -56,8 +58,20 @@ jobs:
           check 200 -X POST -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
             -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' localhost:3000/mcp/
           # без ключа чат не работает и честно об этом говорит
+          # чат выключен (compose: ASSISTANT_ENABLED по умолчанию false) — серверная часть тоже закрыта
+          check 404 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/api/ai
+          check 404 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/__bx__/assistant
+          docker rm -f docs
+          # включён, но без ключа — 503, в DeepSeek ничего не уходит
+          docker run -d --name docs -e NUXT_PUBLIC_BX_ASSISTANT_ENABLED=true -p 127.0.0.1:3000:3000 b24-js-sdk-docs:ci
+          for i in $(seq 1 60); do curl -fs localhost:3000/llms.txt >/dev/null && break; sleep 1; done
           check 503 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/api/ai
+          check 503 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/__bx__/assistant
           docker inspect --format '{{.Config.User}}' docs | grep -qx node
+
+      - name: Журнал контейнера при сбое
+        if: failure()
+        run: docker logs docs || true
 
       - name: Вход в GHCR
         if: github.event_name != 'pull_request'
@@ -88,3 +102,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             SITE_URL=${{ vars.SITE_URL }}
+          cache-from: type=gha

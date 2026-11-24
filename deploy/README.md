@@ -15,7 +15,11 @@
   (Settings → Secrets and variables → Actions → Variables). Пусто — ссылки относительные.
 - MCP включён при сборке (`NUXT_MCP_ENABLED=true`). Чат включён при сборке флагом
   `NUXT_PUBLIC_BX_ASSISTANT_ENABLED=true`, а показывается, только если при запуске
-  `ASSISTANT_ENABLED=true` и задан `DEEPSEEK_API_KEY`.
+  `ASSISTANT_ENABLED=true` и задан `DEEPSEEK_API_KEY`. `ASSISTANT_ENABLED=false` выключает и
+  серверную часть: `/api/ai` и поиск помощника отвечают 404. Флаг без ключа — чат виден, ответы 503.
+- Каждый запрос чата тратит ключ DeepSeek: лимит с одного клиента в минуту
+  (`ASSISTANT_RATE_PER_MINUTE`, клиент — по `X-Forwarded-For` от nginx-proxy) и общий за сутки
+  (`ASSISTANT_DAILY_LIMIT`).
 
 ## Сервер
 

@@ -8,7 +8,10 @@
 .github
 .claude
 test
-playgrounds
+.idea
+.vscode
+**/*.pem
+**/*.key
 **/.env
 **/.env.*
 !**/.env.example

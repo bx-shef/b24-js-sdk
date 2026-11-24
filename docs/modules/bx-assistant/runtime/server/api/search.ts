@@ -2,6 +2,7 @@ import { streamText, convertToModelMessages, createUIMessageStream, createUIMess
 import type { UIMessageStreamWriter, ToolCallPart, ToolSet } from 'ai'
 import { createMCPClient } from '@ai-sdk/mcp'
 import { createDeepSeek } from '@ai-sdk/deepseek'
+import { assistantGuard, assertMessages } from '../utils/guard'
 
 const MAX_STEPS = 10
 
@@ -57,8 +58,10 @@ function getSystemPrompt(siteName: string) {
 }
 
 export default defineEventHandler(async (event) => {
-  const { messages } = await readBody(event)
   const config = useRuntimeConfig()
+  assistantGuard(event, config.public.bxAssistant?.enabled === true)
+  const { messages } = (await readBody<{ messages?: unknown }>(event)) || {}
+  assertMessages(messages)
 
   // @todo fix this
   const siteName = 'Documentation'
@@ -70,11 +73,7 @@ export default defineEventHandler(async (event) => {
     ? mcpServer
     : import.meta.dev
       ? `http://localhost:3000${baseURL}${mcpServer}`
-      : `${getRequestURL(event).origin}${baseURL}${mcpServer}`
-
-  if (!process.env.DEEPSEEK_API_KEY) {
-    throw createError({ status: 503, message: 'The AI assistant is not configured on this server.' })
-  }
+      : `http://127.0.0.1:${process.env.PORT || process.env.NITRO_PORT || 3000}${baseURL}${mcpServer}`
 
   const httpClient = await createMCPClient({
     transport: { type: 'http', url: mcpUrl }
@@ -85,6 +84,9 @@ export default defineEventHandler(async (event) => {
     apiKey: process.env.DEEPSEEK_API_KEY ?? ''
   })
 
+  const abortController = new AbortController()
+  event.node.req.on('close', () => abortController.abort())
+
   const stream = createUIMessageStream({
     execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
       const modelMessages = await convertToModelMessages(messages)
@@ -92,6 +94,7 @@ export default defineEventHandler(async (event) => {
         model: deepseek(config.bxAssistant.modelDeepSeek),
         maxOutputTokens: 4000, // Possible values: `10000` | `8100` | `4000`
         maxRetries: 2,
+        abortSignal: abortController.signal,
         stopWhen: stopWhenResponseComplete,
         system: getSystemPrompt(siteName),
         messages: modelMessages,

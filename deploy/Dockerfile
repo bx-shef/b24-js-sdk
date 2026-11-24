@@ -5,7 +5,7 @@
 
 FROM node:22-bookworm-slim AS build
 WORKDIR /src
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@12.8.1 --activate
 # Адрес сайта попадает в sitemap, canonical и og-разметку при сборке.
 ARG SITE_URL=""
 ARG GIT_URL="https://github.com/bx-shef/b24-js-sdk"
