@@ -19,12 +19,10 @@ docs/content/docs/
 │   └── 7.ai/
 ├── 2.actions/                # действия: страницы call, call-list, batch… и руководства
 │   ├── 0.index.md            # обзор с карточками (:pages-list)
-│   ├── 1.call-rest-api-ver2.md
-│   ├── 1.call-rest-api-ver3.md
-│   ├── 2.call-list-rest-api-ver2.md
-│   ├── 2.call-list-rest-api-ver3.md
-│   ├── 3.batch-rest-api-ver2.md
-│   └── 3.batch-rest-api-ver3.md
+│   ├── 1.call.md             # одна страница на действие: v2 и v3 вместе
+│   ├── 2.call-list.md
+│   ├── 2.call-tail.md        # только v3 (restApiVersion: 'rest-api-ver3')
+│   └── 3.batch.md
 ├── 3.entry-points/           # точки входа: B24Hook, B24Frame, B24OAuth, helper, Pull
 ├── 4.tools/                  # инструменты: logger, limiters, core, utilities, types, коды ошибок
 ├── 5.api-reference/          # справочник API
@@ -35,7 +33,7 @@ docs/content/docs/
     └── 30.node-hook-company-export.md
 ```
 
-Ведущее число задаёт порядок сортировки и не входит в slug URL. Страницы, у которых есть пара вариантов v2 / v3, делят один номер (например, и `1.call-rest-api-ver2.md`, и `1.call-rest-api-ver3.md` используют `1.`).
+Ведущее число задаёт порядок сортировки и не входит в slug URL. Действие, которое есть и в v2, и в v3, описывает **одна** страница (`1.call.md` → `/docs/actions/call/`): общий текст пишется один раз, различия — в блоках `::::rest-api-version-only` (см. ниже). Действие, которое есть только в v3 (`call-tail`, `fetch-tail`, `deferred-batch`), — отдельная страница с `restApiVersion: 'rest-api-ver3'`: в навигации и на обзоре она видна только при выбранной v3.
 
 ## Обязательный frontmatter (Required Frontmatter)
 
@@ -43,11 +41,11 @@ docs/content/docs/
 
 ```yaml
 ---
-title: CallV3.make
-description: 'Method for making Bitrix24 REST API version 3 calls.'
+title: CallTail.make
+description: 'Метод для получения всех записей tail-метода REST API версии 3.'
 category: 'actions'
 restApiVersion: 'rest-api-ver3'
-navigation.title: Call
+navigation.title: CallTail
 links:
   - label: CallV3
     iconName: GitHubIcon
@@ -70,12 +68,12 @@ links:
 | `description` | да | Одно предложение; выводится под заголовком и в OG-метаданных |
 | `navigation.title` | нет | Короткая подпись для боковой панели; по умолчанию берётся `title` |
 | `category` | для страниц действий | Одно из: `actions`, `frame`, `helper`, `tools`, … (используйте существующие значения; не изобретайте новые категории без согласования) |
-| `restApiVersion` | для страниц действий | `rest-api-ver2` или `rest-api-ver3` — управляет фильтром `::rest-api-version-only` |
+| `restApiVersion` | только для страниц одной версии | `rest-api-ver2` или `rest-api-ver3` — страница видна в навигации и на обзоре только при этой версии. У страниц с блоками `::::rest-api-version-only` для обеих версий поля нет |
 | `links` | да для страниц API | Каждая запись указывает на файл исходников, на котором держится страница. Всегда включайте основной класс, а также `Result`/`AjaxResult`/`AjaxError`/`SdkError`, когда это уместно |
 
 Блок `links` — то, как читатели (и агенты) переходят со страницы документации к реализации. **Следите за точностью этих ссылок** — каждая страница в `2.actions/`, `3.entry-points/` и `4.tools/` уже следует этому паттерну, копируйте с ближайшей существующей страницы. CI это обеспечивает: цель `blob/main/` в `links:`, файла которой больше нет, роняет задание `docs-lint` (#117).
 
-**Ссылки внутри страниц должны быть абсолютными для сайта.** Ссылайтесь на другую страницу документации абсолютным маршрутом (`[Call v3](/docs/actions/call-rest-api-ver3/)`), никогда не относительным путём `./` или `../` — относительные ссылки молча не разрешаются в Nuxt Content и отклоняются CI (#102).
+**Ссылки внутри страниц должны быть абсолютными для сайта.** Ссылайтесь на другую страницу документации абсолютным маршрутом (`[Call v3](/docs/actions/call/)`), никогда не относительным путём `./` или `../` — относительные ссылки молча не разрешаются в Nuxt Content и отклоняются CI (#102).
 
 ## Структура страницы (Page Structure)
 
@@ -122,14 +120,24 @@ Cursor-based paging is preferred over manual `start` increments.
 
 ### Фильтрация по версии REST (REST-version filtering)
 
-`::rest-api-version-only` показывает разный текст в зависимости от версии API, выбранной читателем:
+`::::rest-api-version-only` показывает разный текст в зависимости от версии API, выбранной читателем (`restApi:v2 | restApi:v3` в шапке сайта). Блок открывается **четырьмя** двоеточиями, чтобы внутри него можно было использовать обычные `::note` / `::caution`; слот может содержать несколько блоков подряд — абзацы, код, таблицы:
 
 ```md
-::rest-api-version-only
+::::rest-api-version-only
 #rest-api-ver2
-The library supports both REST API version 2 and the new version 3.
-::
+Текст и примеры для версии 2.
+
+#rest-api-ver3
+Текст и примеры для версии 3.
+::::
 ```
+
+Правила для страниц, где есть обе версии:
+
+- заголовки `##` — **общие**, вне блока (так скелет страницы действия и оглавление не дублируются); внутри блока допустимы подзаголовки `###`, если их нет вне его;
+- раздел, который есть только в одной версии, целиком кладётся в блок этой версии вместе с заголовком;
+- одинаковый для обеих версий текст пишется один раз вне блока;
+- слот только одной версии допустим — для другой не выводится ничего.
 
 ### Выноски со ссылкой (Callouts with link)
 
@@ -276,7 +284,7 @@ export async function Action_callRestApiVer2() {
 packages/jssdk/src/core/actions/v3/call.ts        # implementation
 test/integration/core/actions-v3-call.spec.ts     # integration test (no mocks)
 docs/content/docs/2.actions/                      # docs page
-  1.call-rest-api-ver3.md
+  1.call.md
 test/some-code-from-docs/<corresponding>.ts       # docs snippet, kept compilable
 ```
 

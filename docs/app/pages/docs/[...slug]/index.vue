@@ -61,7 +61,10 @@ if (!import.meta.prerender) {
       if (route.path.endsWith(`-${page.value?.restApiVersion}`)) {
         navigateTo(route.path.replace(`-${page.value.restApiVersion}`, `-${restApiVersion.value}`))
       } else {
-        navigateTo(`/docs/getting-started`)
+        // Страница только одной версии (например, call-tail — только v3): у другой версии
+        // её нет, уводим на обзор действий. Страницы обеих версий (одна страница с блоками
+        // `::::rest-api-version-only`) без `restApiVersion` и сюда не попадают.
+        navigateTo(`/docs/actions`)
       }
     }
   })
