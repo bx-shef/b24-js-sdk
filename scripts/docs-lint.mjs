@@ -349,10 +349,38 @@ function countCheckIgnoreMarkers(files) {
   let total = 0
   for (const file of files) {
     const raw = readFileSync(file, 'utf8')
-    const matches = raw.match(/\/\/ @check-ignore/g)
+    const matches = raw.match(/(?:\/\/|<!--) @check-ignore/g)
     if (matches) total += matches.length
   }
   return total
+}
+
+/**
+ * A `// @check-ignore` line outside a code fence is rendered on the page as text
+ * (it was visible above examples on live pages). In Markdown the marker is an HTML
+ * comment, `<!-- @check-ignore: reason -->`, which `_typecheck-blocks.mjs` accepts
+ * and the page does not show.
+ */
+export function findVisibleCheckIgnore(raw) {
+  const lines = raw.split('\n')
+  const found = []
+  let fence = null
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const opener = line.match(/^\s*(`{3,}|~{3,})/)
+    if (opener) {
+      if (fence === null) {
+        fence = opener[1]
+      } else if (line.trim() === opener[1] && opener[1][0] === fence[0] && opener[1].length >= fence.length) {
+        fence = null
+      }
+      continue
+    }
+    if (fence === null && line.trim().startsWith('// @check-ignore')) {
+      found.push(i + 1)
+    }
+  }
+  return found
 }
 
 function main() {
@@ -419,6 +447,10 @@ function main() {
     }
 
     checkFrontmatterLinkTargets(file, frontmatter)
+
+    for (const line of findVisibleCheckIgnore(raw)) {
+      log('error', file, `line ${line}: "// @check-ignore" outside a code fence shows on the page — write it as <!-- @check-ignore: reason -->`)
+    }
   }
 
   // Say what was looked at, so a clean run cannot be misread as a clean bill of

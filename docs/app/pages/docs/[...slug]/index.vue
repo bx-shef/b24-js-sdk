@@ -34,7 +34,7 @@ const { isEnabled } = useAssistant()
 
 const { data: page } = await useAsyncData(kebabCase(pageUrl), () => queryCollection('docs').path(pageUrl).first())
 if (!page.value) {
-  throw createError({ status: 404, statusText: 'Page not found', fatal: true })
+  throw createError({ status: 404, statusText: 'Страница не найдена', fatal: true })
 }
 
 // Update the framework if the page has different one

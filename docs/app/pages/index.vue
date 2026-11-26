@@ -7,7 +7,7 @@ import DemonstrationOnIcon from '@bitrix24/b24icons-vue/outline/DemonstrationOnI
 
 const { data: page } = await useAsyncData('index', () => queryCollection('index').first())
 if (!page.value) {
-  throw createError({ status: 404, statusText: 'Page not found', fatal: true })
+  throw createError({ status: 404, statusText: 'Страница не найдена', fatal: true })
 }
 
 const config = useRuntimeConfig()
@@ -121,10 +121,10 @@ const iconFromIconName = (iconName?: string) => {
       <!-- Cookbook -->
       <B24Container class="px-[22px] lg:px-8 pb-10">
         <h2 class="text-2xl font-bold mb-2 text-label">
-          Cookbook
+          Рецепты
         </h2>
         <p class="text-muted mb-6">
-          Curated entry points — each recipe is a single, copy-paste-friendly file with environment variables, an expected output sketch, and a <code>Limitations</code> block.
+          Готовые решения: каждый рецепт — один файл, который можно скопировать целиком, с переменными окружения, примером вывода и разделом «Ограничения».
         </p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <NuxtLink
@@ -161,10 +161,10 @@ const iconFromIconName = (iconName?: string) => {
         >
           <template #header>
             <h2 class="text-2xl font-bold mb-1 text-legend">
-              Extended catalogue
+              Все рецепты
             </h2>
             <p class="text-description">
-              End-to-end TypeScript scripts — run with <code>tsx</code> after setting <code>B24_HOOK</code> to your incoming webhook URL.
+              Сквозные скрипты на TypeScript: укажите в <code>B24_HOOK</code> адрес входящего вебхука и запустите через <code>tsx</code>.
             </p>
           </template>
           <div class="overflow-x-auto">
@@ -175,13 +175,13 @@ const iconFromIconName = (iconName?: string) => {
                     #
                   </th>
                   <th class="text-left py-2.5 px-4 font-semibold text-muted">
-                    Recipe
+                    Рецепт
                   </th>
                   <th class="text-left py-2.5 px-4 font-semibold text-muted hidden sm:table-cell">
-                    Stack
+                    Стек
                   </th>
                   <th class="text-left py-2.5 px-4 font-semibold text-muted hidden md:table-cell">
-                    Scopes
+                    Права
                   </th>
                 </tr>
               </thead>
@@ -212,7 +212,7 @@ const iconFromIconName = (iconName?: string) => {
         </B24Card>
         <div class="mt-4">
           <B24Button to="/docs/examples">
-            View all examples →
+            Все примеры →
           </B24Button>
         </div>
       </B24Container>

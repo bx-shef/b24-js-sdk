@@ -31,7 +31,8 @@ import { createReporter } from './_reporter.mjs'
  *
  * Skips:
  *  - ```ts-type fences (type-signature fragments, not executable code)
- *  - Blocks preceded by // @check-ignore (optionally "// @check-ignore: reason")
+ *  - Blocks preceded by // @check-ignore (optionally "// @check-ignore: reason"), or by
+ *    the Markdown form `<!-- @check-ignore: reason -->` that does not render on the page
  *    on the nearest non-empty line above the fence
  *
  * Returns: Array of { lines: string[], startLine: number, filePath: string }
@@ -84,7 +85,7 @@ export function extractTsBlocks(content, filePath) {
       // the nearest preceding non-empty line.
       let prev = i - 1
       while (prev >= 0 && fileLines[prev].trim() === '') prev--
-      skip = prev >= 0 && fileLines[prev].trim().startsWith('// @check-ignore')
+      skip = prev >= 0 && isCheckIgnoreMarker(fileLines[prev])
       continue
     }
 
@@ -199,4 +200,14 @@ export function checkBlocks({ label, repoRoot, checkDir, files, extract = extrac
 
   report.note(`${blockIndex} block(s) checked`)
   return report.finish()
+}
+
+/**
+ * The skip marker on the line above a fence. In Markdown pages it is written as an
+ * HTML comment — `<!-- @check-ignore: reason -->` — because a bare `// …` line
+ * outside the fence is rendered on the page as text.
+ */
+export function isCheckIgnoreMarker(line) {
+  const marker = line.trim()
+  return marker.startsWith('// @check-ignore') || marker.startsWith('<!-- @check-ignore')
 }
