@@ -282,6 +282,7 @@ the task, so its title cannot carry the marker) and prints their IDs as one line
 pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures | tail -1 >> .env.test   # from the repository root
 ```
 
+The webhook comes from the environment or `playgrounds/cli/.env` (not the root `.env.test`).
 `--githubEnv` also appends the line to `$GITHUB_ENV` (used by `live-tests.yml`).
 
 ### List Tasks

@@ -14,7 +14,9 @@ describe('js-docs.actions @apiV2', () => {
       method: 'crm.item.get',
       params: {
         entityTypeId: EnumCrmEntityTypeId.contact,
-        id: getMapId().crmCompanySuccessMin
+        // Fork: upstream passed crmCompanySuccessMin here — a company ID for a contact,
+        // which worked only because both were 2 on the upstream portal.
+        id: getMapId().crmContactSuccessMin
       },
       requestId: 'item-123'
     })

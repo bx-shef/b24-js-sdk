@@ -158,7 +158,7 @@ ID по умолчанию — записи портала родителя (bit
 pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures | tail -1 >> .env.test
 ```
 
-Живые тесты в GitHub (`live-tests.yml`) делают это сами перед прогоном.
+Вебхук команда берёт из окружения или из `playgrounds/cli/.env` — корневой `.env.test` она не читает. Живые тесты в GitHub (`live-tests.yml`) делают всё это сами перед прогоном.
 
 ## Написание нового интеграционного теста
 
