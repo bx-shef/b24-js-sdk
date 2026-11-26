@@ -85,6 +85,7 @@
   },
   "devDependencies": {
     "@bitrix24/b24jssdk": "workspace:*",
+    "@conventional-commits/parser": "0.4.1",
     "@nuxt/eslint-config": "^1.17.0",
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.6",
