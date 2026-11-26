@@ -10,7 +10,7 @@ export async function Action_callRestApiVer2() {
 
   const _devMode = typeof import.meta !== 'undefined' && (import.meta.dev || import.meta.env?.DEV)
   const $logger = LoggerFactory.createForBrowser('Example:getCrmItem', true)
-  const $b24 = useB24().get() as B24Hook || B24Hook.fromWebhookUrl('https://your_domain.bitrix24.com/rest/1/webhook_code/')
+  const $b24 = B24Hook.fromWebhookUrl('https://your_domain.bitrix24.com/rest/1/webhook_code/')
 
   async function getCrmItem(entityTypeId: number, itemId: number, requestId: string): Promise<Company | null> {
     const response = await $b24.actions.v2.call.make<{ item: Company }>({

@@ -1,12 +1,11 @@
-import type { B24Frame } from '@bitrix24/b24jssdk'
-import { LoggerFactory } from '@bitrix24/b24jssdk'
+import { initializeB24Frame, LoggerFactory } from '@bitrix24/b24jssdk'
 
 export async function Action_frameSliderOpenPath() {
   // region: start ////
 
   const _devMode = typeof import.meta !== 'undefined' && (import.meta.dev || import.meta.env?.DEV)
   const $logger = LoggerFactory.createForBrowser('Example:B24FrameSliderOpenPath', true)
-  const $b24 = useB24().get() as B24Frame
+  const $b24 = await initializeB24Frame()
 
   async function makeOpenSliderEditCurrency(currencyCode: string) {
     // Open the slider with the specified width

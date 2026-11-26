@@ -10,7 +10,7 @@ export async function Action_callRestApiVer3() {
 
   const _devMode = typeof import.meta !== 'undefined' && (import.meta.dev || import.meta.env?.DEV)
   const $logger = LoggerFactory.createForBrowser('Example:taskGet', true)
-  const $b24 = useB24().get() as B24Hook || B24Hook.fromWebhookUrl('https://your_domain.bitrix24.com/rest/1/webhook_code/')
+  const $b24 = B24Hook.fromWebhookUrl('https://your_domain.bitrix24.com/rest/1/webhook_code/')
 
   async function getTask(itemId: number, requestId: string): Promise<Task> {
     const response = await $b24.actions.v3.call.make<{ item: Task }>({

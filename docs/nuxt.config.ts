@@ -125,7 +125,6 @@ export default defineNuxtConfig({
     public: {
       // @deprecated
       // useAI: false,
-      useTabB24frame: false,
       version: pkg.version,
       siteUrl: prodUrl,
       baseUrl,

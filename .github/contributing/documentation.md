@@ -210,10 +210,10 @@ B24_HOOK='https://<portal>/rest/<userId>/<secret>/' V3_SNAPSHOT_KIND=cloud \
 
 (Отдельно от `// @check-ignore` без причины, который пропускает проход TypeScript в `docs:typecheck-blocks`.)
 
-#### Запускаемые примеры (`<CodeExample>`)
+#### Примеры из файлов (`<CodeExample>`)
 
-Встроенная форма выше — обычный блок кода. Большинство страниц вместо этого подтягивают настоящий
-файл с проверкой типов, чтобы фрагмент можно было запустить на живом портале прямо со страницы:
+Встроенная форма выше — обычный блок кода. Часть страниц вместо этого подтягивает настоящий
+файл с проверкой типов. Сайт пример только показывает: запуска на портале со страницы нет.
 
 ```md
 ::code-example{name="call-rest-api-ver2" lang="ts"}
@@ -227,7 +227,7 @@ import { B24Hook } from '@bitrix24/b24jssdk'
 
 export async function Action_callRestApiVer2() {
   // region: start ////
-  const $b24 = useB24().get() as B24Hook || B24Hook.fromWebhookUrl('…')
+  const $b24 = B24Hook.fromWebhookUrl('https://your_domain.bitrix24.com/rest/1/webhook_code/')
   // …the code the page shows…
   // endregion: start ////
 }
@@ -236,7 +236,7 @@ export async function Action_callRestApiVer2() {
 Публикуются только импорты и участок между двумя маркерами. Функция-обёртка, сами маркеры и
 всё после `endregion: start` отбрасываются в
 [`docs/app/utils/codeTransform.ts`](../../docs/app/utils/codeTransform.ts),
-который также вырезает из публикуемого фрагмента подмену `useB24()` на живой портал. Строки тела
+Строки тела
 сдвигаются влево на наименьший отступ, общий для непустых строк региона, так что уровень
 обёртки убирается каким бы он ни был — два пробела, четыре или табуляция. Относительная
 вложенность внутри фрагмента сохраняется.

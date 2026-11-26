@@ -1,12 +1,11 @@
-import type { B24Frame } from '@bitrix24/b24jssdk'
-import { Text, LoggerFactory, Logger, ConsoleV2Handler, LogLevel } from '@bitrix24/b24jssdk'
+import { initializeB24Frame, Text, LoggerFactory, Logger, ConsoleV2Handler, LogLevel } from '@bitrix24/b24jssdk'
 
 export async function Action_frameParentCall() {
   // region: start ////
 
   const _devMode = typeof import.meta !== 'undefined' && (import.meta.dev || import.meta.env?.DEV)
   const $logger = LoggerFactory.createForBrowser('Example:B24FrameParentCall', true)
-  const $b24 = useB24().get() as B24Frame
+  const $b24 = await initializeB24Frame()
 
   const loggerForDebugB24 = Logger.create('b24')
   const handlerForDebugB24 = new ConsoleV2Handler(LogLevel.DEBUG, { useStyles: true })

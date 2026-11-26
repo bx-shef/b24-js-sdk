@@ -10,7 +10,11 @@
  * inline. See `.github/contributing/docs-fork.md`.
  */
 
-/** Prefix the examples use so a live portal hook can override the placeholder. */
+/**
+ * Prefix the examples used while the site could run them on a live portal. The
+ * runner is gone and no example carries it; stripping stays so an old snippet
+ * (or one ported from upstream) still publishes clean.
+ */
 export const HOOK_REPLACE_IN_EXAMPLE = 'useB24().get() as B24Hook || '
 
 /**
