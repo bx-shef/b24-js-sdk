@@ -24,9 +24,6 @@ declare let $b24: import('@bitrix24/b24jssdk').B24Frame
 // test harness and the reproduction harness that each guide is describing, and
 // a reader of that guide already has them in scope.
 
-// `documentation.md`: a Nuxt auto-import in the docs app, not an SDK export.
-declare function useB24(): { get: () => unknown }
-
 // `testing.md`: the integration-test harness, re-exported from
 // `test/0_setup/hooks-integration-jssdk.ts`. Declared loosely on purpose — the
 // real signature is compiled where it lives, by `test:typecheck`.
