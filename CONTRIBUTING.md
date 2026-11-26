@@ -13,13 +13,14 @@
 | опубликовать сайт документации | [deploy/README.md](deploy/README.md) |
 | сообщить об уязвимости | [SECURITY.md](SECURITY.md) |
 
-## Правила, которые проверяет CI
+## Правила
 
 - Заголовок PR и коммитов — conventional commits (`fix(core): …`, `docs: …`).
 - Документация на русском; код, комментарии в коде и сообщения SDK — на английском.
-- Actions в воркфлоу закреплены по SHA, установки — с `--frozen-lockfile`
-  (`.github/scripts/assert-*.py`).
 - Вебхуки, токены и данные клиентов не попадают ни в код, ни в issue, ни в PR.
+
+Проверяет CI (`fork-guards.yml`): actions в воркфлоу закреплены по SHA, установки — с
+`--frozen-lockfile` (`.github/scripts/assert-*.py`).
 
 Репозиторий — форк [bitrix24/b24jssdk](https://github.com/bitrix24/b24jssdk). Изменения родителя
 приходят раз в неделю (навык `.claude/skills/upstream-sync`); правки кода SDK, полезные и родителю,
