@@ -85,7 +85,7 @@ export default defineEventHandler(async (event) => {
   const mcpTools = await httpClient.tools()
 
   const deepseek = createDeepSeek({
-    apiKey: process.env.DEEPSEEK_API_KEY ?? ''
+    apiKey: (process.env.DEEPSEEK_API_KEY ?? '').trim()
   })
 
   const abortController = new AbortController()

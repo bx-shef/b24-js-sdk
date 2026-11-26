@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
   const mcpTools = mcpToolsToAiTools()
 
   const deepseek = createDeepSeek({
-    apiKey: process.env.DEEPSEEK_API_KEY ?? ''
+    apiKey: (process.env.DEEPSEEK_API_KEY ?? '').trim()
   })
 
   const abortController = new AbortController()
