@@ -2,10 +2,10 @@ import { z } from 'zod'
 import { useB24 } from '../../../app/composables/useB24'
 
 export default defineMcpTool({
-  title: 'Get Example',
-  description: 'Retrieves specific JS SDK example implementation code and details',
+  title: 'Пример кода',
+  description: 'Код и описание конкретного примера JS SDK',
   inputSchema: {
-    exampleName: z.string().describe('The name of the example')
+    exampleName: z.string().describe('Название примера')
   },
   cache: '30m',
   async handler({ exampleName }) {

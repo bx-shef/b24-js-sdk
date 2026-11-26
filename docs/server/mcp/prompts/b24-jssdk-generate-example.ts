@@ -1,11 +1,11 @@
 import { z } from 'zod'
 
 export default defineMcpPrompt({
-  title: 'Generate SDK Code Example',
-  description: 'Generate a code example using the Bitrix24 JS SDK for a specific use case',
+  title: 'Сгенерировать пример кода с SDK',
+  description: 'Сгенерировать пример кода с JS SDK Битрикс24 для конкретной задачи',
   inputSchema: {
-    usecase: z.string().describe('Describe the use case (e.g., "batch update 100 deals", "handle file upload with progress")'),
-    restApiVersion: z.string().optional().describe('REST API version to use (ver2 or ver3, defaults to ver3)')
+    usecase: z.string().describe('Задача (например: «обновить 100 сделок пакетным запросом», «загрузка файла с прогрессом»)'),
+    restApiVersion: z.string().optional().describe('Версия REST API: ver2 или ver3 (по умолчанию ver3)')
   },
   async handler({ usecase, restApiVersion }) {
     const version = restApiVersion || 'ver3'
@@ -16,7 +16,7 @@ export default defineMcpPrompt({
           role: 'user' as const,
           content: {
             type: 'text' as const,
-            text: `Generate a complete code example using @bitrix24/b24jssdk for this use case: "${usecase}". Use REST API ${version}. The example should include imports, initialization, the main logic, error handling, and comments explaining key steps.`
+            text: `Напиши полный пример кода с @bitrix24/b24jssdk для задачи: «${usecase}». Используй REST API ${version}. В примере — импорты, инициализация, основная логика, обработка ошибок; комментарии к ключевым шагам в коде — на английском, пояснения к примеру — по-русски.`
           }
         }
       ]
