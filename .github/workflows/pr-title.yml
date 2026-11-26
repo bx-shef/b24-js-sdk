@@ -1,5 +1,6 @@
 name: PR title 🏷️
-# Копия из bx-shef/b24-ui. Здесь проверяется только заголовок PR (--stdin); проверка ссылок на коммиты
+# Копия из bx-shef/b24-ui. Здесь — заголовок PR (--stdin); сообщение коммита в main после squash проверяет
+# fork-guards.yml (задача commit-message). Проверка ссылок на коммиты
 # родителя (HEAD-режим скрипта) у нас не включена — журнал синхронизации свой, .sync/.
 
 # Early feedback, not the guarantee. `ci.yml` checks the message on `main` after
