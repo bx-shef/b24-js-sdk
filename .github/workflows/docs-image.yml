@@ -60,6 +60,10 @@ jobs:
           check 200 localhost:3000/.well-known/skills/README.md
           check 200 -X POST -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
             -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' localhost:3000/mcp/
+          # инструменты MCP читают контент из запроса (Nitro asyncContext) — вызов, а не только список
+          mcp=$(curl -sS --max-time 30 -X POST -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
+            -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"b24-jssdk-list-documentation-pages","arguments":{}}}' localhost:3000/mcp/ || true)
+          if grep -q '"isError":true' <<<"$mcp" || ! grep -q '\\"path\\": \\"/docs/' <<<"$mcp"; then echo "MCP tools/call failed: ${mcp:0:300}"; exit 1; fi
           # без ключа чат не работает и честно об этом говорит
           # чат выключен (compose: ASSISTANT_ENABLED по умолчанию false) — серверная часть тоже закрыта
           check 404 -X POST -H 'content-type: application/json' -d '{"messages":[]}' localhost:3000/api/ai
