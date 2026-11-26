@@ -64,3 +64,9 @@ test('the exemption is only for that file', () => {
   const r = run({ 'index.html': page, 'other.html': wrapper })
   assert.notEqual(r.code, 0)
 })
+
+test('noindex inside an HTML comment does not count', () => {
+  const commented = '<!doctype html><html><head><!-- <meta name="robots" content="noindex"> --><title>x</title></head><body></body></html>'
+  const r = run({ 'index.html': page, 'b24-form.html': commented })
+  assert.notEqual(r.code, 0)
+})

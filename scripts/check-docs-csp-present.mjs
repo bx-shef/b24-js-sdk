@@ -68,7 +68,8 @@ for (const file of pages) {
   const html = readFileSync(file, 'utf8')
   const at = message => problems.push({ file, message })
   if (STATIC_DOCUMENTS.has(relative(ROOT, file).split(sep).join('/'))) {
-    if (!/<meta[^>]+name="robots"[^>]+noindex/i.test(html)) {
+    // Комментарии вырезаются: «noindex» в комментарии не считается.
+    if (!/<meta[^>]+name="robots"[^>]+noindex/i.test(html.replace(/<!--[\s\S]*?-->/g, ''))) {
       at('static document without <meta name="robots" content="noindex">')
     }
     continue
