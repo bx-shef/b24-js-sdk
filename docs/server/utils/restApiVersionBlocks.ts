@@ -25,3 +25,22 @@ export function flattenRestApiVersionChildren(
   }
   return result
 }
+
+// `node` is an MDC tuple `[tag, attrs, ...children]` (children start at 2), or —
+// with `start = 0` — the plain list of top-level nodes in `doc.body.value`.
+// Starting a top-level list at 2 left its first two nodes unflattened, and a
+// `__flatten` there leaked into the raw markdown as a literal tag.
+export function flattenMarkers(node: any, start = 2): void {
+  if (!Array.isArray(node)) return
+  let i = start
+  while (i < node.length) {
+    const child = node[i]
+    if (Array.isArray(child) && (child[0] === '__flatten' || child[0] === 'div')) {
+      const innerChildren = child.slice(2)
+      node.splice(i, 1, ...innerChildren)
+    } else {
+      flattenMarkers(child)
+      i++
+    }
+  }
+}

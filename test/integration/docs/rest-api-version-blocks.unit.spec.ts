@@ -6,7 +6,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { flattenRestApiVersionChildren } from '../../../docs/server/utils/restApiVersionBlocks'
+import { flattenMarkers, flattenRestApiVersionChildren } from '../../../docs/server/utils/restApiVersionBlocks'
 
 const collect = (nodes: any[]) => nodes.filter(n => Array.isArray(n))
 
@@ -40,5 +40,18 @@ describe('transformMDC подключает обработку rest-api-version-
     const src = readFileSync(resolve(__dirname, '../../../docs/server/utils/transformMDC.ts'), 'utf8')
     expect(src).toContain('\'rest-api-version-only\'')
     expect(src).toContain('flattenRestApiVersionChildren')
+  })
+})
+
+describe('flattenMarkers on the top-level list', () => {
+  it('unwraps a __flatten marker that is one of the first two top-level nodes', () => {
+    const body: any[] = [
+      ['__flatten', {}, ['p', {}, 'v2'], ['p', {}, 'v3']],
+      ['__flatten', {}, ['p', {}, 'tip']],
+      ['p', {}, 'tail']
+    ]
+    flattenMarkers(body, 0)
+    expect(JSON.stringify(body)).not.toContain('__flatten')
+    expect(body.map(n => n[2])).toEqual(['v2', 'v3', 'tip', 'tail'])
   })
 })
