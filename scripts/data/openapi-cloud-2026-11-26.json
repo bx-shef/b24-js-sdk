@@ -1,0 +1,9803 @@
+{
+  "portalKind": "cloud",
+  "snapshotDate": "2026-11-26",
+  "openapi": "3.0.0",
+  "totals": {
+    "methods": 1389,
+    "modules": 25
+  },
+  "methodsPerModule": {
+    "aiassistant": 15,
+    "batch": 1,
+    "biconnector": 62,
+    "bizproc": 6,
+    "bizprocdesigner": 20,
+    "call": 4,
+    "catalog": 197,
+    "crm": 730,
+    "disk": 21,
+    "documentation": 1,
+    "forum": 13,
+    "humanresources": 33,
+    "iblock": 4,
+    "landing": 4,
+    "mail": 24,
+    "main": 39,
+    "note": 37,
+    "rest": 55,
+    "scopes": 1,
+    "sign": 14,
+    "socialnetwork": 2,
+    "syncconnector": 4,
+    "tasks": 81,
+    "timeman": 3,
+    "vibecodeconnector": 18
+  },
+  "methods": [
+    {
+      "method": "aiassistant.scheduledtask.add",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.availability",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.delete",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.field.get",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.field.list",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.get",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.list",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.pause",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.resume",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.runs",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.start",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtask.update",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtasktrigger.field.get",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtasktrigger.field.list",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "aiassistant.scheduledtasktrigger.list",
+      "module": "aiassistant",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "batch",
+      "module": "batch",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.catalog.get",
+      "module": "biconnector",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.add",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.config.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.config.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.config.set",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.data.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.data.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.data.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.delete",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.chart.update",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.add",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.content.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.content.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.content.set",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.copy",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.delete",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.filter.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.filter.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.filter.values",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.layout.apply",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.layout.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.layout.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.layout.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.parameters.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.parameters.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.parameters.search",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.placement.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.placement.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.placement.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.placement.options",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.placement.update",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.publish",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.unpublish",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dashboard.update",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.add",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.addfromtable",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.delete",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.dataset.update",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.guide.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.guide.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.guide.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.sql.execute",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.sql.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.sql.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.table.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.table.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.table.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.table.schema.field.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.table.schema.field.list",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "biconnector.builder.table.schema.get",
+      "module": "biconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizproc.workflow.observer.add",
+      "module": "bizproc",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizproc.workflow.observer.delete",
+      "module": "bizproc",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizproc.workflow.observer.field.get",
+      "module": "bizproc",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizproc.workflow.observer.field.list",
+      "module": "bizproc",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizproc.workflow.observer.list",
+      "module": "bizproc",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizproc.workflow.observer.set",
+      "module": "bizproc",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.agent.connect",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.agent.session.add",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.agent.session.get",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.catalog.block.field.get",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.catalog.block.field.list",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.catalog.block.get",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.catalog.block.list",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.document.field.field.get",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.document.field.field.list",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.document.field.list",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.add",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.draft.add",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.draft.field.get",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.draft.field.list",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.field.get",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.field.list",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.get",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.list",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.publish",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "bizprocdesigner.template.validate",
+      "module": "bizprocdesigner",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "call.followup.field.get",
+      "module": "call",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "call.followup.field.list",
+      "module": "call",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "call.followup.get",
+      "module": "call",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "call.followup.list",
+      "module": "call",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.isoffers",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.catalog.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.contract.agent.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.contract.agent.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.contract.agent.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.contractor.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.contractor.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.contractor.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.cancel",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.cancellist",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.conduct",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.conductlist",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.confirm",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.contractor.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.contractor.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.contractor.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.contractor.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.contractor.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.deletelist",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.element.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.element.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.element.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.element.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.element.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.element.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.mode.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.mode.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.mode.status",
+      "module": "catalog",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.mode.statusdetails",
+      "module": "catalog",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.type.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.type.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.type.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.unconfirm",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.userfield.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.userfield.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.userfield.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.document.userfield.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.extra.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.extra.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.extra.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.extra.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.measure.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.measure.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.measure.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.measure.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.measure.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.measure.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.measure.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.price.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.price.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.price.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.price.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.price.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.price.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.price.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.group.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.group.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.group.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.group.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.group.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.getlanguages",
+      "module": "catalog",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.lang.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.pricetype.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.download",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.fields.getbyfilter",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.image.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.image.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.image.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.image.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.image.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.image.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.download",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.offer.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.enum.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.enum.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.enum.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.enum.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.enum.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.enum.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.enum.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.available.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.available.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.available.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.feature.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.section.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.section.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.section.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.section.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.section.set",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.type.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.type.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.type.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.property.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.download",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.service.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.download",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.sku.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.type.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.type.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.type.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.product.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.ratio.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.ratio.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.ratio.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.ratio.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.roundingrule.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.roundingrule.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.roundingrule.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.roundingrule.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.roundingrule.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.roundingrule.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.roundingrule.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.section.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.section.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.section.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.section.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.section.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.section.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.section.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.product.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.product.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.product.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.product.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.store.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.vat.add",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.vat.delete",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.vat.field.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.vat.field.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.vat.get",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.vat.list",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "catalog.vat.update",
+      "module": "catalog",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.binding.bind",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.binding.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.binding.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.binding.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.binding.move",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.binding.unbind",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.mail.getContent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.mail.getThread",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.mail.reply",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.address.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.address.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.address.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.call.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.call.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.call.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.call.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.openline.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.openline.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.openline.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.openline.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.todo.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.todo.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.todo.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.todo.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.todo.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.todo.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.addfieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.address.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.address.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.address.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.address.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.address.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.address.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.address.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.aggregate",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.bankrequisite.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.category.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.category.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.category.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.category.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.category.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.category.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.category.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.copy",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.deletefieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.enum.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.enum.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.enum.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.enum.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.enum.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.custom.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.required.clear",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.required.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.field.required.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.history.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.history.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.history.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.address.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.address.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.address.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.address.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.address.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.address.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.address.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.bankrequisite.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.bankrequisite.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.bankrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.bankrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.bankrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.bankrequisite.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.bankrequisite.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.preset.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.preset.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.preset.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.preset.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.requisite.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.timeline.activity.email.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.timeline.activity.email.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.timeline.activity.email.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.timeline.activity.email.send",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.company.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.call.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.call.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.call.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.call.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.openline.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.openline.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.openline.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.openline.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.todo.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.todo.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.todo.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.todo.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.todo.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.todo.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.addfieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.address.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.address.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.address.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.address.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.address.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.address.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.address.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.aggregate",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.bankrequisite.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.category.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.category.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.category.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.category.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.category.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.category.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.category.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.copy",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.deletefieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.enum.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.enum.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.enum.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.enum.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.enum.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.custom.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.required.clear",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.required.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.field.required.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.history.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.history.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.history.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.address.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.address.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.address.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.address.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.address.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.address.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.address.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.bankrequisite.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.bankrequisite.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.bankrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.bankrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.bankrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.bankrequisite.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.bankrequisite.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.preset.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.preset.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.preset.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.preset.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.requisite.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.timeline.activity.email.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.timeline.activity.email.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.timeline.activity.email.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.timeline.activity.email.send",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.contact.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.call.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.call.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.call.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.call.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.openline.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.openline.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.openline.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.openline.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.todo.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.todo.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.todo.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.todo.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.todo.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.todo.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.addfieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.aggregate",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.replace",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.stage.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.category.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.clientrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.clientrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.clientrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.clientrequisite.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.copy",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.deletefieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.enum.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.enum.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.enum.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.enum.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.enum.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.custom.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.required.clear",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.required.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.field.required.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.history.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.history.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.history.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.mycompanyrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.mycompanyrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.mycompanyrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.mycompanyrequisite.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.getavailableforpayment",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.replace",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.productrow.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.setprimarycontact",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.stagehistory.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.stagehistory.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.stagehistory.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.timeline.activity.email.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.timeline.activity.email.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.timeline.activity.email.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.timeline.activity.email.send",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.deal.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.activityprovider.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.activityprovider.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.activityprovider.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.activityprovider.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.addresstype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.addresstype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.addresstype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.addresstype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.companytype.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.companytype.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.companytype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.companytype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.companytype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.companytype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.companytype.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.contacttype.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.contacttype.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.contacttype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.contacttype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.contacttype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.contacttype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.contacttype.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.customfieldtype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.customfieldtype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.customfieldtype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.customfieldtype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.dealtype.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.dealtype.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.dealtype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.dealtype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.dealtype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.dealtype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.dealtype.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.emailtype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.emailtype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.emailtype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.emailtype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.employees.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.employees.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.employees.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.employees.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.employees.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.employees.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.employees.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.entitytype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.entitytype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.entitytype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.entitytype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.honorific.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.honorific.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.honorific.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.honorific.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.honorific.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.honorific.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.honorific.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.imtype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.imtype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.imtype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.imtype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.industry.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.industry.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.industry.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.industry.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.industry.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.industry.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.industry.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.phonetype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.phonetype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.phonetype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.phonetype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.source.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.source.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.source.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.source.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.source.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.source.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.source.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.stagesemantic.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.stagesemantic.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.stagesemantic.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.stagesemantic.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.webtype.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.webtype.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.webtype.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.dictionary.webtype.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.form.form.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.form.form.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.call.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.call.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.call.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.call.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.openline.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.openline.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.openline.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.openline.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.todo.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.todo.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.todo.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.todo.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.todo.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.todo.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.addfieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.address.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.address.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.address.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.address.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.address.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.aggregate",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.convert",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.copy",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.deletefieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.disable",
+      "module": "crm",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.enable",
+      "module": "crm",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.enum.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.enum.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.enum.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.enum.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.enum.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.custom.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.required.clear",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.required.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.field.required.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.history.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.history.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.history.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.isenabled",
+      "module": "crm",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.getavailableforpayment",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.replace",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.productrow.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.setprimarycontact",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.stagehistory.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.stagehistory.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.stagehistory.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.timeline.activity.email.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.timeline.activity.email.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.timeline.activity.email.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.timeline.activity.email.send",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.lead.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.addfieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.aggregate",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.basic.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.basic.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.basic.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.basic.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.copy",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.deletefieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.mycompany.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.productrow.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.productrow.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.productrow.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.call.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.call.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.call.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.call.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.openline.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.openline.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.openline.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.openline.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.addfieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.aggregate",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.clientrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.clientrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.clientrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.clientrequisite.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.copy",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.deletefieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.enum.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.enum.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.enum.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.enum.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.enum.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.custom.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.required.clear",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.required.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.field.required.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.getavailableforpayment",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.replace",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.productrow.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.setprimarycontact",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.quote.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.recyclebin.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.recyclebin.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.recyclebin.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.recyclebin.restore",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.requisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.requisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.requisite.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.settings.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.settings.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.settings.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.settings.list",
+      "module": "crm",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "crm.settings.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartb2edocument.setprimarycontact",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.call.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.call.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.call.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.call.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.openline.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.openline.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.openline.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.openline.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.clientrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.clientrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.clientrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.clientrequisite.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.getavailableforpayment",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.replace",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.productrow.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartdocument.setprimarycontact",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.call.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.call.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.call.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.call.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.complete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.openline.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.openline.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.openline.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.openline.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.activity.uncomplete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.addfieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.aggregate",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.clientrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.clientrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.clientrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.clientrequisite.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.copy",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.deletefieldvalue",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.getcommonlayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.getcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.getpersonallayoutid",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.setcommonforall",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.setcurrent",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.detailpagelayout.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.enum.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.enum.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.enum.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.enum.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.enum.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.custom.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.required.clear",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.required.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.field.required.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.history.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.history.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.history.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.mycompanyrequisite.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.mycompanyrequisite.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.mycompanyrequisite.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.mycompanyrequisite.set",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.delete",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.getavailableforpayment",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.replace",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.productrow.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.setprimarycontact",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.stagehistory.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.stagehistory.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.stagehistory.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartinvoice.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartprocess.add",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartprocess.field.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartprocess.field.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartprocess.get",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartprocess.list",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "crm.smartprocess.update",
+      "module": "crm",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.capabilities.field.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.capabilities.field.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.capabilities.get",
+      "module": "disk",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.changes.field.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.changes.field.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.changes.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.content.field.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.content.field.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.content.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.index.field.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.index.field.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.index.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.session.create",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.session.field.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.session.field.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.snapshot.field.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.snapshot.field.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.snapshot.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.state.check",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.state.field.get",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "disk.sync.state.field.list",
+      "module": "disk",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "documentation",
+      "module": "documentation",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.delete",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.add",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.delete",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.enum.add",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.enum.delete",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.enum.get",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.enum.list",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.enum.update",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.get",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.list",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.custom.update",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.get",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "forum.message.field.list",
+      "module": "forum",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.permission.list",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.role.add",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.role.delete",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.role.field.get",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.role.field.list",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.role.get",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.role.list",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.role.update",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.access.user.permissions",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.employee.count",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.employee.field.get",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.employee.field.list",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.employee.multidepartment",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.employee.search",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.employee.subordinates",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.add",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.children",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.communication.edit",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.communication.list",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.count",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.edit",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.field.get",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.field.list",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.get",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.list",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.member.add",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.member.field.get",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.member.field.list",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.member.move",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.member.remove",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.member.set",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.move",
+      "module": "humanresources",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "humanresources.node.search",
+      "module": "humanresources",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "iblock.element.field.get",
+      "module": "iblock",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "iblock.element.field.list",
+      "module": "iblock",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "iblock.element.get",
+      "module": "iblock",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "iblock.element.list",
+      "module": "iblock",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "landing.aisite.field.get",
+      "module": "landing",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "landing.aisite.field.list",
+      "module": "landing",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "landing.aisite.generate",
+      "module": "landing",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "landing.aisite.status",
+      "module": "landing",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.mailbox.field.get",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.mailbox.field.list",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.mailbox.get",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.mailbox.list",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.mailbox.senders",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.createcalendarevent",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.createchat",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.createcrmactivity",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.createfeedpost",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.createtask",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.field.get",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.field.list",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.forward",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.get",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.list",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.movetofolder",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.removecrmactivity",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.reply",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.send",
+      "module": "mail",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "mail.message.thread",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.recipient.field.get",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.recipient.field.list",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.recipient.listcontacts",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "mail.recipient.listemployees",
+      "module": "mail",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.eventlog.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.eventlog.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.eventlog.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.eventlog.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.eventlog.tail",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.like.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.like.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.like.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.like.reactions",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.smile.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.smile.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.smile.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.smileset.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.smileset.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.smileset.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.agreement.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.agreement.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.agreement.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.agreement.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.consent.add",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.consent.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.consent.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.history.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.history.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.history.fields.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.history.fields.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.history.fields.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.history.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.user.history.tail",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.add",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.delete",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.type.field.get",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.type.field.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.type.list",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "main.userfieldconfig.update",
+      "module": "main",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.add",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.archive",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.delete",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.field.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.field.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.move",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.restore",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.unarchive",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.collection.update",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.add",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.archive",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.content.edit",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.content.field.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.content.field.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.content.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.delete",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.field.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.field.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.move",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.restore",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.search.field.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.search.field.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.search.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.tree.field.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.tree.field.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.tree.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.unarchive",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.document.update",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.file.add",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.file.field.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.file.field.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.file.get",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "note.file.list",
+      "module": "note",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.app.scoperequest.add",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.app.scoperequest.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.app.scoperequest.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.app.scoperequest.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.app.scoperequest.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.access.delete",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.access.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.access.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.access.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.access.reset",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.access.set",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.embedding.add",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.embedding.delete",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.embedding.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.embedding.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.embedding.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.getbyclientid",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.local.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.local.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.local.install",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.local.uninstall",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.personal.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.personal.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.personal.install",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.personal.uninstall",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.placement.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.placement.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.application.placement.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.deferredbatch.add",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.deferredbatch.delete",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.deferredbatch.downloadresult",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.deferredbatch.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.deferredbatch.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.deferredbatch.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.deferredbatch.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.documentation.openapi",
+      "module": "rest",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "rest.event.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.event.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.event.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.event.online.bind",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.event.online.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.event.online.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.event.online.unbind",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.incomingwebhook.add",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.incomingwebhook.delete",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.incomingwebhook.field.get",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.incomingwebhook.field.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.incomingwebhook.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.incomingwebhook.prolong",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.incomingwebhook.update",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "rest.portal.license.get",
+      "module": "rest",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "rest.scope.list",
+      "module": "rest",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "scopes",
+      "module": "scopes",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.legal.field.field.get",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.legal.field.field.list",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.legal.field.list",
+      "module": "sign",
+      "operations": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.legal.profile.field.get",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.legal.profile.field.list",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.legal.profile.update",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.field.get",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.field.list",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.folder.field.get",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.folder.field.list",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.folder.get",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.folder.tail",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.list",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "sign.b2e.template.send",
+      "module": "sign",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "socialnetwork.project.meeting.field.get",
+      "module": "socialnetwork",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "socialnetwork.project.meeting.field.list",
+      "module": "socialnetwork",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "syncconnector.followup.field.get",
+      "module": "syncconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "syncconnector.followup.field.list",
+      "module": "syncconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "syncconnector.followup.get",
+      "module": "syncconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "syncconnector.followup.list",
+      "module": "syncconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.access.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.add",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.chat.message.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.chat.message.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.chat.message.send",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.delete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.file.attach",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.gantt.link.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.gantt.link.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.gantt.link.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.result.add",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.result.addfromchatmessage",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.result.delete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.result.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.result.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.result.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.result.update",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.task.update",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.access.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.add",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.complete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.add",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.attachment.attach",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.attachment.detach",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.attachment.upload",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.collapse",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.complete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.delete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.expand",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.move",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.renew",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.item.update",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.renew",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.checklist.save",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.copy",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.crm.item.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.crm.item.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.crm.item.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.delete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.file.attach",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.file.detach",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.file.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.file.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.file.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.history.count",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.history.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.history.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.history.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.child.add",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.child.delete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.child.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.child.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.child.ids",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.child.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.child.listbyids",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.related.add",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.related.delete",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.related.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.related.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.related.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.relation.related.listbyids",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.replication.setstate",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.state.set",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.task.add",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.task.field.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.task.field.list",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.task.get",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "tasks.template.update",
+      "module": "tasks",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "timeman.record.field.get",
+      "module": "timeman",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "timeman.record.field.list",
+      "module": "timeman",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "timeman.record.list",
+      "module": "timeman",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.access.field.get",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.access.field.list",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.access.set",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.add",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.delete",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.embedding.field.get",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.embedding.field.list",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.field.get",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.field.list",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.pairing.bind",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.pairing.field.get",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.pairing.field.list",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.pin.delete",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.pin.field.get",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.pin.field.list",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.pin.set",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.catalog.item.update",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    },
+    {
+      "method": "vibecodeconnector.vibeapikey.issueforbgpt",
+      "module": "vibecodeconnector",
+      "operations": [
+        "post"
+      ]
+    }
+  ]
+}
