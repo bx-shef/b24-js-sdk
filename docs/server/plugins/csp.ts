@@ -21,12 +21,14 @@ const CONTENT_SECURITY_POLICY = [
   // 'unsafe-inline' — Nuxt's per-page inline hydration payload; hashes would
   // differ per page and one static tag cannot carry 151 sets of them.
   // 'wasm-unsafe-eval' — @nuxt/content's search is SQLite compiled to Wasm.
-  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'`,
+  // https://mc.yandex.ru и .com — Яндекс Метрика (домен выбирает tag.js по стране) (tag.js, отправка хитов, пиксель); грузится только
+  // после согласия на аналитику (cookie-consent.js) и только при заданном номере счётчика.
+  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://mc.yandex.ru https://mc.yandex.com`,
   // 'unsafe-inline' — Nuxt inlines critical CSS.
   `style-src 'self' 'unsafe-inline'`,
-  `img-src 'self'`,
+  `img-src 'self' https://mc.yandex.ru https://mc.yandex.com`,
   `font-src 'self'`,
-  `connect-src 'self'`,
+  `connect-src 'self' https://mc.yandex.ru https://mc.yandex.com`,
   // Stated rather than left to fall back to `script-src`, which would drag
   // 'unsafe-inline' along with it. Both workers the site starts — @nuxt/content's
   // SQLite worker and the prettier formatting worker — are same-origin.

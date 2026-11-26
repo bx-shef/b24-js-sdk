@@ -32,6 +32,8 @@ services:
       NUXT_PUBLIC_BX_ASSISTANT_ENABLED: ${ASSISTANT_ENABLED:-false}
       # Клиент — первый адрес X-Forwarded-For: его ставит nginx-proxy (лимит частоты чата по клиенту).
       NUXT_TRUST_PROXY: "true"
+      # Яндекс Метрика: номер счётчика; пусто — нет ни Метрики, ни баннера cookie.
+      NUXT_PUBLIC_YANDEX_METRIKA_ID: ${YANDEX_METRIKA_ID:-}
       ASSISTANT_RATE_PER_MINUTE: ${ASSISTANT_RATE_PER_MINUTE:-20}
       ASSISTANT_DAILY_LIMIT: ${ASSISTANT_DAILY_LIMIT:-2000}
     restart: unless-stopped

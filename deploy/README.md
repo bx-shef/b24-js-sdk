@@ -21,6 +21,11 @@
   (`ASSISTANT_RATE_PER_MINUTE`, клиент — по `X-Forwarded-For` от nginx-proxy) и общий за сутки
   (`ASSISTANT_DAILY_LIMIT`).
 
+- Яндекс Метрика — `YANDEX_METRIKA_ID` в `.env` (номер счётчика). Метрика грузится только после
+  согласия посетителя в баннере cookie (`docs/public/cookie-consent.js`, как на посадочных bx-shef),
+  без Вебвизора; события сайта (поиск, чат, переключение версии API, действия со страницей) уходят
+  целями `reachGoal` (`docs/app/composables/useAnalytics.ts`).
+
 ## Сервер
 
 1. Прокси `proxy-net` с nginx-proxy и acme-companion — если его ещё нет, по
