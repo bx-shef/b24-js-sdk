@@ -9,7 +9,8 @@ import { createB24Client } from '../../utils'
  * Finds or creates the records the integration tests rely on, and prints their IDs
  * as `B24_TEST_IDS` (see `test/0_setup/test-ids.ts`).
  *
- * Idempotent: every record carries the {@link MARKER} in its title, so a second run
+ * Idempotent: every record carries the {@link MARKER} (CRM: in the title or last name;
+ * the task: as a tag), so a second run
  * reuses what the first one made and creates only what is missing. Nothing is
  * deleted or updated.
  *
@@ -17,7 +18,7 @@ import { createB24Client } from '../../utils'
  * - companies: at least {@link COMPANIES}, titled `A…` (CallListV2 filters `A%`),
  *   one of them created within the last ~6 months; `>crmCompanySuccessMax` must
  *   still return rows, so Max is the second-to-last marked company;
- * - contacts: at least {@link CONTACTS}; one deal; one task;
+ * - contacts: at least {@link CONTACTS}; one deal; one task (tagged, see below);
  * - `taskWrong` / `crmCompanyWrong`: an ID that does not exist.
  *
  * @usage pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures
@@ -104,16 +105,31 @@ export default defineCommand({
       deals.push(await addCrm(EnumCrmEntityTypeId.deal, { title: `${MARKER} deal` }))
     }
 
-    const me = await call<{ ID: string }>('user.current', {})
+    // The task is found by its tag, not its title: the tests rename it (`TEST: [date]`).
+    // Only tasks this webhook's user created are considered, and the tag is re-checked
+    // with `tasks.task.get`, so a portal that ignored the TAG filter cannot hand back a
+    // foreign task the tests would then rename.
+    const me = Number((await call<{ ID: string }>('user.current', {})).ID)
     const tasks = await call<{ tasks: { id: string }[] }>('tasks.task.list', {
-      filter: { '%TITLE': MARKER },
+      filter: { TAG: MARKER, CREATED_BY: me },
       select: ['ID'],
       order: { ID: 'ASC' }
     })
-    let taskId = Number(tasks.tasks[0]?.id)
+    let taskId = 0
+    for (const candidate of tasks.tasks.slice(0, 5)) {
+      const found = await call<{ task: { id: string, createdBy?: string, tags?: Record<string, { title?: string }> | { title?: string }[] } }>(
+        'tasks.task.get',
+        { taskId: Number(candidate.id), select: ['ID', 'CREATED_BY', 'TAGS'] }
+      )
+      const tags = Object.values(found.task.tags ?? {}).map(tag => tag?.title)
+      if (Number(found.task.createdBy) === me && tags.includes(MARKER)) {
+        taskId = Number(found.task.id)
+        break
+      }
+    }
     if (!taskId) {
       const added = await call<{ task: { id: string } }>('tasks.task.add', {
-        fields: { TITLE: `${MARKER} task`, RESPONSIBLE_ID: Number(me.ID) }
+        fields: { TITLE: `${MARKER} task`, RESPONSIBLE_ID: me, TAGS: [MARKER] }
       })
       taskId = Number(added.task.id)
       logger.info(`created task #${taskId}`).catch(() => {})

@@ -273,8 +273,9 @@ pnpm run dev make deals --total=150
 
 ### Make Test Fixtures
 
-Finds or creates the records the integration tests rely on (companies, contacts, a deal and a
-task titled with the `b24jssdk-test` marker) and prints their IDs as one line,
+Finds or creates the records the integration tests rely on (companies, contacts and a deal
+titled with the `b24jssdk-test` marker, and a task you created tagged with it — the tests rename
+the task, so its title cannot carry the marker) and prints their IDs as one line,
 `B24_TEST_IDS={…}`. Idempotent: a second run reuses what the first one made; nothing is deleted.
 
 ```bash
