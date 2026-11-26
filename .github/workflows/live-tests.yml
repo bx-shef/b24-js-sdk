@@ -42,7 +42,7 @@ jobs:
           host=$(node -e 'console.log(new URL(process.env.B24_HOOK).host)')
           key=$(node -e 'console.log(new URL(process.env.B24_HOOK).pathname.split("/").filter(Boolean)[2] || "")')
           echo "::add-mask::$host"
-          [ -n "$key" ] && echo "::add-mask::$key"
+          if [ -n "$key" ]; then echo "::add-mask::$key"; fi
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
