@@ -58,7 +58,7 @@ CLA и т. п.). Пропуск без записи неотличим от не
 | `.github/workflows/*.yml`, `dependabot.yml` | Перенести и вернуть наши условия: `github.repository == 'bitrix24/b24jssdk'` и `open-pull-requests-limit: 0`; actions закреплены по SHA. Сторож — `scripts/__tests__/fork-guards.test.mjs` |
 | `pnpm-lock.yaml`, `skills/*/pnpm-lock.yaml` | Не сводить руками: после правки манифестов — `pnpm install` |
 | `pnpm-workspace.yaml` (overrides) | Объединять: наши override оставить, пока родитель не закрыл ту же уязвимость |
-| Версии зависимостей | Переносить, только если у нас стояла та же версия, что у родителя «до»; сверка — `node .sync/dep-parity.mjs --check`, снимок обновляется `node .sync/dep-parity.mjs > .sync/dep-parity.json` |
+| Версии зависимостей | Переносить, только если у нас стояла та же версия, что у родителя «до»; сверка — `node .sync/dep-parity.mjs --check`, снимок обновляется `node .sync/dep-parity.mjs --write` |
 | `docs/app/**` (дизайн), `docs/modules/bx-assistant/**`, `deploy/**`, `tools/review-tier.*`, `.claude/**` | Наше. Изменения родителя — вручную, если они имеют смысл для нас |
 | Релизы родителя (release-please, `CHANGELOG`, смена версии) | `n/a`: версию мы берём сами |
 
