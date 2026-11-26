@@ -7,7 +7,7 @@
 // Родитель берётся из ремоута `upstream` (git fetch upstream main). Исключения
 // (`exceptions` в dep-parity.json) сохраняются: скрипт обновляет только версии родителя.
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 
 const here = path => new URL(path, import.meta.url)
 const read = path => JSON.parse(readFileSync(here(path), 'utf-8'))
@@ -62,12 +62,17 @@ if (!check) {
     }
     manifests[path] = perSection
   }
-  console.log(JSON.stringify({ ...existing, cursor: sync.cursor, manifests }, null, 2))
+  // Пишем файл сами: `> dep-parity.json` обнулил бы его до того, как скрипт прочтёт исключения.
+  writeFileSync(new URL('./dep-parity.json', import.meta.url), `${JSON.stringify({ ...existing, cursor: sync.cursor, manifests }, null, 2)}\n`)
+  console.log('dep-parity.json обновлён')
   process.exit(0)
 }
 
 const nums = spec => String(spec).replace(/^\D*/, '').split(/[.\s|-]/).map(n => Number.parseInt(n, 10) || 0)
+// Префикс диапазона (^, ~, ничего): «новее» — только при том же префиксе и строго больших числах.
+const prefix = spec => String(spec).match(/^\D*/)[0]
 const older = (a, b) => {
+  if (prefix(a) !== prefix(b)) return true
   const [x, y] = [nums(a), nums(b)]
   for (let i = 0; i < Math.max(x.length, y.length); i++) {
     if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) < (y[i] ?? 0)
@@ -84,6 +89,11 @@ for (const [path, sections] of Object.entries(existing.manifests)) {
     for (const [name, want] of Object.entries(deps)) {
       const have = resolve(us[section]?.[name], name, ourCatalog, path)
       if (have === want) continue
+      if (have === undefined) {
+        console.log(`НЕТ У НАС ${path} ${section} ${name}: у родителя ${want}`)
+        drift++
+        continue
+      }
       const held = existing.exceptions?.[`${path}:${section}:${name}`]
       // Мы новее родителя (наши deps-PR) — не дрейф назад, только справка; старее или иной диапазон — дрейф.
       if (!held && !older(have, want) && !/workspace:|[|<>]/.test(`${have}${want}`)) {
