@@ -1,0 +1,62 @@
+name: fork-guards
+
+# Проверки форка bx-shef/b24-js-sdk (копии из bx-shef/b24-ui): actions закреплены по SHA,
+# установки в воркфлоу — с замороженным lock-файлом. Отдельный файл, а не шаг в ci.yml:
+# ci.yml общий с bitrix24/b24jssdk, и каждая наша правка в нём — конфликт при синхронизации.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guards:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Синхронизация с bitrix24 может принести воркфлоу с actions по тегу (@v6) —
+      # закрепление по SHA держит эта проверка, а не память.
+      - name: Every action is pinned to a commit SHA
+        run: .github/scripts/assert-actions-pinned.py
+
+      - name: Every workflow install is frozen
+        run: .github/scripts/assert-lockfile-frozen.py
+
+      - name: Tests of the two checks
+        run: |
+          bash test/workflows/pin-check.test.sh
+          bash test/workflows/lockfile-check.test.sh
+
+  # Сообщение коммита в main — то, что увидит release-please. Заголовок PR проверяет
+  # pr-title.yml, но в диалоге squash его могут переписать; здесь — итог после слияния.
+  commit-message:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: The commit message is one release-please can use
+        run: .github/scripts/assert-commit-parses.mjs

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Документация SDK
+    url: https://github.com/bx-shef/b24-js-sdk/tree/main/docs/content/docs
+    about: Ответ на вопрос «как сделать» обычно уже есть в документации.
