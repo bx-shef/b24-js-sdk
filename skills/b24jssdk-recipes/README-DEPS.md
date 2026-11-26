@@ -33,7 +33,7 @@
 
 ## Единственное, что осталось
 
-`@types/express` остаётся корневой devDependency. `docs/content/docs/2.working-with-the-rest-api/79.security.md`
+`@types/express` остаётся корневой devDependency. `docs/content/docs/4.tools/79.security.md`
 описывает паттерны обработчиков Express, а `pnpm run docs:typecheck-blocks` компилирует
 эти фрагменты кода в корне репозитория — так что эти типы нужны на уровне корня, а не рецептам.
 Остались только типы; сам `express` — нет.

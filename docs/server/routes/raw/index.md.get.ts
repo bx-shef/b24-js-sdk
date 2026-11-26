@@ -47,10 +47,12 @@ The Bitrix24 JS SDK (\`@bitrix24/b24jssdk\`) is a free and open-source JavaScrip
 ## Explore
 
 - Getting started: <${DOMAIN}/raw/docs/getting-started.md>
-- Working with the REST API: <${DOMAIN}/raw/docs/working-with-the-rest-api.md>
-- B24Frame (embedded apps): <${DOMAIN}/raw/docs/working-with-the-rest-api/frame.md>
-- B24Hook (webhooks): <${DOMAIN}/raw/docs/working-with-the-rest-api/hook.md>
-- B24OAuth (server apps): <${DOMAIN}/raw/docs/working-with-the-rest-api/oauth.md>
+- Actions (call, callList, fetchList, batch…): <${DOMAIN}/raw/docs/actions.md>
+- Entry points (B24Frame, B24Hook, B24OAuth, helper, Pull): <${DOMAIN}/raw/docs/entry-points.md>
+- Tools (logger, limiters, core, utilities, types): <${DOMAIN}/raw/docs/tools.md>
+- B24Frame (embedded apps): <${DOMAIN}/raw/docs/entry-points/frame.md>
+- B24Hook (webhooks): <${DOMAIN}/raw/docs/entry-points/hook.md>
+- B24OAuth (server apps): <${DOMAIN}/raw/docs/entry-points/oauth.md>
 - Sitemap: <${DOMAIN}/sitemap.md>
 - LLMs index: <${DOMAIN}/llms.txt>
 - Full LLMs documentation: <${DOMAIN}/llms-full.txt>

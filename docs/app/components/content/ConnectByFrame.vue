@@ -63,7 +63,7 @@ const { copy, copied } = useClipboard()
     <ProseLi>The application will open in embedded mode.</ProseLi>
     <ProseLi>
       All code samples on the page will automatically gain secure access to your portal's API via the
-      <B24Link to="/docs/working-with-the-rest-api/frame/">
+      <B24Link to="/docs/entry-points/frame/">
         <ProseCode>B24Frame</ProseCode>
       </B24Link> object.
     </ProseLi>

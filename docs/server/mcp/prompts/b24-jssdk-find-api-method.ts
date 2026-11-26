@@ -11,7 +11,7 @@ export default defineMcpPrompt({
     const event = useEvent()
 
     const pages = await queryCollection(event, 'docs')
-      .where('path', 'LIKE', '%/working-with-the-rest-api/%')
+      .where('path', 'LIKE', '/docs/actions/%')
       .where('extension', '=', 'md')
       .select('path', 'title', 'description')
       .all()

@@ -20,7 +20,7 @@ import {
 import { baseStage, analyseFunnel, type DealRow, type StageStat } from '../lib/funnel'
 
 // pushHandler attaches a console sink at INFO level.
-// See /docs/working-with-the-rest-api/logger/.
+// See /docs/tools/logger/.
 const logger = Logger.create('CrmAnalytics')
 logger.pushHandler(new ConsoleV2Handler(LogLevel.INFO, { useStyles: false }))
 

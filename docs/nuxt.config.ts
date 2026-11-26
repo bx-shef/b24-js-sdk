@@ -340,10 +340,31 @@ export default defineNuxtConfig({
         ]
       },
       {
-        title: 'Working',
+        title: 'Actions',
         contentCollection: 'docs',
         contentFilters: [
-          { field: 'path', operator: 'LIKE', value: '/docs/working-with-the-rest-api/%' }
+          { field: 'path', operator: 'LIKE', value: '/docs/actions%' }
+        ]
+      },
+      {
+        title: 'Entry points',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: 'LIKE', value: '/docs/entry-points%' }
+        ]
+      },
+      {
+        title: 'Tools',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: 'LIKE', value: '/docs/tools%' }
+        ]
+      },
+      {
+        title: 'API reference',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: 'LIKE', value: '/docs/api-reference%' }
         ]
       },
       {

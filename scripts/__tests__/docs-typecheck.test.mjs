@@ -261,7 +261,7 @@ test('docs-typecheck: against the real docs tree exits 0', { skip: INTEGRATION_S
 test('docs-typecheck: a deliberately broken block causes exit 1 with correct file:line output', { skip: INTEGRATION_SKIP }, () => {
   // Create a temporary markdown file with a broken TS block.
   const tmp = mkdtempSync(join(tmpdir(), 'docs-typecheck-test-'))
-  const fakeDocsDir = join(tmp, 'docs', 'content', 'docs', '2.working-with-the-rest-api')
+  const fakeDocsDir = join(tmp, 'docs', 'content', 'docs', '2.actions')
   mkdirSync(fakeDocsDir, { recursive: true })
 
   // Write a minimal broken block — referencing a non-existent variable.

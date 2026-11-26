@@ -12,20 +12,22 @@
 
 ```text
 docs/content/docs/
-├── 1.getting-started/
+├── 1.getting-started/        # быстрый старт
 │   ├── 2.installation/
 │   ├── 3.migration/
+│   ├── 4.contribution.md
 │   └── 7.ai/
-├── 2.working-with-the-rest-api/
-│   ├── 0.index.md
+├── 2.actions/                # действия: страницы call, call-list, batch… и руководства
+│   ├── 0.index.md            # обзор с карточками (:pages-list)
 │   ├── 1.call-rest-api-ver2.md
 │   ├── 1.call-rest-api-ver3.md
 │   ├── 2.call-list-rest-api-ver2.md
 │   ├── 2.call-list-rest-api-ver3.md
-│   ├── 2.fetch-list-rest-api-ver2.md
-│   ├── 2.fetch-list-rest-api-ver3.md
 │   ├── 3.batch-rest-api-ver2.md
 │   └── 3.batch-rest-api-ver3.md
+├── 3.entry-points/           # точки входа: B24Hook, B24Frame, B24OAuth, helper, Pull
+├── 4.tools/                  # инструменты: logger, limiters, core, utilities, types, коды ошибок
+├── 5.api-reference/          # справочник API
 └── 99.examples/
     ├── 0.index.md           # catalogue / landing
     ├── 10.entity-list.md    # B24UI paged list
@@ -71,9 +73,9 @@ links:
 | `restApiVersion` | для страниц действий | `rest-api-ver2` или `rest-api-ver3` — управляет фильтром `::rest-api-version-only` |
 | `links` | да для страниц API | Каждая запись указывает на файл исходников, на котором держится страница. Всегда включайте основной класс, а также `Result`/`AjaxResult`/`AjaxError`/`SdkError`, когда это уместно |
 
-Блок `links` — то, как читатели (и агенты) переходят со страницы документации к реализации. **Следите за точностью этих ссылок** — каждая страница в `2.working-with-the-rest-api/` уже следует этому паттерну, копируйте с ближайшей существующей страницы. CI это обеспечивает: цель `blob/main/` в `links:`, файла которой больше нет, роняет задание `docs-lint` (#117).
+Блок `links` — то, как читатели (и агенты) переходят со страницы документации к реализации. **Следите за точностью этих ссылок** — каждая страница в `2.actions/`, `3.entry-points/` и `4.tools/` уже следует этому паттерну, копируйте с ближайшей существующей страницы. CI это обеспечивает: цель `blob/main/` в `links:`, файла которой больше нет, роняет задание `docs-lint` (#117).
 
-**Ссылки внутри страниц должны быть абсолютными для сайта.** Ссылайтесь на другую страницу документации абсолютным маршрутом (`[Call v3](/docs/working-with-the-rest-api/call-rest-api-ver3/)`), никогда не относительным путём `./` или `../` — относительные ссылки молча не разрешаются в Nuxt Content и отклоняются CI (#102).
+**Ссылки внутри страниц должны быть абсолютными для сайта.** Ссылайтесь на другую страницу документации абсолютным маршрутом (`[Call v3](/docs/actions/call-rest-api-ver3/)`), никогда не относительным путём `./` или `../` — относительные ссылки молча не разрешаются в Nuxt Content и отклоняются CI (#102).
 
 ## Структура страницы (Page Structure)
 
@@ -273,7 +275,7 @@ export async function Action_callRestApiVer2() {
 ```text
 packages/jssdk/src/core/actions/v3/call.ts        # implementation
 test/integration/core/actions-v3-call.spec.ts     # integration test (no mocks)
-docs/content/docs/2.working-with-the-rest-api/    # docs page
+docs/content/docs/2.actions/                      # docs page
   1.call-rest-api-ver3.md
 test/some-code-from-docs/<corresponding>.ts       # docs snippet, kept compilable
 ```

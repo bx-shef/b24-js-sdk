@@ -77,7 +77,7 @@ const DEFAULT_PAGES = [
   // every other page here, and it is what a visitor gets after any broken link.
   '/404.html',
   '/docs/getting-started/',
-  '/docs/working-with-the-rest-api/core-ajax-result/',
+  '/docs/tools/core-ajax-result/',
   '/docs/api-reference',
   '/docs/examples/crm-analytics/',
   '/docs/getting-started/migration/v3/'

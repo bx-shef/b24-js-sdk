@@ -19,47 +19,74 @@ import ItemIcon from '@bitrix24/b24icons-vue/crm/ItemIcon'
 // import EditPencilIcon from '@bitrix24/b24icons-vue/main/EditPencilIcon'
 
 const categories = {
-  'working-with-the-rest-api': [
+  'actions': [
     {
       id: 'actions',
-      title: 'Действия',
-      // @todo ! insert icon
+      title: 'Методы вызова',
       icon: LayersIcon
     },
     {
-      id: 'tools',
-      title: 'Инструменты',
-      // @todo ! insert icon
+      id: 'guides',
+      title: 'Руководства',
       icon: ItemIcon
-    },
-    {
-      id: 'logger',
-      title: 'Логгер',
-      // @todo ! insert icon
-      icon: ItemIcon
-    },
-    {
-      id: 'limiters',
-      title: 'Лимитеры',
-      // @todo ! insert icon
-      icon: ItemIcon
-    },
+    }
+  ],
+  'entry-points': [
     {
       id: 'B24Frame',
       title: 'B24Frame',
-      // @todo ! insert icon
       icon: ItemIcon
     },
     {
       id: 'B24Hook',
       title: 'B24Hook',
-      // @todo ! insert icon
       icon: ItemIcon
     },
     {
       id: 'B24OAuth',
       title: 'B24OAuth',
-      // @todo ! insert icon
+      icon: ItemIcon
+    },
+    {
+      id: 'Helper',
+      title: 'Помощники',
+      icon: ItemIcon
+    },
+    {
+      id: 'Pull',
+      title: 'Pull',
+      icon: ItemIcon
+    }
+  ],
+  'tools': [
+    {
+      id: 'logger',
+      title: 'Логирование',
+      icon: ItemIcon
+    },
+    {
+      id: 'limiters',
+      title: 'Лимитеры',
+      icon: ItemIcon
+    },
+    {
+      id: 'Core',
+      title: 'Ядро',
+      icon: ItemIcon
+    },
+    {
+      id: 'tools',
+      title: 'Утилиты',
+      icon: ItemIcon
+    },
+    {
+      id: 'Types',
+      title: 'Типы',
+      icon: ItemIcon
+    },
+    {
+      id: 'security',
+      title: 'Безопасность',
       icon: ItemIcon
     }
   ],
@@ -79,7 +106,6 @@ const categories = {
     {
       id: 'examples',
       title: 'Рецепты',
-      // @todo ! insert icon
       icon: ItemIcon
     }
   ]

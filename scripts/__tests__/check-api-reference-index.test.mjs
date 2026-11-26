@@ -475,7 +475,7 @@ test('fails when an export appears only under "Not yet covered by a guide"', () 
 
 test('the real page satisfies both consistency checks', () => {
   const markdown = readFileSync(
-    join(REPO_ROOT, 'docs/content/docs/3.api-reference/1.index.md'),
+    join(REPO_ROOT, 'docs/content/docs/5.api-reference/1.index.md'),
     'utf8'
   )
   const positions = collectPagePositions(markdown)

@@ -52,7 +52,7 @@ test('mixing languages is accepted on purpose', () => {
 function runLint(pages) {
   const root = mkdtempSync(join(tmpdir(), 'docs-lint-sections-'))
   try {
-    const dir = join(root, '2.working-with-the-rest-api')
+    const dir = join(root, '2.actions')
     mkdirSync(dir, { recursive: true })
     for (const [name, headings] of Object.entries(pages)) {
       writeFileSync(join(dir, name), ['---', `title: ${name}`, 'description: Fixture page', 'category: \'actions\'', 'links: []', '---', '', ...headings.flatMap(h => [h, '', 'Text.', ''])].join('\n'))
