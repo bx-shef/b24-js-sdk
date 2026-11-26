@@ -57,11 +57,11 @@
 
 ```text
 default-src 'self';
-script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval';
+script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://mc.yandex.ru https://mc.yandex.com;
 style-src 'self' 'unsafe-inline';
-img-src 'self';
+img-src 'self' https://mc.yandex.ru https://mc.yandex.com;
 font-src 'self';
-connect-src 'self';
+connect-src 'self' https://mc.yandex.ru https://mc.yandex.com;
 worker-src 'self';
 object-src 'none';
 base-uri 'self';
@@ -70,7 +70,12 @@ frame-src 'none';
 manifest-src 'self'
 ```
 
-Везде `'self'`, потому что **собранный сайт ничего не загружает с внешних источников** —
+Единственный внешний источник — **Яндекс Метрика** (`mc.yandex.ru` и `mc.yandex.com`: домен
+выбирает `tag.js` по стране посетителя) в `script-src`, `img-src` и `connect-src`. Она грузится,
+только если при запуске задан номер счётчика (`NUXT_PUBLIC_YANDEX_METRIKA_ID`) и посетитель согласился
+на аналитику в баннере `cookie-consent.js` (`docs/app/plugins/metrika.client.ts`); Вебвизор выключен.
+
+В остальном везде `'self'`, потому что **собранный сайт ничего не загружает с внешних источников** —
 ни скриптов, ни стилей, ни шрифтов, ни изображений, ни запросов fetch. Так стало после
 PR #407, который заменил CDN с prettier встроенной копией. До него политике понадобилось
 бы исключение для jsDelivr в `script-src`, и вся затея стоила бы гораздо меньше.

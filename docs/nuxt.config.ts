@@ -130,7 +130,9 @@ export default defineNuxtConfig({
       siteUrl: prodUrl,
       baseUrl,
       canonicalUrl,
-      gitUrl
+      gitUrl,
+      // Номер счётчика Яндекс Метрики (NUXT_PUBLIC_YANDEX_METRIKA_ID при запуске). Пусто — Метрики нет.
+      yandexMetrikaId: ''
     }
   },
 

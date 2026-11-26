@@ -46,5 +46,14 @@ const { b24DocsLink, tgLink } = useHeader()
     <NuxtLink :to="config.public.gitUrl" target="_blank" class="text-legend text-(length:--ui-font-size-sm) hover:underline">
       Published under MIT License.
     </NuxtLink>
+    <!-- Отзыв согласия на cookie (cookie-consent.js): только когда на сайте есть Метрика -->
+    <button
+      v-if="config.public.yandexMetrikaId"
+      type="button"
+      data-cookie-settings
+      class="ms-3 text-legend text-(length:--ui-font-size-sm) hover:underline"
+    >
+      Настроить cookie
+    </button>
   </B24Footer>
 </template>
