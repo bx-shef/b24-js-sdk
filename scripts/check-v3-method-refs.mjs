@@ -196,7 +196,7 @@ function isMarkedIgnored(lines, index, name) {
   // `* // @check-ignore: …` — without it the fence form silently never matched
   // in TypeScript, and only the line-above form worked there.
   const marker = lines[prev].trim().replace(/^\*\s*/, '')
-  return marker.startsWith('// @check-ignore') && marker.includes(name)
+  return (marker.startsWith('// @check-ignore') || marker.startsWith('<!-- @check-ignore')) && marker.includes(name)
 }
 
 const report = createReporter({
