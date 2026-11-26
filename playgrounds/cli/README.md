@@ -271,6 +271,18 @@ pnpm run dev make deals --total=50 --categoryId=3 --maxProducts=5 --assignedById
 pnpm run dev make deals --total=150
 ```
 
+### Make Test Fixtures
+
+Finds or creates the records the integration tests rely on (companies, contacts, a deal and a
+task titled with the `b24jssdk-test` marker) and prints their IDs as one line,
+`B24_TEST_IDS={…}`. Idempotent: a second run reuses what the first one made; nothing is deleted.
+
+```bash
+pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures | tail -1 >> .env.test   # from the repository root
+```
+
+`--githubEnv` also appends the line to `$GITHUB_ENV` (used by `live-tests.yml`).
+
 ### List Tasks
 
 Lists tasks from Bitrix24 via the REST API v3 `tasks.task.list` method, paging through the full result set with a keyset cursor.
