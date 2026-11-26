@@ -66,7 +66,7 @@ if (!check) {
   process.exit(0)
 }
 
-const nums = spec => String(spec).replace(/^[^\d]*/, '').split(/[.\s|-]/).map(n => Number.parseInt(n, 10) || 0)
+const nums = spec => String(spec).replace(/^\D*/, '').split(/[.\s|-]/).map(n => Number.parseInt(n, 10) || 0)
 const older = (a, b) => {
   const [x, y] = [nums(a), nums(b)]
   for (let i = 0; i < Math.max(x.length, y.length); i++) {
