@@ -2,10 +2,10 @@ import { z } from 'zod'
 import { queryCollection } from '@nuxt/content/server'
 
 export default defineMcpPrompt({
-  title: 'Find SDK Method for Use Case',
-  description: 'Find the best Bitrix24 JS SDK method or REST API for a specific use case',
+  title: 'Подобрать метод SDK под задачу',
+  description: 'Подобрать подходящий метод JS SDK Битрикс24 или REST API для конкретной задачи',
   inputSchema: {
-    usecase: z.string().describe('Describe what you want to do with Bitrix24 (e.g., "create a deal", "get user list", "upload file to disk")')
+    usecase: z.string().describe('Что нужно сделать в Битрикс24 (например: «создать сделку», «получить список сотрудников», «загрузить файл на Диск»)')
   },
   async handler({ usecase }) {
     const event = useEvent()
@@ -25,7 +25,7 @@ export default defineMcpPrompt({
           role: 'user' as const,
           content: {
             type: 'text' as const,
-            text: `Help me find the best Bitrix24 JS SDK method or REST API endpoint for this use case: "${usecase}". Here are all available documentation pages: ${JSON.stringify(pages, null, 2)}`
+            text: `Подбери лучший метод JS SDK Битрикс24 или метод REST API для задачи: «${usecase}». Ответь по-русски, со ссылкой на страницу документации. Все страницы документации: ${JSON.stringify(pages, null, 2)}`
           }
         }
       ]

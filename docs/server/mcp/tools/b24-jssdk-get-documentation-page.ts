@@ -2,15 +2,15 @@ import { z } from 'zod'
 import { withoutTrailingSlash } from 'ufo'
 
 export default defineMcpTool({
-  title: 'Get Documentation Page',
-  description: 'Retrieves documentation page content by URL path',
+  title: 'Страница документации',
+  description: 'Текст страницы документации по пути (Markdown; блоки REST API v2 и v3 помечены)',
   inputSchema: {
     /** @memo only paths under `/docs/`; the site base URL is not accepted */
     path: z.string()
       // Только путь внутри /docs/: без `..`, `?`, `#`, `%` (путь уходит в $fetch(`/raw${path}.md`))
       .regex(/^\/docs\/[\w/.-]+$/, 'Path must look like /docs/actions/call')
       .refine(value => !value.includes('..'), 'Path must not contain ..')
-      .describe('The path to the content page (e.g., /docs/actions/call)')
+      .describe('Путь страницы (например, /docs/actions/call)')
   },
   cache: '30m',
   async handler({ path }) {

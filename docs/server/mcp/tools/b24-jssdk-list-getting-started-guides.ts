@@ -2,8 +2,8 @@ import { queryCollection } from '@nuxt/content/server'
 import { withTrailingSlash } from 'ufo'
 
 export default defineMcpTool({
-  title: 'List Getting Started Guides',
-  description: 'Lists all getting started guides and installation instructions',
+  title: 'Список руководств «Быстрый старт»',
+  description: 'Все руководства раздела «Быстрый старт»: установка, миграция, ИИ-инструменты',
   cache: '30m',
   async handler() {
     const event = useEvent()

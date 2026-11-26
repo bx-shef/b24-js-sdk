@@ -2,8 +2,8 @@ import { queryCollection } from '@nuxt/content/server'
 import { withTrailingSlash } from 'ufo'
 
 export default defineMcpTool({
-  title: 'List Documentation Pages',
-  description: 'Lists all documentation pages',
+  title: 'Список страниц документации',
+  description: 'Все страницы документации JS SDK: путь, заголовок и описание',
   cache: '1h',
   async handler() {
     const event = useEvent()
