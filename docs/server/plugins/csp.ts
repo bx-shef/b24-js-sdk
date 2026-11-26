@@ -36,7 +36,9 @@ const CONTENT_SECURITY_POLICY = [
   `object-src 'none'`,
   `base-uri 'self'`,
   `form-action 'none'`,
-  `frame-src 'none'`,
+  // 'self' — страница /request встраивает форму заявки iframe-ом того же источника
+  // (public/b24-form.html); чужие источники во фреймах остаются закрыты.
+  `frame-src 'self'`,
   `manifest-src 'self'`
 ].join('; ')
 

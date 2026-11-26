@@ -19,7 +19,7 @@ function stopWhenResponseComplete({ steps }: { steps: any[] }): boolean {
   return steps.length >= MAX_STEPS
 }
 
-function getSystemPrompt(siteName: string) {
+function getSystemPrompt(siteName: string, requestUrl: string) {
   return `You are the documentation assistant for ${siteName}. Help users navigate and understand the project documentation.
 
 **Your identity:**
@@ -42,6 +42,10 @@ function getSystemPrompt(siteName: string) {
 - Tool results include a \`url\` for each page — prefer markdown links \`[label](url)\` so users can open the doc in one click
 - When it helps, add extra links (related pages, “read more”, side topics) — make the answer easy to dig into, not a wall of text
 - Stick to URLs from tool results (\`url\` / \`path\`) so links stay valid
+
+**Development requests:**
+- If the question calls for custom development (an integration, an application, portal customization, a migration, anything the SDK or the documentation does not cover), or the user reports an SDK bug, or asks for a specialist, or you found no answer in the documentation — answer briefly with whatever you can and offer to leave a development request, with the Markdown link \`[Оставить заявку на разработку](${requestUrl})\`.
+- Do not push the link on ordinary documentation questions. Write the offer in Russian.
 
 **FORMATTING RULES (CRITICAL):**
 - NEVER use markdown headings (#, ##, ###, etc.)
@@ -73,6 +77,7 @@ export default defineEventHandler(async (event) => {
   const mcpServer = config.bxAssistant.mcpServer
   const isExternalUrl = mcpServer.startsWith('http://') || mcpServer.startsWith('https://')
   const baseURL = config.app?.baseURL?.replace(/\/$/, '') || ''
+  const requestUrl = `${baseURL}/request?source=chat`
   const mcpUrl = isExternalUrl
     ? mcpServer
     : import.meta.dev
@@ -100,7 +105,7 @@ export default defineEventHandler(async (event) => {
         maxRetries: 2,
         abortSignal: abortController.signal,
         stopWhen: stopWhenResponseComplete,
-        system: getSystemPrompt(siteName),
+        system: getSystemPrompt(siteName, requestUrl),
         messages: modelMessages,
         tools: mcpTools as ToolSet,
         onStepFinish: ({ toolCalls }: { toolCalls: ToolCallPart[] }) => {

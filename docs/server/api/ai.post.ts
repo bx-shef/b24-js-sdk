@@ -85,6 +85,9 @@ export default defineEventHandler(async (event) => {
   const abortController = new AbortController()
   event.node.req.on('close', () => abortController.abort())
 
+  // Ссылка на страницу заявки: baseURL сайта (на GitHub Pages — с префиксом) + /request
+  const requestUrl = `${(useRuntimeConfig().app?.baseURL ?? '/').replace(/\/$/, '')}/request?source=chat`
+
   const system = `You are a helpful assistant for Bitrix24 JS SDK, a JavaScript/TypeScript SDK for the Bitrix24 REST API. Use your knowledge base tools to search for relevant information before answering questions.
 
 The documentation is in Russian. Always answer in Russian, whatever language the question is in; keep code, identifiers and REST method names as they are.
@@ -97,6 +100,10 @@ Guidelines:
 - If a question is unrelated to Bitrix24 JS SDK (e.g. general coding, off-topic), briefly answer if you can, but don't waste tool calls searching docs for it.
 - If no relevant information is found after searching, respond with "Sorry, I couldn't find information about that in the documentation."
 - Be concise and direct in your responses.
+
+**Development requests:**
+- If the question calls for custom development (an integration, an application, portal customization, a migration, anything the SDK or the documentation does not cover), or the user reports an SDK bug, or asks for a specialist, or you found no answer in the documentation — answer briefly with whatever you can and offer to leave a development request, with the Markdown link \`[Оставить заявку на разработку](${requestUrl})\`.
+- Do not push the link on ordinary documentation questions. Write the offer in Russian.
 
 General Code Design Guidelines:
 - Try to use TypeScript wherever appropriate and practical.
