@@ -3,7 +3,9 @@ name: live-tests
 # Живые тесты на тестовом портале — только кнопкой Run workflow (вкладка Actions).
 # Секреты репозитория: B24_HOOK — входящий вебхук ТЕСТОВОГО портала (права crm, tasks,
 # user, im, main; тесты создают и удаляют записи), DEEPSEEK_API_KEY — для проверки чата.
-# Значения секретов GitHub прячет в журнале; в шаги они идут только через env.
+# Значения секретов GitHub прячет в журнале; в шаги они идут только через env. Запуск — только
+# с ветки main: секреты репозитория видит любая ветка, а изменённый в ней тест мог бы их напечатать.
+# Надёжнее — окружение GitHub с правилом «только main» (вопрос владельцу, .claude/owner-questions.md).
 
 on:
   workflow_dispatch:
@@ -24,7 +26,7 @@ concurrency:
 jobs:
   portal:
     name: SDK и навыки на портале
-    if: github.repository == 'bx-shef/b24-js-sdk' && inputs.suite != 'chat'
+    if: github.repository == 'bx-shef/b24-js-sdk' && github.ref == 'refs/heads/main' && inputs.suite != 'chat'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -36,6 +38,11 @@ jobs:
             echo "::error::Нет секрета B24_HOOK: Settings → Secrets and variables → Actions → New repository secret."
             exit 1
           fi
+          # GitHub маскирует секрет только целиком; ключ и адрес портала по отдельности — нет.
+          host=$(node -e 'console.log(new URL(process.env.B24_HOOK).host)')
+          key=$(node -e 'console.log(new URL(process.env.B24_HOOK).pathname.split("/").filter(Boolean)[2] || "")')
+          echo "::add-mask::$host"
+          if [ -n "$key" ]; then echo "::add-mask::$key"; fi
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -52,7 +59,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Prepare
-        run: pnpm run dev:prepare
+        run: pnpm run package-jssdk:prepare
 
       - name: Интеграционные тесты SDK
         if: inputs.suite == 'sdk' || inputs.suite == 'all'
@@ -61,7 +68,7 @@ jobs:
         run: pnpm run package-jssdk:test:run
 
       - name: Живые тесты навыков
-        if: inputs.suite == 'skills' || inputs.suite == 'all'
+        if: ${{ !cancelled() && (inputs.suite == 'skills' || inputs.suite == 'all') }}
         env:
           B24_HOOK: ${{ secrets.B24_HOOK }}
         run: |
@@ -70,7 +77,7 @@ jobs:
 
   chat:
     name: Чат сайта с DeepSeek
-    if: github.repository == 'bx-shef/b24-js-sdk' && (inputs.suite == 'chat' || inputs.suite == 'all')
+    if: github.repository == 'bx-shef/b24-js-sdk' && github.ref == 'refs/heads/main' && (inputs.suite == 'chat' || inputs.suite == 'all')
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -82,6 +89,8 @@ jobs:
             echo "::error::Нет секрета DEEPSEEK_API_KEY."
             exit 1
           fi
+          # DeepSeek в ошибке 401 повторяет хвост ключа («****abcd»)
+          echo "::add-mask::${DEEPSEEK_API_KEY: -4}"
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -111,20 +120,26 @@ jobs:
       - name: Вопрос чату по документации
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          NUXT_PUBLIC_BX_ASSISTANT_ENABLED: 'true'
         shell: bash
         run: |
           (cd docs/.output && PORT=3000 HOST=127.0.0.1 node server/index.mjs > ../../server.log 2>&1 &)
-          for _ in $(seq 1 60); do curl -fs localhost:3000/ >/dev/null && break; sleep 1; done
-          body='{"messages":[{"id":"1","role":"user","parts":[{"type":"text","text":"Как вызвать метод REST API через вебхук? Ответь кратко со ссылкой на страницу документации."}]}]}'
+          up=
+          for _ in $(seq 1 60); do curl -fs localhost:3000/ >/dev/null && up=1 && break; sleep 1; done
+          if [ -z "$up" ]; then echo "::error::Сервер сайта не стартовал"; tail -50 server.log; exit 1; fi
+          body='{"messages":[{"id":"1","role":"user","parts":[{"type":"text","text":"Как вызвать метод REST API через вебхук? Найди страницу в документации и ответь кратко со ссылкой на неё."}]}]}'
           code=$(curl -sS --max-time 180 -o answer.txt -w '%{http_code}' -X POST -H 'content-type: application/json' -d "$body" localhost:3000/api/ai || true)
           echo "HTTP $code, ответ: $(wc -c < answer.txt) байт"
-          # инструменты MCP вызваны и вернули страницы, а не ошибку
-          grep -c '"type":"tool-' answer.txt || true
           if [ "$code" != 200 ] || ! grep -q '"type":"text-delta"' answer.txt; then
-            echo "::error::Чат не ответил"; tail -c 2000 answer.txt; tail -50 server.log; exit 1
+            echo "::error::Чат не ответил"; exit 1
           fi
-          if grep -q 'Nitro request context is not available' answer.txt; then
-            echo "::error::Инструмент MCP упал внутри чата"; exit 1
-          fi
-          echo "--- начало ответа"; grep -o '"delta":"[^"]*"' answer.txt | head -60 | sed 's/"delta":"//;s/"$//' | tr -d '\n'; echo
+          # инструменты MCP: хотя бы один результат и ни одного результата-ошибки
+          tools_ok=$(grep -c '"type":"tool-output-available"' answer.txt || true)
+          tools_err=$(grep -cE '"type":"tool-output-(available|error)".*"(output":\{"error|errorText)' answer.txt || true)
+          echo "Инструменты: результатов $tools_ok, с ошибкой $tools_err"
+          if [ "$tools_ok" = 0 ]; then echo "::error::Чат не вызвал ни одного инструмента MCP"; exit 1; fi
+          if [ "$tools_err" != 0 ]; then echo "::error::Инструмент MCP вернул ошибку"; exit 1; fi
+          echo "--- начало ответа"
+          grep '"type":"text-delta"' answer.txt > deltas.txt || true
+          sed -E 's/.*"delta":"(([^"\\]|\\.)*)".*/\1/' deltas.txt > text.txt || true
+          head -c 1500 text.txt || true
+          echo

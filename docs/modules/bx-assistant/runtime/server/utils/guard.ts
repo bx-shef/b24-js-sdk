@@ -49,7 +49,7 @@ export function assistantGuard(event: H3Event, enabled: boolean): void {
   if (!enabled) {
     throw createError({ status: 404, message: 'Not found.' })
   }
-  if (!process.env.DEEPSEEK_API_KEY) {
+  if (!process.env.DEEPSEEK_API_KEY?.trim()) {
     throw createError({ status: 503, message: 'The AI assistant is not configured on this server.' })
   }
 }
