@@ -61,6 +61,14 @@ jobs:
       - name: Prepare
         run: pnpm run package-jssdk:prepare
 
+      # Находит записи с меткой b24jssdk-test или создаёт недостающие (ничего не удаляет)
+      # и кладёт их ID в B24_TEST_IDS для следующих шагов — тесты берут ID оттуда.
+      - name: Записи для тестов на портале
+        if: inputs.suite == 'sdk' || inputs.suite == 'all'
+        env:
+          B24_HOOK: ${{ secrets.B24_HOOK }}
+        run: pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures --githubEnv
+
       - name: Интеграционные тесты SDK
         if: inputs.suite == 'sdk' || inputs.suite == 'all'
         env:
