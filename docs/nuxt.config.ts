@@ -177,6 +177,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-01-14',
 
   nitro: {
+    // MCP tools (docs/server/mcp/tools/*) call useEvent() to query content: without
+    // the request async context they fail with "Nitro request context is not
+    // available" on the Node server (deploy/Dockerfile). Static generate never ran them.
+    experimental: {
+      asyncContext: true
+    },
     // `publicAssets` copies the skills tree verbatim, so anything sitting in it
     // gets deployed. `skills/b24jssdk-recipes` is its own npm package (#65) and
     // its `node_modules` is ~130 MB of dependency trees — publish the recipes,
