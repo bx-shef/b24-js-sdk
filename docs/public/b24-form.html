@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Источник: bx-shef/toolsai, site/landing/b24-form.html (обёртка CRM-формы Битрикс24).
+     Отличия от оригинала: белые списки PRODUCTS = ['b24-js-sdk'] и TYPES = ['request'] —
+     заявка с этого сайта должна записаться в сделку как продукт b24-js-sdk, а не shef.toolsai;
+     комментарии про посадочные shef.toolsai заменены на этот сайт. Остальной код не менять,
+     чтобы копия сходилась с оригиналом.
+-->
+<!-- Файл отдаётся публично по своему URL, но это техническая оболочка iframe, а не страница —
+     в выдаче ей делать нечего. Тег noindex стоит руками, убирать его нельзя. -->
+<meta name="robots" content="noindex, nofollow">
+<!-- GET-путь (#460): портал читает product/type из адреса этого документа (Referer отправки);
+     strict-origin-when-cross-origin сервера срезает query, поэтому здесь полный Referer по HTTPS.
+     В адресе только product, type и код формы — личных данных нет. -->
+<meta name="referrer" content="no-referrer-when-downgrade">
+<!-- Своя CSP обёртки: закрыты object и base. Скрипт формы грузит ресурсы с разных хостов Битрикс24, поэтому script-src не ограничен — защиту даёт точный адрес загрузчика (LOADER ниже). -->
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'none'">
+<title>Форма заявки</title>
+<style>*{box-sizing:border-box}html,body{margin:0;padding:0;background-color:transparent}</style>
+</head>
+<body>
+<!--
+  Dedicated host document for the Bitrix24 CRM web-form embed.
+
+  Loaded in an iframe by app/pages/request.vue with a query string:
+    /b24-form.html?script=<loader url>&form=inline/<id>/<secret>&product=b24-js-sdk&type=request
+  product/type fill the hidden deal comment `product:%param_product%|type:%param_type%` (#460):
+  setProperty() in b24:form:init, plus the same values in this document's URL (GET fallback).
+  The parent page updates them via postMessage when a visitor clicks another CTA.
+
+  Kept as a separate same-origin static file (docs/public): the CSP <meta> of the site is
+  injected only into Nuxt pages (docs/server/plugins/csp.ts), so this document is not
+  restricted by it and may load the B24 loader + its inline bootstrap. The site itself
+  allows it only as a same-origin frame (frame-src 'self'). Never trust the query params
+  blindly — the guards below validate them.
+-->
+<script>
+(function () {
+  var ID_RE = /^[a-zA-Z0-9_-]+$/
+  // Отличие от посадочной: там обёртку прикрывает CSP сервера, здесь (статика сайта документации)
+  // своей CSP у документа нет, а под суффиксом *.bitrix24.* лежат и порталы чужих людей. Поэтому
+  // загрузчик — ровно одна форма нашего портала, адрес сравнивается целиком.
+  var LOADER = 'https://cdn-ru.bitrix24.by/b37817748/crm/form/loader_5.js'
+
+  function isAllowedHost(rawUrl) {
+    return rawUrl === LOADER
+  }
+
+  var qs = new URLSearchParams(location.search)
+  var scriptUrl = qs.get('script') || ''
+  var form = qs.get('form') || '' // inline/<id>/<secret>
+  var parts = form.split('/')
+
+  if (!isAllowedHost(scriptUrl) || parts.length !== 3 || parts[0] !== 'inline'
+      || !ID_RE.test(parts[1]) || !ID_RE.test(parts[2])) {
+    return
+  }
+
+  // Форма заявки не зависит от согласия на cookie аналитики; Метрика — только после согласия.
+
+  // Official Bitrix24 embed: a marker <script data-b24-form> followed by an
+  // async loader inserted before it; the loader renders the form at the marker.
+  var marker = document.createElement('script')
+  marker.setAttribute('data-b24-form', form)
+  marker.setAttribute('data-skip-moving', 'true')
+  document.body.appendChild(marker)
+
+  var s = document.createElement('script')
+  s.async = true
+  s.src = scriptUrl + '?' + (Date.now() / 180000 | 0)
+  marker.parentNode.insertBefore(s, marker)
+
+  // Form properties (#460). Only whitelisted values pass: they land in the deal comment as is.
+  var PRODUCTS = ['b24-js-sdk']
+  var TYPES = ['request']
+  var props = { product: PRODUCTS[0], type: TYPES[0] }
+  var formObj = null
+  function take(p) {
+    if (!p) return
+    if (PRODUCTS.indexOf(p.product) >= 0) props.product = p.product
+    if (TYPES.indexOf(p.type) >= 0) props.type = p.type
+  }
+  function apply() {
+    var u = new URL(location.href)
+    u.searchParams.set('product', props.product)
+    u.searchParams.set('type', props.type)
+    try { history.replaceState(null, '', u.pathname + u.search) } catch (e) {}
+    if (formObj && typeof formObj.setProperty === 'function') {
+      // Скрытое поле формы — `%param_product%`/`%param_type%`: ставим оба имени свойства
+      formObj.setProperty('product', props.product)
+      formObj.setProperty('type', props.type)
+      formObj.setProperty('param_product', props.product)
+      formObj.setProperty('param_type', props.type)
+    }
+  }
+  take({ product: qs.get('product'), type: qs.get('type') })
+  apply()
+  window.addEventListener('b24:form:init', function (e) {
+    formObj = e && e.detail && e.detail.object
+    apply()
+  })
+  window.addEventListener('message', function (e) {
+    if (e.source !== window.parent || e.origin !== location.origin) return
+    if (!e.data || typeof e.data !== 'object' || !e.data.b24props) return
+    take(e.data.b24props)
+    apply()
+  })
+  window.parent.postMessage('b24:form:ready', location.origin)
+
+  // b24:form:submit fires inside this document; events don't cross frames, so
+  // relay to the parent (app/pages/request.vue), which fires the Metrika goal.
+  document.addEventListener('b24:form:submit', function () {
+    window.parent.postMessage('b24:form:submit', location.origin)
+  })
+})()
+</script>
+</body>
+</html>

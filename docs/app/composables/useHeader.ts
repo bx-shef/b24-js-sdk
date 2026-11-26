@@ -123,6 +123,12 @@ const _useHeader = () => {
       active: route.path === '/docs/examples' || route.path.startsWith('/docs/examples/')
     },
     {
+      label: 'Заявка на разработку',
+      to: '/request?source=header',
+      icon: ItemIcon,
+      active: route.path === '/request'
+    },
+    {
       label: 'GitHub',
       to: 'https://github.com/bx-shef/b24-js-sdk',
       icon: GitHubIcon,

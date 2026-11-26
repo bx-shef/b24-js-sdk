@@ -35,6 +35,12 @@ const { b24DocsLink, tgLink } = useHeader()
         size="md"
       />
       <B24Button
+        label="Заявка на разработку"
+        :icon="Bitrix24Icon"
+        to="/request?source=footer"
+        size="md"
+      />
+      <B24Button
         label="Релизы"
         :icon="RocketIcon"
         :to="`${config.public.gitUrl}/releases`"

@@ -23,7 +23,7 @@
  */
 
 import { readFileSync, existsSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
+import { resolve, dirname, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { walkFiles } from './_docs-utils.mjs'
 import { createReporter } from './_reporter.mjs'
@@ -41,6 +41,16 @@ const TAG = /<meta[^>]+http-equiv="Content-Security-Policy"[^>]*>/gi
  */
 const REQUIRED = [`default-src 'self'`, `script-src 'self'`, `object-src 'none'`, `base-uri 'self'`]
 
+/**
+ * Static documents from `docs/public/` that are not Nuxt pages and so never get the
+ * `<meta>` policy (the Nitro `render:html` hook only runs for rendered pages).
+ * `b24-form.html` is the wrapper of the Bitrix24 CRM form embedded by `/request`; it
+ * must load the Bitrix24 loader, which the site policy would forbid. Listing a file here
+ * is not a free pass: it must stay a `noindex` technical document, and the page that
+ * frames it is covered by `frame-src 'self'` (see docs-csp.md).
+ */
+const STATIC_DOCUMENTS = new Set(['b24-form.html'])
+
 if (!existsSync(ROOT)) {
   console.error(`docs-csp-present: no built site at ${ROOT}. Run \`pnpm run docs:generate\` first.`)
   process.exit(1)
@@ -57,6 +67,13 @@ const problems = []
 for (const file of pages) {
   const html = readFileSync(file, 'utf8')
   const at = message => problems.push({ file, message })
+  if (STATIC_DOCUMENTS.has(relative(ROOT, file).split(sep).join('/'))) {
+    // Комментарии вырезаются: «noindex» в комментарии не считается.
+    if (!/<meta[^>]+name="robots"[^>]+noindex/i.test(html.replace(/<!--[\s\S]*?-->/g, ''))) {
+      at('static document without <meta name="robots" content="noindex">')
+    }
+    continue
+  }
   const headStart = html.indexOf('<head>')
   if (headStart < 0) {
     at('no <head>')
