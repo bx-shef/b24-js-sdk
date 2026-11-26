@@ -8,6 +8,7 @@ import examples from '#code-example/nitro'
 // it used to reach `prepareCode` through the `useB24` composable, which builds
 // B24Hook / B24Frame and reads useRuntimeConfig().
 import { prepareCode } from '../../app/utils/codeTransform'
+import { flattenRestApiVersionChildren } from './restApiVersionBlocks'
 
 /**
  * @see docs/server/plugins/llms.ts
@@ -306,6 +307,17 @@ export async function transformMDC(event: H3Event, doc: Document): Promise<Docum
       }
     }
 
+    node[0] = '__flatten'
+    node[1] = {}
+    node.length = 2
+    for (const child of allChildren) {
+      node.push(child)
+    }
+  })
+
+  // Transform rest-api-version-only - label the v2 / v3 slots
+  visitAndReplace(doc, 'rest-api-version-only', (node) => {
+    const allChildren = flattenRestApiVersionChildren(node.slice(2), collectBlockChildren)
     node[0] = '__flatten'
     node[1] = {}
     node.length = 2

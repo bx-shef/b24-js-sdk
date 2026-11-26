@@ -3,6 +3,7 @@ import type { NavigationMenuItem } from '@bitrix24/b24ui-nuxt'
 import { findPageChildren, findPageBreadcrumb } from '@nuxt/content/utils'
 import { mapContentNavigation } from '@bitrix24/b24ui-nuxt/utils/content'
 import { withoutTrailingSlash } from 'ufo'
+import { navigationCategories as categories, OTHER_CATEGORY_TITLE } from '../utils/navigation-categories'
 // import ALetterIcon from '@bitrix24/b24icons-vue/outline/ALetterIcon'
 import LayersIcon from '@bitrix24/b24icons-vue/outline/LayersIcon'
 import ItemIcon from '@bitrix24/b24icons-vue/crm/ItemIcon'
@@ -18,97 +19,10 @@ import ItemIcon from '@bitrix24/b24icons-vue/crm/ItemIcon'
 // import EarthLanguageIcon from '@bitrix24/b24icons-vue/main/EarthLanguageIcon'
 // import EditPencilIcon from '@bitrix24/b24icons-vue/main/EditPencilIcon'
 
-const categories = {
-  'actions': [
-    {
-      id: 'actions',
-      title: 'Методы вызова',
-      icon: LayersIcon
-    },
-    {
-      id: 'guides',
-      title: 'Руководства',
-      icon: ItemIcon
-    }
-  ],
-  'entry-points': [
-    {
-      id: 'B24Frame',
-      title: 'B24Frame',
-      icon: ItemIcon
-    },
-    {
-      id: 'B24Hook',
-      title: 'B24Hook',
-      icon: ItemIcon
-    },
-    {
-      id: 'B24OAuth',
-      title: 'B24OAuth',
-      icon: ItemIcon
-    },
-    {
-      id: 'Helper',
-      title: 'Помощники',
-      icon: ItemIcon
-    },
-    {
-      id: 'Pull',
-      title: 'Pull',
-      icon: ItemIcon
-    }
-  ],
-  'tools': [
-    {
-      id: 'logger',
-      title: 'Логирование',
-      icon: ItemIcon
-    },
-    {
-      id: 'limiters',
-      title: 'Лимитеры',
-      icon: ItemIcon
-    },
-    {
-      id: 'Core',
-      title: 'Ядро',
-      icon: ItemIcon
-    },
-    {
-      id: 'tools',
-      title: 'Утилиты',
-      icon: ItemIcon
-    },
-    {
-      id: 'Types',
-      title: 'Типы',
-      icon: ItemIcon
-    },
-    {
-      id: 'security',
-      title: 'Безопасность',
-      icon: ItemIcon
-    }
-  ],
-  'getting-started': [
-    {
-      id: 'integrations',
-      title: 'Интеграции',
-      icon: undefined
-    },
-    {
-      id: 'aiTools',
-      title: 'ИИ-инструменты',
-      icon: undefined
-    }
-  ],
-  'examples': [
-    {
-      id: 'examples',
-      title: 'Рецепты',
-      icon: ItemIcon
-    }
-  ]
+const ICONS = {
+  layers: LayersIcon,
+  item: ItemIcon,
+  none: undefined
 }
 
 function groupChildrenByCategory(items: ContentNavigationItem[], slug: string): ContentNavigationItem[] {
@@ -150,12 +64,15 @@ function groupChildrenByCategory(items: ContentNavigationItem[], slug: string): 
     groups.push(...withChildren)
   }
 
-  for (const category of categories[slug as keyof typeof categories] || []) {
+  const knownCategories = categories[slug] || []
+  const knownIds = new Set(knownCategories.map(category => category.id))
+
+  for (const category of knownCategories) {
     if (categorized[category.id]?.length) {
       groups.push({
         title: category.title,
         type: 'trigger' as const,
-        icon: category?.icon,
+        icon: ICONS[category.icon],
         /**
          * @memo this path
          */
@@ -170,6 +87,19 @@ function groupChildrenByCategory(items: ContentNavigationItem[], slug: string): 
         children: categorized[category.id]
       })
     }
+  }
+
+  // Страницы с категорией, которой нет в списке раздела, не должны пропадать из меню
+  const other = Object.entries(categorized)
+    .filter(([id]) => !knownIds.has(id))
+    .flatMap(([, list]) => list)
+  if (other.length) {
+    groups.push({
+      title: OTHER_CATEGORY_TITLE,
+      type: 'trigger' as const,
+      path: `/docs/${slug}`,
+      children: other
+    })
   }
 
   return groups

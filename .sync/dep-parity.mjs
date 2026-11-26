@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 // Снимок версий зависимостей родителя (bitrix24/b24jssdk) и сверка с нашими.
 //
-//   node .sync/dep-parity.mjs            — печатает снимок на `cursor` из b24jssdk.json (перенаправьте в dep-parity.json)
+//   node .sync/dep-parity.mjs --write    — обновляет dep-parity.json: снимок версий родителя на `cursor` из b24jssdk.json
 //   node .sync/dep-parity.mjs --check    — сравнивает наши package.json со снимком; код 1 при дрейфе без исключения
 //
+// Режим обязателен: без флага или с неизвестным — подсказка и код 2.
+// В снимок попадают только зависимости, которые родитель И мы объявляем в одной секции
+// (то, чего у нас нет, в снимок не попадает и не сверяется).
+//
 // Родитель берётся из ремоута `upstream` (git fetch upstream main). Исключения
-// (`exceptions` в dep-parity.json) сохраняются: скрипт обновляет только версии родителя.
+// (`exceptions` в dep-parity.json) сохраняются: --write обновляет только версии родителя.
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 
@@ -14,7 +18,25 @@ const read = path => JSON.parse(readFileSync(here(path), 'utf-8'))
 const SECTIONS = ['dependencies', 'devDependencies', 'peerDependencies']
 const existing = read('./dep-parity.json')
 const sync = read('./b24jssdk.json')
-const check = process.argv.includes('--check')
+const usage = 'Использование: node .sync/dep-parity.mjs --write | --check'
+const args = process.argv.slice(2)
+if (args.length !== 1 || !['--check', '--write'].includes(args[0])) {
+  console.error(usage)
+  process.exit(2)
+}
+const check = args[0] === '--check'
+
+// Значения из b24jssdk.json / dep-parity.json уходят в команду и в чтение файлов — проверяем формат.
+if (!/^[0-9a-f]{40}$/.test(String(sync.cursor))) {
+  console.error(`b24jssdk.json: cursor должен быть полным sha (40 hex), получено: ${sync.cursor}`)
+  process.exit(2)
+}
+for (const path of Object.keys(existing.manifests ?? {})) {
+  if (!/^[\w./-]+$/.test(path) || path.split('/').includes('..') || path.startsWith('/')) {
+    console.error(`dep-parity.json: недопустимый путь манифеста: ${path}`)
+    process.exit(2)
+  }
+}
 
 // `catalog:` — протокол pnpm; раскрываем через блок `catalog:` в pnpm-workspace.yaml (плоский каталог).
 const catalogOf = (text) => {

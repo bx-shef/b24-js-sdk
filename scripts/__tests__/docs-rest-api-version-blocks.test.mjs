@@ -4,9 +4,12 @@
 // Тест держит правила такой раскладки:
 //   1. у действия нет «двойников» …-rest-api-ver2.md / …-rest-api-ver3.md — их заменяет одна страница;
 //   2. блок открыт и закрыт (4 двоеточия), слоты только ver2/ver3 и не повторяются;
-//   3. страница с блоком не помечена `restApiVersion` (иначе навигация спрятала бы её целиком
-//      для одной из версий, а блок говорит, что страница нужна обеим);
-//   4. `restApiVersion` на странице разрешён только у действий, у которых есть лишь одна версия.
+//   3. страница одной версии (с `restApiVersion`) не содержит блоков версий вообще — иначе навигация
+//      спрятала бы её для другой версии, а блок описывал бы обе;
+//   4. страница двух версий (без `restApiVersion`), где есть блоки, содержит слоты обеих версий
+//      (отдельные блоки с одним слотом допустимы — предупреждение или пример только для v2/v3,
+//      но страница, где представлена лишь одна версия, — ошибка);
+//   5. `restApiVersion` разрешён только у страниц раздела действий (2.actions).
 //
 // Run with: node --test scripts/__tests__/docs-rest-api-version-blocks.test.mjs
 
@@ -99,12 +102,21 @@ test('блоки rest-api-version-only: закрыты, слоты ver2/ver3, б
   }
 })
 
-test('страница с блоками версий не помечена restApiVersion', () => {
+test('страница одной версии (restApiVersion) не содержит блоков версий', () => {
   for (const [path, text] of all) {
     const { fm, body } = split(text)
     if (!/^restApiVersion:/m.test(fm)) continue
-    const bothSlots = versionBlocks(body).some(slots => slots.length === 2)
-    assert.ok(!bothSlots, `${path}: restApiVersion скрыл бы страницу для одной версии, а блоки описывают обе`)
+    assert.deepEqual(versionBlocks(body), [], `${path}: restApiVersion скрыл бы страницу для одной версии, а блоки описывают обе`)
+  }
+})
+
+test('страница двух версий с блоками: слоты обеих версий есть', () => {
+  for (const [path, text] of all) {
+    const { fm, body } = split(text)
+    if (/^restApiVersion:/m.test(fm)) continue
+    const slots = new Set(versionBlocks(body).flat())
+    if (slots.size === 0) continue
+    assert.ok(slots.has('rest-api-ver2') && slots.has('rest-api-ver3'), `${path}: блоки есть, но представлена одна версия (${[...slots].join(', ')})`)
   }
 })
 

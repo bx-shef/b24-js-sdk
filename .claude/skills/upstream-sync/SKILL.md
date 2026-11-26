@@ -34,10 +34,12 @@ git log --reverse --first-parent --format='%H %s' $CURSOR..upstream/main
 4. Перенос: код как есть; страницы документации — в русский перевод по смыслу, адрес нашей страницы
    по `.sync/docs-map.json`; автоматику родителя оставляем выключенной (`github.repository == 'bitrix24/b24jssdk'`,
    `open-pull-requests-limit: 0`, actions по SHA — сторож `fork-guards.test.mjs`); lock-файл не сводить
-   руками (`pnpm install`).
+   руками (`pnpm install`). Объединённые страницы v2/v3: правка v2-файла родителя → слот `#rest-api-ver2`,
+   v3 → `#rest-api-ver3`, общий текст — только если изменился в обоих; число блоков `rest-api-version-only`
+   сверить до и после, ловит `scripts/__tests__/docs-rest-api-version-blocks.test.mjs`.
 5. `.sync/b24jssdk.json`: сдвинуть `cursor`, записать `processed[<sha>]`.
 6. Проверки — `PORTING.md` §4; заголовок PR заканчивается `(b24jssdk@<7 знаков>)`; ломающее — с `!`.
 7. Уровень ревью — `bash tools/review-tier.sh --action` и навык `review-panel`.
 
-Версии зависимостей: `node .sync/dep-parity.mjs --check` (дрейф назад от родителя — исправить или
+Версии зависимостей: `node .sync/dep-parity.mjs --check` (снимок обновляется `--write`; дрейф назад от родителя — исправить или
 объявить исключением в `dep-parity.json`).

@@ -67,7 +67,8 @@ links:
 | `title` | да | Используется как заголовок страницы |
 | `description` | да | Одно предложение; выводится под заголовком и в OG-метаданных |
 | `navigation.title` | нет | Короткая подпись для боковой панели; по умолчанию берётся `title` |
-| `category` | для страниц действий | Одно из: `actions`, `frame`, `helper`, `tools`, … (используйте существующие значения; не изобретайте новые категории без согласования) |
+| `category` | для страниц разделов `2.actions`, `3.entry-points`, `4.tools` | Одно из значений раздела (таблица «Категории» ниже; список един с `docs/app/utils/navigation-categories.ts` и `docs/content.config.ts`). Страница с неизвестной категорией попадает в группу «Прочее», и `scripts/__tests__/docs-sections-categories.test.mjs` краснеет |
+| `audited` | нет | Дата `YYYY-MM-DD`, на которую страница сверена с исходниками из `links`. У объединённой страницы v2/v3 — дата, на которую сверены **обе** части; если сверена только одна, ставьте минимальную из двух дат |
 | `restApiVersion` | только для страниц одной версии | `rest-api-ver2` или `rest-api-ver3` — страница видна в навигации и на обзоре только при этой версии. У страниц с блоками `::::rest-api-version-only` для обеих версий поля нет |
 | `links` | да для страниц API | Каждая запись указывает на файл исходников, на котором держится страница. Всегда включайте основной класс, а также `Result`/`AjaxResult`/`AjaxError`/`SdkError`, когда это уместно |
 
@@ -296,13 +297,21 @@ test/some-code-from-docs/<corresponding>.ts       # docs snippet, kept compilabl
 
 ## Категории (Categories)
 
-| Категория | Для чего используется |
-| --- | --- |
-| `actions` | Действия транспортного уровня (`call`, `call-list`, `fetch-list`, `batch`) |
-| `frame` | `B24Frame` и менеджеры, работающие только во фрейме (slider, dialog, placement, …) |
-| `helper` | `B24HelperManager` и его подчинённые менеджеры |
-| `tools` | Публичные утилиты в `src/tools/` |
-| `limiters` | Стек лимитеров и справочник `RestrictionParams` (страница `77.limiters.md`) |
+| Раздел | Категория | Для чего используется |
+| --- | --- | --- |
+| `actions` | `actions` | Методы вызова (`call`, `call-list`, `fetch-list`, `batch`, …) |
+| `actions` | `guides` | Руководства по действиям (выбор метода, фильтры, ошибки, поиск полей) |
+| `entry-points` | `B24Hook`, `B24Frame`, `B24OAuth` | Точки входа и их менеджеры (для `B24Frame` — slider, dialog, placement, …) |
+| `entry-points` | `Helper` | `B24HelperManager` и его подчинённые менеджеры |
+| `entry-points` | `Pull` | Клиент Pull |
+| `tools` | `logger` | Логирование |
+| `tools` | `limiters` | Стек лимитеров и справочник `RestrictionParams` |
+| `tools` | `Core` | Ядро: `AjaxResult`, HTTP, списки языков |
+| `tools` | `tools` | Публичные утилиты из `src/tools/` |
+| `tools` | `Types` | Типы |
+| `tools` | `security` | Безопасность |
+| `examples` | `examples` | Рецепты (необязательна) |
+| `getting-started` | `integrations`, `aiTools` | Необязательны; страницы без категории идут в «Обзор» |
 
 Используйте существующие категории. Новые категории оформляйте отдельным PR только с документацией, чтобы навигацию можно было проверить независимо.
 

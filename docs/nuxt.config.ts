@@ -329,42 +329,77 @@ export default defineNuxtConfig({
         title: 'Installation (Nuxt, Vue, React, Node.js, UMD)',
         contentCollection: 'docs',
         contentFilters: [
-          { field: 'path', operator: 'LIKE', value: '/docs/getting-started/installation%' }
+          { field: 'path', operator: 'LIKE', value: '/docs/getting-started/installation/%' }
+        ]
+      },
+      {
+        title: 'Getting Started overview',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: '=', value: '/docs/getting-started' }
+        ]
+      },
+      {
+        title: 'Actions overview',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: '=', value: '/docs/actions' }
+        ]
+      },
+      {
+        title: 'Entry points overview',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: '=', value: '/docs/entry-points' }
+        ]
+      },
+      {
+        title: 'Tools overview',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: '=', value: '/docs/tools' }
+        ]
+      },
+      {
+        title: 'API reference overview',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: '=', value: '/docs/api-reference' }
         ]
       },
       {
         title: 'Getting Started',
         contentCollection: 'docs',
         contentFilters: [
-          { field: 'path', operator: 'LIKE', value: '/docs/getting-started%' }
+          { field: 'path', operator: 'LIKE', value: '/docs/getting-started/%' }
         ]
       },
       {
         title: 'Actions',
         contentCollection: 'docs',
         contentFilters: [
-          { field: 'path', operator: 'LIKE', value: '/docs/actions%' }
+          { field: 'path', operator: 'LIKE', value: '/docs/actions/%' }
         ]
       },
       {
         title: 'Entry points',
         contentCollection: 'docs',
         contentFilters: [
-          { field: 'path', operator: 'LIKE', value: '/docs/entry-points%' }
+          { field: 'path', operator: 'LIKE', value: '/docs/entry-points/%' }
         ]
       },
       {
         title: 'Tools',
         contentCollection: 'docs',
         contentFilters: [
-          { field: 'path', operator: 'LIKE', value: '/docs/tools%' }
+          { field: 'path', operator: 'LIKE', value: '/docs/tools/%' }
         ]
       },
       {
         title: 'API reference',
         contentCollection: 'docs',
         contentFilters: [
-          { field: 'path', operator: 'LIKE', value: '/docs/api-reference%' }
+          { field: 'path', operator: 'LIKE', value: '/docs/api-reference/%' }
         ]
       },
       {

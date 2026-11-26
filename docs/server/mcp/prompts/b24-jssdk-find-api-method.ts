@@ -11,7 +11,10 @@ export default defineMcpPrompt({
     const event = useEvent()
 
     const pages = await queryCollection(event, 'docs')
-      .where('path', 'LIKE', '/docs/actions/%')
+      .andWhere(group => group
+        .where('path', 'LIKE', '/docs/actions/%')
+        .orWhere(q => q.where('path', 'LIKE', '/docs/entry-points/%'))
+        .orWhere(q => q.where('path', 'LIKE', '/docs/tools/%')))
       .where('extension', '=', 'md')
       .select('path', 'title', 'description')
       .all()

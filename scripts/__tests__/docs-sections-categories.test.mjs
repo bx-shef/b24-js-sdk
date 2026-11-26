@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // Раскладка разделов документации: actions / entry-points / tools.
 //
-// Боковая навигация (docs/app/composables/useNavigation.ts) группирует страницы раздела по
-// frontmatter-полю `category` и показывает ТОЛЬКО страницы из известных ей категорий — страница
-// с неизвестной категорией молча пропадает из меню (так выпадали Helper, Pull, Core, Types).
+// Боковая навигация (docs/app/composables/useNavigation.ts, категории — docs/app/utils/navigation-categories.ts) группирует страницы раздела по
+// frontmatter-полю `category` и показывает страницы известных категорий по группам, а страницу
+// с неизвестной категорией — в группе «Прочее» (раньше такие молча пропадали: Helper, Pull, Core, Types). Тест всё равно требует известную категорию.
 // Обзорная страница раздела (0.index.md) строит карточки по тем же категориям через
 // `:pages-list{section category}`. Тест держит три вещи согласованными:
 //   1. у каждой страницы раздела (кроме 0.index.md) есть category из списка раздела в useNavigation;
@@ -21,26 +21,46 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)), '..', '..')
 const DOCS = join(ROOT, 'docs/content/docs')
 const SECTIONS = { 'actions': '2.actions', 'entry-points': '3.entry-points', 'tools': '4.tools' }
+// Разделы без обзорной страницы с карточками: категория у страницы необязательна, но если задана — известна навигации
+const OTHER_SECTIONS = { 'getting-started': '1.getting-started', 'examples': '99.examples' }
 
-/** `categories` из useNavigation.ts: { section: [category id, ...] } — разбор текста, без импорта Nuxt-кода. */
+/**
+ * Категории из docs/app/utils/navigation-categories.ts: { section: [category id, ...] }.
+ * Разбор текста (строка `{ id: '…', … }` на категорию), без импорта TS-кода.
+ */
 function navigationCategories() {
-  const text = readFileSync(join(ROOT, 'docs/app/composables/useNavigation.ts'), 'utf8')
-  const start = text.indexOf('const categories = {')
-  const end = text.indexOf('function groupChildrenByCategory')
-  assert.ok(start !== -1 && end > start, 'не найден блок `categories` в useNavigation.ts')
+  const text = readFileSync(join(ROOT, 'docs/app/utils/navigation-categories.ts'), 'utf8')
+  const start = text.indexOf('export const navigationCategories')
+  assert.ok(start !== -1, 'не найден `navigationCategories` в navigation-categories.ts')
   const result = {}
   let section = null
-  for (const line of text.slice(start, end).split('\n')) {
+  for (const line of text.slice(start).split('\n')) {
     const s = line.match(/^ {2}'?([a-z-]+)'?: \[/)
     if (s) {
       section = s[1]
       result[section] = []
       continue
     }
-    const id = line.match(/^ {6}id: '([^']+)'/)
+    const id = line.match(/^ {4}\{ id: '([^']+)'/)
     if (id && section) result[section].push(id[1])
   }
+  assert.ok(Object.values(result).every(list => list.length > 0) && Object.keys(result).length >= 5,
+    'разбор navigation-categories.ts дал пустой результат: формат — по одной строке `{ id: \'…\', … }` на категорию')
   return result
+}
+
+/** Все .md раздела (рекурсивно), кроме обзорной 0.index.md в корне раздела. */
+function sectionPages(dir) {
+  const out = []
+  const walk = (d) => {
+    for (const e of readdirSync(d, { withFileTypes: true })) {
+      const full = join(d, e.name)
+      if (e.isDirectory()) walk(full)
+      else if (e.name.endsWith('.md')) out.push(full)
+    }
+  }
+  walk(join(DOCS, dir))
+  return out.filter(f => f !== join(DOCS, dir, '0.index.md'))
 }
 
 const frontmatterCategory = (file) => {
@@ -54,10 +74,10 @@ for (const [section, dir] of Object.entries(SECTIONS)) {
   test(`${section}: у каждой страницы категория, известная навигации`, () => {
     const known = nav[section]
     assert.ok(known?.length, `useNavigation.ts не знает раздел ${section}`)
-    const pages = readdirSync(join(DOCS, dir)).filter(f => f.endsWith('.md') && !f.startsWith('0.index'))
+    const pages = sectionPages(dir)
     assert.ok(pages.length > 0)
     const bad = pages
-      .map(f => [f, frontmatterCategory(join(DOCS, dir, f))])
+      .map(f => [f, frontmatterCategory(f)])
       .filter(([, c]) => !c || !known.includes(c))
     assert.deepEqual(bad, [], `страницы без известной категории выпадут из меню: ${JSON.stringify(bad)}; допустимо: ${known.join(', ')}`)
   })
@@ -65,7 +85,7 @@ for (const [section, dir] of Object.entries(SECTIONS)) {
   test(`${section}: обзорная страница показывает карточки каждой категории`, () => {
     const index = readFileSync(join(DOCS, dir, '0.index.md'), 'utf8')
     const shown = [...index.matchAll(new RegExp(`:pages-list\\{section="${section}" category="([^"]+)"\\}`, 'g'))].map(m => m[1])
-    const used = new Set(readdirSync(join(DOCS, dir)).filter(f => f.endsWith('.md') && !f.startsWith('0.index')).map(f => frontmatterCategory(join(DOCS, dir, f))))
+    const used = new Set(sectionPages(dir).map(f => frontmatterCategory(f)))
     for (const category of used) {
       assert.ok(shown.includes(category), `на обзоре ${section} нет :pages-list для категории ${category}`)
     }
@@ -73,5 +93,18 @@ for (const [section, dir] of Object.entries(SECTIONS)) {
       assert.ok(nav[section].includes(category), `на обзоре ${section} блок для неизвестной навигации категории ${category}`)
       assert.ok(used.has(category), `на обзоре ${section} блок для пустой категории ${category}`)
     }
+  })
+}
+
+for (const [section, dir] of Object.entries(OTHER_SECTIONS)) {
+  test(`${section}: заданная category известна навигации`, () => {
+    const known = nav[section]
+    assert.ok(known?.length, `navigation-categories.ts не знает раздел ${section}`)
+    const pages = sectionPages(dir)
+    assert.ok(pages.length > 0)
+    const bad = pages
+      .map(f => [f, frontmatterCategory(f)])
+      .filter(([, c]) => c && !known.includes(c))
+    assert.deepEqual(bad, [], `страницы с неизвестной категорией попадут в группу «Прочее»: ${JSON.stringify(bad)}; допустимо: ${known.join(', ')}`)
   })
 }

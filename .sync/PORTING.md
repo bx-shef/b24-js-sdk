@@ -53,6 +53,7 @@ CLA и т. п.). Пропуск без записи неотличим от не
 |---|---|
 | Код `packages/**/src`, тесты | Переносим как есть; наших правок в коде нет |
 | Страницы `docs/content/**` | Переносим **по смыслу в русский перевод**: новый абзац — переводим, исправленный пример — правим пример, новый параметр — добавляем. Адрес нашей страницы — по [`docs-map.json`](./docs-map.json): наша структура другая (разделы `actions`, `entry-points`, `tools`, v2 и v3 в одной странице с переключателем `restApi`). Блок только для одной версии REST API — `::rest-api-version-only` (см. `.github/contributing/documentation.md`) |
+| Объединённые страницы v2/v3 (`2.actions/*`) | Правка v2-файла родителя → слот `#rest-api-ver2`, v3-файла → слот `#rest-api-ver3`; общий текст вне блока — только если он изменился в обоих файлах. До и после переноса сверить число блоков `::::rest-api-version-only` на странице (`grep -c rest-api-version-only`) и прогнать `node --test scripts/__tests__/docs-rest-api-version-blocks.test.mjs` — он ловит незакрытые блоки, чужие слоты и страницу с одной версией |
 | Новая страница родителя | Перевести и положить в раздел по смыслу, добавить в `docs-map.json` |
 | `skills/**`, `AGENTS.md`, `README.md`, `.github/contributing/**` | Перевод по смыслу, ссылки на страницы — на наши адреса |
 | `.github/workflows/*.yml`, `dependabot.yml` | Перенести и вернуть наши условия: `github.repository == 'bitrix24/b24jssdk'` и `open-pull-requests-limit: 0`; actions закреплены по SHA. Сторож — `scripts/__tests__/fork-guards.test.mjs` |
@@ -69,11 +70,23 @@ CLA и т. п.). Пропуск без записи неотличим от не
 
 ## 4. Проверки
 
+Коммит **только с документацией** (`docs/content/**`, `.sync/**` без манифестов): `node scripts/docs-lint.mjs --strict`,
+`node scripts/docs-link-check.mjs`, `node scripts/md-internal-links.mjs`, `pnpm run docs:build`
+(плюс `node --test "scripts/__tests__/**/*.test.mjs"`, если правили блоки версий).
+
+Коммит **с кодом, манифестами или зависимостями**: всё перечисленное и ещё
 `pnpm install --frozen-lockfile`, `pnpm run lint`, `pnpm run typecheck`,
 `pnpm run package-jssdk:test:run-unit`, `node --test "scripts/__tests__/**/*.test.mjs"`,
-`node scripts/docs-lint.mjs --strict`, `node scripts/docs-link-check.mjs`,
-`node scripts/md-internal-links.mjs`, `pnpm audit --audit-level=moderate`,
-`node .sync/dep-parity.mjs --check`. Если коммит трогает `docs/` — ещё `pnpm run docs:build`.
+`pnpm audit --audit-level=moderate`, `node .sync/dep-parity.mjs --check`.
+
+## Перед первой публикацией сайта
+
+Сейчас абсолютные ссылки `https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/...` в
+`skills/**`, `packages/jssdk/README-AI.md`, JSDoc (`packages/jssdk/src/**`) и `SECURITY.md` ведут на сайт
+родителя и там валидны. Когда наш сайт будет опубликован, заменить их на адреса нашего сайта по
+[`docs-map.json`](./docs-map.json) (`working-with-the-rest-api/<страница>` → `actions|entry-points|tools/<страница>`)
+и прогнать проверку `node scripts/check-parent-site-links.mjs` (код 0 — ссылок на сайт родителя не осталось;
+в CI её не включаем, пока сайт не опубликован).
 
 ## 5. PR
 
