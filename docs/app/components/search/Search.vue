@@ -20,7 +20,8 @@ const { track } = useAnalytics()
 
 watchDebounced(searchTerm, (term) => {
   if (term) {
-    track('Search Performed', { term })
+    // Сам запрос — свободный ввод, в Метрику не уходит: только длина.
+    track('Search Performed', { length: term.length })
   }
 }, { debounce: 500 })
 </script>

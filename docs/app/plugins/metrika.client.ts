@@ -4,21 +4,38 @@
  * на аналитику, без Вебвизора (он записывал бы ввод, в том числе вопросы чату).
  * Номер счётчика — `NUXT_PUBLIC_YANDEX_METRIKA_ID` при запуске; пусто или не число — ничего
  * не грузится, баннера тоже нет. Цели — `useAnalytics().track()` → `reachGoal`.
+ * В Метрику уходит адрес страницы без query и hash.
  */
 declare global {
   interface Window {
-    BxConsent?: { onAnalytics: (fn: () => void) => void }
+    BxConsent?: { onAnalytics: (fn: () => void) => void, granted: () => boolean, open: () => void }
     ym?: (id: number, method: string, ...args: unknown[]) => void
+    __bxMetrikaInit?: boolean
   }
 }
 
 export default defineNuxtPlugin(() => {
-  const raw = String(useRuntimeConfig().public.yandexMetrikaId ?? '').trim()
-  if (!/^\d+$/.test(raw)) {
+  const config = useRuntimeConfig()
+  const raw = String(config.public.yandexMetrikaId ?? '').trim()
+  if (!/^\d+$/.test(raw) || window.__bxMetrikaInit) {
     return
   }
+  window.__bxMetrikaInit = true
   const id = Number(raw)
-  const baseUrl = useRuntimeConfig().app.baseURL.replace(/\/$/, '')
+  const baseUrl = config.app.baseURL.replace(/\/$/, '')
+  // Контекст Nuxt — здесь, а не в асинхронном onload.
+  const router = useRouter()
+  useState('yandex-metrika-id', () => id)
+
+  const pageUrl = (path: string) => `${location.origin}${path}`
+  let lastUrl = ''
+  const hit = (url: string) => {
+    if (url === lastUrl || !window.BxConsent?.granted()) {
+      return
+    }
+    lastUrl = url
+    window.ym?.(id, 'hit', url, { title: document.title })
+  }
 
   const consent = document.createElement('script')
   consent.src = `${baseUrl}/cookie-consent.js`
@@ -26,27 +43,26 @@ export default defineNuxtPlugin(() => {
   consent.setAttribute('data-services', 'Яндекс Метрику (статистика посещений)')
   consent.onload = () => {
     window.BxConsent?.onAnalytics(() => {
-      const w = window as unknown as Record<string, unknown> & Window
-      if (!w.ym) {
+      if (!window.ym) {
         const queue = function (...args: unknown[]) {
           ((queue as unknown as { a: unknown[] }).a ||= []).push(args)
         }
         ;(queue as unknown as { l: number }).l = Date.now()
-        w.ym = queue as Window['ym']
+        window.ym = queue as Window['ym']
       }
       const tag = document.createElement('script')
       tag.async = true
       tag.src = 'https://mc.yandex.ru/metrika/tag.js'
       document.head.appendChild(tag)
-      w.ym!(id, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: false, defer: true })
-      // Сайт — одностраничное приложение: первый просмотр и каждый переход — хит вручную (defer: true).
-      w.ym!(id, 'hit', location.href, { title: document.title })
-      useRouter().afterEach((to) => {
-        nextTick(() => w.ym?.(id, 'hit', new URL(to.fullPath, location.origin).href, { title: document.title }))
+      window.ym!(id, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: false, defer: true })
+      // Одностраничное приложение: хиты вручную (defer: true) — первый просмотр и каждый переход.
+      router.isReady().then(() => {
+        hit(pageUrl(location.pathname))
+        router.afterEach((to) => {
+          nextTick(() => hit(pageUrl(to.path)))
+        })
       })
     })
   }
   document.head.appendChild(consent)
-
-  useState('yandex-metrika-id', () => id)
 })
