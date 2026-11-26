@@ -5,7 +5,7 @@ export default defineMcpTool({
   title: 'Пример кода',
   description: 'Код и описание конкретного примера JS SDK',
   inputSchema: {
-    exampleName: z.string().describe('Название примера')
+    exampleName: z.string().regex(/^[\w-]+$/).describe('Название примера')
   },
   cache: '30m',
   async handler({ exampleName }) {
