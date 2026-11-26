@@ -1,0 +1,20 @@
+name: Предложение
+description: Новая возможность SDK или раздел документации
+labels: [ enhancement ]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Какую задачу это решит
+      description: Что вы делаете сейчас и чем это неудобно.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Как это может выглядеть
+      description: API, пример кода или страница документации.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Что уже пробовали

@@ -39,7 +39,7 @@ git merge --no-ff upstream/main
 |---|---|
 | `docs/content/**`, `skills/**/*.md`, `AGENTS.md`, `README.md`, `.github/contributing/**` | **наша** (русский текст), но смысловую правку родителя перенести в перевод: новый абзац, исправленный пример, новый параметр. Новый файл родителя — перевести в этом же PR или отдельным PR сразу после |
 | Код `packages/**/src`, тесты | **родителя**, затем наши правки поверх, если они были (сейчас их нет) |
-| `.github/workflows/*.yml`, `.github/dependabot.yml` | **родителя** + вернуть наши условия: `github.repository == 'bitrix24/b24jssdk'` и `open-pull-requests-limit: 0`. Сторож — `scripts/__tests__/fork-guards.test.mjs` |
+| `.github/workflows/*.yml`, `.github/dependabot.yml` | **родителя** + вернуть наши условия: `github.repository == 'bitrix24/b24jssdk'` и `open-pull-requests-limit: 0`. Сторож — `scripts/__tests__/fork-guards.test.mjs`. Новый action по тегу (`@v6`) закрепить по SHA — иначе покраснеет `fork-guards.yml` (`assert-actions-pinned.py`) |
 | `pnpm-lock.yaml`, `skills/*/pnpm-lock.yaml` | не сводить руками: взять версию родителя и `pnpm install` (затем `pnpm audit`) |
 | `pnpm-workspace.yaml` (overrides) | объединить: наши override из PR #8 оставить, если родитель не закрыл ту же уязвимость сам |
 | `docs/app/**` (дизайн), `docs/modules/bx-assistant/**`, `deploy/**`, `docs-image.yml` | **наша**, изменения родителя перенести вручную |

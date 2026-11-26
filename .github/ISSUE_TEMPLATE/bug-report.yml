@@ -1,0 +1,51 @@
+name: Ошибка
+description: SDK или документация работают не так, как описано
+labels: [ bug ]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Что случилось
+      description: Что вы делали, что ожидали и что получили.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Как повторить
+      description: Минимальный код или шаги. Вебхуки, токены и данные клиентов не вставляйте.
+      render: ts
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Версия SDK
+      placeholder: "3.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: portal
+    attributes:
+      label: Портал
+      options:
+        - Облако
+        - Коробка
+        - Не важно
+    validations:
+      required: true
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Где выполняется код
+      options:
+        - Браузер (B24Frame, приложение в Битрикс24)
+        - Сервер, Node.js (B24Hook, B24OAuth)
+        - Другое
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Дополнительно
+      description: Журнал, ответ портала (без ключей), ссылка на страницу документации.
