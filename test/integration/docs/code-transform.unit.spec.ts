@@ -137,10 +137,10 @@ describe('the real examples still transform exactly as before (#139)', () => {
     expect(out.length).toBeGreaterThan(0)
     expect(out).not.toContain('region: start')
     expect(out).not.toContain('export async function Action_')
-    // Only the B24Hook override is stripped. Frame examples legitimately keep
-    // `useB24().get() as B24Frame` — a frame app really does take its instance
-    // from the composable, so there is nothing to substitute there.
+    // The site only shows examples; nothing in a snippet may point at the old
+    // in-page runner (`useB24()` was removed together with it).
     expect(out).not.toContain('as B24Hook || ')
+    expect(out).not.toContain('useB24()')
     expect(out).not.toContain('_devMode')
     expect(out).not.toContain('globalThis._importMeta_')
     // Dedent removed exactly the wrapper's two spaces, so nothing starts at a

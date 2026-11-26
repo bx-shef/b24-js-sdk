@@ -1,20 +1,18 @@
 import { z } from 'zod'
-import { useB24 } from '../../../app/composables/useB24'
+import { prepareCode } from '../../../app/utils/codeTransform'
 
 export default defineMcpTool({
   title: 'Пример кода',
   description: 'Код и описание конкретного примера JS SDK',
   inputSchema: {
-    exampleName: z.string().describe('Название примера')
+    exampleName: z.string().regex(/^[\w-]+$/).describe('Название примера')
   },
   cache: '30m',
   async handler({ exampleName }) {
-    const b24Instance = useB24()
-
     try {
-      const result = await $fetch<{ code: string }>(`/api/code-examples/${exampleName}.json`)
+      const result = await $fetch<{ content: string }>(`/api/code-examples/${exampleName}.json`)
 
-      const code = b24Instance.prepareCode(result.code)
+      const code = prepareCode(result.content)
 
       return {
         content: [{ type: 'text' as const, text: code }]
