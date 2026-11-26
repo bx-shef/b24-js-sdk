@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Pins `docs/content/docs/3.api-reference/1.index.md` against the code.
+ * Pins `docs/content/docs/5.api-reference/1.index.md` against the code.
  *
  * That page's whole value proposition is *completeness*: it claims to list every
  * value the package exports. Nothing else in the repo notices when that stops
@@ -36,7 +36,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 // Overridable so the fixture tests can drive the real entry point end to end,
 // including its exit codes and messages, against a synthetic tree.
 const ENTRY = process.env.API_REFERENCE_INDEX_ENTRY ?? join(ROOT, 'packages/jssdk/src/index.ts')
-const PAGE = process.env.API_REFERENCE_INDEX_PAGE ?? join(ROOT, 'docs/content/docs/3.api-reference/1.index.md')
+const PAGE = process.env.API_REFERENCE_INDEX_PAGE ?? join(ROOT, 'docs/content/docs/5.api-reference/1.index.md')
 
 /**
  * Resolve a relative specifier to a real `.ts` file, handling the two forms the

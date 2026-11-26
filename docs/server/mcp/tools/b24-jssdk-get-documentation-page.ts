@@ -5,8 +5,12 @@ export default defineMcpTool({
   title: 'Get Documentation Page',
   description: 'Retrieves documentation page content by URL path',
   inputSchema: {
-    /** @memo fix `/b24jssdk` if you need */
-    path: z.string().describe('The path to the content page (e.g., /b24jssdk/docs/components/button/)')
+    /** @memo only paths under `/docs/`; the site base URL is not accepted */
+    path: z.string()
+      // Только путь внутри /docs/: без `..`, `?`, `#`, `%` (путь уходит в $fetch(`/raw${path}.md`))
+      .regex(/^\/docs\/[\w/.-]+$/, 'Path must look like /docs/actions/call')
+      .refine(value => !value.includes('..'), 'Path must not contain ..')
+      .describe('The path to the content page (e.g., /docs/actions/call)')
   },
   cache: '30m',
   async handler({ path }) {

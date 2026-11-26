@@ -57,12 +57,11 @@ if (!import.meta.prerender) {
     const route = useRoute()
     const pagePath = withoutTrailingSlash(page.value?.path)
     if (pagePath === withoutTrailingSlash(route.path) && page.value?.restApiVersion && page.value?.restApiVersion !== restApiVersion.value) {
-      /** @memo this path */
-      if (route.path.endsWith(`-${page.value?.restApiVersion}`)) {
-        navigateTo(route.path.replace(`-${page.value.restApiVersion}`, `-${restApiVersion.value}`))
-      } else {
-        navigateTo(`/docs/getting-started`)
-      }
+      // Страница только одной версии (например, call-tail — только v3): у другой версии
+      // её нет, уводим на обзор её раздела (`/docs/<раздел>`). Страницы обеих версий
+      // (одна страница с блоками `::::rest-api-version-only`) без `restApiVersion` и сюда не попадают.
+      const section = pagePath.split('/').filter(Boolean).slice(0, 2).join('/')
+      navigateTo(`/${section}`)
     }
   })
 }

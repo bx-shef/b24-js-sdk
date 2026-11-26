@@ -21,7 +21,10 @@ export default defineEventHandler(async (event) => {
 
   const sectionLabels: Record<string, string> = {
     'getting-started': 'Getting Started',
-    'working-with-the-rest-api': 'Working with the REST API',
+    'actions': 'Actions',
+    'entry-points': 'Entry points',
+    'tools': 'Tools',
+    'api-reference': 'API reference',
     'examples': 'Examples'
   }
 

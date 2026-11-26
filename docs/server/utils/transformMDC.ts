@@ -8,6 +8,7 @@ import examples from '#code-example/nitro'
 // it used to reach `prepareCode` through the `useB24` composable, which builds
 // B24Hook / B24Frame and reads useRuntimeConfig().
 import { prepareCode } from '../../app/utils/codeTransform'
+import { flattenMarkers, flattenRestApiVersionChildren } from './restApiVersionBlocks'
 
 /**
  * @see docs/server/plugins/llms.ts
@@ -108,21 +109,6 @@ function replaceWithChildren(node: any[], newChildren: any[]) {
   node.length = 2
   for (const child of collected) {
     node.push(child)
-  }
-}
-
-function flattenMarkers(node: any): void {
-  if (!Array.isArray(node)) return
-  let i = 2
-  while (i < node.length) {
-    const child = node[i]
-    if (Array.isArray(child) && (child[0] === '__flatten' || child[0] === 'div')) {
-      const innerChildren = child.slice(2)
-      node.splice(i, 1, ...innerChildren)
-    } else {
-      flattenMarkers(child)
-      i++
-    }
   }
 }
 
@@ -306,6 +292,17 @@ export async function transformMDC(event: H3Event, doc: Document): Promise<Docum
       }
     }
 
+    node[0] = '__flatten'
+    node[1] = {}
+    node.length = 2
+    for (const child of allChildren) {
+      node.push(child)
+    }
+  })
+
+  // Transform rest-api-version-only - label the v2 / v3 slots
+  visitAndReplace(doc, 'rest-api-version-only', (node) => {
+    const allChildren = flattenRestApiVersionChildren(node.slice(2), collectBlockChildren)
     node[0] = '__flatten'
     node[1] = {}
     node.length = 2
@@ -536,7 +533,7 @@ export async function transformMDC(event: H3Event, doc: Document): Promise<Docum
   if (Array.isArray(doc.body)) {
     flattenMarkers(doc.body)
   } else if (doc.body?.value && Array.isArray(doc.body.value)) {
-    flattenMarkers(doc.body.value)
+    flattenMarkers(doc.body.value, 0)
   }
 
   return doc

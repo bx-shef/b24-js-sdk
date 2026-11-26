@@ -358,7 +358,7 @@ test('docs-lint: missing required section → exits 1', () => {
     // The script hard-codes DOCS_ROOT relative to its own location, so we
     // can't redirect it via env. Spawn a tiny inline script that imports
     // the parser + walker directly and asserts the failing-fixture surface.
-    const fixtureDir = join(root, '2.working-with-the-rest-api')
+    const fixtureDir = join(root, '2.actions')
     mkdirSync(fixtureDir, { recursive: true })
     writeFileSync(
       join(fixtureDir, 'bad.md'),

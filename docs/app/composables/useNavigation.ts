@@ -3,6 +3,7 @@ import type { NavigationMenuItem } from '@bitrix24/b24ui-nuxt'
 import { findPageChildren, findPageBreadcrumb } from '@nuxt/content/utils'
 import { mapContentNavigation } from '@bitrix24/b24ui-nuxt/utils/content'
 import { withoutTrailingSlash } from 'ufo'
+import { navigationCategories as categories, OTHER_CATEGORY_TITLE } from '../utils/navigation-categories'
 // import ALetterIcon from '@bitrix24/b24icons-vue/outline/ALetterIcon'
 import LayersIcon from '@bitrix24/b24icons-vue/outline/LayersIcon'
 import ItemIcon from '@bitrix24/b24icons-vue/crm/ItemIcon'
@@ -18,71 +19,10 @@ import ItemIcon from '@bitrix24/b24icons-vue/crm/ItemIcon'
 // import EarthLanguageIcon from '@bitrix24/b24icons-vue/main/EarthLanguageIcon'
 // import EditPencilIcon from '@bitrix24/b24icons-vue/main/EditPencilIcon'
 
-const categories = {
-  'working-with-the-rest-api': [
-    {
-      id: 'actions',
-      title: 'Действия',
-      // @todo ! insert icon
-      icon: LayersIcon
-    },
-    {
-      id: 'tools',
-      title: 'Инструменты',
-      // @todo ! insert icon
-      icon: ItemIcon
-    },
-    {
-      id: 'logger',
-      title: 'Логгер',
-      // @todo ! insert icon
-      icon: ItemIcon
-    },
-    {
-      id: 'limiters',
-      title: 'Лимитеры',
-      // @todo ! insert icon
-      icon: ItemIcon
-    },
-    {
-      id: 'B24Frame',
-      title: 'B24Frame',
-      // @todo ! insert icon
-      icon: ItemIcon
-    },
-    {
-      id: 'B24Hook',
-      title: 'B24Hook',
-      // @todo ! insert icon
-      icon: ItemIcon
-    },
-    {
-      id: 'B24OAuth',
-      title: 'B24OAuth',
-      // @todo ! insert icon
-      icon: ItemIcon
-    }
-  ],
-  'getting-started': [
-    {
-      id: 'integrations',
-      title: 'Интеграции',
-      icon: undefined
-    },
-    {
-      id: 'aiTools',
-      title: 'ИИ-инструменты',
-      icon: undefined
-    }
-  ],
-  'examples': [
-    {
-      id: 'examples',
-      title: 'Рецепты',
-      // @todo ! insert icon
-      icon: ItemIcon
-    }
-  ]
+const ICONS = {
+  layers: LayersIcon,
+  item: ItemIcon,
+  none: undefined
 }
 
 function groupChildrenByCategory(items: ContentNavigationItem[], slug: string): ContentNavigationItem[] {
@@ -124,12 +64,15 @@ function groupChildrenByCategory(items: ContentNavigationItem[], slug: string): 
     groups.push(...withChildren)
   }
 
-  for (const category of categories[slug as keyof typeof categories] || []) {
+  const knownCategories = categories[slug] || []
+  const knownIds = new Set(knownCategories.map(category => category.id))
+
+  for (const category of knownCategories) {
     if (categorized[category.id]?.length) {
       groups.push({
         title: category.title,
         type: 'trigger' as const,
-        icon: category?.icon,
+        icon: ICONS[category.icon],
         /**
          * @memo this path
          */
@@ -144,6 +87,19 @@ function groupChildrenByCategory(items: ContentNavigationItem[], slug: string): 
         children: categorized[category.id]
       })
     }
+  }
+
+  // Страницы с категорией, которой нет в списке раздела, не должны пропадать из меню
+  const other = Object.entries(categorized)
+    .filter(([id]) => !knownIds.has(id))
+    .flatMap(([, list]) => list)
+  if (other.length) {
+    groups.push({
+      title: OTHER_CATEGORY_TITLE,
+      type: 'trigger' as const,
+      path: `/docs/${slug}`,
+      children: other
+    })
   }
 
   return groups

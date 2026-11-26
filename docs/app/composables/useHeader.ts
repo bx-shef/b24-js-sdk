@@ -36,9 +36,19 @@ const _useHeader = () => {
       active: route.path.startsWith('/docs/getting-started')
     },
     {
-      label: 'Работа с API',
-      to: '/docs/working-with-the-rest-api',
-      active: route.path.startsWith('/docs/working-with-the-rest-api')
+      label: 'Действия',
+      to: '/docs/actions',
+      active: route.path.startsWith('/docs/actions')
+    },
+    {
+      label: 'Точки входа',
+      to: '/docs/entry-points',
+      active: route.path.startsWith('/docs/entry-points')
+    },
+    {
+      label: 'Инструменты',
+      to: '/docs/tools',
+      active: route.path.startsWith('/docs/tools')
     },
     {
       label: 'Примеры',
@@ -89,10 +99,22 @@ const _useHeader = () => {
       active: route.path.startsWith('/docs/getting-started')
     },
     {
-      label: 'Работа с API',
-      to: '/docs/working-with-the-rest-api',
+      label: 'Действия',
+      to: '/docs/actions',
       icon: TerminalIcon,
-      active: route.path.startsWith('/docs/working-with-the-rest-api')
+      active: route.path.startsWith('/docs/actions')
+    },
+    {
+      label: 'Точки входа',
+      to: '/docs/entry-points',
+      icon: TerminalIcon,
+      active: route.path.startsWith('/docs/entry-points')
+    },
+    {
+      label: 'Инструменты',
+      to: '/docs/tools',
+      icon: TerminalIcon,
+      active: route.path.startsWith('/docs/tools')
     },
     {
       label: 'Примеры',

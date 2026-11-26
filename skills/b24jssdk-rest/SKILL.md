@@ -633,7 +633,7 @@ const hasNotes = Boolean(doc?.paths?.['/note.collection.list'])
 
 - Документ **специфичен для портала** (отражает установленные модули и права токена) и **велик** (100 КБ и больше). Получите его **один раз и кешируйте** — он только для ответа и стабилен в рамках сессии; не запрашивайте заново при каждом взаимодействии.
 - Схема `paths['/method.name'].post.requestBody` каждого метода перечисляет принимаемые параметры (часто с `example` настоящих имён полей) — читайте её, а не выдумывайте поля `select`.
-- Полное руководство: [Discovering v3 methods](https://github.com/bitrix24/b24jssdk/blob/main/docs/content/docs/2.working-with-the-rest-api/7.discovering-v3-methods.md).
+- Полное руководство: [Discovering v3 methods](https://github.com/bitrix24/b24jssdk/blob/main/docs/content/docs/2.actions/7.discovering-v3-methods.md).
 - Для полей одной сущности и их флагов — более дешёвая половина того же вопроса: [Discovering entity fields](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/discovering-entity-fields/).
 
 ## Антипаттерны

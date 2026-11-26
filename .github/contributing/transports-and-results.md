@@ -210,7 +210,7 @@ caller
 
 ### Переключатели `RestrictionParams`
 
-Помимо пресета, `RestrictionParams` предоставляет переключатели на уровне вызова, которые вызывающий может наложить поверх любого пресета (`{ ...ParamsFactory.getDefault(), <overrides> }`). Добавляя новую опцию, задокументируйте её в [docs/content/docs/2.working-with-the-rest-api/77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md) — эта страница является каноническим справочником.
+Помимо пресета, `RestrictionParams` предоставляет переключатели на уровне вызова, которые вызывающий может наложить поверх любого пресета (`{ ...ParamsFactory.getDefault(), <overrides> }`). Добавляя новую опцию, задокументируйте её в [docs/content/docs/4.tools/77.limiters.md](../../docs/content/docs/4.tools/77.limiters.md) — эта страница является каноническим справочником.
 
 | Поле | Назначение |
 | --- | --- |
@@ -244,7 +244,7 @@ caller
 (то есть «без задержки перед следующей попыткой»), а вызывающий в `abstract-http.ts`
 затем выводит его как ошибку `AjaxResult`, не расходуя оставшийся бюджет повторов.
 
-Справочник для пользователей: [Customizing Error Classification — 77.limiters.md](../../docs/content/docs/2.working-with-the-rest-api/77.limiters.md#настройка-классификации-ошибок).
+Справочник для пользователей: [Customizing Error Classification — 77.limiters.md](../../docs/content/docs/4.tools/77.limiters.md#настройка-классификации-ошибок).
 
 ## Дисциплина логирования
 
@@ -310,7 +310,7 @@ caller
 - В форме `requestInfo` у `AjaxError` больше нет поля `url` — полный URL вебхука (`/rest/{userId}/{secret}/`) иначе появился бы в выводе `toJSON()` и приёмниках журналов. **Не расширяйте `AjaxQuery`, возвращая `url`.** Очистка пути — вторая линия обороны, а не повод заново открывать первую.
 - **Никогда не логируйте и не сериализуйте `AjaxError.originalError` напрямую.** `originalError` содержит сырой `AxiosError`, в чьём `config.url` лежит секрет вебхука, а в `config.headers.Authorization` — токен OAuth. Ни одно из этих полей не покрыто средством скрытия параметров. Логируйте только `err.code`, `err.status`, `err.message` или `err.requestInfo` (он скрыт).
 
-Справочник для пользователей: [Logging & Credential Redaction — 78.logging.md](../../docs/content/docs/2.working-with-the-rest-api/78.logging.md) (полные правила скрытия, таблица мест вызова и шаблоны аудита URL вебхуков).
+Справочник для пользователей: [Logging & Credential Redaction — 78.logging.md](../../docs/content/docs/4.tools/78.logging.md) (полные правила скрытия, таблица мест вызова и шаблоны аудита URL вебхуков).
 
 ## Добавление нового транспортного действия
 

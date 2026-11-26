@@ -56,11 +56,25 @@ export function useSearch() {
       active: route.path.startsWith('/docs/getting-started')
     },
     {
-      label: 'Работа с API',
-      description: 'Введение в работу с REST API Битрикс24.',
+      label: 'Действия',
+      description: 'Вызовы REST API Битрикс24: call, callList, fetchList, batch и другие.',
       icon: DeveloperResourcesIcon,
-      to: '/docs/working-with-the-rest-api/',
-      active: route.path.startsWith('/docs/working-with-the-rest-api')
+      to: '/docs/actions/',
+      active: route.path.startsWith('/docs/actions')
+    },
+    {
+      label: 'Точки входа',
+      description: 'B24Frame, B24Hook, B24OAuth, помощники и Pull.',
+      icon: DeveloperResourcesIcon,
+      to: '/docs/entry-points/',
+      active: route.path.startsWith('/docs/entry-points')
+    },
+    {
+      label: 'Инструменты',
+      description: 'Логгер, лимитеры, ядро, утилиты, типы и коды ошибок.',
+      icon: DeveloperResourcesIcon,
+      to: '/docs/tools/',
+      active: route.path.startsWith('/docs/tools')
     },
     {
       label: 'GitHub',
