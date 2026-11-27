@@ -9,9 +9,12 @@ name: NPM publish JS SDK Nuxt 🚀
 # core SDK publishes from its sibling workflow (`npm-publish-js-sdk.yml`).
 #
 # The published Nuxt module declares a dependency on @bxshefby/b24jssdk at the
-# released version. Both workflows fire on the same `release: published` event, so
-# in the brief window before the core publish lands an `npm install` of the Nuxt
-# module could miss the matching core version. The build itself does not need core
+# released version. In the fork this workflow is dispatched by
+# `npm-publish-js-sdk.yml` after the core publish, on the same tag. If a release
+# is ever raised by a non-GITHUB_TOKEN identity, both workflows fire on the same
+# `release: published` event instead, and in the brief window before the core
+# publish lands an `npm install` of the Nuxt module could miss the matching core
+# version. The build itself does not need core
 # on npm (it resolves via the workspace), so the package contents are correct; the
 # gap only affects an external install during those seconds.
 on:
@@ -43,9 +46,9 @@ jobs:
   publish:
     needs: ci
     runs-on: ubuntu-latest
-    # Форк: окружение npm-release (Settings → Environments) — владелец подтверждает каждую публикацию,
-    # разрешены только main и теги v*. То же имя задано в Trusted Publisher пакета на npmjs.com:
-    # без него npm сверял бы только репозиторий и имя файла, и публиковать мог бы любой с правом push.
+    # Форк: окружение npm-release (Settings → Environments) пускает только main и теги v*; одобрения
+    # нет (решение владельца). То же имя задано в Trusted Publisher пакета на npmjs.com: без него npm
+    # сверял бы только репозиторий и имя файла.
     environment: npm-release
     timeout-minutes: 20
     permissions:
@@ -53,7 +56,8 @@ jobs:
       id-token: write
     if: >
       github.event_name == 'release' ||
-      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      (github.event_name == 'workflow_dispatch' &&
+        (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')))
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -71,9 +75,9 @@ jobs:
           echo "All packages at version $ROOT"
 
       - name: Verify package version matches release tag
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v')
         env:
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ github.event.release.tag_name || github.ref_name }}
         shell: bash
         run: |
           EXPECTED="${TAG#v}"

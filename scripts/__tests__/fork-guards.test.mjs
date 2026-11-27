@@ -93,13 +93,34 @@ test('имя tarball bitrix24-b24jssdk-*.tgz не осталось в workflow �
   assert.deepEqual(files, [], 'pnpm pack называет tarball bxshefby-b24jssdk-*.tgz')
 })
 
-test('выпуск сам запускает публикацию: release-please → SDK → Nuxt', () => {
+test('выпуск сам запускает публикацию: release-please → SDK → Nuxt, на теге выпуска', () => {
   // Release от GITHUB_TOKEN не запускает workflow по событию release; workflow_dispatch — запускает.
   const rp = read('.github/workflows/release-please.yml')
-  assert.match(rp, /if: steps\.release\.outputs\.release_created == 'true'/)
-  assert.match(rp, /gh workflow run npm-publish-js-sdk\.yml /)
-  assert.match(rp, /actions: write/)
+  assert.match(rp, /- name: Propose or cut the release\n {8}id: release\n {8}uses: googleapis\/release-please-action@/)
+  assert.match(rp, /release_created: \$\{\{ steps\.release\.outputs\.release_created \}\}/)
+  assert.match(rp, /tag_name: \$\{\{ steps\.release\.outputs\.tag_name \}\}/)
+  // dispatch — в отдельной job, у release-please-action нет actions: write
+  const [cut, chain] = rp.split(/^ {2}publish:\n/m)
+  assert.ok(chain, 'job publish в release-please.yml')
+  assert.match(cut, /permissions:\n {6}contents: write\n {6}pull-requests: write\n {4}outputs:/)
+  assert.match(chain, /if: needs\.release-please\.outputs\.release_created == 'true'/)
+  assert.match(chain, /permissions:\n {6}actions: write\n/)
+  assert.match(chain, /gh workflow run npm-publish-js-sdk\.yml --repo "\$GITHUB_REPOSITORY" --ref "\$TAG"/)
+
   const sdk = read('.github/workflows/npm-publish-js-sdk.yml')
-  assert.match(sdk, /publish-nuxt:\n {4}needs: publish\n/)
-  assert.match(sdk, /gh workflow run npm-publish-js-sdk-nuxt\.yml /)
+  const nuxtJob = sdk.split(/^ {2}publish-nuxt:\n/m)[1]
+  assert.ok(nuxtJob, 'job publish-nuxt в npm-publish-js-sdk.yml')
+  assert.match(nuxtJob, /^ {4}needs: publish\n/)
+  assert.match(nuxtJob, /if: github\.event_name == 'workflow_dispatch'/)
+  assert.match(nuxtJob, /permissions:\n {6}actions: write\n/)
+  assert.doesNotMatch(nuxtJob, /id-token/)
+  assert.match(nuxtJob, /gh workflow run npm-publish-js-sdk-nuxt\.yml --repo "\$GITHUB_REPOSITORY" --ref "\$GITHUB_REF_NAME"/)
+
+  // публикация с тега сверяет версию с тегом
+  for (const file of ['.github/workflows/npm-publish-js-sdk.yml', '.github/workflows/npm-publish-js-sdk-nuxt.yml']) {
+    const s = read(file)
+    assert.match(s, /startsWith\(github\.ref, 'refs\/tags\/v'\)\)\)/, file)
+    assert.match(s, /if: github\.event_name == 'release' \|\| startsWith\(github\.ref, 'refs\/tags\/v'\)/, file)
+    assert.match(s, /TAG: \$\{\{ github\.event\.release\.tag_name \|\| github\.ref_name \}\}/, file)
+  }
 })

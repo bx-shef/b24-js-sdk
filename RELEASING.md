@@ -11,11 +11,16 @@
 
 **Как идёт выпуск.** Push в `main` ничего не публикует: release-please держит открытым PR
 `chore(main): release X.Y.Z`. Слияние этого PR — единственное действие человека: release-please ставит тег
-и GitHub Release и сам запускает `npm-publish-js-sdk.yml`, а тот после публикации SDK — `npm-publish-js-sdk-nuxt.yml`.
-Раздел [Последний шаг — вручную](#последний-шаг--вручную) ниже — опыт родителя: release от `GITHUB_TOKEN`
-не запускает workflow по событию `release`, но `workflow_dispatch` от того же токена запускает — на этом и
-построена цепочка (`scripts/__tests__/fork-guards.test.mjs`). Если публикация упала, её можно перезапустить
-вручную: Actions → *NPM publish JS SDK 🚀* → *Run workflow* на `main`.
+`vX.Y.Z` и GitHub Release и сам запускает `npm-publish-js-sdk.yml` **на этом теге**, а тот после публикации
+SDK — `npm-publish-js-sdk-nuxt.yml` на том же теге. Публикуется ровно коммит выпуска, даже если в `main` уже
+влили следующий PR; версия в `package.json` сверяется с тегом. Release от `GITHUB_TOKEN` не запускает
+workflow по событию `release`, но `workflow_dispatch` от того же токена запускает — на этом и построена
+цепочка (`scripts/__tests__/fork-guards.test.mjs`). Разделы ниже, где публикация запускается руками
+(«Последний шаг — вручную», врезка о release-please), — опыт родителя.
+
+Если публикация упала, её перезапускают руками на теге выпуска: Actions → *NPM publish JS SDK 🚀* → *Run
+workflow* → *Use workflow from* → *Tags* → `vX.Y.Z` (он запустит и Nuxt). Если SDK уже вышел, а упал
+только Nuxt-модуль, — так же, но *NPM publish JS SDK Nuxt 🚀*: перезапуск SDK упадёт на «уже опубликовано».
 
 Настройки (сделаны один раз):
 
