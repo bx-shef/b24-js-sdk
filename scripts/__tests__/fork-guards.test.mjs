@@ -40,6 +40,66 @@ for (const file of RELEASE.filter(f => f.includes('npm-publish'))) {
   })
 }
 
+// Текст job верхнего уровня: от `  name:` до следующей job (или конца файла), без комментариев
+// перед следующей job; `code()` — без строк-комментариев (в них имена инструментов не в счёт).
+const job = (s, name) => {
+  const m = s.match(new RegExp(`^ {2}${name}:\\n((?: {4}.*\\n| {2}#.*\\n|[ \\t]*\\n)*)`, 'm'))
+  return m ? m[1].replace(/(?: {2}#.*\n|[ \t]*\n)+$/, '') : null
+}
+const code = j => j.split('\n').filter(l => !/^\s*#/.test(l)).join('\n')
+
+for (const file of RELEASE.filter(f => f.includes('npm-publish'))) {
+  test(`${file}: сборка без токена публикации, публикация без install-скриптов (#51)`, () => {
+    const s = read(file)
+    const build = job(s, 'build')
+    const publish = job(s, 'publish')
+    assert.ok(build, 'job build')
+    assert.ok(publish, 'job publish')
+
+    // цепочка: ci → build → publish
+    assert.match(job(s, 'ci'), /uses: \.\/\.github\/workflows\/ci\.yml\n/)
+    assert.match(build, /^ {4}needs: ci\n/m)
+    assert.match(publish, /^ {4}needs: build\n/m)
+
+    // build ставит зависимости (их install-скрипты выполняются здесь) — и токена публикации у него нет
+    assert.match(build, /pnpm install --frozen-lockfile/)
+    assert.match(build, /permissions:\n {6}contents: read\n {4}\S/)
+    assert.doesNotMatch(code(build), /id-token/)
+    assert.doesNotMatch(build, /environment:/)
+    assert.match(build, /pnpm pack --pack-destination/)
+    assert.match(build, /tar -xzOf "\$TGZ" package\/package\.json/)
+    assert.match(build, /startsWith\('catalog:'\) \|\| String\(range\)\.startsWith\('workspace:'\)/)
+    assert.match(build, /uses: actions\/upload-artifact@[0-9a-f]{40} /)
+    assert.match(build, /persist-credentials: false/)
+    // tarball доходит до publish тем же путём: артефакт npm-tarball → runner.temp/npm-tarball/<имя из build>
+    assert.match(build, /name: npm-tarball\n/)
+    assert.match(publish, /name: npm-tarball\n {10}path: \$\{\{ runner\.temp \}\}\/npm-tarball\n/)
+    assert.match(publish, /TGZ: \$\{\{ runner\.temp \}\}\/npm-tarball\/\$\{\{ needs\.build\.outputs\.tarball \}\}/)
+
+    // publish: только готовый tarball, без кода проекта и без pnpm
+    assert.match(publish, /^ {4}environment: npm-release\n/m)
+    assert.match(publish, /permissions:\n {6}contents: read\n {6}id-token: write\n/)
+    assert.match(publish, /uses: actions\/download-artifact@[0-9a-f]{40} /)
+    assert.match(publish, /sha256sum -c/)
+    assert.match(publish, /npm install -g --ignore-scripts npm@\d+\.\d+\.\d+\n/)
+    assert.match(publish, /npm publish "\$TGZ" --provenance --access public --ignore-scripts "\$\{TAG_ARGS\[@\]\}"/)
+    assert.doesNotMatch(code(publish), /actions\/checkout@/)
+    assert.doesNotMatch(code(publish), /pnpm/)
+    assert.doesNotMatch(code(publish), /npm (?:install|ci)(?! -g --ignore-scripts npm@)/)
+
+    // запуск — как был: release или ручной с main или тега v*
+    for (const j of [build, publish]) {
+      assert.match(j, /github\.event_name == 'release' \|\|\n {6}\(github\.event_name == 'workflow_dispatch' &&\n {8}\(github\.ref == 'refs\/heads\/main' \|\| startsWith\(github\.ref, 'refs\/tags\/v'\)\)\)/)
+    }
+
+    // id-token есть только у publish и у вызова ci.yml (его требует deploy в ci.yml, сам deploy пропускается)
+    const jobs = [...s.matchAll(/^ {2}([\w-]+):\n/gm)].map(m => m[1])
+    for (const name of jobs.filter(n => !['ci', 'publish'].includes(n))) {
+      assert.doesNotMatch(code(job(s, name)), /id-token/, `${file}: id-token у job ${name}`)
+    }
+  })
+}
+
 const EXPECTED = {
   '.github/workflows/smoke-retry.yml': 1,
   '.github/workflows/ci.yml': 4 // Setup Pages, Create и Upload Pages artifact, deploy
@@ -158,4 +218,8 @@ test('выпуск сам запускает публикацию: release-pleas
     assert.match(s, /if: github\.event_name == 'release' \|\| startsWith\(github\.ref, 'refs\/tags\/v'\)/, file)
     assert.match(s, /TAG: \$\{\{ github\.event\.release\.tag_name \|\| github\.ref_name \}\}/, file)
   }
+})
+
+test('npm-publish-js-sdk-nuxt.yml: модуль закреплён на точной версии ядра', () => {
+  assert.match(read('.github/workflows/npm-publish-js-sdk-nuxt.yml'), /CORE=\$\(jq -r '\.dependencies\["@bxshefby\/b24jssdk"\]'[^\n]*\n {10}if \[ "\$CORE" != "\$VER" \]/)
 })

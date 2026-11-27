@@ -21,9 +21,11 @@ packages:
 #
 # NOTE: `catalog:` is a pnpm protocol — it is resolved to the concrete range when
 # the package is packed, so the published manifest carries `^1.19.0`, not
-# `catalog:`. That resolution is `pnpm publish`'s doing (which is what
-# npm-publish-js-sdk.yml runs). Publishing this package with plain `npm publish`
-# would ship the literal `catalog:` string and break every consumer's install.
+# `catalog:`. That resolution is `pnpm pack`'s doing: the npm-publish-*.yml
+# `build` job packs with pnpm, asserts the packed manifest has no `catalog:` or
+# `workspace:` left, and only then `publish` runs `npm publish` on that tarball.
+# `npm publish` from the package directory would ship the literal `catalog:`
+# string and break every consumer's install.
 catalog:
   axios: ^1.21.1
 

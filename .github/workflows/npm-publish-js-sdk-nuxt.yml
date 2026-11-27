@@ -22,7 +22,8 @@ on:
     types: [ published ]
   workflow_dispatch:
 
-# Least privilege: only the publish job mints an OIDC token (job-level below).
+# Least privilege: only the publish job mints an OIDC token (job-level below);
+# the build job, which runs dependency install scripts, never gets id-token.
 permissions:
   contents: read
 
@@ -43,24 +44,27 @@ jobs:
       pages: write
       id-token: write
 
-  publish:
+  # Форк, #51: сборка отделена от публикации. Здесь — install-скрипты зависимостей всего workspace,
+  # поэтому у job нет id-token: OIDC-токен публикации отсюда получить нельзя. Наружу уходит только
+  # готовый tarball (`pnpm pack`) и его sha256.
+  build:
     needs: ci
     runs-on: ubuntu-latest
-    # Форк: окружение npm-release (Settings → Environments) пускает только main и теги v*; одобрения
-    # нет (решение владельца). То же имя задано в Trusted Publisher пакета на npmjs.com: без него npm
-    # сверял бы только репозиторий и имя файла.
-    environment: npm-release
     timeout-minutes: 20
     permissions:
       contents: read
-      id-token: write
     if: >
       github.event_name == 'release' ||
       (github.event_name == 'workflow_dispatch' &&
         (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')))
+    outputs:
+      tarball: ${{ steps.pack.outputs.tarball }}
+      sha256: ${{ steps.pack.outputs.sha256 }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Verify version lockstep across workspaces
         shell: bash
@@ -110,7 +114,6 @@ jobs:
           # supported consumer, and replaces the floating `lts/*` with a
           # deterministic runtime (#174).
           node-version: 22
-          registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
       - name: Install dependencies
@@ -122,26 +125,131 @@ jobs:
       - name: Build
         run: pnpm --filter ./packages/jssdk-nuxt build
 
-      - name: Verify version token was replaced
+      - name: Pack
+        id: pack
+        working-directory: packages/jssdk-nuxt
         shell: bash
         run: |
-          PKG_VER=$(node -p "require('./packages/jssdk-nuxt/package.json').version")
-          DIST=packages/jssdk-nuxt/dist/module.mjs
-          if grep -q "__SDK_VERSION__" "$DIST"; then
-            echo "::error::__SDK_VERSION__ was not replaced in $DIST — check packages/jssdk-nuxt/build.config.ts (#119)"
+          # `pnpm pack`, not `npm pack`: dependencies are declared as `catalog:` /
+          # `workspace:*` (#332), and only pnpm resolves those protocols when
+          # packing. The publish job ships this exact tarball with `npm publish`.
+          VER=$(jq -r .version package.json)
+          OUT="$RUNNER_TEMP/npm-tarball"
+          mkdir -p "$OUT"
+          pnpm pack --pack-destination "$OUT" >/dev/null
+          TGZ="bxshefby-b24jssdk-nuxt-$VER.tgz"
+          test -f "$OUT/$TGZ" || { echo "::error::$TGZ not found in $OUT"; ls -la "$OUT"; exit 1; }
+          test "$(find "$OUT" -name '*.tgz' | wc -l)" -eq 1 || { echo "::error::expected exactly one tarball in $OUT"; ls -la "$OUT"; exit 1; }
+          {
+            echo "tarball=$TGZ"
+            echo "sha256=$(sha256sum "$OUT/$TGZ" | cut -d' ' -f1)"
+            echo "path=$OUT"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Verify packed manifest
+        shell: bash
+        env:
+          TGZ: ${{ steps.pack.outputs.path }}/${{ steps.pack.outputs.tarball }}
+          EXPECTED: ${{ steps.pack.outputs.tarball }}
+        run: |
+          # Same contract as the "Pack" check in ci.yml (#332): `catalog:` and
+          # `workspace:` must be resolved before the manifest reaches npm.
+          tar -xzOf "$TGZ" package/package.json > "$RUNNER_TEMP/packed.json"
+          node -e "const p=require(process.env.RUNNER_TEMP+'/packed.json'); for (const field of ['dependencies','peerDependencies','optionalDependencies']) for (const [name, range] of Object.entries(p[field]||{})) { if (String(range).startsWith('catalog:') || String(range).startsWith('workspace:')) { console.error('::error::packed manifest ships an unresolved specifier: '+field+'.'+name+'@'+range); process.exit(1) } } console.log('packed manifest specifiers resolved OK')"
+          NAME=$(jq -r .name "$RUNNER_TEMP/packed.json")
+          VER=$(jq -r .version "$RUNNER_TEMP/packed.json")
+          if [ "$NAME" != "$(jq -r .name packages/jssdk-nuxt/package.json)" ] || [ "$VER" != "$(jq -r .version packages/jssdk-nuxt/package.json)" ]; then
+            echo "::error::packed manifest is $NAME@$VER, expected $(jq -r .name packages/jssdk-nuxt/package.json)@$(jq -r .version packages/jssdk-nuxt/package.json)"
             exit 1
           fi
-          if ! grep -qF "\"$PKG_VER\"" "$DIST"; then
-            echo "::error::version \"$PKG_VER\" (from package.json) not found in $DIST — wrong or empty replacement"
+          echo "$EXPECTED: $NAME@$VER"
+          # The module must pin the core it was built against: `workspace:*` packs to the exact version.
+          # A `workspace:^` would pack to a range and pass the check above unnoticed.
+          CORE=$(jq -r '.dependencies["@bxshefby/b24jssdk"]' "$RUNNER_TEMP/packed.json")
+          if [ "$CORE" != "$VER" ]; then
+            echo "::error::@bxshefby/b24jssdk in the packed manifest is '$CORE', expected exactly $VER"
+            exit 1
+          fi
+
+      - name: Verify version token was replaced
+        shell: bash
+        env:
+          TGZ: ${{ steps.pack.outputs.path }}/${{ steps.pack.outputs.tarball }}
+        run: |
+          # Checked in the packed tarball — exactly what gets published (#119).
+          PKG_VER=$(jq -r .version packages/jssdk-nuxt/package.json)
+          tar -xzOf "$TGZ" package/dist/module.mjs > "$RUNNER_TEMP/module.mjs"
+          if grep -q "__SDK_VERSION__" "$RUNNER_TEMP/module.mjs"; then
+            echo "::error::__SDK_VERSION__ was not replaced in dist/module.mjs — check packages/jssdk-nuxt/build.config.ts (#119)"
+            exit 1
+          fi
+          if ! grep -qF "\"$PKG_VER\"" "$RUNNER_TEMP/module.mjs"; then
+            echo "::error::version \"$PKG_VER\" (from package.json) not found in dist/module.mjs — wrong or empty replacement"
             exit 1
           fi
           echo "module.mjs meta.version = $PKG_VER (token replaced) — OK"
 
-      - name: 'Publish NUXT 🚀'
+      - name: Upload tarball
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: npm-tarball
+          path: ${{ steps.pack.outputs.path }}/${{ steps.pack.outputs.tarball }}
+          if-no-files-found: error
+          retention-days: 7
+
+  # Форк, #51: публикация готового tarball. Здесь нет checkout кода проекта и pnpm install — ни один
+  # скрипт зависимостей не выполняется там, где можно получить OIDC-токен публикации.
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    # Форк: окружение npm-release (Settings → Environments) пускает только main и теги v*; одобрения
+    # нет (решение владельца). То же имя задано в Trusted Publisher пакета на npmjs.com: без него npm
+    # сверял бы только репозиторий и имя файла.
+    environment: npm-release
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    if: >
+      github.event_name == 'release' ||
+      (github.event_name == 'workflow_dispatch' &&
+        (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')))
+    steps:
+      - name: Download tarball
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: npm-tarball
+          path: ${{ runner.temp }}/npm-tarball
+
+      - name: Verify tarball checksum
         shell: bash
+        env:
+          TGZ: ${{ runner.temp }}/npm-tarball/${{ needs.build.outputs.tarball }}
+          SHA256: ${{ needs.build.outputs.sha256 }}
         run: |
-          VER=$(jq -r .version packages/jssdk-nuxt/package.json)
-          # Pre-release → `next` dist-tag, never `latest` (see npm-publish-js-sdk.yml).
+          echo "$SHA256  $TGZ" | sha256sum -c -
+
+      - name: Install node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Update npm
+        # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 ships npm 10.
+        # This installs the npm CLI itself, not project dependencies.
+        run: npm install -g --ignore-scripts npm@11.21.2
+
+      - name: 'Publish 🚀'
+        shell: bash
+        env:
+          TGZ: ${{ runner.temp }}/npm-tarball/${{ needs.build.outputs.tarball }}
+        run: |
+          VER=$(tar -xzOf "$TGZ" package/package.json | jq -r .version)
+          # A pre-release (e.g. 1.3.0-rc.1) must NOT take the default `latest`
+          # dist-tag, or every `npm install` of the package would jump onto the
+          # RC. Route pre-releases (version contains a `-`) to `next`; stable
+          # versions keep `latest`.
           TAG_ARGS=()
           if [[ "$VER" == *-* ]]; then
             TAG_ARGS=(--tag next)
@@ -149,4 +257,8 @@ jobs:
           else
             echo "Stable $VER → dist-tag 'latest'"
           fi
-          pnpm --filter ./packages/jssdk-nuxt publish --no-git-checks "${TAG_ARGS[@]}"
+          # The tarball was packed by `pnpm pack` in the build job (catalog: and
+          # workspace: already resolved and checked there). `--ignore-scripts`:
+          # nothing from the package runs next to the OIDC token.
+          npm publish "$TGZ" --provenance --access public --ignore-scripts "${TAG_ARGS[@]}"
+
