@@ -4,7 +4,10 @@ import { setupB24Tests } from '../../0_setup/hooks-integration-jssdk'
 describe('parentMessage', () => {
   const { getB24Frame } = setupB24Tests()
 
-  it('FirstTest', async () => {
+  // Fork: skipped. The harness cannot run inside a Bitrix24 frame — `getB24Frame()`
+  // throws '@todo init B24Frame' — so this test can only fail, in CI and locally.
+  // Re-enable when `getB24Frame()` returns a real frame.
+  it.skip('FirstTest', async () => {
     const b24 = getB24Frame()
 
     const method = 'im:setTextareaContent'

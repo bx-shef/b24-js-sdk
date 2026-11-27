@@ -2,7 +2,6 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import { withoutTrailingSlash, joinURL } from 'ufo'
 import { kebabCase } from 'scule'
-import { useColorMode } from '#b24ui/composables/color-mode/useColorMode'
 import DesignIcon from '@bitrix24/b24icons-vue/outline/DesignIcon'
 import FavoriteIcon from '@bitrix24/b24icons-vue/outline/FavoriteIcon'
 import GitHubIcon from '@bitrix24/b24icons-vue/social/GitHubIcon'
@@ -155,22 +154,6 @@ const showExplainWithAi = computed(() => {
   return isEnabled.value && appConfig.bxAssistant?.explainWithAi !== false
 })
 
-const colorMode = useColorMode()
-const isDark = computed(() => {
-  return colorMode.value === 'dark'
-})
-const isMounted = ref(false)
-const cardColorContext = computed(() => {
-  if (import.meta.server || !isMounted.value) {
-    return 'light'
-  }
-  return isDark.value ? 'dark' : 'light'
-})
-
-onMounted(() => {
-  isMounted.value = true
-})
-
 // @todo fix this
 // @see docs/app/components/PageHeaderLinks.vue:16
 // const aiPrompt = computed(() => `I'm looking at this Bitrix24 UI documentation: ${page.value?.path}\nHelp me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it.`)
@@ -263,7 +246,6 @@ function makeExplain() {
       <B24Card
         v-if="page"
         as="main"
-        :class="cardColorContext"
         :b24ui="{
           root: 'rounded-none lg:rounded-(--ui-border-radius-md)',
           body: 'p-3'

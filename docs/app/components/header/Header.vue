@@ -22,7 +22,8 @@ function toggleChat() {
 const colorMode = useColorMode()
 
 function toggleMode() {
-  colorMode.preference = !(colorMode.value === 'dark') ? 'dark' : 'light'
+  // The site starts in `edge-dark` (app.config.ts), which is a dark theme too.
+  colorMode.preference = colorMode.value === 'dark' || colorMode.value === 'edge-dark' ? 'light' : 'dark'
 }
 // endregion ////
 
