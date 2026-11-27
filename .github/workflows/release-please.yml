@@ -2,16 +2,13 @@
 # changelog assembled from conventional-commit subjects. Merging that PR tags the
 # version and publishes a GitHub Release.
 #
-# It does NOT reach npm. GitHub does not start workflows from events raised with
-# the built-in GITHUB_TOKEN, which is what this job runs as, so the
-# `release: published` event the two npm-publish workflows listen for never
-# reaches them. Observed on the 2.1.0 release: tag and Release created, neither
-# publish workflow started. The two are dispatched by hand from `main` as the
-# last step of a release — see "The last step is manual" in RELEASING.md.
-# Automating it would mean giving this job a GitHub App token or a PAT, so the
-# release is raised by an identity that is not GITHUB_TOKEN.
+# Fork: it reaches npm without a manual step. GitHub does not start workflows
+# from `release: published` raised with the built-in GITHUB_TOKEN, but it does
+# accept a `workflow_dispatch` from that token — so the `publish` job below
+# dispatches `npm-publish-js-sdk.yml` on the release tag, and that workflow
+# dispatches the Nuxt one after the core publish (RELEASING.md, fork section).
 #
-# Deliberately NOT wired to publish directly. npm's Trusted Publisher entries
+# Still not publishing from this file. npm's Trusted Publisher entries
 # are keyed to the two exact filenames `npm-publish-js-sdk.yml` and
 # `npm-publish-js-sdk-nuxt.yml`; a publish reached from any other workflow file
 # fails the OIDC token exchange. Keeping the publish in those two files keeps
@@ -43,9 +40,34 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - name: Propose or cut the release
+        id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  # Форк: публикация без ручного шага. Release, созданный GITHUB_TOKEN, не запускает workflow по
+  # событию `release`, а `workflow_dispatch` от того же токена — запускает (исключение GitHub).
+  # Запуск — по тегу выпуска, не по main: публикуется ровно коммит выпуска, даже если в main уже
+  # влили следующий PR. Публикация SDK по завершении сама запускает Nuxt-модуль на том же теге.
+  # Отдельная job — чтобы `actions: write` не получал сторонний release-please-action.
+  publish:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Publish the release to npm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]] || { echo "::error::unexpected tag '$TAG'"; exit 1; }
+          gh workflow run npm-publish-js-sdk.yml --repo "$GITHUB_REPOSITORY" --ref "$TAG"

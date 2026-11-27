@@ -7,7 +7,22 @@
 Пакеты форка — `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt` (scope `@bxshefby` — npm-аккаунт
 владельца). Версии продолжают линию bitrix24: первый выпуск — `3.1.0`, API как у `@bitrix24/b24jssdk@3.0.0`
 (release-please считает изменения с коммита их выпуска `3.0.0` — `bootstrap-sha` в
-`release-please-config.json`). Порядок выпуска ниже — тот же, что у родителя; включается он один раз:
+`release-please-config.json`).
+
+**Как идёт выпуск.** Push в `main` ничего не публикует: release-please держит открытым PR
+`chore(main): release X.Y.Z`. Слияние этого PR — единственное действие человека: release-please ставит тег
+`vX.Y.Z` и GitHub Release и сам запускает `npm-publish-js-sdk.yml` **на этом теге**, а тот после публикации
+SDK — `npm-publish-js-sdk-nuxt.yml` на том же теге. Публикуется ровно коммит выпуска, даже если в `main` уже
+влили следующий PR; версия в `package.json` сверяется с тегом. Release от `GITHUB_TOKEN` не запускает
+workflow по событию `release`, но `workflow_dispatch` от того же токена запускает — на этом и построена
+цепочка (`scripts/__tests__/fork-guards.test.mjs`). Разделы ниже, где публикация запускается руками
+(«Последний шаг — вручную», врезка о release-please), — опыт родителя.
+
+Если публикация упала, её перезапускают руками на теге выпуска: Actions → *NPM publish JS SDK 🚀* → *Run
+workflow* → *Use workflow from* → *Tags* → `vX.Y.Z` (он запустит и Nuxt). Если SDK уже вышел, а упал
+только Nuxt-модуль, — так же, но *NPM publish JS SDK Nuxt 🚀*: перезапуск SDK упадёт на «уже опубликовано».
+
+Настройки (сделаны один раз):
 
 1. **Trusted Publisher на npmjs.com** — в настройках каждого пакета (*Settings → Trusted Publisher →
    GitHub Actions*):
@@ -28,21 +43,14 @@
 
    Токен npm в секретах не нужен: публикация идёт по OIDC с provenance (`publishConfig.provenance`),
    поэтому `repository.url` в `package.json` пакетов указывает на `bx-shef/b24-js-sdk`.
-2. **Окружение `npm-release`** (*Settings → Environments → New environment*): *Required reviewers* —
-   владелец, *Prevent self-review* выключить (иначе владелец не одобрит запуск, который начал сам);
-   *Deployment branches and tags* — *Selected*: ветка `main` и теги `v*`. Jobs публикации идут в этом
-   окружении, и npm принимает токен только из него. Одобряя запуск, проверьте, что он идёт с `main` или
-   с тега `v*`, коммит которого есть в `main`.
-   **Правило на теги** (*Settings → Rules → Rulesets → New tag ruleset*): цель `v*`, *Restrict creations*,
-   *Restrict updates*, *Restrict deletions*; в обход — владелец и приложение GitHub Actions (теги ставит
-   release-please). Без него любой с правом записи поставит `v*` на свой коммит и запустит публикацию
-   из окружения.
+2. **Окружение `npm-release`** (*Settings → Environments*): *Deployment branches and tags* — *Selected*:
+   ветка `main` и теги `v*`. Jobs публикации идут в этом окружении, и npm принимает токен только из него.
+   Одобрения публикации (*Required reviewers*) нет — решение владельца 2026-11-27: изменения он проверяет
+   на PR, выпуск идёт сам.
 3. **Переменная репозитория `NPM_RELEASE=true`** (*Settings → Secrets and variables → Actions →
    Variables*). Без неё release-please и обе публикации не запускаются: так форк не выпускал ничего, пока
    имена и версия не были решены (`scripts/__tests__/fork-guards.test.mjs`).
-4. Release PR `chore(main): release 3.1.0` откроется на следующем push в `main`. Слить его, затем вручную
-   запустить оба workflow публикации (см. [Последний шаг — вручную](#последний-шаг--вручную)) и подтвердить
-   каждый в окружении `npm-release`.
+4. Первый выпуск `3.1.0` — 2026-11-27, оба пакета с provenance.
 5. Старые пакеты владельца (`@bxshefby/b24jssdk@<1`, `@bxshefby/b24jssdk-nuxt@<1`, `@bxshefby/jssdk`,
    `@bxshefby/ddd-jssdk`) помечены устаревшими (`npm deprecate`, 2026-11-27).
 

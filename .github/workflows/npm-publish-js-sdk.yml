@@ -42,9 +42,9 @@ jobs:
   publish:
     needs: ci
     runs-on: ubuntu-latest
-    # Форк: окружение npm-release (Settings → Environments) — владелец подтверждает каждую публикацию,
-    # разрешены только main и теги v*. То же имя задано в Trusted Publisher пакета на npmjs.com:
-    # без него npm сверял бы только репозиторий и имя файла, и публиковать мог бы любой с правом push.
+    # Форк: окружение npm-release (Settings → Environments) пускает только main и теги v*; одобрения
+    # нет (решение владельца). То же имя задано в Trusted Publisher пакета на npmjs.com: без него npm
+    # сверял бы только репозиторий и имя файла.
     environment: npm-release
     timeout-minutes: 20
     permissions:
@@ -52,7 +52,8 @@ jobs:
       id-token: write
     if: >
       github.event_name == 'release' ||
-      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      (github.event_name == 'workflow_dispatch' &&
+        (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')))
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -70,9 +71,9 @@ jobs:
           echo "All packages at version $ROOT"
 
       - name: Verify package version matches release tag
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v')
         env:
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ github.event.release.tag_name || github.ref_name }}
         shell: bash
         run: |
           EXPECTED="${TAG#v}"
@@ -138,3 +139,19 @@ jobs:
           # asserts on the packed manifest, but the constraint belongs here too,
           # where someone would edit this line.
           pnpm --filter ./packages/jssdk publish --no-git-checks "${TAG_ARGS[@]}"
+
+  # Форк: Nuxt-модуль зависит от только что опубликованной версии SDK — запускаем его публикацию
+  # после успешной публикации SDK, на том же ref (тег выпуска или main), workflow_dispatch от GITHUB_TOKEN разрешён.
+  publish-nuxt:
+    needs: publish
+    # По событию release Nuxt-workflow запускается сам — второй запуск упал бы на «уже опубликовано».
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Start NPM publish JS SDK Nuxt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run npm-publish-js-sdk-nuxt.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
