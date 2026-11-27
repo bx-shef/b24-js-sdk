@@ -28,7 +28,7 @@ import { versionManager } from '../core/version-manager'
  * ```
  *
  * @link https://apidocs.bitrix24.com/settings/oauth/index.html
- * @link https://bitrix24.github.io/b24jssdk/docs/oauth/
+ * @link https://b24-js-sdk.bx-shef.by/docs/entry-points/oauth/
  */
 export class B24OAuth extends AbstractB24 implements TypeB24 {
   readonly #authOAuthManager: AuthOAuthManager

@@ -25,7 +25,7 @@ import { ProcessingAsObjectV3 } from '../interaction/batch/processing/v3/as-obje
  * the shape of the commands argument. Use this transport when the target
  * Bitrix24 portal supports the REST v3 protocol.
  *
- * @link https://bitrix24.github.io/b24jssdk/
+ * @link https://b24-js-sdk.bx-shef.by/
  * @link https://apidocs.bitrix24.com/api-reference/rest-v3/index.html
  */
 export class HttpV3 extends AbstractHttp implements TypeHttp {

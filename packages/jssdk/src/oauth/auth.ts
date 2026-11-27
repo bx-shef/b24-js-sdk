@@ -12,7 +12,7 @@ import { ApiVersion } from '../types/b24'
  * OAuth Authorization Manager
  *
  * @link https://apidocs.bitrix24.com/settings/oauth/index.html
- * @link https://bitrix24.github.io/b24jssdk/docs/oauth/
+ * @link https://b24-js-sdk.bx-shef.by/docs/entry-points/oauth/
  */
 export class AuthOAuthManager implements AuthActions {
   #clientAxios: AxiosInstance

@@ -139,8 +139,8 @@ test('checkAuditFreshness: a .md source never ages a page; a .ts source does', (
   const frontmatter = {
     audited: '2026-01-01',
     links: [
-      'label: Code\nto: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/result.ts',
-      'label: Skill\nto: https://github.com/bitrix24/b24jssdk/blob/main/skills/b24jssdk-rest/SKILL.md'
+      'label: Code\nto: https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/core/result.ts',
+      'label: Skill\nto: https://github.com/bx-shef/b24-js-sdk/blob/main/skills/b24jssdk-rest/SKILL.md'
     ]
   }
   const warns = []
@@ -173,7 +173,7 @@ test('gitLastCommitDate: an uncommitted edit to a cited source ages the page', (
   const abs = join(REPO_ROOT, cited)
   const frontmatter = {
     audited: '2020-01-01',
-    links: [`label: Code\nto: https://github.com/bitrix24/b24jssdk/blob/main/${cited}`]
+    links: [`label: Code\nto: https://github.com/bx-shef/b24-js-sdk/blob/main/${cited}`]
   }
 
   try {
@@ -283,7 +283,7 @@ test('gitLastCommitDate: a gitignored cited source ages the page too', () => {
     const warns = []
     checkAuditFreshness('page.md', {
       audited: '2020-01-01',
-      links: [`label: Code\nto: https://github.com/bitrix24/b24jssdk/blob/main/${cited}`]
+      links: [`label: Code\nto: https://github.com/bx-shef/b24-js-sdk/blob/main/${cited}`]
     }, { warn: (_f, m) => warns.push(m) })
 
     assert.equal(warns.length, 1, 'a cited source git cannot vouch for must age the page')
@@ -298,8 +298,8 @@ test('gitLastCommitDate: a gitignored cited source ages the page too', () => {
 test('checkFrontmatterLinkTargets: errors on a blob/main link whose file is gone', () => {
   const frontmatter = {
     links: [
-      'label: Live\nto: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/result.ts',
-      'label: Gone\nto: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/deleted.ts'
+      'label: Live\nto: https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/core/result.ts',
+      'label: Gone\nto: https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/core/deleted.ts'
     ]
   }
   const errs = []
@@ -315,7 +315,7 @@ test('checkFrontmatterLinkTargets: external and tree/ links are not checked', ()
   const frontmatter = {
     links: [
       'label: Ext\nto: https://example.com/whatever',
-      'label: Dir\nto: https://github.com/bitrix24/b24jssdk/tree/main/packages'
+      'label: Dir\nto: https://github.com/bx-shef/b24-js-sdk/tree/main/packages'
     ]
   }
   const errs = []

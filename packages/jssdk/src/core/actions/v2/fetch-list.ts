@@ -55,7 +55,7 @@ export class FetchListV2 extends AbstractAction {
    * Calls a REST API list method and returns an async generator, for walking a
    * large dataset without holding all of it in memory.
    *
-   * **Every option is documented on the [fetchList v2 page](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/fetch-list-rest-api-ver2/),
+   * **Every option is documented on the [fetchList v2 page](https://b24-js-sdk.bx-shef.by/docs/actions/fetch-list/),
    * and each one on {@link ActionFetchListV2}.** Not repeated here: nothing
    * watches a sentence in a comment, while the page is link-checked and its
    * code compiled on every CI run.

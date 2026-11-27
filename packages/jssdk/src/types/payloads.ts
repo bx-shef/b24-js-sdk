@@ -44,7 +44,7 @@ export type PayloadTime = {
    * The budget behind it is per method — a batch is charged to `batch`, at half
    * weight, not to the methods inside it.
    *
-   * @see https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/limiters/#enabling-the-operating-limiter-on-a-self-hosted-portal
+   * @see https://b24-js-sdk.bx-shef.by/docs/tools/limiters/#включение-лимитера-времени-операций-на-self-hosted-портале
    *   for how a self-hosted portal is configured to report these, and the
    *   misconfiguration that silently looks like success.
    */

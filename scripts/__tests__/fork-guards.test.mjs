@@ -81,6 +81,26 @@ test('имя @bitrix24/b24jssdk осталось только там, где о�
   assert.deepEqual(files, [], `замените ${OLD_NAME} на @bxshefby/b24jssdk (.sync/PORTING.md)`)
 })
 
+// У форка свой сайт документации (https://b24-js-sdk.bx-shef.by) с другой раскладкой страниц и
+// русскими якорями. Адрес сайта родителя возвращается при переносе его коммитов (JSDoc, навыки,
+// README) — переводить по .sync/docs-map.json. Законен он только в CHANGELOG (история), в .sync/**
+// (правила переноса и журналы) и в этом тесте.
+const PARENT_SITE = 'bitrix24.github.io/b24jssdk'
+
+test('адрес сайта родителя bitrix24.github.io/b24jssdk остался только там, где он нужен', () => {
+  let out = ''
+  try {
+    out = execFileSync('git', ['grep', '-l', '--fixed-strings', PARENT_SITE], { cwd: ROOT, encoding: 'utf8' })
+  } catch (error) {
+    // git grep без совпадений выходит с кодом 1 — это и есть успех
+    if (error.status !== 1) throw error
+  }
+  const files = out.split('\n').filter(Boolean)
+    .filter(f => !/(?:^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/'))
+    .filter(f => f !== 'scripts/__tests__/fork-guards.test.mjs')
+  assert.deepEqual(files, [], 'замените адрес сайта родителя на https://b24-js-sdk.bx-shef.by/… (.sync/PORTING.md, .sync/docs-map.json)')
+})
+
 test('имя tarball bitrix24-b24jssdk-*.tgz не осталось в workflow и скриптах', () => {
   let out = ''
   try {

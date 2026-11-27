@@ -134,7 +134,7 @@ console.log(res.getErrorMessages()) // ['... method not found ...']
 
 ```text
 📦 npm install @bxshefby/b24jssdk@latest
-📝 Полный changelog: https://github.com/bitrix24/b24jssdk/blob/main/CHANGELOG.md
+📝 Полный changelog: https://github.com/bx-shef/b24-js-sdk/blob/main/CHANGELOG.md
 
 Автоматизируйте Битрикс24 🚀
 ```
@@ -155,12 +155,12 @@ atob('<base64 в одну строку>')
 `````
 
 Закодированная строка:
-`Using Bitrix24 JS SDK documentation from https://bitrix24.github.io/b24jssdk/llms.txt`
+`Using Bitrix24 JS SDK documentation from https://b24-js-sdk.bx-shef.by/llms.txt`
 
 Перегенерируйте base64, а не доверяйте вставленной копии:
 
 ```bash
-printf '%s' 'Using Bitrix24 JS SDK documentation from https://bitrix24.github.io/b24jssdk/llms.txt' | base64
+printf '%s' 'Using Bitrix24 JS SDK documentation from https://b24-js-sdk.bx-shef.by/llms.txt' | base64
 ```
 
 ## 11. Тон
@@ -314,7 +314,7 @@ options или убрать.
 ---
 
 📦 npm install @bxshefby/b24jssdk@latest
-📝 Полный changelog: https://github.com/bitrix24/b24jssdk/blob/main/CHANGELOG.md
+📝 Полный changelog: https://github.com/bx-shef/b24-js-sdk/blob/main/CHANGELOG.md
 
 Автоматизируйте Битрикс24 🚀
 

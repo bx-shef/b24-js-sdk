@@ -34,7 +34,7 @@ const sectionLabel = names => names.map(n => `"${n}"`).join(' or ')
 
 const ACTION_LIKE_CATEGORIES = new Set(['actions', 'tools'])
 
-const GITHUB_SOURCE_PREFIX = 'https://github.com/bitrix24/b24jssdk/blob/main/'
+const GITHUB_SOURCE_PREFIX = 'https://github.com/bx-shef/b24-js-sdk/blob/main/'
 
 /**
  * Options shared by every `git` call here.

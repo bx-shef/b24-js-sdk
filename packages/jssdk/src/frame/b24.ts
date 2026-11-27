@@ -33,7 +33,7 @@ import type { KeepAuthFreshParams } from './auth-keep-alive'
  * - Per-app option storage through `options` manager.
  *
  * @link https://api.bitrix24.com/api/v1/
- * @link https://bitrix24.github.io/b24jssdk/docs/frame/
+ * @link https://b24-js-sdk.bx-shef.by/docs/entry-points/frame/
  * @see /bitrix/js/rest/applayout.js
  */
 export class B24Frame extends AbstractB24 implements TypeB24 {

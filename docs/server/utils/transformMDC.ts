@@ -29,7 +29,7 @@ type Document = {
 
 const B24_DOCS = {
   ui: 'https://bitrix24.github.io/b24ui/',
-  jsSdk: 'https://bitrix24.github.io/b24jssdk/'
+  jsSdk: 'https://b24-js-sdk.bx-shef.by/'
 }
 
 // function getComponentMeta(componentName: string) {
