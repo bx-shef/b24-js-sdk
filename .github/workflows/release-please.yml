@@ -43,9 +43,20 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: write
     steps:
       - name: Propose or cut the release
+        id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      # Форк: публикация без ручного шага. Release, созданный GITHUB_TOKEN, не запускает
+      # workflow по событию `release`, а `workflow_dispatch` от того же токена — запускает
+      # (исключение GitHub). Публикация SDK по завершении сама запускает Nuxt-модуль.
+      - name: Publish the release to npm
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run npm-publish-js-sdk.yml --repo "$GITHUB_REPOSITORY" --ref main

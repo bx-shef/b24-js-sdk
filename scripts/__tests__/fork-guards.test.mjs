@@ -92,3 +92,14 @@ test('имя tarball bitrix24-b24jssdk-*.tgz не осталось в workflow �
   const files = out.split('\n').filter(Boolean).filter(f => f !== 'scripts/__tests__/fork-guards.test.mjs')
   assert.deepEqual(files, [], 'pnpm pack называет tarball bxshefby-b24jssdk-*.tgz')
 })
+
+test('выпуск сам запускает публикацию: release-please → SDK → Nuxt', () => {
+  // Release от GITHUB_TOKEN не запускает workflow по событию release; workflow_dispatch — запускает.
+  const rp = read('.github/workflows/release-please.yml')
+  assert.match(rp, /if: steps\.release\.outputs\.release_created == 'true'/)
+  assert.match(rp, /gh workflow run npm-publish-js-sdk\.yml /)
+  assert.match(rp, /actions: write/)
+  const sdk = read('.github/workflows/npm-publish-js-sdk.yml')
+  assert.match(sdk, /publish-nuxt:\n {4}needs: publish\n/)
+  assert.match(sdk, /gh workflow run npm-publish-js-sdk-nuxt\.yml /)
+})
