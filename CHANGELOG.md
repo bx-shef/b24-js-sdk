@@ -1,5 +1,56 @@
 # Changelog
 
+## [3.1.0](https://github.com/bx-shef/b24-js-sdk/commits/v3.1.0) (2026-11-27)
+
+
+Первый выпуск форка: пакеты `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt`, API как у `@bitrix24/b24jssdk@3.0.0`. Переход — «Начало работы → Миграция → с @bitrix24/b24jssdk».
+
+### Features
+
+* **docs:** заявка на разработку из чата и с сайта ([#42](https://github.com/bx-shef/b24-js-sdk/issues/42)) ([c21600d](https://github.com/bx-shef/b24-js-sdk/commit/c21600dbec322ca5731fe4e0ef752503ec7ceada))
+* **docs:** Яндекс Метрика с согласием на cookie ([#40](https://github.com/bx-shef/b24-js-sdk/issues/40)) ([7dd4205](https://github.com/bx-shef/b24-js-sdk/commit/7dd42051716247bc03e1e9a1c97221e45474aaac))
+* **release:** пакеты @bxshefby/b24jssdk и @bxshefby/b24jssdk-nuxt, выпуск 3.1.0 из форка ([#50](https://github.com/bx-shef/b24-js-sdk/issues/50)) ([1356d2a](https://github.com/bx-shef/b24-js-sdk/commit/1356d2ad1f0969a4b9713d87de2b5f058434fec3))
+
+
+### Bug Fixes
+
+* **docs:** инструменты MCP на Node-сервере — Nitro asyncContext ([#30](https://github.com/bx-shef/b24-js-sdk/issues/30)) ([8a1ec2d](https://github.com/bx-shef/b24-js-sdk/commit/8a1ec2df0ec3b73d015beccdd18d0fbd685ce6b7))
+* **docs:** страница документации в тёмной теме целиком; тест фрейма пропускается ([#47](https://github.com/bx-shef/b24-js-sdk/issues/47)) ([00c442d](https://github.com/bx-shef/b24-js-sdk/commit/00c442df8767e7e91afcd4796ea11f7eca2bec9d))
+
+
+### Dependencies
+
+* raise the brace-expansion 2.x and fast-uri floors past four new advisories ([#588](https://github.com/bitrix24/b24jssdk/issues/588)) ([4dde84b](https://github.com/bitrix24/b24jssdk/commit/4dde84b14f2aa71e91d5b232157d8b7bf29e2f59))
+* закрыть уязвимости из pnpm audit (simple-git и др.) ([#8](https://github.com/bx-shef/b24-js-sdk/issues/8)) ([02c592f](https://github.com/bx-shef/b24-js-sdk/commit/02c592f3ed75090e2b3d9fd75f42e73bc79e5dfe))
+* исключение GHSA-mrhx-c7xc-m3w5 для zod 3 в @nuxt/content ([#17](https://github.com/bx-shef/b24-js-sdk/issues/17)) ([e77884a](https://github.com/bx-shef/b24-js-sdk/commit/e77884a86e4ffe2c3006f613d188c14b518b08de))
+
+
+### Changed
+
+* move the package manager to pnpm 12.8.1 ([#590](https://github.com/bitrix24/b24jssdk/issues/590)) ([9992396](https://github.com/bitrix24/b24jssdk/commit/99923961a1ea5b78a08460665067da99805e5e5e))
+
+
+### Docs
+
+* **mcp:** описания инструментов и промптов MCP на русском ([#41](https://github.com/bx-shef/b24-js-sdk/issues/41)) ([a33ab8a](https://github.com/bx-shef/b24-js-sdk/commit/a33ab8acc5730cfb19d2ae64e40fff44dcd099a6))
+* replace the Node 20 banner with a 3.0.0 release banner ([#584](https://github.com/bitrix24/b24jssdk/issues/584)) ([6fcbe88](https://github.com/bitrix24/b24jssdk/commit/6fcbe882fd7eb615b95af439230726feda6043a0))
+* **site:** пометка `@check-ignore` не видна на страницах; главная по-русски ([#46](https://github.com/bx-shef/b24-js-sdk/issues/46)) ([063c85c](https://github.com/bx-shef/b24-js-sdk/commit/063c85ce466609a72ef12b3e27193405e5123f70))
+* **site:** примеры только показываются, запуска на портале нет ([#43](https://github.com/bx-shef/b24-js-sdk/issues/43)) ([3db6ca0](https://github.com/bx-shef/b24-js-sdk/commit/3db6ca0caf12187d120170430d952f4258ffaff8))
+* **umd:** add a current user and placement frame example ([#589](https://github.com/bitrix24/b24jssdk/issues/589)) ([132a386](https://github.com/bitrix24/b24jssdk/commit/132a386dabccf8eca26c8e792cbf1a5bad8eb5c9)), closes [#586](https://github.com/bitrix24/b24jssdk/issues/586)
+* **umd:** pin the CDN script to `@3` instead of `@latest` ([#587](https://github.com/bitrix24/b24jssdk/issues/587)) ([79a25c2](https://github.com/bitrix24/b24jssdk/commit/79a25c23c51c6285958e5c211be8952728747154)), closes [#586](https://github.com/bitrix24/b24jssdk/issues/586)
+* перевод — миграция ([#13](https://github.com/bx-shef/b24-js-sdk/issues/13)) ([92fabdf](https://github.com/bx-shef/b24-js-sdk/commit/92fabdf574d546ff6edb4971e37c067d1b4ef1d7))
+* перевод — работа с REST API, часть 1 ([#19](https://github.com/bx-shef/b24-js-sdk/issues/19)) ([62e1cd8](https://github.com/bx-shef/b24-js-sdk/commit/62e1cd880ce2a52b6f42bddffa662057209fa72e))
+* перевод — работа с REST API, часть 2 (вебхук, фрейм, OAuth, помощники) ([#20](https://github.com/bx-shef/b24-js-sdk/issues/20)) ([dfcae78](https://github.com/bx-shef/b24-js-sdk/commit/dfcae789edfbb9d068f9305997e15fdf2fc42586))
+* перевод — работа с REST API, часть 3 ([#21](https://github.com/bx-shef/b24-js-sdk/issues/21)) ([d102532](https://github.com/bx-shef/b24-js-sdk/commit/d102532ca7bc57174941dcaecdf1ab7b6ed0eace))
+* перевод — руководства для участников, часть 2 ([#28](https://github.com/bx-shef/b24-js-sdk/issues/28)) ([bcc41bb](https://github.com/bx-shef/b24-js-sdk/commit/bcc41bb60c63ea90a407cf61a80ea482123d301a))
+* перевод — справочник API и примеры ([#23](https://github.com/bx-shef/b24-js-sdk/issues/23)) ([0a76cd4](https://github.com/bx-shef/b24-js-sdk/commit/0a76cd49f5136554ec3edf3e2556f7f9f1c7bd9e))
+* перевод AGENTS.md, README и корневых документов на русский ([#26](https://github.com/bx-shef/b24-js-sdk/issues/26)) ([816200f](https://github.com/bx-shef/b24-js-sdk/commit/816200f2fa7dc90cccbf8879dbd04a1b6c1e25a6))
+* перевод на русский — getting-started (без миграции) ([#12](https://github.com/bx-shef/b24-js-sdk/issues/12)) ([ddab723](https://github.com/bx-shef/b24-js-sdk/commit/ddab72397b24624c6e6c778bb84df721220efc6c))
+* перевод навыков на русский язык ([#25](https://github.com/bx-shef/b24-js-sdk/issues/25)) ([86594fb](https://github.com/bx-shef/b24-js-sdk/commit/86594fbbe75a752b4b328c77727e236a66953b6a))
+* перевод руководств для участников на русский, часть 1 ([#27](https://github.com/bx-shef/b24-js-sdk/issues/27)) ([217b5b0](https://github.com/bx-shef/b24-js-sdk/commit/217b5b0c5b256b8fe631833ded790c0c7a7db69e))
+* перестройка документации по образцу b24-ui и синхронизация через .sync/ ([#38](https://github.com/bx-shef/b24-js-sdk/issues/38)) ([c3202fe](https://github.com/bx-shef/b24-js-sdk/commit/c3202fe158b29d7a3e8271b65c4ff34b3e3d2d8e))
+* поверхность REST v3 по замеру 2026-11-26; русские триггеры навыков ([#32](https://github.com/bx-shef/b24-js-sdk/issues/32)) ([bff0098](https://github.com/bx-shef/b24-js-sdk/commit/bff0098a873126e57e90c31cf9f0ecdcf35a0bdc))
+
 ## [3.0.0](https://github.com/bitrix24/b24jssdk/compare/v2.2.0...v3.0.0) (2026-09-29)
 
 
