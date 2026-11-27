@@ -10,7 +10,7 @@ This CLI utility is designed for developers and QA engineers who need to:
 - Perform load testing of Bitrix24 REST API integrations
 - Quickly populate a Bitrix24 instance with demo data
 
-The tool uses [@bxshefby/b24jssdk](https://bitrix24.github.io/b24jssdk/) for API communication and [citty](https://github.com/unjs/citty) for command-line interface.
+The tool uses [@bxshefby/b24jssdk](https://b24-js-sdk.bx-shef.by/) for API communication and [citty](https://github.com/unjs/citty) for command-line interface.
 
 ## Requirements
 

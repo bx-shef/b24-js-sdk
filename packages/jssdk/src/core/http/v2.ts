@@ -25,7 +25,7 @@ import { AjaxError } from './ajax-error'
  * {@link ProcessingAsArrayV2} or {@link ProcessingAsObjectV2} depending on
  * the shape of the commands argument.
  *
- * @link https://bitrix24.github.io/b24jssdk/
+ * @link https://b24-js-sdk.bx-shef.by/
  */
 export class HttpV2 extends AbstractHttp implements TypeHttp {
   constructor(

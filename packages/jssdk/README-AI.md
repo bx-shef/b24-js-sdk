@@ -35,7 +35,7 @@
 не существует**. Генерация любой её части даёт код, который не компилируется. Если
 вас просят работать с кодовой базой на `2.x`, где она ещё используется, столбец
 «Замена» — это то, на что нужно переписать. Полный чек-лист:
-[Migration to v3](https://bitrix24.github.io/b24jssdk/docs/getting-started/migration/v3/).
+[Migration to v3](https://b24-js-sdk.bx-shef.by/docs/getting-started/migration/v3/).
 
 | Удалено в 3.0.0 | Замена |
 |---|---|

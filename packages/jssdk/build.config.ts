@@ -231,6 +231,6 @@ function getBanner(): string {
  * @copyright (c) ${COPYRIGHT_DATE} Bitrix24
  * @license MIT
  * @see https://github.com/bx-shef/b24-js-sdk
- * @see https://bitrix24.github.io/b24jssdk/
+ * @see https://b24-js-sdk.bx-shef.by/
  */`
 }

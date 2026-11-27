@@ -34,7 +34,7 @@ export class BatchV2 extends AbstractBatch {
    * HTTP call, in array, object or named-command form. `restApi:v2`
    *
    * **The argument reference, the three `calls` formats, the options table and
-   * worked examples live on the [batch page](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/batch-rest-api-ver2/).**
+   * worked examples live on the [batch page](https://b24-js-sdk.bx-shef.by/docs/actions/batch/).**
    * Deliberately not repeated here: that copy is compiled on every CI run and
    * this one would not be — no pass type-checks a JSDoc `@example` (#420).
    *

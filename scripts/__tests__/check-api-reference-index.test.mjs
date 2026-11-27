@@ -238,8 +238,8 @@ test('a multi-line object initializer does not trip the multi-declarator guard',
 
 test('reads names from table rows and flat lists, not from prose', () => {
   const names = collectPageNames([
-    '| [`Linked`](https://github.com/bitrix24/b24jssdk/blob/main/x.ts) | what | — |',
-    '| [Bare](https://github.com/bitrix24/b24jssdk/blob/main/y.ts) | what | — |',
+    '| [`Linked`](https://github.com/bx-shef/b24-js-sdk/blob/main/x.ts) | what | — |',
+    '| [Bare](https://github.com/bx-shef/b24-js-sdk/blob/main/y.ts) | what | — |',
     '',
     '`FlatOne` `FlatTwo`',
     '',

@@ -49,16 +49,16 @@ navigation.title: CallTail
 links:
   - label: CallV3
     iconName: GitHubIcon
-    to: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/actions/v3/call.ts
+    to: https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/core/actions/v3/call.ts
   - label: AjaxResult
     iconName: GitHubIcon
-    to: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/http/ajax-result.ts
+    to: https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/core/http/ajax-result.ts
   - label: AjaxError
     iconName: GitHubIcon
-    to: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/http/ajax-error.ts
+    to: https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/core/http/ajax-error.ts
   - label: SdkError
     iconName: GitHubIcon
-    to: https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/core/sdk-error.ts
+    to: https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/core/sdk-error.ts
 ---
 ```
 
@@ -143,7 +143,7 @@ Cursor-based paging is preferred over manual `start` increments.
 ### Выноски со ссылкой (Callouts with link)
 
 ```md
-::callout{color="air-secondary" iconName="GitHubIcon" title="AuthActions interface" to="https://github.com/bitrix24/b24jssdk/blob/main/packages/jssdk/src/types/auth.ts"}
+::callout{color="air-secondary" iconName="GitHubIcon" title="AuthActions interface" to="https://github.com/bx-shef/b24-js-sdk/blob/main/packages/jssdk/src/types/auth.ts"}
 Source for the AuthActions surface used by `B24Frame`.
 ::
 ```
@@ -275,7 +275,7 @@ export async function Action_callRestApiVer2() {
 Блок `links:` во frontmatter — канонический указатель от документации к исходникам. Каждый раз, когда вы добавляете новый публичный метод или класс:
 
 1. Найдите соответствующую страницу документации (или создайте её) в `docs/content/docs/`.
-2. Добавьте в `links:` запись для нового символа, указывающую на `https://github.com/bitrix24/b24jssdk/blob/main/<path>`.
+2. Добавьте в `links:` запись для нового символа, указывающую на `https://github.com/bx-shef/b24-js-sdk/blob/main/<path>`.
 3. Если страница документирует действие (`b24.actions.vX.call.make`, `callList.make`, `fetchList.make`, `batch.make`, `batchByChunk.make`), включите ссылки на `Result`, `AjaxResult`, `AjaxError` и `SdkError`, чтобы читатели могли перейти к типам результата и ошибок с любой страницы действия.
 
 ## Связка кода, тестов и документации (Pairing Code, Tests, and Docs)

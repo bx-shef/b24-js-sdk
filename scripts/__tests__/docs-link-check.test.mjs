@@ -56,7 +56,7 @@ test('docs-link-check: valid internal pages, index pages, fragments, and frontma
       'See [heading](/docs/guide/with-headings/#some-section).',
       'See [duplicate heading](/docs/guide/with-headings/#repeated-1).',
       'External links like [example](https://example.com/no-check) are ignored.',
-      'GitHub blob URLs like [source](https://github.com/bitrix24/b24jssdk/blob/main/missing.md) are ignored.'
+      'GitHub blob URLs like [source](https://github.com/bx-shef/b24-js-sdk/blob/main/missing.md) are ignored.'
     ])
 
     writePage(root, '1.guide/1.intro.md', [

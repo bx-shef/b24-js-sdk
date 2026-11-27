@@ -83,7 +83,7 @@ $b24.destroy()
 
 ## Документация
 
-Полная документация: [https://bitrix24.github.io/b24jssdk/](https://bitrix24.github.io/b24jssdk/)
+Полная документация: [https://b24-js-sdk.bx-shef.by/](https://b24-js-sdk.bx-shef.by/)
 
 ## Участие в разработке
 

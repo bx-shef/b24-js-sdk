@@ -27,7 +27,7 @@ import { versionManager } from '../core/version-manager'
  * const result = await b24.actions.v2.call.make({ method: 'user.current' })
  * ```
  *
- * @link https://bitrix24.github.io/b24jssdk/docs/hook/
+ * @link https://b24-js-sdk.bx-shef.by/docs/entry-points/hook/
  */
 export class B24Hook extends AbstractB24 implements TypeB24 {
   readonly #authHookManager: AuthHookManager
