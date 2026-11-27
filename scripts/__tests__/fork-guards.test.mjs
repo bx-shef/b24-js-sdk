@@ -75,7 +75,7 @@ const OLD_NAME_ALLOWED = new Set([
 test('имя @bitrix24/b24jssdk осталось только там, где оно нужно', () => {
   const out = execFileSync('git', ['grep', '-l', '--fixed-strings', OLD_NAME], { cwd: ROOT, encoding: 'utf8' })
   const files = out.split('\n').filter(Boolean)
-    .filter(f => !/(^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/log/'))
+    .filter(f => !/(?:^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/log/'))
     .filter(f => !OLD_NAME_ALLOWED.has(f))
   assert.deepEqual(files, [], `замените ${OLD_NAME} на @bxshefby/b24jssdk (.sync/PORTING.md)`)
 })
