@@ -76,11 +76,11 @@ for (const file of RELEASE.filter(f => f.includes('npm-publish'))) {
     assert.match(publish, /permissions:\n {6}contents: read\n {6}id-token: write\n/)
     assert.match(publish, /uses: actions\/download-artifact@[0-9a-f]{40} /)
     assert.match(publish, /sha256sum -c/)
-    assert.match(publish, /npm install -g npm@\d+\.\d+\.\d+\n/)
+    assert.match(publish, /npm install -g --ignore-scripts npm@\d+\.\d+\.\d+\n/)
     assert.match(publish, /npm publish "\$TGZ" --provenance --access public --ignore-scripts "\$\{TAG_ARGS\[@\]\}"/)
     assert.doesNotMatch(code(publish), /actions\/checkout@/)
     assert.doesNotMatch(code(publish), /pnpm/)
-    assert.doesNotMatch(code(publish), /npm (?:install|ci)(?! -g npm@)/)
+    assert.doesNotMatch(code(publish), /npm (?:install|ci)(?! -g --ignore-scripts npm@)/)
 
     // запуск — как был: release или ручной с main или тега v*
     for (const j of [build, publish]) {

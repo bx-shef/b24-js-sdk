@@ -229,7 +229,7 @@ jobs:
       - name: Update npm
         # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 ships npm 10.
         # This installs the npm CLI itself, not project dependencies.
-        run: npm install -g npm@11.21.2
+        run: npm install -g --ignore-scripts npm@11.21.2
 
       - name: 'Publish 🚀'
         shell: bash
