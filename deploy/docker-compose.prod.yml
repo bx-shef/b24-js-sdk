@@ -1,6 +1,7 @@
-# Продакшн: сайт документации SDK за обратным прокси с TLS (deploy/README.md). Требует на хосте:
-#   - docker-сеть proxy-net и nginx-proxy + acme-companion в ней — тот же прокси, что у соседей
-#     (bx-shef/toolsai, site/landing/deploy/proxy.compose.yml);
+# Продакшн: сайт документации SDK за обратным прокси с TLS (deploy/README.md, раздел «Сервер»;
+# установка — deploy/install-server.sh). Требует на хосте:
+#   - docker-сеть proxy-net и прокси в ней. На сервере bx-shef это обычный nginx (контейнер proxy,
+#     блоки сайтов вручную); с nginx-proxy + acme-companion сайт подхватится сам по VIRTUAL_HOST;
 #   - .env рядом с этим файлом (шаблон — deploy/.env.example);
 #   - общий Watchtower с входом в ghcr — подхватит новый :latest по метке ниже.
 # Наружу сайт выставляет прокси по VIRTUAL_HOST — порта на хосте нет.
