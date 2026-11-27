@@ -1,6 +1,6 @@
 [![npm version](https://img.shields.io/npm/v/@bxshefby/b24jssdk)](https://www.npmjs.com/package/@bxshefby/b24jssdk)
 [![license](https://img.shields.io/npm/l/@bxshefby/b24jssdk)](./LICENSE)
-[![CI](https://github.com/bitrix24/b24jssdk/actions/workflows/ci.yml/badge.svg)](https://github.com/bitrix24/b24jssdk/actions/workflows/ci.yml)
+[![CI](https://github.com/bx-shef/b24-js-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/bx-shef/b24-js-sdk/actions/workflows/ci.yml)
 
 # @bxshefby/b24jssdk
 
