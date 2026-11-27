@@ -101,6 +101,21 @@ test('адрес сайта родителя bitrix24.github.io/b24jssdk ост�
   assert.deepEqual(files, [], 'замените адрес сайта родителя на https://b24-js-sdk.bx-shef.by/… (.sync/PORTING.md, .sync/docs-map.json)')
 })
 
+// Ссылки на файлы репозитория родителя (blob/tree) после смены GITHUB_SOURCE_PREFIX в docs-lint.mjs
+// проверка audited и целей ссылок молча пропускает — переводить на bx-shef/b24-js-sdk (.sync/PORTING.md).
+test('ссылки на файлы репозитория родителя github.com/bitrix24/b24jssdk/(blob|tree)/ не вернулись', () => {
+  let out = ''
+  try {
+    out = execFileSync('git', ['grep', '-lE', 'github\\.com/bitrix24/b24jssdk/(blob|tree)/'], { cwd: ROOT, encoding: 'utf8' })
+  } catch (error) {
+    if (error.status !== 1) throw error
+  }
+  const files = out.split('\n').filter(Boolean)
+    .filter(f => !/(?:^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/'))
+    .filter(f => f !== 'scripts/__tests__/fork-guards.test.mjs')
+  assert.deepEqual(files, [], 'замените github.com/bitrix24/b24jssdk/blob|tree/… на github.com/bx-shef/b24-js-sdk/… (.sync/PORTING.md)')
+})
+
 test('имя tarball bitrix24-b24jssdk-*.tgz не осталось в workflow и скриптах', () => {
   let out = ''
   try {
