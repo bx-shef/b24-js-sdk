@@ -38,9 +38,8 @@
 4. Release PR `chore(main): release 3.1.0` откроется на следующем push в `main`. Слить его, затем вручную
    запустить оба workflow публикации (см. [Последний шаг — вручную](#последний-шаг--вручную)) и подтвердить
    каждый в окружении `npm-release`.
-5. После выхода `3.1.0` — пометить устаревшими старые пакеты владельца (с его компьютера, после `npm login`):
-   `@bxshefby/b24jssdk@<1`, `@bxshefby/b24jssdk-nuxt@<1`, `@bxshefby/jssdk`, `@bxshefby/ddd-jssdk`
-   (`npm deprecate "<пакет>[@<1]" "<куда переходить>"`).
+5. Старые пакеты владельца (`@bxshefby/b24jssdk@<1`, `@bxshefby/b24jssdk-nuxt@<1`, `@bxshefby/jssdk`,
+   `@bxshefby/ddd-jssdk`) помечены устаревшими (`npm deprecate`, 2026-11-27).
 
 Пользователям `@bitrix24/b24jssdk` переход описан на сайте — «Начало работы → Миграция →
 с @bitrix24/b24jssdk».
