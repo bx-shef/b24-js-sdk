@@ -63,6 +63,8 @@ test('dependabot.yml: свои PR Dependabot выключены', () => {
 // в тексты незаметно — оно законно только в главе о переходе, в CHANGELOG (история),
 // в правилах выпуска и переноса и в этом тесте.
 const OLD_NAME = '@bitrix24/b24jssdk'
+// Имя tarball из `pnpm pack`: scope превращается в префикс (`bitrix24-b24jssdk-3.0.0.tgz`).
+const OLD_TARBALL = 'bitrix24-b24jssdk-'
 const OLD_NAME_ALLOWED = new Set([
   'docs/content/docs/1.getting-started/3.migration/0.from-bitrix24.md',
   'scripts/__tests__/fork-guards.test.mjs',
@@ -77,4 +79,16 @@ test('имя @bitrix24/b24jssdk осталось только там, где о�
     .filter(f => !/(?:^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/log/'))
     .filter(f => !OLD_NAME_ALLOWED.has(f))
   assert.deepEqual(files, [], `замените ${OLD_NAME} на @bxshefby/b24jssdk (.sync/PORTING.md)`)
+})
+
+test('имя tarball bitrix24-b24jssdk-*.tgz не осталось в workflow и скриптах', () => {
+  let out = ''
+  try {
+    out = execFileSync('git', ['grep', '-l', '--fixed-strings', OLD_TARBALL, '--', '.github', 'scripts', 'package.json'], { cwd: ROOT, encoding: 'utf8' })
+  } catch (error) {
+    // git grep без совпадений выходит с кодом 1 — это и есть успех
+    if (error.status !== 1) throw error
+  }
+  const files = out.split('\n').filter(Boolean).filter(f => f !== 'scripts/__tests__/fork-guards.test.mjs')
+  assert.deepEqual(files, [], 'pnpm pack называет tarball bxshefby-b24jssdk-*.tgz')
 })
