@@ -43,9 +43,18 @@ useHead({
 })
 
 if (import.meta.server) {
+  // Картинка для превью ссылок (Telegram, соцсети) — одна на сайт, public/og-image.png 1200×630.
+  // Адрес абсолютный: превью-боты относительные не понимают; без адреса сайта (сборка без SITE_URL) — от корня.
+  const ogImage = `${useRuntimeConfig().public.siteUrl || ''}/og-image.png`
   useSeoMeta({
     ogSiteName: 'Bitrix24 JS SDK',
-    twitterCard: 'summary_large_image'
+    twitterCard: 'summary_large_image',
+    ogImage,
+    ogImageWidth: 1200,
+    ogImageHeight: 630,
+    ogImageType: 'image/png',
+    ogImageAlt: 'JS SDK для REST API Битрикс24',
+    twitterImage: ogImage
   })
 
   useSchemaOrg([
