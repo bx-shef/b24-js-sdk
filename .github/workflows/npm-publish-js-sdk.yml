@@ -136,9 +136,11 @@ jobs:
           TGZ="bxshefby-b24jssdk-$VER.tgz"
           test -f "$OUT/$TGZ" || { echo "::error::$TGZ not found in $OUT"; ls -la "$OUT"; exit 1; }
           test "$(find "$OUT" -name '*.tgz' | wc -l)" -eq 1 || { echo "::error::expected exactly one tarball in $OUT"; ls -la "$OUT"; exit 1; }
-          echo "tarball=$TGZ" >> "$GITHUB_OUTPUT"
-          echo "sha256=$(sha256sum "$OUT/$TGZ" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
-          echo "path=$OUT" >> "$GITHUB_OUTPUT"
+          {
+            echo "tarball=$TGZ"
+            echo "sha256=$(sha256sum "$OUT/$TGZ" | cut -d' ' -f1)"
+            echo "path=$OUT"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Verify packed manifest
         shell: bash
