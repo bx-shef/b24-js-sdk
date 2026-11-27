@@ -76,7 +76,8 @@ provide('files', files)
         ]"
       >
         <template v-if="!route.path.startsWith('/examples')">
-          <Banner />
+          <!-- Баннер выпуска скрыт (решение владельца 2026-11-27): у bitrix24 он вёл на их 3.0.0; вернуть с нашим выпуском. -->
+          <!-- <Banner /> -->
 
           <Header />
         </template>

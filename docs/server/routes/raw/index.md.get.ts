@@ -60,7 +60,7 @@ The Bitrix24 JS SDK (\`@bxshefby/b24jssdk\`) is a free and open-source JavaScrip
 ## Links
 
 - Website: <${DOMAIN}>
-- GitHub: <https://github.com/bitrix24/b24jssdk>
+- GitHub: <https://github.com/bx-shef/b24-js-sdk>
 - Community (EN): <https://t.me/b24_dev>
 - Community (RU): <https://t.me/bitrix24apps>
 `

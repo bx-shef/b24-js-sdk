@@ -127,7 +127,7 @@ logger.pushHandler(new ConsoleV2Handler(
 
 ## Выбор именования полей
 
-Более новые методы CRM (`crm.item.list`) используют поля в camelCase: `stageId`, `assignedById`, `opportunity`, `createdTime`. Классические (`tasks.task.add`, `crm.activity.list`, `crm.timeline.comment.add`) — в верхнем регистре: `TITLE`, `DESCRIPTION`, `OWNER_TYPE_ID`. Рецепты следуют этому разделению. Оба относятся к `restApi:v2` — `crm.item.*` написан в camelCase по собственным причинам, а не потому, что это v3; endpoint v3 не публикует `crm.item.*`. В `restApi:v3` camelCase — правило везде, а `<entity>.field.list` отвечает на него для каждой сущности — см. [Discovering entity fields](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/discovering-entity-fields/).
+Более новые методы CRM (`crm.item.list`) используют поля в camelCase: `stageId`, `assignedById`, `opportunity`, `createdTime`. Классические (`tasks.task.add`, `crm.activity.list`, `crm.timeline.comment.add`) — в верхнем регистре: `TITLE`, `DESCRIPTION`, `OWNER_TYPE_ID`. Рецепты следуют этому разделению. Оба относятся к `restApi:v2` — `crm.item.*` написан в camelCase по собственным причинам, а не потому, что это v3; endpoint v3 не публикует `crm.item.*`. В `restApi:v3` camelCase — правило везде, а `<entity>.field.list` отвечает на него для каждой сущности — см. [Обнаружение полей сущности](https://b24-js-sdk.bx-shef.by/docs/actions/discovering-entity-fields/).
 
 ## Запуск
 

@@ -2,8 +2,8 @@
 
 Сайт — Nuxt-приложение `docs/` в режиме Node-сервера: страницы, `llms.txt`, навыки
 (`/.well-known/skills/`), MCP-сервер (`/mcp/`) и чат помощника на DeepSeek. Схема та же, что у
-соседних сайтов (bx-shef/toolsai, `site/landing/deploy/`): образ в ghcr.io, на сервере — compose за
-общим nginx-proxy с acme-companion, обновляет общий Watchtower.
+соседних сайтов: образ в ghcr.io, на сервере — compose за общим прокси (на сервере bx-shef — обычный nginx,
+см. «Сервер»), обновляет общий Watchtower.
 
 ## Образ
 
@@ -29,10 +29,40 @@
 
 ## Сервер
 
-1. Прокси `proxy-net` с nginx-proxy и acme-companion — если его ещё нет, по
-   `site/landing/deploy/proxy.compose.yml` из bx-shef/toolsai.
-2. Каталог, например `/opt/b24-js-sdk-docs`: `docker-compose.prod.yml` и `.env` из `.env.example`.
-3. `docker compose -f docker-compose.prod.yml up -d`.
-4. Проверка: `https://<DOMAIN>/` и `https://<DOMAIN>/llms.txt` (есть при заданном адресе сайта) — 200, `https://<DOMAIN>/mcp/` — MCP-сервер.
+Сайт стоит на сервере bx-shef с 2026-11-27: **https://b24-js-sdk.bx-shef.by**.
 
-Новые версии ставит Watchtower по метке `com.centurylinklabs.watchtower.enable=true`.
+Как устроен сервер (так у всех сайтов bx-shef на нём):
+
+- **Прокси** — обычный nginx в контейнере `proxy` (папка `/home/bitrix/b24-proxy`, сеть `proxy-net`), а не
+  `nginx-proxy`: сайты он сам не находит. Все сайты — блоками в одном `conf.d/default.conf`; его когда-то
+  собирал скрипт `gen.py`, которого на сервере нет, — правки ручные.
+- **Сертификаты** — certbot (webroot `/usr/share/nginx/html`, том `b24-ui_html`) кладёт их в том
+  `b24_letsencrypt`, копии — в том `b24-ui_certs` под именем домена (`<домен>.crt/.key/.chain.pem/.dhparam.pem`).
+  Продление — `renew-certs.sh` по крону (понедельник 04:17) для доменов из его списка `DOMAINS`.
+- **Обновление** — Watchtower: новый `:latest` из ghcr ставится сам (метка в compose). Вход в `ghcr.io` на
+  сервере уже есть.
+- Переменные `VIRTUAL_HOST`/`LETSENCRYPT_*` в compose этим прокси не читаются — они для `nginx-proxy`, если
+  сайт переедет на сервер с ним.
+
+**Установка или переезд** — один скрипт [`install-server.sh`](install-server.sh) на сервере от пользователя `bitrix`:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/bx-shef/b24-js-sdk/main/deploy/install-server.sh && bash install-server.sh
+```
+
+Он идемпотентен (повторный запуск ничего не дублирует и доделывает недоделанное), спрашивает ключ DeepSeek
+(ввод не виден), поднимает контейнер, выпускает сертификат, дописывает два блока в `default.conf` и добавляет
+домен в продление. Перед первой правкой `default.conf` кладёт копию рядом (`.backup-default.conf.<время>`) и при
+любом сбое дальше возвращает её — общий конфиг всех сайтов не остаётся полуправленным.
+
+Чему научила первая установка:
+
+- DNS-запись домена должна смотреть на сервер **до** запуска — иначе certbot не пройдёт проверку.
+- С самого сервера его внешний адрес может не открываться (`curl` даёт `000`) — проверять снаружи.
+- Ответы чата идут потоком: в блоке `:443` нужен `proxy_buffering off`, иначе текст приходит целиком в конце.
+- Адрес посетителя прокси передаёт последним в `X-Forwarded-For` (глобальные `proxy_set_header` в начале
+  `default.conf`) — на нём держится лимит частоты чата (`NUXT_TRUST_PROXY=true`).
+- MCP (`/mcp/`) на простое открытие отвечает 405 — он принимает только POST от AI-клиентов.
+
+Проверка: `https://<домен>/` и `/llms.txt` — 200, на странице есть номер Метрики (`yandexMetrikaId`),
+чат отвечает (`POST /api/ai` — поток `data: …`).

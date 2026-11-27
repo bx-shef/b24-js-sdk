@@ -209,7 +209,7 @@ function preferredAdapter(): { adapter?: 'fetch' } {
  * payload truncation, and request metrics. Concrete subclasses implement version-specific
  * batch strategies.
  *
- * @link https://bitrix24.github.io/b24jssdk/
+ * @link https://b24-js-sdk.bx-shef.by/
  */
 export abstract class AbstractHttp implements TypeHttp {
   protected _clientAxios: AxiosInstance

@@ -281,7 +281,7 @@ git switch main && git pull origin main
 pnpm run release:bump <version>          # e.g. 1.3.0 — rewrites all 3 package.json + lockfile
 
 # Edit CHANGELOG.md: rename "## [Unreleased]" to
-#   ## [<version>](https://github.com/bitrix24/b24jssdk/compare/v<previous>...v<version>) (YYYY-MM-DD)
+#   ## [<version>](https://github.com/bx-shef/b24-js-sdk/compare/v<previous>...v<version>) (YYYY-MM-DD)
 # and start a fresh empty [Unreleased] above it.
 
 git add package.json packages/jssdk/package.json packages/jssdk-nuxt/package.json pnpm-lock.yaml CHANGELOG.md
@@ -377,7 +377,7 @@ git push origin main
    `## [Unreleased]` в выпускаемую версию со ссылкой сравнения и датой, например:
 
    ```md
-   ## [1.3.0](https://github.com/bitrix24/b24jssdk/compare/v1.2.0...v1.3.0) (2026-06-15)
+   ## [1.3.0](https://github.com/bx-shef/b24-js-sdk/compare/v1.2.0...v1.3.0) (2026-06-15)
    ```
 
    Затем добавьте над ним новый пустой раздел `## [Unreleased]` для следующего

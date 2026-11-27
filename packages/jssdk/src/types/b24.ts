@@ -78,7 +78,7 @@ export type CallBatchResult<T>
 
 export type TypeB24 = {
   /**
-   * @see {https://bitrix24.github.io/b24jssdk/docs/hook/ Js SDK documentation}
+   * @see {https://b24-js-sdk.bx-shef.by/docs/entry-points/hook/ Js SDK documentation}
    * @see {https://apidocs.bitrix24.com/sdk/bx24-js-sdk/system-functions/bx24-init.html Bitrix24 REST API documentation}
    */
   readonly isInit: boolean

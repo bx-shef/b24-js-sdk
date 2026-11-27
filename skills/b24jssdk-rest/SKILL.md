@@ -39,7 +39,7 @@ SDK предоставляет и `v2`, и `v3` в `$b24.actions`. **SDK бол�
 Ручной постраничной выборки больше нет — списочные помощники листают страницы за вас. Существует два механизма, и они не взаимозаменяемы:
 
 - **`callList` / `fetchList`** *эмулируют* курсор поверх действия `list`, внедряя условие `[idField, '>', n]` в `filter` и принудительно задавая `order`. Работает для любого метода `*.list` (v2 и v3).
-- **`callTail` / `fetchTail`** (только v3) управляют *нативным* действием `tail` сервера через его параметр `cursor: { field, value, order, limit }`. Используйте их, когда метод публикует endpoint `*.tail` — таких модулей немного, поэтому сначала проверьте; страница CallTail показывает, как спросить у портала, какие они. Полные страницы: [CallTail](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/call-tail-rest-api-ver3/), [FetchTail](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/fetch-tail-rest-api-ver3/). Поле курсора **не должно** присутствовать в `filter` (сервер это отклоняет), оно автоматически добавляется в `select`, а для `order: 'DESC'` требуется явное `initialValue`.
+- **`callTail` / `fetchTail`** (только v3) управляют *нативным* действием `tail` сервера через его параметр `cursor: { field, value, order, limit }`. Используйте их, когда метод публикует endpoint `*.tail` — таких модулей немного, поэтому сначала проверьте; страница CallTail показывает, как спросить у портала, какие они. Полные страницы: [CallTail](https://b24-js-sdk.bx-shef.by/docs/actions/call-tail/), [FetchTail](https://b24-js-sdk.bx-shef.by/docs/actions/fetch-tail/). Поле курсора **не должно** присутствовать в `filter` (сервер это отклоняет), оно автоматически добавляется в `select`, а для `order: 'DESC'` требуется явное `initialValue`.
 
 Во всех примерах используется `$b24` типа `TypeB24`, но **`actions.v3.batch` — единственное место, где три точки входа не взаимозаменяемы** — он не работает под `B24Frame`. См. антипаттерны в конце.
 
@@ -169,7 +169,7 @@ for (const row of rows) {
 успехе, поэтому для долгих записей тоже держите `retryOnNetworkError: false`; `batch`
 ключ не принимает; а `restApi:v2` заголовок игнорирует — транспорт v2 его отбрасывает
 и выдаёт предупреждение. Полное руководство:
-[Idempotency-Key](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/call-rest-api-ver3/#idempotency-key).
+[Idempotency-Key](https://b24-js-sdk.bx-shef.by/docs/actions/call/#idempotency-key).
 
 ## `batch.make` — форма массива
 
@@ -633,8 +633,8 @@ const hasNotes = Boolean(doc?.paths?.['/note.collection.list'])
 
 - Документ **специфичен для портала** (отражает установленные модули и права токена) и **велик** (100 КБ и больше). Получите его **один раз и кешируйте** — он только для ответа и стабилен в рамках сессии; не запрашивайте заново при каждом взаимодействии.
 - Схема `paths['/method.name'].post.requestBody` каждого метода перечисляет принимаемые параметры (часто с `example` настоящих имён полей) — читайте её, а не выдумывайте поля `select`.
-- Полное руководство: [Discovering v3 methods](https://github.com/bitrix24/b24jssdk/blob/main/docs/content/docs/2.actions/7.discovering-v3-methods.md).
-- Для полей одной сущности и их флагов — более дешёвая половина того же вопроса: [Discovering entity fields](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/discovering-entity-fields/).
+- Полное руководство: [Обнаружение методов v3](https://b24-js-sdk.bx-shef.by/docs/actions/discovering-v3-methods/).
+- Для полей одной сущности и их флагов — более дешёвая половина того же вопроса: [Обнаружение полей сущности](https://b24-js-sdk.bx-shef.by/docs/actions/discovering-entity-fields/).
 
 ## Антипаттерны
 

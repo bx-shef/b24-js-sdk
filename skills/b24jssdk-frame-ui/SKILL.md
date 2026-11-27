@@ -332,7 +332,7 @@ if ($b24.isInstallMode) {
 
 Завершение установки — шаг **жизненного цикла**, а не безопасности. Приложение, которое
 ещё и держит эндпоинт установки/удаления по OAuth, всё равно обязано проверять `application_token`
-в `ONAPPINSTALL` / `ONAPPUNINSTALL` — см. страницу [Security patterns](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/security/).
+в `ONAPPINSTALL` / `ONAPPUNINSTALL` — см. страницу [Безопасность приложений-приёмников событий](https://b24-js-sdk.bx-shef.by/docs/tools/security/).
 Одно не заменяет другое.
 
 Чтобы проверить приложение, которое портал игнорирует, спросите, считает ли он его установленным:

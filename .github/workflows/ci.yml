@@ -88,7 +88,7 @@ jobs:
       NUXT_PUBLIC_SITE_URL: https://bitrix24.github.io
       NUXT_PUBLIC_BASE_URL: /b24jssdk
       NUXT_PUBLIC_CANONICAL_URL: https://bitrix24.github.io
-      NUXT_PUBLIC_GIT_URL: https://github.com/bitrix24/b24jssdk
+      NUXT_PUBLIC_GIT_URL: https://github.com/bx-shef/b24-js-sdk
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -162,7 +162,7 @@ jobs:
       NUXT_PUBLIC_SITE_URL: https://bitrix24.github.io
       NUXT_PUBLIC_BASE_URL: /b24jssdk
       NUXT_PUBLIC_CANONICAL_URL: https://bitrix24.github.io
-      NUXT_PUBLIC_GIT_URL: https://github.com/bitrix24/b24jssdk
+      NUXT_PUBLIC_GIT_URL: https://github.com/bx-shef/b24-js-sdk
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -364,7 +364,7 @@ jobs:
       NUXT_PUBLIC_SITE_URL: https://bitrix24.github.io
       NUXT_PUBLIC_BASE_URL: /b24jssdk
       NUXT_PUBLIC_CANONICAL_URL: https://bitrix24.github.io
-      NUXT_PUBLIC_GIT_URL: https://github.com/bitrix24/b24jssdk
+      NUXT_PUBLIC_GIT_URL: https://github.com/bx-shef/b24-js-sdk
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

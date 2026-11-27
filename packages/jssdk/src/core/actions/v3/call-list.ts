@@ -63,7 +63,7 @@ export class CallListV3 extends AbstractAction {
   /**
    * Fast data retrieval without counting the total number of records.
    *
-   * **Every option is documented on the [callList v3 page](https://bitrix24.github.io/b24jssdk/docs/working-with-the-rest-api/call-list-rest-api-ver3/),
+   * **Every option is documented on the [callList v3 page](https://b24-js-sdk.bx-shef.by/docs/actions/call-list/),
    * and each one on {@link ActionCallListV3}.** Not repeated here: nothing
    * watches a sentence in a comment, while the page is link-checked and its
    * code compiled on every CI run.
