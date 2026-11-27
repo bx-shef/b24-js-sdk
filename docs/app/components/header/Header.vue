@@ -22,8 +22,9 @@ function toggleChat() {
 const colorMode = useColorMode()
 
 function toggleMode() {
-  // The site starts in `edge-dark` (app.config.ts), which is a dark theme too.
-  colorMode.preference = colorMode.value === 'dark' || colorMode.value === 'edge-dark' ? 'light' : 'dark'
+  // The site's dark theme is `edge-dark` (app.config.ts): it carries the gradient
+  // background, so the toggle returns there rather than to plain `dark`.
+  colorMode.preference = colorMode.value === 'dark' || colorMode.value === 'edge-dark' ? 'light' : 'edge-dark'
 }
 // endregion ////
 

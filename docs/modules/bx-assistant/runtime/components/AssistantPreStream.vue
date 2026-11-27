@@ -44,7 +44,7 @@
       :highlighter="highlighter"
       :code="trimmedCode"
       :lang="lang"
-      :theme="colorMode.value === 'dark' || colorMode.value === 'edge-dark' ? 'material-theme-palenight' : 'material-theme-lighter'"
+      :theme="colorMode.value === 'dark' ? 'material-theme-palenight' : 'material-theme-lighter'"
     />
   </ProsePre -->
 </template>
