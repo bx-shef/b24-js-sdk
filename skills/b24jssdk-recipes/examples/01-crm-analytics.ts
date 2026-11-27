@@ -16,7 +16,7 @@ import {
   LogLevel,
   Logger,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import { baseStage, analyseFunnel, type DealRow, type StageStat } from '../lib/funnel'
 
 // pushHandler attaches a console sink at INFO level.

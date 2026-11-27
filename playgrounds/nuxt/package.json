@@ -1,5 +1,5 @@
 {
-  "name": "@bitrix24/b24jssdk-nuxt-playground",
+  "name": "@bxshefby/b24jssdk-nuxt-playground",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@bitrix24/b24jssdk": "workspace:*",
+    "@bxshefby/b24jssdk": "workspace:*",
     "@bitrix24/b24ui-nuxt": "^2.15.0",
     "nuxt": "^4.5.2"
   },

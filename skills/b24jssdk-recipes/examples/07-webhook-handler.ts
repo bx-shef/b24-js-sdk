@@ -32,7 +32,7 @@ import {
   LogLevel,
   Logger,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import express, { type Request, type Response } from 'express'
 import { safeEqual } from '../lib/crypto'
 

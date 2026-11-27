@@ -1,4 +1,4 @@
-# @bitrix24/b24jssdk-cli
+# @bxshefby/b24jssdk-cli
 
 CLI tool for generating test data and load testing in Bitrix24 via REST API.
 
@@ -10,7 +10,7 @@ This CLI utility is designed for developers and QA engineers who need to:
 - Perform load testing of Bitrix24 REST API integrations
 - Quickly populate a Bitrix24 instance with demo data
 
-The tool uses [@bitrix24/b24jssdk](https://bitrix24.github.io/b24jssdk/) for API communication and [citty](https://github.com/unjs/citty) for command-line interface.
+The tool uses [@bxshefby/b24jssdk](https://bitrix24.github.io/b24jssdk/) for API communication and [citty](https://github.com/unjs/citty) for command-line interface.
 
 ## Requirements
 
@@ -279,7 +279,7 @@ the task, so its title cannot carry the marker) and prints their IDs as one line
 `B24_TEST_IDS={…}`. Idempotent: a second run reuses what the first one made; nothing is deleted.
 
 ```bash
-pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures | tail -1 >> .env.test   # from the repository root
+pnpm --filter @bxshefby/b24jssdk-cli dev make test-fixtures | tail -1 >> .env.test   # from the repository root
 ```
 
 The webhook comes from the environment or `playgrounds/cli/.env` (not the root `.env.test`).
@@ -384,13 +384,13 @@ B24_HOOK=https://<portal>/rest/<userId>/<secret>/
 
 ```bash
 # one scenario at a time (recommended — cleaner output):
-pnpm --filter @bitrix24/b24jssdk-cli dev smoke-retry --scenario=A
-pnpm --filter @bitrix24/b24jssdk-cli dev smoke-retry --scenario=B --taskId=2016
-pnpm --filter @bitrix24/b24jssdk-cli dev smoke-retry --scenario=D
-pnpm --filter @bitrix24/b24jssdk-cli dev smoke-retry --scenario=E --total=500
+pnpm --filter @bxshefby/b24jssdk-cli dev smoke-retry --scenario=A
+pnpm --filter @bxshefby/b24jssdk-cli dev smoke-retry --scenario=B --taskId=2016
+pnpm --filter @bxshefby/b24jssdk-cli dev smoke-retry --scenario=D
+pnpm --filter @bxshefby/b24jssdk-cli dev smoke-retry --scenario=E --total=500
 
 # or all of them back-to-back:
-pnpm --filter @bitrix24/b24jssdk-cli dev smoke-retry --scenario=all --taskId=2016
+pnpm --filter @bxshefby/b24jssdk-cli dev smoke-retry --scenario=all --taskId=2016
 ```
 
 ### Running in CI (nightly)
@@ -439,11 +439,11 @@ grep '538a952b-1e87' playgrounds/cli/smoke-retry.log
 ### From the monorepo root:
 
 ```bash
-pnpm --filter @bitrix24/b24jssdk-cli dev make tasks --total=10
-pnpm --filter @bitrix24/b24jssdk-cli dev make products-sku --total=10
-pnpm --filter @bitrix24/b24jssdk-cli dev make contacts --total=10
-pnpm --filter @bitrix24/b24jssdk-cli dev make companies --total=10
-pnpm --filter @bitrix24/b24jssdk-cli dev make deals --total=10
+pnpm --filter @bxshefby/b24jssdk-cli dev make tasks --total=10
+pnpm --filter @bxshefby/b24jssdk-cli dev make products-sku --total=10
+pnpm --filter @bxshefby/b24jssdk-cli dev make contacts --total=10
+pnpm --filter @bxshefby/b24jssdk-cli dev make companies --total=10
+pnpm --filter @bxshefby/b24jssdk-cli dev make deals --total=10
 ```
 
 ### From `playgrounds/cli/`:

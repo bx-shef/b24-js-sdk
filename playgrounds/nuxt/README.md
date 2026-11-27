@@ -1,6 +1,6 @@
 # B24 JS SDK Nuxt Playground
 
-Nuxt playground app for testing `@bitrix24/b24jssdk-nuxt` integration.
+Nuxt playground app for testing `@bxshefby/b24jssdk-nuxt` integration.
 
 ## App Scopes
 

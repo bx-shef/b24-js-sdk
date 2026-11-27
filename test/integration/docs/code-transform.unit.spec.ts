@@ -15,7 +15,7 @@ import { join, resolve } from 'node:path'
 import { prepareCode, transformCodeForDocumentationSafe } from '../../../docs/app/utils/codeTransform'
 
 const example = (body: string) => [
-  'import { B24Hook } from \'@bitrix24/b24jssdk\'',
+  'import { B24Hook } from \'@bxshefby/b24jssdk\'',
   '',
   'export async function Action_demo() {',
   '  // region: start ////',
@@ -35,7 +35,7 @@ describe('transformCodeForDocumentationSafe (#139)', () => {
       '  const b = 2'
     ].join('\n')))
     expect(out).toBe([
-      'import { B24Hook } from \'@bitrix24/b24jssdk\'',
+      'import { B24Hook } from \'@bxshefby/b24jssdk\'',
       '',
       'const a = 1',
       'const b = 2'

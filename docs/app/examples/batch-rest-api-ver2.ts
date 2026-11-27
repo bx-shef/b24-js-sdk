@@ -1,5 +1,5 @@
-import type { AjaxResult, Result, BatchCommandsArrayUniversal } from '@bitrix24/b24jssdk'
-import { B24Hook, EnumCrmEntityTypeId, LoggerFactory, SdkError, AjaxError } from '@bitrix24/b24jssdk'
+import type { AjaxResult, Result, BatchCommandsArrayUniversal } from '@bxshefby/b24jssdk'
+import { B24Hook, EnumCrmEntityTypeId, LoggerFactory, SdkError, AjaxError } from '@bxshefby/b24jssdk'
 
 export async function Action_batchRestApiVer2() {
   // region: start ////

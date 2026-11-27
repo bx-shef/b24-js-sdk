@@ -1,5 +1,5 @@
 {
-  "name": "@bitrix24/b24jssdk-recipes",
+  "name": "@bxshefby/b24jssdk-recipes",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@bitrix24/b24jssdk": "link:../../packages/jssdk",
+    "@bxshefby/b24jssdk": "link:../../packages/jssdk",
     "express": "^5.3.0",
     "grammy": "^1.48.0",
     "node-cron": "^4.6.0",

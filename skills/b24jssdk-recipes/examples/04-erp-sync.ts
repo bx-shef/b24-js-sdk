@@ -18,7 +18,7 @@ import {
   LogLevel,
   Logger,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import cron from 'node-cron'
 
 const logger = Logger.create('ErpSync')

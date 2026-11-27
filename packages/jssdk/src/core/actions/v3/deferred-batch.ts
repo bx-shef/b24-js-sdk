@@ -150,7 +150,7 @@ export class DeferredBatchV3 extends AbstractAction {
    *     tuple nor a `{ method, params }` object.
    *
    * @example
-   * import type { BatchCommandsArrayUniversal } from '@bitrix24/b24jssdk'
+   * import type { BatchCommandsArrayUniversal } from '@bxshefby/b24jssdk'
    *
    * // 200 pages of 50 tasks: a list page cannot fail on a missing record the
    * // way a `get` per id can, and one failing command fails the whole job.

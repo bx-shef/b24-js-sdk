@@ -42,7 +42,7 @@ const unescapeEntities: Record<string, string> = {
  *
  * @example
  * ```ts
- * import { Text } from '@bitrix24/b24jssdk'
+ * import { Text } from '@bxshefby/b24jssdk'
  *
  * Text.getUuidRfc4122()          // '019323ac-8ace-725b-a3dc-6a7c333da066'
  * Text.getDateForLog()           // '2026-05-04 09:53:51'

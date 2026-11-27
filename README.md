@@ -1,8 +1,8 @@
-[![npm version](https://img.shields.io/npm/v/@bitrix24/b24jssdk)](https://www.npmjs.com/package/@bitrix24/b24jssdk)
-[![license](https://img.shields.io/npm/l/@bitrix24/b24jssdk)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/@bxshefby/b24jssdk)](https://www.npmjs.com/package/@bxshefby/b24jssdk)
+[![license](https://img.shields.io/npm/l/@bxshefby/b24jssdk)](./LICENSE)
 [![CI](https://github.com/bitrix24/b24jssdk/actions/workflows/ci.yml/badge.svg)](https://github.com/bitrix24/b24jssdk/actions/workflows/ci.yml)
 
-# @bitrix24/b24jssdk
+# @bxshefby/b24jssdk
 
 JavaScript/TypeScript SDK для REST API Битрикс24. Поддерживает три сценария использования:
 
@@ -13,13 +13,13 @@ JavaScript/TypeScript SDK для REST API Битрикс24. Поддержива
 ## Установка
 
 ```bash
-pnpm add @bitrix24/b24jssdk
+pnpm add @bxshefby/b24jssdk
 ```
 
 Для проектов на Nuxt:
 
 ```bash
-pnpm add @bitrix24/b24jssdk-nuxt
+pnpm add @bxshefby/b24jssdk-nuxt
 ```
 
 ## Быстрый старт
@@ -27,7 +27,7 @@ pnpm add @bitrix24/b24jssdk-nuxt
 ### B24Frame (iframe-приложение)
 
 ```ts
-import { initializeB24Frame } from '@bitrix24/b24jssdk'
+import { initializeB24Frame } from '@bxshefby/b24jssdk'
 
 const $b24 = await initializeB24Frame()
 
@@ -46,7 +46,7 @@ $b24.destroy()
 ### B24Hook (серверный вебхук)
 
 ```ts
-import { B24Hook } from '@bitrix24/b24jssdk'
+import { B24Hook } from '@bxshefby/b24jssdk'
 
 const $b24 = B24Hook.fromWebhookUrl(process.env.B24_HOOK!)
 
@@ -65,7 +65,7 @@ $b24.destroy()
 ### B24OAuth (приложение с OAuth)
 
 ```ts
-import { B24OAuth } from '@bitrix24/b24jssdk'
+import { B24OAuth } from '@bxshefby/b24jssdk'
 
 const $b24 = new B24OAuth(tokenData, appCredentials)
 

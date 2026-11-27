@@ -17,7 +17,7 @@ import {
   LogLevel,
   Logger,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 
 const logger = Logger.create('MassMail')
 logger.pushHandler(new ConsoleV2Handler(LogLevel.INFO, { useStyles: false }))

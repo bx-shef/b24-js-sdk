@@ -48,7 +48,7 @@ SDK предоставляет и `v2`, и `v3` в `$b24.actions`. **SDK бол�
 Все они — и два списочных обходчика `restApi:v2` — также бросают `JSSDK_ACTION_CURSOR_STALLED`, когда курсор, прочитанный со страницы, равен только что отправленному, и `JSSDK_ACTION_CURSOR_WENT_BACKWARDS`, когда он движется не в ту сторону (сервер, чередующий две страницы, никогда не повторяет только что отправленное значение, поэтому первый код этого не видит). И то и другое означает, что условие страницы потеряно, поэтому обход не может закончиться никогда; он отклоняется, а не собирает одни и те же страницы вечно. Обе проверки выполняются **до** остановки по концу данных, поэтому короткая повторяющаяся страница сообщается как ошибка, а не завершает обход усечённым, перекрывающимся результатом.
 
 ```ts
-import { B24Hook, FilterV3 } from '@bitrix24/b24jssdk'
+import { B24Hook, FilterV3 } from '@bxshefby/b24jssdk'
 
 const b24 = B24Hook.fromWebhookUrl('https://your-portal.bitrix24.ru/rest/1/SECRET')
 
@@ -72,7 +72,7 @@ await b24.actions.v3.callTail.make({
 ## `call.make` — одиночный вызов
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
 
 interface CrmItem { id: number; title: string; stageId: string }
 
@@ -174,8 +174,8 @@ for (const row of rows) {
 ## `batch.make` — форма массива
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
-import type { AjaxResult } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
+import type { AjaxResult } from '@bxshefby/b24jssdk'
 
 interface Contact { id: number; name: string }
 
@@ -235,7 +235,7 @@ JavaScript, — нет: SDK вместо этого предупреждает �
 ## `batch.make` — форма с именованным объектом
 
 ```ts
-import type { AjaxResult } from '@bitrix24/b24jssdk'
+import type { AjaxResult } from '@bxshefby/b24jssdk'
 interface Contact { id: number; name: string }
 interface Deal { id: number; title: string }
 
@@ -256,10 +256,10 @@ console.log(data.Deal.getData()!.result.item)
 
 Задайте `isHaltOnError: false`, чтобы собирать сбои отдельных команд. **Пакет v3 — «всё или ничего»** — частичные ошибки не показываются. Если какая-либо команда в пакете v3 падает, падает весь пакет (см. `README-AI.md`, «Limitations»).
 
-Чтобы передать вывод одной команды v3 в более позднюю, дайте ей псевдоним `as` и сошлитесь на него маркерами `BatchRefV3` (`import { BatchRefV3 } from '@bitrix24/b24jssdk'`): `BatchRefV3.ref('alias.item.id')` (одно значение) или `BatchRefV3.refArray('alias.id')` (поле, собранное по `items[]` псевдонима). Подстановку выполняет сервер.
+Чтобы передать вывод одной команды v3 в более позднюю, дайте ей псевдоним `as` и сошлитесь на него маркерами `BatchRefV3` (`import { BatchRefV3 } from '@bxshefby/b24jssdk'`): `BatchRefV3.ref('alias.item.id')` (одно значение) или `BatchRefV3.refArray('alias.id')` (поле, собранное по `items[]` псевдонима). Подстановку выполняет сервер.
 
 ```ts
-import type { AjaxResult } from '@bitrix24/b24jssdk'
+import type { AjaxResult } from '@bxshefby/b24jssdk'
 const response = await $b24.actions.v2.batch.make<{ item: Contact }>({
   calls: arrayOfCalls,
   options: { isHaltOnError: false, returnAjaxResult: true }
@@ -277,8 +277,8 @@ const failures = items.filter((r) => !r.isSuccess).map((r) => r.getErrorMessages
 Размер части — 50 согласно ограничению пакета Битрикс24. Действие делит и заново собирает:
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
-import type { BatchCommandsArrayUniversal } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
+import type { BatchCommandsArrayUniversal } from '@bxshefby/b24jssdk'
 
 const calls: BatchCommandsArrayUniversal = ids.map((id) =>
   ['crm.item.get', { entityTypeId: EnumCrmEntityTypeId.deal, id }] as const
@@ -302,7 +302,7 @@ const items = data.map((row) => row.item)
 `make()` делает всё это и завершается со строками в порядке команд:
 
 ```ts
-import type { BatchCommandsArrayUniversal } from '@bitrix24/b24jssdk'
+import type { BatchCommandsArrayUniversal } from '@bxshefby/b24jssdk'
 
 // List pages, not a `get` per id: one failing command fails the whole job.
 const calls: BatchCommandsArrayUniversal = Array.from({ length: 200 }, (_, i) =>
@@ -340,8 +340,8 @@ const titles = response.getData()!.flatMap(page => page.items.map(task => task.t
 В v3 `limit` — это **запрос**: каждый метод применяет собственный максимум, и короткая страница — не конец данных. Измерено — `tasks.task.list` отвечает 50 при `limit` 51, 100 и 1000, имея 60 доступных строк, и ничто в ответе не сообщает, что значение было ограничено. Обходчики терпимы к такому ограничению (они останавливаются на самой большой странице, которую вернул сервер); ручная постраничная выборка через `call.make` — нет.
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
-import { Text } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
+import { Text } from '@bxshefby/b24jssdk'
 
 interface CrmItem { id: number; title: string }
 
@@ -437,7 +437,7 @@ await $b24.actions.v2.callList.make({ method: 'user.get', params: { filter: { US
 Асинхронный итератор, отдающий части. Та же форма, что у `callList.make`, плюс необязательный `limit` для v3.
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
 const generator = $b24.actions.v2.fetchList.make<CrmItem>({
   method: 'crm.item.list',
   params: {
@@ -457,7 +457,7 @@ for await (const chunk of generator) {
 Для v3:
 
 ```ts
-import { Text } from '@bitrix24/b24jssdk'
+import { Text } from '@bxshefby/b24jssdk'
 const generator = $b24.actions.v3.fetchList.make<EventLogItem>({
   method: 'main.eventlog.list',
   params: {
@@ -470,7 +470,7 @@ const generator = $b24.actions.v3.fetchList.make<EventLogItem>({
 })
 ```
 
-> **Обратите внимание на различие фильтров v2 и v3.** v2 использует объекты с ключами-префиксами; v3 — массивы троек `[field, op, value]` — для вложенных групп стройте их типизированным помощником `FilterV3` (`import { FilterV3 } from '@bitrix24/b24jssdk'`). См. навык `b24jssdk-filtering`.
+> **Обратите внимание на различие фильтров v2 и v3.** v2 использует объекты с ключами-префиксами; v3 — массивы троек `[field, op, value]` — для вложенных групп стройте их типизированным помощником `FilterV3` (`import { FilterV3 } from '@bxshefby/b24jssdk'`). См. навык `b24jssdk-filtering`.
 
 ## Шпаргалка по `idKey`, `cursorIdKey` и `customKeyForResult`
 
@@ -530,7 +530,7 @@ res.getQuery()              // { method, params, requestId }
 `isMore()` / `hasMore()` / `getTotal()` / `getNext()` / `fetchNext()` **не** объявлены устаревшими и **не** исчезают в `3.0.0`. Они работают напрямую с полями конверта v2 `next` / `total`.
 
 ```ts
-import type { AjaxResult } from '@bitrix24/b24jssdk'
+import type { AjaxResult } from '@bxshefby/b24jssdk'
 declare const response: AjaxResult<{ ID: string }[]>
 const total: number = response.getTotal()   // restApi:v2 only
 const more: boolean = response.isMore()     // restApi:v2 only
@@ -549,7 +549,7 @@ const more: boolean = response.isMore()     // restApi:v2 only
 `result` отдельной команды внутри пакета может законно быть `null` (например, `im.chat.get` с не подходящими параметрами — см. issue #23). Типизируйте обобщение как `T | null` и обрабатывайте ветку null — SDK больше не приводит его к `{}`.
 
 ```ts
-import type { AjaxResult } from '@bitrix24/b24jssdk'
+import type { AjaxResult } from '@bxshefby/b24jssdk'
 const response = await $b24.actions.v2.batch.make<{ result: ChatInfo | null }>({
   calls: { Chat: ['im.chat.get', { chat_id: 999999 }] },
   options: { returnAjaxResult: true }
@@ -564,7 +564,7 @@ if (chat === null) {
 ## Обработка ошибок — краткий шаблон
 
 ```ts
-import { AjaxError, SdkError } from '@bitrix24/b24jssdk'
+import { AjaxError, SdkError } from '@bxshefby/b24jssdk'
 
 async function loadDeal() {
   try {

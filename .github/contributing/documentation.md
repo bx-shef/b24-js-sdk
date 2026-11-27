@@ -153,7 +153,7 @@ Source for the AuthActions surface used by `B24Frame`.
 ````md
 ::code-example
 ```ts
-import { B24Hook } from '@bitrix24/b24jssdk'
+import { B24Hook } from '@bxshefby/b24jssdk'
 
 // Read the URL from env / config; never hard-code the webhook secret.
 const b24 = B24Hook.fromWebhookUrl(
@@ -225,7 +225,7 @@ B24_HOOK='https://<portal>/rest/<userId>/<secret>/' V3_SNAPSHOT_KIND=cloud \
 Файл лежит в `docs/app/examples/<name>.ts` и выглядит так:
 
 ```ts
-import { B24Hook } from '@bitrix24/b24jssdk'
+import { B24Hook } from '@bxshefby/b24jssdk'
 
 export async function Action_callRestApiVer2() {
   // region: start ////

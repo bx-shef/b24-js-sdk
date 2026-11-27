@@ -10,8 +10,8 @@
 2. **Домен сайта документации.** Нужен для `DOMAIN` в `.env` сервера и переменной репозитория
    `SITE_URL` (sitemap, canonical, og) — `deploy/README.md`.
 3. **Сервер.** На какой хост ставить (тот же, где nginx-proxy соседей?), кто поднимает compose.
-4. **Имя npm-пакета** и публикуем ли SDK в npm под своим именем вообще (сейчас публикация
-   выключена, пакеты называются `@bitrix24/b24jssdk*`).
+4. **Включить выпуск в npm:** Trusted Publisher у `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt` и
+   переменная `NPM_RELEASE=true` — шаги в `RELEASING.md`, раздел «Форк bx-shef/b24-js-sdk».
 5. **Ключ DeepSeek** — в `.env` сервера (`DEEPSEEK_API_KEY`, `ASSISTANT_ENABLED=true`), не в
    репозиторий и не в чат.
 6. **Ветки, которые сессия удалить не может:** `release-please--branches--main--components--b24jssdk-main`,
@@ -56,3 +56,8 @@
   адрес `offer@bx-shef.by` в «Форма не загрузилась?» остаётся; кнопки в основном меню шапки нет.
 - 2026-11-26 — Сайт только показывает примеры, без запуска на портале (PR #43).
 - 2026-11-26 — Записи для живых тестов SDK — команда плейграунда `make test-fixtures`, ID — в `B24_TEST_IDS`.
+- 2026-11-27 — Выпуск SDK: пакеты `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt` (scope владельца в npm), первая
+  версия `3.1.0` (API как у `@bitrix24/b24jssdk@3.0.0`), в документации и примерах — новое имя, глобальная
+  переменная UMD `B24Js` прежняя; публикация — доверенная (OIDC), включается `NPM_RELEASE=true`. Старые пакеты
+  `@bxshefby/*` 2024 года — пометить устаревшими. UI-библиотека — `@bxshefby/b24ui-nuxt` с `2.16.0`.
+- 2026-11-27 — Нестабильные живые тесты (deferredBatch, BatchByChunkV2) — issue #48, после выпуска.

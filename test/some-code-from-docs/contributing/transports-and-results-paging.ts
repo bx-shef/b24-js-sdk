@@ -17,8 +17,8 @@
  * Prerequisite: pnpm run dev:prepare (builds dist/ and its type declarations).
  */
 
-import type { TypeB24 } from '@bitrix24/b24jssdk'
-import { ApiVersion } from '@bitrix24/b24jssdk'
+import type { TypeB24 } from '@bxshefby/b24jssdk'
+import { ApiVersion } from '@bxshefby/b24jssdk'
 
 export async function pagingV2Example(b24: TypeB24) {
   const result = await b24.actions.v2.call.make({

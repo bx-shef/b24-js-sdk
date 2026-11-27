@@ -146,7 +146,7 @@ export interface RestrictionParams {
    *
    * @example
    * ```ts
-   * import { ParamsFactory } from '@bitrix24/b24jssdk'
+   * import { ParamsFactory } from '@bxshefby/b24jssdk'
    *
    * await $b24.setRestrictionManagerParams({
    *   ...ParamsFactory.getDefault(),

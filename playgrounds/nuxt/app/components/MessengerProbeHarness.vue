@@ -24,8 +24,8 @@
  * pretending otherwise is what broke the first run.
  */
 import { onMounted, onBeforeUnmount, ref } from 'vue'
-import type { B24Frame } from '@bitrix24/b24jssdk'
-import { LoggerFactory } from '@bitrix24/b24jssdk'
+import type { B24Frame } from '@bxshefby/b24jssdk'
+import { LoggerFactory } from '@bxshefby/b24jssdk'
 
 const { $initializeB24Frame } = useNuxtApp()
 const $logger = LoggerFactory.createForBrowserDevelopment('[playground] MessengerProbe')

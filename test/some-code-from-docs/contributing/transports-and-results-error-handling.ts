@@ -11,8 +11,8 @@
  * Prerequisite: pnpm run dev:prepare (builds dist/ and its type declarations).
  */
 
-import type { TypeB24 } from '@bitrix24/b24jssdk'
-import { AjaxError, SdkError } from '@bitrix24/b24jssdk'
+import type { TypeB24 } from '@bxshefby/b24jssdk'
+import { AjaxError, SdkError } from '@bxshefby/b24jssdk'
 
 export async function callAndHandleResult(b24: TypeB24) {
   const result = await b24.actions.v3.call.make({

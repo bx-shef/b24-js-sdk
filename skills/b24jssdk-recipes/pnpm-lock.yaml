@@ -11,7 +11,7 @@ importers:
 
   .:
     dependencies:
-      '@bitrix24/b24jssdk':
+      '@bxshefby/b24jssdk':
         specifier: link:../../packages/jssdk
         version: link:../../packages/jssdk
       express:

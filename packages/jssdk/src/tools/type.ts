@@ -29,7 +29,7 @@ interface FileLike extends BlobLike {
  *
  * @example
  * ```ts
- * import { Type } from '@bitrix24/b24jssdk'
+ * import { Type } from '@bxshefby/b24jssdk'
  *
  * function process(value: unknown) {
  *   if (Type.isStringFilled(value)) {

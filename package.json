@@ -1,18 +1,18 @@
 {
-  "name": "@bitrix24/b24jssdk-main",
+  "name": "@bxshefby/b24jssdk-main",
   "description": "Bitrix24 REST API JS SDK",
   "version": "3.0.0",
   "author": "Bitrix",
   "packageManager": "pnpm@12.8.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitrix24/b24jssdk.git"
+    "url": "git+https://github.com/bx-shef/b24-js-sdk.git"
   },
-  "homepage": "https://bitrix24.github.io/b24jssdk/",
+  "homepage": "https://github.com/bx-shef/b24-js-sdk#readme",
   "type": "module",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bitrix24/b24jssdk/issues"
+    "url": "https://github.com/bx-shef/b24-js-sdk/issues"
   },
   "staring": {
     "url": "https://github.com/bitrix24/b24jssdk"
@@ -84,7 +84,7 @@
     "release:bump": "node scripts/bump-version.mjs"
   },
   "devDependencies": {
-    "@bitrix24/b24jssdk": "workspace:*",
+    "@bxshefby/b24jssdk": "workspace:*",
     "@conventional-commits/parser": "0.4.1",
     "@nuxt/eslint-config": "^1.17.0",
     "@types/express": "^5.0.6",

@@ -16,7 +16,7 @@ import {
   LogLevel,
   Logger,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import { baseStage } from '../lib/funnel'
 import { toPortalDateTime } from '../lib/portal-datetime'
 

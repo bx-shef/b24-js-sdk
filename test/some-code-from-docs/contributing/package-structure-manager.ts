@@ -6,8 +6,8 @@
  * Prerequisite: pnpm run dev:prepare (builds dist/ and its type declarations).
  */
 
-import type { AjaxResult, LoggerInterface, TypeB24 } from '@bitrix24/b24jssdk'
-import { LoggerFactory, SdkError } from '@bitrix24/b24jssdk'
+import type { AjaxResult, LoggerInterface, TypeB24 } from '@bxshefby/b24jssdk'
+import { LoggerFactory, SdkError } from '@bxshefby/b24jssdk'
 
 export class MyManager {
   protected _b24: TypeB24

@@ -188,7 +188,7 @@ jobs:
         # Includes the four block gates — ```ts fences in docs/content/docs/**,
         # in skills/** and .github/contributing/** (#435), plus the JSDoc @example
         # bodies in packages/jssdk/src/** (#439). All compile against
-        # @bitrix24/b24jssdk, so they run after dev:prepare, when dist/ types are
+        # @bxshefby/b24jssdk, so they run after dev:prepare, when dist/ types are
         # available.
         run: pnpm run typecheck
 
@@ -303,8 +303,8 @@ jobs:
         run: |
           npx --yes publint@0.3.21
           npx --yes @arethetypeswrong/cli@0.18.4 --pack .
-          node -e "const m = require('@bitrix24/b24jssdk'); if (typeof m.B24Hook !== 'function') { console.error('CJS require did not expose B24Hook'); process.exit(1) } console.log('CJS require OK')"
-          node --input-type=module -e "const m = await import('@bitrix24/b24jssdk'); if (typeof m.B24Hook !== 'function') { console.error('ESM import did not expose B24Hook'); process.exit(1) } console.log('ESM import OK')"
+          node -e "const m = require('@bxshefby/b24jssdk'); if (typeof m.B24Hook !== 'function') { console.error('CJS require did not expose B24Hook'); process.exit(1) } console.log('CJS require OK')"
+          node --input-type=module -e "const m = await import('@bxshefby/b24jssdk'); if (typeof m.B24Hook !== 'function') { console.error('ESM import did not expose B24Hook'); process.exit(1) } console.log('ESM import OK')"
           # Guard the #258 contract: the CJS build must keep its deps EXTERNAL
           # (require('axios') etc.), not inline them like the UMD bundle. A flip
           # of inlineDependencies in build.config.ts would silently regress this.
@@ -321,7 +321,7 @@ jobs:
 
       - name: Build (jssdk-nuxt)
         # Requires packages/jssdk-nuxt/.nuxt/tsconfig.json (from artifact) to resolve
-        # tsconfig "extends". jssdk must be built first so @bitrix24/b24jssdk resolves.
+        # tsconfig "extends". jssdk must be built first so @bxshefby/b24jssdk resolves.
         run: pnpm --filter ./packages/jssdk-nuxt build
 
       - name: Verify jssdk-nuxt version token was replaced (#119)

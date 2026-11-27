@@ -1,10 +1,10 @@
 // Shared guard for the contributing/docs typecheck scripts (#213).
 //
 // Both scripts type-check fixtures/snippets that import the workspace package
-// `@bitrix24/b24jssdk`, whose types resolve to packages/jssdk/dist/esm/index.d.ts
+// `@bxshefby/b24jssdk`, whose types resolve to packages/jssdk/dist/esm/index.d.ts
 // — a file that only exists after `pnpm run dev:prepare` builds the SDK. On a
 // fresh clone dist/ is absent and bare `tsc` fails with a cryptic
-// `TS2307: Cannot find module '@bitrix24/b24jssdk'` (#109). This centralises the
+// `TS2307: Cannot find module '@bxshefby/b24jssdk'` (#109). This centralises the
 // marker path + the actionable message so the two scripts can't drift apart.
 //
 // CI always runs dev:prepare before typecheck, so this only ever helps local runs.
@@ -36,7 +36,7 @@ const SDK_TYPES = resolve(ROOT, 'packages/jssdk/dist/esm/index.d.ts')
 export function requireSdkTypes(label) {
   if (existsSync(SDK_TYPES)) return
   process.stderr.write(
-    `\n[${label}] @bitrix24/b24jssdk types not found`
+    `\n[${label}] @bxshefby/b24jssdk types not found`
     + ' (packages/jssdk/dist/esm/index.d.ts).\n'
     + 'Run  pnpm run dev:prepare  first to build the SDK types, then re-run.\n\n'
   )

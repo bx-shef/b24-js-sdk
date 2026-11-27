@@ -1,4 +1,4 @@
-import type { ISODate } from '@bitrix24/b24jssdk'
+import type { ISODate } from '@bxshefby/b24jssdk'
 
 export interface TaskFields {
   title: string

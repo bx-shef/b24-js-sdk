@@ -8,7 +8,7 @@
  *
  * The line drawn here, which is the whole design of this file:
  *
- *  - A REAL export of `@bitrix24/b24jssdk` is NEVER declared here. If a fence
+ *  - A REAL export of `@bxshefby/b24jssdk` is NEVER declared here. If a fence
  *    uses `Text`, `AjaxResult` or `EnumCrmEntityTypeId`, the fence must import
  *    it — an agent copying that snippet needs the import, and hiding it behind
  *    an ambient would make the gate certify code that does not run. The first
@@ -62,16 +62,16 @@ declare function main(): Promise<void>
 // The live SDK client, as in `.docs-typecheck/globals.d.ts`. `let`, not `const`:
 // frame snippets assign to it via `$b24 = await initializeB24Frame()`, which a
 // `declare const` would reject with TS2588.
-declare let $b24: import('@bitrix24/b24jssdk').B24Frame
+declare let $b24: import('@bxshefby/b24jssdk').B24Frame
 
 // `helper` and `logger` are built in an earlier fence on the same page and then
 // used across several later ones. Same concession `.docs-typecheck` makes for
 // `$b24`: the alternative is repeating the constructor in every fragment, which
 // buries the call being explained.
-declare const helper: ReturnType<typeof import('@bitrix24/b24jssdk').useB24Helper> extends infer H
+declare const helper: ReturnType<typeof import('@bxshefby/b24jssdk').useB24Helper> extends infer H
   ? H extends { getB24Helper: () => infer M } ? M : any
   : any
-declare const logger: import('@bitrix24/b24jssdk').LoggerInterface
+declare const logger: import('@bxshefby/b24jssdk').LoggerInterface
 
 // Destructured from `useB24Helper()` in the page's first fence.
 declare const usePullClient: () => void

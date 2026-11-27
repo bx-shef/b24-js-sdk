@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@bitrix24/b24jssdk-docs",
+  "name": "@bxshefby/b24jssdk-docs",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -15,8 +15,8 @@
     "@ai-sdk/mcp": "^2.0.103",
     "@ai-sdk/vue": "^4.0.179",
     "@bitrix24/b24icons-vue": "^2.0.8",
-    "@bitrix24/b24jssdk": "workspace:*",
-    "@bitrix24/b24jssdk-nuxt": "workspace:*",
+    "@bxshefby/b24jssdk": "workspace:*",
+    "@bxshefby/b24jssdk-nuxt": "workspace:*",
     "@bitrix24/b24ui-nuxt": "^2.15.0",
     "@comark/vue": "^0.7.0",
     "@nuxt/a11y": "1.0.0-alpha.1",

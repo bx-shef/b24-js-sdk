@@ -26,7 +26,7 @@ export default defineCachedEventHandler(async (event) => {
 
 ## About
 
-The Bitrix24 JS SDK (\`@bitrix24/b24jssdk\`) is a free and open-source JavaScript/TypeScript library for the Bitrix24 REST API. It runs in the browser inside Bitrix24 applications (B24Frame), on the server through inbound webhooks (B24Hook) or OAuth server apps (B24OAuth), and in any modern JavaScript runtime.
+The Bitrix24 JS SDK (\`@bxshefby/b24jssdk\`) is a free and open-source JavaScript/TypeScript library for the Bitrix24 REST API. It runs in the browser inside Bitrix24 applications (B24Frame), on the server through inbound webhooks (B24Hook) or OAuth server apps (B24OAuth), and in any modern JavaScript runtime.
 
 - Three authentication modes: B24Frame (embedded apps), B24Hook (webhooks), B24OAuth (server apps)
 - REST API v2 and v3: single calls, list iteration, and batch requests

@@ -1,6 +1,37 @@
-# Выпуск релиза `@bitrix24/b24jssdk`
+# Выпуск релиза `@bxshefby/b24jssdk`
 
-<sub>Последняя сверка: 2026-08-29.</sub>
+<sub>Последняя сверка: 2026-11-27.</sub>
+
+## Форк bx-shef/b24-js-sdk: выпуск `@bxshefby/*`
+
+Пакеты форка — `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt` (scope `@bxshefby` — npm-аккаунт
+владельца). Версии продолжают линию bitrix24: первый выпуск — `3.1.0`, API как у `@bitrix24/b24jssdk@3.0.0`
+(release-please считает изменения с коммита их выпуска `3.0.0` — `bootstrap-sha` в
+`release-please-config.json`). Порядок выпуска ниже — тот же, что у родителя; включается он один раз:
+
+1. **Trusted Publisher на npmjs.com** — в настройках каждого пакета (*Settings → Trusted Publisher →
+   GitHub Actions*):
+
+   | Поле | `@bxshefby/b24jssdk` | `@bxshefby/b24jssdk-nuxt` |
+   | --- | --- | --- |
+   | Organization or user | `bx-shef` | `bx-shef` |
+   | Repository | `b24-js-sdk` | `b24-js-sdk` |
+   | Workflow filename | `npm-publish-js-sdk.yml` | `npm-publish-js-sdk-nuxt.yml` |
+   | Environment name | пусто | пусто |
+
+   Токен npm в секретах не нужен: публикация идёт по OIDC с `--provenance`, поэтому `repository.url` в
+   `package.json` пакетов указывает на `bx-shef/b24-js-sdk`.
+2. **Переменная репозитория `NPM_RELEASE=true`** (*Settings → Secrets and variables → Actions →
+   Variables*). Без неё release-please и обе публикации не запускаются: так форк не выпускал ничего, пока
+   имена и версия не были решены (`scripts/__tests__/fork-guards.test.mjs`).
+3. Release PR `chore(main): release 3.1.0` откроется на следующем push в `main`. Слить его, затем вручную
+   запустить оба workflow публикации (см. [Последний шаг — вручную](#последний-шаг--вручную)).
+4. После выхода `3.1.0` — пометить устаревшими старые пакеты владельца (с его компьютера, после `npm login`):
+   `@bxshefby/b24jssdk@<1`, `@bxshefby/b24jssdk-nuxt@<1`, `@bxshefby/jssdk`, `@bxshefby/ddd-jssdk`
+   (`npm deprecate "<пакет>[@<1]" "<куда переходить>"`).
+
+Пользователям `@bitrix24/b24jssdk` переход описан на сайте — «Начало работы → Миграция →
+с @bitrix24/b24jssdk».
 
 > **Релизы переходят на release-please (#347).** Обычный релиз выглядит так:
 > просмотрите постоянно открытый release PR, слейте его, затем **запустите два
@@ -182,8 +213,8 @@ release-please не находит предыдущего релиза; здес
 > выпуска релиза и ведёт ли себя `Release-As:` так, как описано здесь, — ни то ни
 > другое в этом репозитории не проверялось.
 
-Как выпустить релиз двух публикуемых пакетов — `@bitrix24/b24jssdk` (ядро SDK) и
-`@bitrix24/b24jssdk-nuxt` (модуль Nuxt). Они выходят синхронно с **одной общей
+Как выпустить релиз двух публикуемых пакетов — `@bxshefby/b24jssdk` (ядро SDK) и
+`@bxshefby/b24jssdk-nuxt` (модуль Nuxt). Они выходят синхронно с **одной общей
 версией**; независимого релиза каждого из пакетов нет.
 
 Публикацию выполняют два парных workflow —
@@ -231,8 +262,8 @@ git push origin main
   - **Разовая настройка администратором:** у каждого пакета в npm (Settings →
     Publishing → Trusted Publishers) должны быть указаны `bitrix24/b24jssdk` и
     **соответствующее имя файла workflow** — `npm-publish-js-sdk.yml` для
-    `@bitrix24/b24jssdk`, `npm-publish-js-sdk-nuxt.yml` для
-    `@bitrix24/b24jssdk-nuxt`, с **пустым Environment** (в jobs публикации
+    `@bxshefby/b24jssdk`, `npm-publish-js-sdk-nuxt.yml` для
+    `@bxshefby/b24jssdk-nuxt`, с **пустым Environment** (в jobs публикации
     `environment:` не задан). Если имя файла или environment не совпадают, обмен
     OIDC-токена завершается ошибкой 404 (`ERR_PNPM_AUTH_TOKEN_EXCHANGE`), и шаг
     публикации откатывается на неаутентифицированный `PUT`, который npm
@@ -336,16 +367,16 @@ git push origin main
    существующего тега.)
 
 6. **Следите за запусками.** Откройте Actions. Релиз запускает **оба** workflow —
-   **NPM publish JS SDK 🚀** (`@bitrix24/b24jssdk`) и **NPM publish JS SDK Nuxt 🚀**
-   (`@bitrix24/b24jssdk-nuxt`). Каждый прогоняет CI, затем свой job `publish`. Оба
+   **NPM publish JS SDK 🚀** (`@bxshefby/b24jssdk`) и **NPM publish JS SDK Nuxt 🚀**
+   (`@bxshefby/b24jssdk-nuxt`). Каждый прогоняет CI, затем свой job `publish`. Оба
    должны стать зелёными; если один упадёт, пакеты в npm могут разойтись по
    версиям (см. [Если что-то пошло не так](#если-что-то-пошло-не-так)).
 
 7. **Проверьте в npm.**
 
    ```bash
-   npm view @bitrix24/b24jssdk version
-   npm view @bitrix24/b24jssdk-nuxt version
+   npm view @bxshefby/b24jssdk version
+   npm view @bxshefby/b24jssdk-nuxt version
    ```
 
    Оба должны вернуть `<version>`. (Для пре-релиза `version` показывает только тег
@@ -366,10 +397,10 @@ workflow:
 | Job | Что делает |
 | --- | --- |
 | `ci` | Переиспользует [`ci.yml`](.github/workflows/ci.yml) — один полный прогон CI. Красный CI останавливает публикацию. |
-| `publish` | Публикует пакет (`@bitrix24/b24jssdk` или `@bitrix24/b24jssdk-nuxt`) через OIDC после проверок ниже. |
+| `publish` | Публикует пакет (`@bxshefby/b24jssdk` или `@bxshefby/b24jssdk-nuxt`) через OIDC после проверок ниже. |
 
 Оба workflow запускаются одним событием релиза и идут параллельно. Опубликованный
-модуль Nuxt зависит от `@bitrix24/b24jssdk` выпускаемой версии, поэтому в краткий
+модуль Nuxt зависит от `@bxshefby/b24jssdk` выпускаемой версии, поэтому в краткий
 промежуток до завершения публикации ядра внешний `npm install` модуля Nuxt может
 не найти подходящую версию ядра — содержимое пакета при этом корректно (сборка
 находит ядро через workspace). В npm нет транзакций между пакетами, так что этот
@@ -415,7 +446,7 @@ workflow:
 - [ ] *(Необязательная уборка)* Чтобы вернуть публикацию в один `release.yml`,
       сначала обновите **имя файла workflow Trusted Publisher** в npm на
       `release.yml` (Environment пустой) для **обоих** пакетов —
-      `@bitrix24/b24jssdk` и `@bitrix24/b24jssdk-nuxt`, затем слейте два файла
+      `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt`, затем слейте два файла
       `npm-publish-*.yml` в один. Без предварительной правки на стороне npm обмен
       OIDC-токена объединённого workflow завершится ошибкой 404.
 - [ ] Добавить **второго релизера на GitHub** (push в `main` + создание релизов).

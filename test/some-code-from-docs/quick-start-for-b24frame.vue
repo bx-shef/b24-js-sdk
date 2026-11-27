@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { B24Frame, ISODate } from '@bitrix24/b24jssdk'
+import type { B24Frame, ISODate } from '@bxshefby/b24jssdk'
 import type { DateTime } from 'luxon'
 import { onMounted, onUnmounted } from 'vue'
-import { initializeB24Frame, LoggerFactory, EnumCrmEntityTypeId, Text } from '@bitrix24/b24jssdk'
+import { initializeB24Frame, LoggerFactory, EnumCrmEntityTypeId, Text } from '@bxshefby/b24jssdk'
 
 const devMode = typeof import.meta !== 'undefined' && (import.meta.env?.DEV || import.meta.dev)
 const $logger = LoggerFactory.createForBrowser('B24/jsSdk::vue', devMode)

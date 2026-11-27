@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed } from 'vue'
-import type { B24Frame, BatchNamedCommandsUniversal } from '@bitrix24/b24jssdk'
-import { B24LangList, LoadDataType, LoggerFactory, useB24Helper, SdkError, AjaxError } from '@bitrix24/b24jssdk'
+import type { B24Frame, BatchNamedCommandsUniversal } from '@bxshefby/b24jssdk'
+import { B24LangList, LoadDataType, LoggerFactory, useB24Helper, SdkError, AjaxError } from '@bxshefby/b24jssdk'
 import SimpleProfile from '~/components/SimpleProfile.vue'
 import SimpleAppInfo from '~/components/SimpleAppInfo.vue'
 import IssueReproHarness from '~/components/IssueReproHarness.vue'

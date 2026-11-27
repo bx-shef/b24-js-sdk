@@ -20,7 +20,7 @@ function initConfig(formatTypeParam: string): BuildConfig {
 
   const baseConfig = {
     failOnWarn: false,
-    name: `@bitrix24/b24jssdk-${formatType}`,
+    name: `@bxshefby/b24jssdk-${formatType}`,
     outDir,
     rollup: {
       esbuild: {
@@ -226,7 +226,7 @@ function initConfig(formatTypeParam: string): BuildConfig {
 
 function getBanner(): string {
   return `/**
- * @package @bitrix24/b24jssdk
+ * @package @bxshefby/b24jssdk
  * @version ${SDK_VERSION}
  * @copyright (c) ${COPYRIGHT_DATE} Bitrix24
  * @license MIT

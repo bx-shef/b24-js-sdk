@@ -12,10 +12,10 @@
 // constructor — so an example that calls `Text.numberFormat(...)` without
 // repeating the import silently resolves to the wrong one. 26 of the 28
 // property errors in the first run were this collision.
-declare const Text: import('@bitrix24/b24jssdk').TextManager
+declare const Text: import('@bxshefby/b24jssdk').TextManager
 
 // The live client. `B24Frame` rather than `B24Hook` so that frame-only members
 // (.placement, .slider, .dialog, .parent, .options) resolve in short snippets;
 // examples that construct their own client shadow this with a local const.
-declare const b24: import('@bitrix24/b24jssdk').B24Frame
-declare const $b24: import('@bitrix24/b24jssdk').B24Frame
+declare const b24: import('@bxshefby/b24jssdk').B24Frame
+declare const $b24: import('@bxshefby/b24jssdk').B24Frame

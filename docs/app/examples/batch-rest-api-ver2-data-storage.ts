@@ -1,5 +1,5 @@
-import type { BatchNamedCommandsUniversal } from '@bitrix24/b24jssdk'
-import { B24Hook, LoggerFactory, SdkError, AjaxError } from '@bitrix24/b24jssdk'
+import type { BatchNamedCommandsUniversal } from '@bxshefby/b24jssdk'
+import { B24Hook, LoggerFactory, SdkError, AjaxError } from '@bxshefby/b24jssdk'
 
 export async function Action_batchRestApiVer2DataStorage() {
   // region: start ////

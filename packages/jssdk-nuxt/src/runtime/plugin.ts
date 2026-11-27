@@ -1,4 +1,4 @@
-import { initializeB24Frame } from '@bitrix24/b24jssdk'
+import { initializeB24Frame } from '@bxshefby/b24jssdk'
 import { defineNuxtPlugin } from '#app'
 
 /**

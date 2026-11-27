@@ -22,7 +22,7 @@ import {
   LogLevel,
   Logger,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import OpenAI from 'openai'
 import { toPortalDateTime } from '../lib/portal-datetime'
 

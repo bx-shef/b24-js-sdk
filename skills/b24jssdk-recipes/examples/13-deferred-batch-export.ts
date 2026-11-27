@@ -38,7 +38,7 @@ import {
   type BatchCommandsArrayUniversal,
   type DeferredBatchJob,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 
 const logger = Logger.create('DeferredExport')
 logger.pushHandler(new ConsoleV2Handler(LogLevel.INFO, { useStyles: false }))

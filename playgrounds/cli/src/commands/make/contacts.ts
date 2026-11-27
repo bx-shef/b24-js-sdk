@@ -1,5 +1,5 @@
-import { EnumCrmEntityTypeId, SdkError, Result } from '@bitrix24/b24jssdk'
-import type { GetPayload } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId, SdkError, Result } from '@bxshefby/b24jssdk'
+import type { GetPayload } from '@bxshefby/b24jssdk'
 import { defineCommand } from 'citty'
 import 'dotenv/config'
 import type { Language, NamesByLanguage, FmField, ContactFields, CrmItemAddResult } from '../../types'
@@ -12,7 +12,7 @@ import { pickRandom, generatePhoneNumber, showProgress, createB24Client, icon } 
  * Supports multi-language name generation, realistic email patterns,
  * and handles batch processing via the Bitrix24 JSSDK.
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev make contacts --total=50 --assignedById=1
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev make contacts --total=50 --assignedById=1
  */
 
 // Arrays for generating realistic contact names

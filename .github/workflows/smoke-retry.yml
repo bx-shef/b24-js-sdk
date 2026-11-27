@@ -67,7 +67,7 @@ jobs:
         if: steps.guard.outputs.skip == 'false'
         run: pnpm install --frozen-lockfile
 
-      - name: Build SDK (so the CLI can import @bitrix24/b24jssdk)
+      - name: Build SDK (so the CLI can import @bxshefby/b24jssdk)
         if: steps.guard.outputs.skip == 'false'
         run: pnpm run package-jssdk:build
 
@@ -78,7 +78,7 @@ jobs:
           # `inputs.*` is empty on a schedule run, so fall back to the nightly defaults.
           SCENARIO: ${{ inputs.scenario || 'all' }}
           TOTAL: ${{ inputs.total || '200' }}
-        run: pnpm --filter @bitrix24/b24jssdk-cli dev smoke-retry --scenario="$SCENARIO" --total="$TOTAL" --logFile=smoke-retry.log
+        run: pnpm --filter @bxshefby/b24jssdk-cli dev smoke-retry --scenario="$SCENARIO" --total="$TOTAL" --logFile=smoke-retry.log
 
       - name: Upload full trace log
         if: ${{ always() && steps.guard.outputs.skip == 'false' }}

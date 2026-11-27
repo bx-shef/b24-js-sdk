@@ -3,7 +3,7 @@
 <sub>Последняя сверка: 2026-08-29.</sub>
 
 Правила составления русскоязычного поста в Telegram, который анонсирует сообществу новый
-релиз `@bitrix24/b24jssdk`. Агент следует им, чтобы получить готовое к вставке сообщение;
+релиз `@bxshefby/b24jssdk`. Агент следует им, чтобы получить готовое к вставке сообщение;
 мейнтейнер вставляет его в Telegram **вручную**, поэтому результат должен быть
 самодостаточным и чистым для копирования.
 
@@ -103,7 +103,7 @@ console.log(res.getErrorMessages()) // ['... method not found ...']
 
 ```text
 - `FilterV3` — типизированный фильтр v3 (опечатку в операторе ловит клиент)
-- `require('@bitrix24/b24jssdk')` — работает CommonJS, а не только ESM
+- `require('@bxshefby/b24jssdk')` — работает CommonJS, а не только ESM
 ```
 
 ## 6. Исправления / безопасность
@@ -133,7 +133,7 @@ console.log(res.getErrorMessages()) // ['... method not found ...']
 ## 9. Подвал (всегда)
 
 ```text
-📦 npm install @bitrix24/b24jssdk@latest
+📦 npm install @bxshefby/b24jssdk@latest
 📝 Полный changelog: https://github.com/bitrix24/b24jssdk/blob/main/CHANGELOG.md
 
 Автоматизируйте Битрикс24 🚀
@@ -313,7 +313,7 @@ options или убрать.
 
 ---
 
-📦 npm install @bitrix24/b24jssdk@latest
+📦 npm install @bxshefby/b24jssdk@latest
 📝 Полный changelog: https://github.com/bitrix24/b24jssdk/blob/main/CHANGELOG.md
 
 Автоматизируйте Битрикс24 🚀

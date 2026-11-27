@@ -19,7 +19,7 @@ import { versionManager } from '../core/version-manager'
  *
  * @example
  * ```ts
- * import { B24OAuth, type B24OAuthParams } from '@bitrix24/b24jssdk'
+ * import { B24OAuth, type B24OAuthParams } from '@bxshefby/b24jssdk'
  *
  * declare const authOptions: B24OAuthParams
  *

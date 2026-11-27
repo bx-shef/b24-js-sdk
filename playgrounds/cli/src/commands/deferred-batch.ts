@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
 import 'dotenv/config'
-import { ParamsFactory, SdkError } from '@bitrix24/b24jssdk'
-import type { BatchCommandsArrayUniversal, DeferredBatchJob } from '@bitrix24/b24jssdk'
+import { ParamsFactory, SdkError } from '@bxshefby/b24jssdk'
+import type { BatchCommandsArrayUniversal, DeferredBatchJob } from '@bxshefby/b24jssdk'
 import { CLIENT_ERROR_STATUS } from '../constants'
 import { createB24Client } from '../utils'
 
@@ -29,7 +29,7 @@ import { createB24Client } from '../utils'
  *
  *   B24_HOOK=https://<portal>/rest/<userId>/<secret>/
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev deferred-batch --mode=run --count=20
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev deferred-batch --mode=run --count=20
  */
 export default defineCommand({
   meta: {

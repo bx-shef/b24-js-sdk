@@ -8,7 +8,7 @@ import {
   MemoryHandler,
   SdkError,
   StreamHandler
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import { CLIENT_ERROR_STATUS } from '../constants'
 import { createB24Client } from '../utils'
 
@@ -43,7 +43,7 @@ import { createB24Client } from '../utils'
  *                             resolved against cwd — `playgrounds/cli/`
  *                             when invoked via `pnpm --filter`)
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev smoke-retry --scenario=A
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev smoke-retry --scenario=A
  */
 
 export default defineCommand({

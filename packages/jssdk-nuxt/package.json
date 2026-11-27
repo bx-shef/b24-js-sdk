@@ -1,5 +1,5 @@
 {
-  "name": "@bitrix24/b24jssdk-nuxt",
+  "name": "@bxshefby/b24jssdk-nuxt",
   "version": "3.0.0",
   "author": "Bitrix",
   "license": "MIT",
@@ -9,10 +9,10 @@
     "restapi",
     "nuxt"
   ],
-  "homepage": "https://bitrix24.github.io/b24jssdk/",
+  "homepage": "https://github.com/bx-shef/b24-js-sdk#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitrix24/b24jssdk.git",
+    "url": "git+https://github.com/bx-shef/b24-js-sdk.git",
     "directory": "packages/jssdk-nuxt"
   },
   "type": "module",
@@ -52,7 +52,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@bitrix24/b24jssdk": "workspace:*",
+    "@bxshefby/b24jssdk": "workspace:*",
     "@nuxt/kit": "^4.5.2"
   },
   "devDependencies": {

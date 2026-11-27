@@ -1,5 +1,5 @@
-import { SdkError, Result, Text } from '@bitrix24/b24jssdk'
-import type { GetPayload } from '@bitrix24/b24jssdk'
+import { SdkError, Result, Text } from '@bxshefby/b24jssdk'
+import type { GetPayload } from '@bxshefby/b24jssdk'
 import { defineCommand } from 'citty'
 import 'dotenv/config'
 import type { Language, TaskTemplatesByLanguage, TaskFields, TaskAddResult } from '../../types'
@@ -12,7 +12,7 @@ import { pickRandom, randomInt, showProgress, createB24Client, icon } from '../.
  * Generates tasks with multilingual titles, deadlines, priorities, and
  * optionally attaches checklists using Bitrix24 JSSDK v2/v3 actions.
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev make tasks --total=10 --creatorId=1 --responsibleId=5
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev make tasks --total=10 --creatorId=1 --responsibleId=5
  */
 
 // Arrays for generating realistic task titles

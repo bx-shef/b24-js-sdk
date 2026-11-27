@@ -111,7 +111,7 @@ export class AggregateV3 extends AbstractAction {
    * @check-ignore: `some.entity.aggregate` is a placeholder, not a portal method
    *
    * @example
-   * import { FilterV3, Text } from '@bitrix24/b24jssdk'
+   * import { FilterV3, Text } from '@bxshefby/b24jssdk'
    *
    * const response = await b24.actions.v3.aggregate.make({
    *   method: 'some.entity.aggregate',

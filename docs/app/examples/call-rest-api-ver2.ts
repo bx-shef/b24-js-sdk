@@ -1,4 +1,4 @@
-import { B24Hook, EnumCrmEntityTypeId, LoggerFactory, SdkError, AjaxError } from '@bitrix24/b24jssdk'
+import { B24Hook, EnumCrmEntityTypeId, LoggerFactory, SdkError, AjaxError } from '@bxshefby/b24jssdk'
 
 export async function Action_callRestApiVer2() {
   // region: start ////

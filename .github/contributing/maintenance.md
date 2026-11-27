@@ -124,7 +124,7 @@ fi
 - Везде держите стиль TypeScript / ESM (соглашение для авторов навыков — сам пакет поставляется и в CommonJS, но навыки ориентированы на TypeScript / ESM). Никаких примеров `fetch + X-Api-Key` в навыках SDK (кроме задокументированного паттерна AI-add-on в `b24jssdk-vibecode`).
 - Везде используйте `$b24.actions.v{2,3}.*.make({ method, params, requestId? })`. **НЕ** вводите `b24.callMethod(...)` и `b24.callBatch(...)` — они удалены в 3.0.0 и больше не существуют.
 - НЕ добавляйте операторы фильтра в стиле MongoDB (`$gt`, `$ne`, `$contains`) нигде в наборе навыков b24jssdk.
-- Используйте `EnumCrmEntityTypeId` из `@bitrix24/b24jssdk` вместо числовых литералов.
+- Используйте `EnumCrmEntityTypeId` из `@bxshefby/b24jssdk` вместо числовых литералов.
 - Везде, где встречаются названия стадий, учитывайте несколько воронок (помощник `baseStage()`).
 - Даты → `Text.toB24Format(date)`.
 - Сущностям v3 (`crm.item.*`) для `callList`/`fetchList` нужны `idKey: 'id'` + `customKeyForResult: 'items'`. Классические методы (`crm.deal.list`, `tasks.task.list`) используют заглавный `'ID'` и либо не задают `customKeyForResult`, либо задают верный ключ (`'tasks'`, `'files'` и т. д.).
