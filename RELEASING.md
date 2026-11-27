@@ -17,16 +17,21 @@
    | Organization or user | `bx-shef` | `bx-shef` |
    | Repository | `b24-js-sdk` | `b24-js-sdk` |
    | Workflow filename | `npm-publish-js-sdk.yml` | `npm-publish-js-sdk-nuxt.yml` |
-   | Environment name | пусто | пусто |
+   | Environment name | `npm-release` | `npm-release` |
 
-   Токен npm в секретах не нужен: публикация идёт по OIDC с `--provenance`, поэтому `repository.url` в
-   `package.json` пакетов указывает на `bx-shef/b24-js-sdk`.
-2. **Переменная репозитория `NPM_RELEASE=true`** (*Settings → Secrets and variables → Actions →
+   Токен npm в секретах не нужен: публикация идёт по OIDC с provenance (`publishConfig.provenance`),
+   поэтому `repository.url` в `package.json` пакетов указывает на `bx-shef/b24-js-sdk`.
+2. **Окружение `npm-release`** (*Settings → Environments → New environment*): *Required reviewers* —
+   владелец; *Deployment branches and tags* — *Selected*: ветка `main` и теги `v*`. Jobs публикации идут в
+   этом окружении, и npm принимает токен только из него — опубликовать без подтверждения владельца, со
+   своей ветки или правкой workflow нельзя.
+3. **Переменная репозитория `NPM_RELEASE=true`** (*Settings → Secrets and variables → Actions →
    Variables*). Без неё release-please и обе публикации не запускаются: так форк не выпускал ничего, пока
    имена и версия не были решены (`scripts/__tests__/fork-guards.test.mjs`).
-3. Release PR `chore(main): release 3.1.0` откроется на следующем push в `main`. Слить его, затем вручную
-   запустить оба workflow публикации (см. [Последний шаг — вручную](#последний-шаг--вручную)).
-4. После выхода `3.1.0` — пометить устаревшими старые пакеты владельца (с его компьютера, после `npm login`):
+4. Release PR `chore(main): release 3.1.0` откроется на следующем push в `main`. Слить его, затем вручную
+   запустить оба workflow публикации (см. [Последний шаг — вручную](#последний-шаг--вручную)) и подтвердить
+   каждый в окружении `npm-release`.
+5. После выхода `3.1.0` — пометить устаревшими старые пакеты владельца (с его компьютера, после `npm login`):
    `@bxshefby/b24jssdk@<1`, `@bxshefby/b24jssdk-nuxt@<1`, `@bxshefby/jssdk`, `@bxshefby/ddd-jssdk`
    (`npm deprecate "<пакет>[@<1]" "<куда переходить>"`).
 
@@ -260,11 +265,11 @@ git push origin main
 - **Право push в `main`** и право **создавать GitHub Releases**.
 - **npm** — публикация идёт через **OIDC trusted publishing**, а не личный токен:
   - **Разовая настройка администратором:** у каждого пакета в npm (Settings →
-    Publishing → Trusted Publishers) должны быть указаны `bitrix24/b24jssdk` и
+    Publishing → Trusted Publishers) должны быть указаны `bx-shef/b24-js-sdk` и
     **соответствующее имя файла workflow** — `npm-publish-js-sdk.yml` для
     `@bxshefby/b24jssdk`, `npm-publish-js-sdk-nuxt.yml` для
-    `@bxshefby/b24jssdk-nuxt`, с **пустым Environment** (в jobs публикации
-    `environment:` не задан). Если имя файла или environment не совпадают, обмен
+    `@bxshefby/b24jssdk-nuxt`, с **Environment `npm-release`** (jobs публикации идут
+    в нём). Если имя файла или environment не совпадают, обмен
     OIDC-токена завершается ошибкой 404 (`ERR_PNPM_AUTH_TOKEN_EXCHANGE`), и шаг
     публикации откатывается на неаутентифицированный `PUT`, который npm
     отклоняет, — исправить это посреди запуска релизер не может.
@@ -445,7 +450,7 @@ workflow:
       зависели от отсутствия одного человека.
 - [ ] *(Необязательная уборка)* Чтобы вернуть публикацию в один `release.yml`,
       сначала обновите **имя файла workflow Trusted Publisher** в npm на
-      `release.yml` (Environment пустой) для **обоих** пакетов —
+      `release.yml` (Environment `npm-release`) для **обоих** пакетов —
       `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt`, затем слейте два файла
       `npm-publish-*.yml` в один. Без предварительной правки на стороне npm обмен
       OIDC-токена объединённого workflow завершится ошибкой 404.

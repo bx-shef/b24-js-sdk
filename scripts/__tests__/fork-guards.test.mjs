@@ -33,6 +33,13 @@ for (const file of RELEASE) {
   })
 }
 
+for (const file of RELEASE.filter(f => f.includes('npm-publish'))) {
+  test(`${file}: публикация только из окружения npm-release`, () => {
+    // Trusted Publisher на npmjs.com привязан к этому окружению: без него публиковать мог бы любой с правом push.
+    assert.match(read(file), /^ {2}publish:\n(?: {4}.*\n)*? {4}environment: npm-release\n/m)
+  })
+}
+
 const EXPECTED = {
   '.github/workflows/smoke-retry.yml': 1,
   '.github/workflows/ci.yml': 4 // Setup Pages, Create и Upload Pages artifact, deploy

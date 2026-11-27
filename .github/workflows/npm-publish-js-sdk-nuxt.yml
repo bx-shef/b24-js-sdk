@@ -43,6 +43,10 @@ jobs:
   publish:
     needs: ci
     runs-on: ubuntu-latest
+    # Форк: окружение npm-release (Settings → Environments) — владелец подтверждает каждую публикацию,
+    # разрешены только main и теги v*. То же имя задано в Trusted Publisher пакета на npmjs.com:
+    # без него npm сверял бы только репозиторий и имя файла, и публиковать мог бы любой с правом push.
+    environment: npm-release
     timeout-minutes: 20
     permissions:
       contents: read
