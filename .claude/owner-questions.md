@@ -7,29 +7,17 @@
 
 ## Открытые
 
-2. **Домен сайта документации.** Нужен для `DOMAIN` в `.env` сервера и переменной репозитория
-   `SITE_URL` (sitemap, canonical, og) — `deploy/README.md`.
-3. **Сервер.** На какой хост ставить (тот же, где nginx-proxy соседей?), кто поднимает compose.
-4. **Включить выпуск в npm:** Trusted Publisher у `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt` и
-   переменная `NPM_RELEASE=true` — шаги в `RELEASING.md`, раздел «Форк bx-shef/b24-js-sdk».
-5. **Ключ DeepSeek** — в `.env` сервера (`DEEPSEEK_API_KEY`, `ASSISTANT_ENABLED=true`), не в
-   репозиторий и не в чат.
-6. **Ветки, которые сессия удалить не может:** `release-please--branches--main--components--b24jssdk-main`,
-   `dependabot/github_actions/github-actions-99b5b6d3c7`, `dependabot/npm_and_yarn/npm-minor-patch-b23d61b38a`,
-   `dependabot/npm_and_yarn/nuxt-og-image-7.0.7` — удалить на странице Branches.
-7. **Settings → Code security:** PR Dependabot по уязвимостям — оставить (рекомендую) или выключить.
-8. **Settings → Secrets:** убедиться, что секретов bitrix24 (вебхук портала, npm) в репозитории нет.
-9. **Доступ к `rivalsvarka-tech/b24`** для сверки REST API по ядру: дать GitHub-подключению Claude
+1. **Ветки, которые сессия удалить не может:** `release-please--branches--main--components--b24jssdk-main`
+   (если осталась после 3.1.0), `dependabot/github_actions/github-actions-99b5b6d3c7`,
+   `dependabot/npm_and_yarn/npm-minor-patch-b23d61b38a`, `dependabot/npm_and_yarn/nuxt-og-image-7.0.7` и ветки
+   слитых PR — удалить на странице Branches.
+2. **Settings → Code security:** PR Dependabot по уязвимостям — оставить (рекомендую) или выключить.
+3. **Settings → Advanced Security → Private vulnerability reporting** — включить: на него ведёт `SECURITY.md`.
+4. **Доступ к `rivalsvarka-tech/b24`** для сверки REST API по ядру: дать GitHub-подключению Claude
    доступ к организации или добавить коллаборатора.
-10. **Вебхук тестового портала** присылался в чат. Лучше пересоздать и положить в секреты среды
-    (`NUXT_BITRIX24_TEST_WEBHOOK_URL` для интеграционных тестов), а не передавать сообщением.
-
-11. **Название сайта в логотипе.** Сейчас «JS SDK» со знаком «Василёк» (правило линейки: без
-    «Битрикс24» в названиях наших продуктов). Нужно другое имя — скажите.
-12. **Шрифт Inter Tight** из дизайн-системы v2 не подключён: шрифт с Google Fonts требует правки CSP
-    в `docs/nuxt.config.ts`; можно положить файлы шрифта в `docs/public` (без CSP). Подключать?
-13. **Баннер «Bitrix24 JS SDK 3.0.0 is out»** вверху сайта — родительский, ведёт на их релиз. Убрать
-    или заменить своим?
+5. **Название сайта в логотипе.** Сейчас «JS SDK» со знаком «Василёк» (правило линейки: без
+   «Битрикс24» в названиях наших продуктов). Нужно другое имя — скажите.
+6. **Нестабильные живые тесты** (deferredBatch, BatchByChunkV2) — #48, разбираемся позже.
 
 ## Решено
 
@@ -60,3 +48,13 @@
   репозиторий https://github.com/bx-shef/b24-js-sdk; ссылки на сайт родителя в JSDoc, навыках, README и справочнике
   переведены на наш сайт (русские якоря), ссылки на код и issues — на наш репозиторий; номера issues и PR родителя
   как история и упоминания форка остаются. Правило переноса — `.sync/PORTING.md`, сторож — `fork-guards.test.mjs`.
+- 2026-11-27 — Сайт документации: https://b24-js-sdk.bx-shef.by на сервере bx-shef (обычный nginx, certbot),
+  установка — `deploy/install-server.sh` (PR #59). Адрес и номер Метрики — секреты `DOCS_SITE_URL` и
+  `YANDEX_METRIKA_ID` (PR #54), ключ DeepSeek — в `.env` сервера. Цели Метрики заведены.
+- 2026-11-27 — Выпуск в npm включён: Trusted Publisher у обоих пакетов, окружение `npm-release` (только `main` и
+  `v*`, без одобрения — решение владельца), `NPM_RELEASE=true`. Сборка и публикация — разные job (PR #56).
+- 2026-11-27 — Шрифт Inter Tight — файлами на сайте, без Google Fonts (PR #58). Баннер выпуска bitrix24 скрыт;
+  вернуть с нашим выпуском.
+- 2026-11-27 — Вебхуки тестового портала владелец пересоздал; секреты `B24_HOOK` и `DEEPSEEK_API_KEY` в GitHub.
+- 2026-11-27 — UI-библиотека и иконки переданы своим репозиториям: bx-shef/b24-ui#61, #63, bx-shef/b24-icons#1 (P0).
+
