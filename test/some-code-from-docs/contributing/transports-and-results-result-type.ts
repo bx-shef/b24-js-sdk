@@ -12,7 +12,7 @@
  * Prerequisite: pnpm run dev:prepare (builds dist/ and its type declarations).
  */
 
-import type { Result } from '@bitrix24/b24jssdk'
+import type { Result } from '@bxshefby/b24jssdk'
 
 export function isOk(result: Result): boolean {
   return result.isSuccess

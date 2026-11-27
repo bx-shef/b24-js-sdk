@@ -63,7 +63,7 @@ export class StorageManager implements TypeStorageManager {
   }
 
   private _getKey(name: string): string {
-    return `@bitrix24/b24jssdk-pull-${this.userId}-${this.siteId}-${name}`
+    return `@bxshefby/b24jssdk-pull-${this.userId}-${this.siteId}-${name}`
   }
 
   compareKey(eventKey: string, userKey: string): boolean {

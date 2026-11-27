@@ -1,4 +1,4 @@
-import type { BoolString } from '@bitrix24/b24jssdk'
+import type { BoolString } from '@bxshefby/b24jssdk'
 
 export interface CrmCompany {
   id: number

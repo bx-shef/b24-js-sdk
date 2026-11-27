@@ -36,7 +36,7 @@ export function isArrayOfArray<A>(item: A[] | A[][]): item is A[][] {
  * Returns the enum member whose value equals `value`, or `undefined` if no match is found.
  *
  * @example
- * import { getEnumValue, EnumBizprocDocumentType } from '@bitrix24/b24jssdk'
+ * import { getEnumValue, EnumBizprocDocumentType } from '@bxshefby/b24jssdk'
  *
  * const result = getEnumValue(EnumBizprocDocumentType, 'CCrmDocumentSmartOrder')
  */

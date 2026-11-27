@@ -1,5 +1,5 @@
-import { SdkError } from '@bitrix24/b24jssdk'
-import type { CommandObject } from '@bitrix24/b24jssdk'
+import { SdkError } from '@bxshefby/b24jssdk'
+import type { CommandObject } from '@bxshefby/b24jssdk'
 import { defineCommand } from 'citty'
 import 'dotenv/config'
 import { pickRandom, showProgress, randomInt, createB24Client, icon } from '../../utils'
@@ -20,8 +20,8 @@ import type { CatalogCatalogItem, CatalogVatItem, CatalogMeasureItem, CatalogPri
  *
  * @example
  * ```bash
- * pnpm --filter @bitrix24/b24jssdk-cli dev make products-sku --total=10 --theme=industrial --currency=USD
- * pnpm --filter @bitrix24/b24jssdk-cli dev make products-sku --total=10 --theme=fashion --currency=USD --vatIncluded=Y
+ * pnpm --filter @bxshefby/b24jssdk-cli dev make products-sku --total=10 --theme=industrial --currency=USD
+ * pnpm --filter @bxshefby/b24jssdk-cli dev make products-sku --total=10 --theme=fashion --currency=USD --vatIncluded=Y
  * ```
  */
 

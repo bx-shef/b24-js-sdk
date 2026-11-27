@@ -1,6 +1,6 @@
 # Навыки b24jssdk
 
-Проектные навыки для рабочего пространства `@bitrix24/b24jssdk`. Источники истины:
+Проектные навыки для рабочего пространства `@bxshefby/b24jssdk`. Источники истины:
 
 - `packages/jssdk/README-AI.md` — руководство по API для вызывающего кода
 - `test/integration/js-docs/actions-v{2,3}.spec.ts` — канонические примеры API
@@ -33,7 +33,7 @@
 
 ## Соглашения во всех навыках
 
-- TypeScript / ESM. Голые импорты из `@bitrix24/b24jssdk`.
+- TypeScript / ESM. Голые импорты из `@bxshefby/b24jssdk`.
 - Активный клиент всегда называется `$b24` и трактуется как `TypeB24` — каждый пример работает для `B24Hook`, `B24Frame` и `B24OAuth`, потому что API actions живёт в `AbstractB24`.
 - Всегда используйте **`$b24.actions.v{2,3}.*.make()`** — устаревшие `callMethod`/`callBatch`/`callListMethod`/`fetchListMethod` были **удалены в 3.0.0** и больше не существуют.
 - Жёстко заданного списка разрешённых методов v3 в SDK больше нет — `actions.v3.*` отправляет любой метод на endpoint v3, а проверяет его сервер (неизвестный метод → `METHODNOTFOUNDEXCEPTION`). По умолчанию берите `v2`; `v3` используйте, когда нужно v3-представление метода (`tasks.task.*`, `main.eventlog.*`, `note.*`, `rest.application.*`, …).

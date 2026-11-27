@@ -41,7 +41,7 @@ export class BatchByChunkV2 extends AbstractBatch {
    * @returns {Promise<Result<T[]>>} A promise that is resolved by the result of executing all commands.
    *
    * @example
-   * import { EnumCrmEntityTypeId, Text, type CommandTuple } from '@bitrix24/b24jssdk'
+   * import { EnumCrmEntityTypeId, Text, type CommandTuple } from '@bxshefby/b24jssdk'
    *
    * interface Contact { id: number, name: string }
    * const commands = Array.from<unknown, CommandTuple>({ length: 150 }, (_, i) =>

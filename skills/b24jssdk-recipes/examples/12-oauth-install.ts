@@ -35,7 +35,7 @@ import {
   Logger,
   type B24OAuthParams,
   type B24OAuthSecret
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import express, { type Request, type Response } from 'express'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'

@@ -61,7 +61,7 @@ const canonicalUrl = process?.env.NUXT_PUBLIC_CANONICAL_URL ?? ''
 const gitUrl = process?.env.NUXT_PUBLIC_GIT_URL ?? ''
 export default defineNuxtConfig({
   modules: [
-    // '@bitrix24/b24jssdk-nuxt',
+    // '@bxshefby/b24jssdk-nuxt',
     '../packages/jssdk-nuxt/src/module',
     '@bitrix24/b24ui-nuxt',
     './modules/bx-assistant',

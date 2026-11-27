@@ -2,7 +2,7 @@
  * Ambient declarations for the `ts` fences in `.github/contributing/**.md` (#435).
  *
  * Same rule as the skills gate, and for the same reason: **a real export of
- * `@bitrix24/b24jssdk` is never declared here.** If a fence needs `B24Hook`, the
+ * `@bxshefby/b24jssdk` is never declared here.** If a fence needs `B24Hook`, the
  * fence imports it — a reader copying that block gets code that runs. An ambient
  * for a real export would make the gate green while the snippet stayed broken,
  * which is the failure the gate exists to prevent.
@@ -16,11 +16,11 @@
 // resolve; a fence that constructs its own client shadows this with a local
 // `const`, which is why this is `let` — `declare const` would make that a
 // TS2588 error.
-declare let b24: import('@bitrix24/b24jssdk').B24Frame
-declare let $b24: import('@bitrix24/b24jssdk').B24Frame
+declare let b24: import('@bxshefby/b24jssdk').B24Frame
+declare let $b24: import('@bxshefby/b24jssdk').B24Frame
 
 // Context these guides' excerpts assume and deliberately do not repeat. None of
-// these is an export of `@bitrix24/b24jssdk` — they belong to the docs app, the
+// these is an export of `@bxshefby/b24jssdk` — they belong to the docs app, the
 // test harness and the reproduction harness that each guide is describing, and
 // a reader of that guide already has them in scope.
 
@@ -28,7 +28,7 @@ declare let $b24: import('@bitrix24/b24jssdk').B24Frame
 // `test/0_setup/hooks-integration-jssdk.ts`. Declared loosely on purpose — the
 // real signature is compiled where it lives, by `test:typecheck`.
 declare function setupB24Tests(): {
-  getB24Client: () => import('@bitrix24/b24jssdk').B24Hook
+  getB24Client: () => import('@bxshefby/b24jssdk').B24Hook
   getMapId: () => Record<string, any>
 }
 

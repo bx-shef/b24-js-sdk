@@ -92,7 +92,7 @@ export class CallListV3 extends AbstractAction {
    * @returns {Promise<Result<T[]>>} A promise that resolves to the result of an REST API call.
    *
    * @example
-   * import { Text } from '@bitrix24/b24jssdk'
+   * import { Text } from '@bxshefby/b24jssdk'
    *
    * interface MainEventLogItem { id: number, userId: number }
    * const sixMonthAgo = new Date()

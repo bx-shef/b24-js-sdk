@@ -2,7 +2,7 @@
 
 /**
  * Type-checks all ```ts / ```typescript fenced blocks in docs/content/docs/**\/*.md
- * against the live @bitrix24/b24jssdk package types.
+ * against the live @bxshefby/b24jssdk package types.
  *
  * Design:
  *  - Each block is written as a standalone .ts file in .docs-typecheck/tmp/.

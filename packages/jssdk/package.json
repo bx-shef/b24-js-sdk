@@ -1,5 +1,5 @@
 {
-  "name": "@bitrix24/b24jssdk",
+  "name": "@bxshefby/b24jssdk",
   "version": "3.0.0",
   "author": "Bitrix",
   "license": "MIT",
@@ -15,14 +15,14 @@
     "api",
     "client"
   ],
-  "homepage": "https://bitrix24.github.io/b24jssdk/",
+  "homepage": "https://github.com/bx-shef/b24-js-sdk#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitrix24/b24jssdk.git",
+    "url": "git+https://github.com/bx-shef/b24-js-sdk.git",
     "directory": "packages/jssdk"
   },
   "bugs": {
-    "url": "https://github.com/bitrix24/b24jssdk/issues"
+    "url": "https://github.com/bx-shef/b24-js-sdk/issues"
   },
   "sideEffects": false,
   "type": "module",
@@ -65,6 +65,7 @@
     "node": ">=22.0.0"
   },
   "publishConfig": {
+    "provenance": true,
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },

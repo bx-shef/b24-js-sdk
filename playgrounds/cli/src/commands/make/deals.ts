@@ -1,5 +1,5 @@
-import { SdkError, EnumCrmEntityTypeId, EnumCrmEntityTypeShort } from '@bitrix24/b24jssdk'
-import type { CommandObject } from '@bitrix24/b24jssdk'
+import { SdkError, EnumCrmEntityTypeId, EnumCrmEntityTypeShort } from '@bxshefby/b24jssdk'
+import type { CommandObject } from '@bxshefby/b24jssdk'
 import { defineCommand } from 'citty'
 import 'dotenv/config'
 import type { CatalogProduct, CrmCompany, CrmContact, CatalogCatalogItem, CatalogVatItem, CrmCurrency, DealStage, CrmSource } from '../../types'
@@ -20,7 +20,7 @@ import { pickRandom, showProgress, randomInt, createB24Client, icon } from '../.
  * - Random source ID
  * - Batch processing for maximum performance
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev make deals --total=150
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev make deals --total=150
  */
 
 interface CatalogsListResult {

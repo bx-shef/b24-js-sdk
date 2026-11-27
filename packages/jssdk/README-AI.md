@@ -27,7 +27,7 @@
 - Менеджеры интерфейса: parent, slider, dialog, placement, options, auth
 - Хелперы: B24HelperManager и хук useB24Helper; клиент Pull
 
-Примечание: пакет поставляется в сборках ESM, CommonJS и UMD. Рекомендуемая точка входа — ESM; CommonJS поддерживается через `require('@bitrix24/b24jssdk')`, а UMD-сборка предназначена для подключения через `<script>` в браузере.
+Примечание: пакет поставляется в сборках ESM, CommonJS и UMD. Рекомендуемая точка входа — ESM; CommonJS поддерживается через `require('@bxshefby/b24jssdk')`, а UMD-сборка предназначена для подключения через `<script>` в браузере.
 
 ## Удалено в 3.0.0 — никогда не генерируйте это
 
@@ -102,7 +102,7 @@ import {
   LoggerFactory,
   Result,
   type ISODate
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 
 const logger = LoggerFactory.createForBrowser('MyApp', import.meta.env?.DEV === true)
 let $b24: B24Frame
@@ -182,7 +182,7 @@ function teardown() {
 Если собрать ESM нельзя, загрузите глобальный B24Js из CDN внутри iframe-приложения.
 
 ```html
-<script src="https://unpkg.com/@bitrix24/b24jssdk@3/dist/umd/index.min.js"></script>
+<script src="https://unpkg.com/@bxshefby/b24jssdk@3/dist/umd/index.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -235,7 +235,7 @@ import {
   EnumCrmEntityTypeId,
   LoggerFactory,
   Result
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 
 const logger = LoggerFactory.createForBrowser('Srv', true)
 
@@ -268,7 +268,7 @@ logger.info('batch', { batch: batch.getData() })
 Хелперы списков
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
 
 // Pull a full list with automatic paging
 const list = await $b24.actions.v2.callList.make({
@@ -381,7 +381,7 @@ SDK поставляется с высокоуровневым хелпером 
 Шаблон инициализации (после инициализации B24Frame)
 
 ```ts
-import { initializeB24Frame, useB24Helper, LoadDataType, type TypePullMessage } from '@bitrix24/b24jssdk'
+import { initializeB24Frame, useB24Helper, LoadDataType, type TypePullMessage } from '@bxshefby/b24jssdk'
 
 const {
   initB24Helper,
@@ -446,7 +446,7 @@ const uniq = $b24.auth.getUniq('prefix') // unique per member
 Предполагается, что `$b24` уже инициализирован (B24Frame или B24Hook).
 
 ```ts
-import { EnumCrmEntityTypeId, Result } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId, Result } from '@bxshefby/b24jssdk'
 
 async function loadAllCompaniesSmall($b24: any) {
   // No progress callback: `callList.make` cannot know the total in advance.
@@ -477,7 +477,7 @@ async function loadAllCompaniesSmall($b24: any) {
 Для `crm.item.list` используйте `idKey: 'id'`, чтобы стратегия быстрого итератора надёжно работала с сущностями v3.
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
 
 async function loadAllDealsStreaming($b24: any) {
   const all: any[] = []
@@ -513,7 +513,7 @@ async function loadAllDealsStreaming($b24: any) {
 Используйте, когда нужно управлять размерами страниц, паузами или добавить собственное ограничение скорости. Итерируйте, пока `isMore()` не вернёт false, используя `getNext($b24.getHttpClient())`.
 
 ```ts
-import { EnumCrmEntityTypeId, AjaxResult } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId, AjaxResult } from '@bxshefby/b24jssdk'
 
 async function loadAllContactsManual($b24: any) {
   const all: any[] = []
@@ -551,7 +551,7 @@ async function loadAllContactsManual($b24: any) {
 Основы Result и AjaxResult
 
 ```ts
-import { AjaxError } from '@bitrix24/b24jssdk'
+import { AjaxError } from '@bxshefby/b24jssdk'
 
 try {
   const res = await $b24.actions.v2.call.make({ method: 'crm.item.get', params: { entityTypeId: 1, id: 10 } })
@@ -593,8 +593,8 @@ try {
 ## UMD и ESM: краткая шпаргалка
 
 - UMD: глобальный window.B24Js; загрузка через CDN unpkg; используйте внутри iframe Битрикс24
-- ESM: импорт из '@bitrix24/b24jssdk'; работает в браузерах со сборщиками и в Node (на сервере) для B24Hook
-- CommonJS: const { B24Hook } = require('@bitrix24/b24jssdk'); работает в проектах Node.js на CJS (полноценная CJS-сборка с внешними зависимостями, дедуплицируемыми с вашим node_modules)
+- ESM: импорт из '@bxshefby/b24jssdk'; работает в браузерах со сборщиками и в Node (на сервере) для B24Hook
+- CommonJS: const { B24Hook } = require('@bxshefby/b24jssdk'); работает в проектах Node.js на CJS (полноценная CJS-сборка с внешними зависимостями, дедуплицируемыми с вашим node_modules)
 
 
 ## Оговорки и ограничения
@@ -680,7 +680,7 @@ try {
 - Text: даты (Luxon), числа (numberFormat), UUID v7, кодирование/декодирование, преобразование регистра
   
   ```ts
-  import Text from '@bitrix24/b24jssdk'
+  import Text from '@bxshefby/b24jssdk'
   const dt = Text.toDateTime('2024-01-01T10:00:00Z')
   const s = Text.numberFormat(12345.678, 2, '.', ' ')
   const id = Text.getUuidRfc4122()

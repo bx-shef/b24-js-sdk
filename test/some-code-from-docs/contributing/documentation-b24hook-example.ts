@@ -7,7 +7,7 @@
  * Prerequisite: pnpm run dev:prepare (builds dist/ and its type declarations).
  */
 
-import { B24Hook } from '@bitrix24/b24jssdk'
+import { B24Hook } from '@bxshefby/b24jssdk'
 
 export async function quickStart(): Promise<void> {
   // Read the URL from env / config; never hard-code the webhook secret.

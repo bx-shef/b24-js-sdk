@@ -2,7 +2,7 @@
  * Unit tests for the pure `playgrounds/cli` utilities (#47 item 16a — give the
  * "unit tests, no portal" CI gate something to run for the playground). Pure
  * logic, no portal and no SDK build needed (these utils import nothing from
- * `@bitrix24/b24jssdk`), so this is picked up by the existing jsSdk:unit
+ * `@bxshefby/b24jssdk`), so this is picked up by the existing jsSdk:unit
  * "unit.spec" glob under test/integration and runs in the CI `test` job.
  */
 import { describe, it, expect, afterEach } from 'vitest'

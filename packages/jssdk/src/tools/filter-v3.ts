@@ -58,7 +58,7 @@ function condition(field: string, operator: FilterV3Operator, value: unknown): F
  * `in` / `between` value fails fast on the client instead of as a server 400.
  *
  * @example
- * import { FilterV3 as F } from '@bitrix24/b24jssdk'
+ * import { FilterV3 as F } from '@bxshefby/b24jssdk'
  *
  * // status = NEW  AND  (id in [1,2]  OR  id > 100)
  * const filter = F.build(

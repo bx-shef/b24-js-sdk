@@ -16,10 +16,10 @@
 // `let` (not `const`) is required here: many frame snippets assign to $b24 via
 //   $b24 = await initializeB24Frame()
 // A `declare const` ambient would make those assignments a TS2588 error.
-declare let $b24: import('@bitrix24/b24jssdk').B24Frame
+declare let $b24: import('@bxshefby/b24jssdk').B24Frame
 
 // initializeB24Frame is the standard bootstrap for iframe applications.
-declare function initializeB24Frame(options?: Record<string, unknown>): Promise<import('@bitrix24/b24jssdk').B24Frame>
+declare function initializeB24Frame(options?: Record<string, unknown>): Promise<import('@bxshefby/b24jssdk').B24Frame>
 
 // hookUrl is a common placeholder used in webhook-based code examples.
 declare const hookUrl: string

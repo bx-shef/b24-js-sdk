@@ -15,7 +15,7 @@ import {
   useB24Helper,
   LoadDataType,
   type TypePullMessage
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 
 const {
   initB24Helper,
@@ -105,7 +105,7 @@ const flags = helper.appOptions.getJsonObject(
 ## Клиент Pull (push-события)
 
 ```ts
-import type { TypePullMessage } from '@bitrix24/b24jssdk'
+import type { TypePullMessage } from '@bxshefby/b24jssdk'
 usePullClient()
 
 useSubscribePullClient((m: TypePullMessage) => {
@@ -125,7 +125,7 @@ startPullClient()
 — по `MODULE_ID` фильтруют ваши подписчики:
 
 ```ts
-import type { B24Frame } from '@bitrix24/b24jssdk'
+import type { B24Frame } from '@bxshefby/b24jssdk'
 declare const $b24: B24Frame
 
 await $b24.actions.v2.call.make({
@@ -167,7 +167,7 @@ useSubscribePullClient(handleCrmEvent, 'crm')
 Чтобы завершить работу (клиент Pull тоже будет остановлен):
 
 ```ts
-import { useB24Helper } from '@bitrix24/b24jssdk'
+import { useB24Helper } from '@bxshefby/b24jssdk'
 
 const { destroyB24Helper } = useB24Helper()
 destroyB24Helper()
@@ -178,7 +178,7 @@ destroyB24Helper()
 Сам `B24HelperManager` работает с любым `TypeB24`. Композабл рассчитан на жизненный цикл во фрейме, но для бэкенд-кода можно создать менеджер напрямую:
 
 ```ts
-import { B24HelperManager, LoadDataType } from '@bitrix24/b24jssdk'
+import { B24HelperManager, LoadDataType } from '@bxshefby/b24jssdk'
 
 const helper = new B24HelperManager($b24)
 await helper.loadData([LoadDataType.Profile, LoadDataType.Currency])

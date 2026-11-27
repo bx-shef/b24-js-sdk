@@ -70,8 +70,8 @@
  * application open.
  */
 import { onMounted, onUnmounted, ref, computed, reactive } from 'vue'
-import type { B24Frame, TypePullMessage } from '@bitrix24/b24jssdk'
-import { B24PullClientManager, CloseReasons, isFrameRefusalCloseCode, LoggerFactory, PullStatus, SubscriptionType, Text } from '@bitrix24/b24jssdk'
+import type { B24Frame, TypePullMessage } from '@bxshefby/b24jssdk'
+import { B24PullClientManager, CloseReasons, isFrameRefusalCloseCode, LoggerFactory, PullStatus, SubscriptionType, Text } from '@bxshefby/b24jssdk'
 
 const { $initializeB24Frame } = useNuxtApp()
 const $logger = LoggerFactory.createForBrowserDevelopment('[playground] PullLab')

@@ -1,4 +1,4 @@
-import { initializeB24Frame, Text, LoggerFactory, Logger, ConsoleV2Handler, LogLevel } from '@bitrix24/b24jssdk'
+import { initializeB24Frame, Text, LoggerFactory, Logger, ConsoleV2Handler, LogLevel } from '@bxshefby/b24jssdk'
 
 export async function Action_frameParentCall() {
   // region: start ////

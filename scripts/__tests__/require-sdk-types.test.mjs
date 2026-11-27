@@ -44,7 +44,7 @@ test('require-sdk-types: marker absent → exit 1 with the actionable dev:prepar
     const r = runGuard(root, 'docs:typecheck-blocks')
     assert.equal(r.status, 1, `stdout:\n${r.stdout}\nstderr:\n${r.stderr}`)
     assert.match(r.stderr, /\[docs:typecheck-blocks\]/)
-    assert.match(r.stderr, /@bitrix24\/b24jssdk types not found/)
+    assert.match(r.stderr, /@bxshefby\/b24jssdk types not found/)
     assert.match(r.stderr, /packages\/jssdk\/dist\/esm\/index\.d\.ts/)
     assert.match(r.stderr, /pnpm run dev:prepare/)
   })

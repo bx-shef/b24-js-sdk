@@ -55,7 +55,7 @@ export default class FormatterNumbers {
    *
    * @example
    * ```ts
-   * import { useFormatter } from '@bitrix24/b24jssdk'
+   * import { useFormatter } from '@bxshefby/b24jssdk'
    *
    * const { formatterNumber } = useFormatter()
    *

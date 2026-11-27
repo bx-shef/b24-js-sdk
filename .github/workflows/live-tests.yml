@@ -67,7 +67,7 @@ jobs:
         if: inputs.suite == 'sdk' || inputs.suite == 'all'
         env:
           B24_HOOK: ${{ secrets.B24_HOOK }}
-        run: pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures --githubEnv
+        run: pnpm --filter @bxshefby/b24jssdk-cli dev make test-fixtures --githubEnv
 
       - name: Интеграционные тесты SDK
         if: inputs.suite == 'sdk' || inputs.suite == 'all'

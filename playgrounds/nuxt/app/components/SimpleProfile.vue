@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed } from 'vue'
-import type { B24Frame } from '@bitrix24/b24jssdk'
-import { LoadDataType, LoggerFactory, useB24Helper } from '@bitrix24/b24jssdk'
+import type { B24Frame } from '@bxshefby/b24jssdk'
+import { LoadDataType, LoggerFactory, useB24Helper } from '@bxshefby/b24jssdk'
 
 const { $initializeB24Frame } = useNuxtApp()
 

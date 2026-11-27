@@ -5,11 +5,11 @@
  *
  * A thin wrapper rather than a bare `tsc` in `package.json` for one reason: the
  * fixtures under `test/some-code-from-docs/` import the workspace package
- * `@bitrix24/b24jssdk`, whose types resolve to
+ * `@bxshefby/b24jssdk`, whose types resolve to
  * `packages/jssdk/dist/esm/index.d.ts` — a file that only exists after
  * `pnpm run dev:prepare` builds the SDK. On a fresh clone `dist/` is absent and
  * bare `tsc` fails with a cryptic `TS2307: Cannot find module
- * '@bitrix24/b24jssdk'`. Guard for the marker first and print what to run
+ * '@bxshefby/b24jssdk'`. Guard for the marker first and print what to run
  * instead (#109). CI always runs `dev:prepare` before typecheck, so this only
  * ever helps local runs.
  *

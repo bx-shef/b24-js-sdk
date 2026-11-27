@@ -5,7 +5,6 @@
   "manifests": {
     "package.json": {
       "devDependencies": {
-        "@bitrix24/b24jssdk": "workspace:*",
         "@nuxt/eslint-config": "^1.17.0",
         "@types/express": "^5.0.6",
         "@types/node": "^26.6.3",
@@ -29,8 +28,6 @@
         "@ai-sdk/mcp": "^2.0.60",
         "@ai-sdk/vue": "^4.0.116",
         "@bitrix24/b24icons-vue": "^2.0.8",
-        "@bitrix24/b24jssdk": "workspace:*",
-        "@bitrix24/b24jssdk-nuxt": "workspace:*",
         "@bitrix24/b24ui-nuxt": "^2.13.0",
         "@comark/vue": "^0.7.0",
         "@nuxt/a11y": "1.0.0-alpha.1",
@@ -88,7 +85,6 @@
     },
     "packages/jssdk-nuxt/package.json": {
       "dependencies": {
-        "@bitrix24/b24jssdk": "workspace:*",
         "@nuxt/kit": "^4.5.2"
       },
       "devDependencies": {

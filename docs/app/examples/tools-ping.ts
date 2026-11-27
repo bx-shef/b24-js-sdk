@@ -1,4 +1,4 @@
-import { B24Hook, LoggerFactory } from '@bitrix24/b24jssdk'
+import { B24Hook, LoggerFactory } from '@bxshefby/b24jssdk'
 
 export async function Action_toolsPing() {
   // region: start ////

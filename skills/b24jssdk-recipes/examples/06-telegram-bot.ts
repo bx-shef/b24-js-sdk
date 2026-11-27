@@ -20,7 +20,7 @@ import {
   LogLevel,
   Logger,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 import { pathToFileURL } from 'node:url'
 import { baseStage } from '../lib/funnel'
 import { Bot } from 'grammy'

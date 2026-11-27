@@ -1,4 +1,4 @@
-import { SdkError } from '@bitrix24/b24jssdk'
+import { SdkError } from '@bxshefby/b24jssdk'
 import { defineCommand } from 'citty'
 import 'dotenv/config'
 import type { TaskListItem } from '../../types'
@@ -24,7 +24,7 @@ import { CLIENT_ERROR_STATUS } from '../../constants'
  * `id` is filterable (check with `tasks.task.field.list`). That is why this demo
  * exposes no filter args; the keyset cursor works because it pages on `id`.
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev list tasks --limit=50
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev list tasks --limit=50
  */
 export default defineCommand({
   meta: {

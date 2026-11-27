@@ -1,5 +1,5 @@
-import { EnumCrmEntityTypeId, SdkError, Result } from '@bitrix24/b24jssdk'
-import type { GetPayload } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId, SdkError, Result } from '@bxshefby/b24jssdk'
+import type { GetPayload } from '@bxshefby/b24jssdk'
 import { defineCommand } from 'citty'
 import 'dotenv/config'
 import type { FmField, CompanyFields, CrmItemAddResult } from '../../types'
@@ -12,7 +12,7 @@ import { pickRandom, generatePhoneNumber, showProgress, createB24Client, icon } 
  * This command automates the creation of test data by generating realistic company
  * names, phone numbers, and emails, then uploading them to Bitrix24 via webhooks.
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev make companies --total=10
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev make companies --total=10
  */
 
 // Arrays for generating realistic company names

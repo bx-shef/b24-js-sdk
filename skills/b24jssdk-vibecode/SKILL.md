@@ -7,7 +7,7 @@ description: Как сочетать SDK b24jssdk с HTTP API VibeCode (vibecode
 
 VibeCode (`https://vibecode.bitrix24.tech`) — это **отдельный HTTP-сервис**, построенный поверх REST Битрикс24. Он предоставляет JSON Entity API (`/v1/deals`, `/v1/contacts`, …), AI Router (`/v1/ai/chat/completions`), веб-поиск (`/v1/search`) и «инфраструктурный» API для размещаемых развёртываний. Это **не** REST Битрикс24.
 
-`@bitrix24/b24jssdk` — тонкая TypeScript-обёртка над **самим REST Битрикс24**. Эти два продукта решают разные задачи и используют разные транспорты.
+`@bxshefby/b24jssdk` — тонкая TypeScript-обёртка над **самим REST Битрикс24**. Эти два продукта решают разные задачи и используют разные транспорты.
 
 ## Матрица выбора
 
@@ -43,7 +43,7 @@ import {
   B24Hook,
   EnumCrmEntityTypeId,
   type TypeB24
-} from '@bitrix24/b24jssdk'
+} from '@bxshefby/b24jssdk'
 
 const $b24: TypeB24 = B24Hook.fromWebhookUrl(process.env.B24_HOOK!)
 
@@ -95,7 +95,7 @@ await $b24.actions.v2.call.make({
 
 Документация VibeCode иногда ссылается на методы REST Битрикс24 (например, `tasks.task.add`), а иногда — на собственные эндпоинты Entity API (например, `POST /v1/tasks`). Уточните это, прежде чем генерировать код:
 
-- Если в примере есть импорт `'@bitrix24/b24jssdk'` или речь идёт о `B24Hook` / `B24Frame` / `B24OAuth` — используйте SDK.
+- Если в примере есть импорт `'@bxshefby/b24jssdk'` или речь идёт о `B24Hook` / `B24Frame` / `B24OAuth` — используйте SDK.
 - Если в примере `fetch('https://vibecode.bitrix24.tech/v1/...')` с `X-Api-Key` — это VibeCode.
 
 Если сомневаетесь, спросите пользователя, на чьей стороне он хочет жить.

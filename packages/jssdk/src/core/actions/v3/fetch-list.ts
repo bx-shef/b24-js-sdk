@@ -90,7 +90,7 @@ export class FetchListV3 extends AbstractAction {
    *     at a time until the dataset is exhausted.
    *
    * @example
-   * import { Text } from '@bitrix24/b24jssdk'
+   * import { Text } from '@bxshefby/b24jssdk'
    *
    * interface MainEventLogItem { id: number, userId: number }
    * const sixMonthAgo = new Date()

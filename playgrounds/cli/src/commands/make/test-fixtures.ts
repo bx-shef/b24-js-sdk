@@ -1,4 +1,4 @@
-import { EnumCrmEntityTypeId, SdkError } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId, SdkError } from '@bxshefby/b24jssdk'
 import { appendFileSync } from 'node:fs'
 import { defineCommand } from 'citty'
 import 'dotenv/config'
@@ -21,8 +21,8 @@ import { createB24Client } from '../../utils'
  * - contacts: at least {@link CONTACTS}; one deal; one task (tagged, see below);
  * - `taskWrong` / `crmCompanyWrong`: an ID that does not exist.
  *
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures
- * @usage pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures --githubEnv
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev make test-fixtures
+ * @usage pnpm --filter @bxshefby/b24jssdk-cli dev make test-fixtures --githubEnv
  */
 
 const MARKER = 'b24jssdk-test'

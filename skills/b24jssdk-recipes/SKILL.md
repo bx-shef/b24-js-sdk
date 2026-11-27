@@ -90,7 +90,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 ## Фрагмент запуска (общий для всех рецептов)
 
 ```ts
-import { B24Hook, ConsoleV2Handler, LogLevel, Logger, type TypeB24 } from '@bitrix24/b24jssdk'
+import { B24Hook, ConsoleV2Handler, LogLevel, Logger, type TypeB24 } from '@bxshefby/b24jssdk'
 
 export function bootB24(): TypeB24 {
   const url = process.env.B24_HOOK
@@ -133,7 +133,7 @@ logger.pushHandler(new ConsoleV2Handler(
 
 ```bash
 # 1. Install: at the repo root or in a fresh project
-pnpm add @bitrix24/b24jssdk
+pnpm add @bxshefby/b24jssdk
 # Copying a single recipe out of this repo? Some recipes import a shared
 # helper and need it copied alongside, keeping the ../lib/ path:
 #   recipes 1, 3, 6:  lib/funnel.ts  (baseStage)

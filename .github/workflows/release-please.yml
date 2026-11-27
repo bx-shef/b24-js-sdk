@@ -35,8 +35,9 @@ permissions:
 
 jobs:
   release-please:
-    # Наш форк: автоматика bitrix24 (релизы, npm, ночной smoke против их портала) здесь не работает.
-    if: github.repository == 'bitrix24/b24jssdk'
+    # Форк bx-shef/b24-js-sdk: выпуск @bxshefby/* включается переменной репозитория NPM_RELEASE=true
+    # (Settings → Secrets and variables → Actions → Variables); см. RELEASING.md.
+    if: github.repository == 'bx-shef/b24-js-sdk' && vars.NPM_RELEASE == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

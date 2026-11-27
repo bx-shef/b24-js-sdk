@@ -6,7 +6,7 @@
  * fall back to the defaults). The playground command that finds or creates the
  * records prints it:
  *
- *   pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures
+ *   pnpm --filter @bxshefby/b24jssdk-cli dev make test-fixtures
  */
 export const DEFAULT_TEST_IDS = {
   taskSuccess: 2,

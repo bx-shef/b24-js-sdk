@@ -78,6 +78,8 @@ if (!check) {
       for (const name of Object.keys(them[section] ?? {}).sort()) {
         // сравниваем только то, что обе стороны объявляют в ОДНОЙ секции
         if (us[section]?.[name] === undefined) continue
+        // пакеты монорепозитория (`workspace:`) — свои у каждой стороны, у нас под другим scope
+        if (String(them[section][name]).startsWith('workspace:')) continue
         shared[name] = resolve(them[section][name], name, upstreamCatalog, `upstream ${path}`)
       }
       if (Object.keys(shared).length) perSection[section] = shared

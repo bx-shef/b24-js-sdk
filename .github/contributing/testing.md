@@ -39,12 +39,12 @@
 
    ```bash
    pnpm run docs:prepare          # the docs tsconfig that test/integration/docs/* loads
-   pnpm run package-jssdk:build   # the contributing/* specs import `@bitrix24/b24jssdk` from dist
+   pnpm run package-jssdk:build   # the contributing/* specs import `@bxshefby/b24jssdk` from dist
    ```
 
    Без первой спецификации `docs` падают с `Tsconfig not found`; без
    второй спецификации `contributing` падают с `Failed to resolve entry for
-   package "@bitrix24/b24jssdk"`. Ни то ни другое не является дефектом SDK.
+   package "@bxshefby/b24jssdk"`. Ни то ни другое не является дефектом SDK.
 
 5. `actions-v2-batch.spec.ts` и спецификация документации `CallListV2` читают
    компании CRM по id. Портал, где меньше десятка компаний, возвращает пустые списки,
@@ -155,7 +155,7 @@ ID по умолчанию — записи портала родителя (bit
 `b24jssdk-test` или создаёт недостающие, ничего не удаляя:
 
 ```bash
-pnpm --filter @bitrix24/b24jssdk-cli dev make test-fixtures | tail -1 >> .env.test
+pnpm --filter @bxshefby/b24jssdk-cli dev make test-fixtures | tail -1 >> .env.test
 ```
 
 Вебхук команда берёт из окружения или из `playgrounds/cli/.env` — корневой `.env.test` она не читает. Живые тесты в GitHub (`live-tests.yml`) делают всё это сами перед прогоном.

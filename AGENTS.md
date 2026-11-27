@@ -2,13 +2,13 @@
 
 <sub>Последняя сверка: 2026-11-24.</sub>
 
-Этот файл — единый источник истины для ИИ-агентов и людей-контрибьюторов, работающих с репозиторием `@bitrix24/b24jssdk`. Подробные руководства в `.github/contributing/` указаны в соответствующих разделах ниже — загружайте их, только когда они относятся к вашей задаче.
+Этот файл — единый источник истины для ИИ-агентов и людей-контрибьюторов, работающих с репозиторием `@bxshefby/b24jssdk`. Подробные руководства в `.github/contributing/` указаны в соответствующих разделах ниже — загружайте их, только когда они относятся к вашей задаче.
 
 ## Обзор проекта
 
-`@bitrix24/b24jssdk` — JS/TS SDK для REST API Битрикс24. Это монорепозиторий на pnpm 12, который поставляет:
+`@bxshefby/b24jssdk` — JS/TS SDK для REST API Битрикс24. Это монорепозиторий на pnpm 12, который поставляет:
 
-- не зависящее от фреймворков ядро SDK (`packages/jssdk`, публикуется как `@bitrix24/b24jssdk`, поставляется в ESM, CommonJS и UMD; рекомендуемая точка входа — ESM),
+- не зависящее от фреймворков ядро SDK (`packages/jssdk`, публикуется как `@bxshefby/b24jssdk`, поставляется в ESM, CommonJS и UMD; рекомендуемая точка входа — ESM),
 - тонкую обёртку-модуль для Nuxt (`packages/jssdk-nuxt`),
 - публичный сайт документации (`docs/`, выкладывается на GitHub Pages),
 - песочницы для ручной проверки (`playgrounds/cli`, `playgrounds/nuxt`),
@@ -169,7 +169,7 @@ pnpm vitest run --project jsSdk:unit -t "<test name>"
 
 ### Выпуск релиза
 
-Выпуск релиза (повышение версии → журнал изменений → тег → публикация) описан в **[RELEASING.md](RELEASING.md)**. Вкратце: `pnpm run release:bump <version>` синхронно задаёт версию во всех трёх `package.json` (и обновляет lock-файл), а публикация GitHub Release на теге `v<version>` запускает два парных workflow — [`npm-publish-js-sdk.yml`](.github/workflows/npm-publish-js-sdk.yml) (`@bitrix24/b24jssdk`) and [`npm-publish-js-sdk-nuxt.yml`](.github/workflows/npm-publish-js-sdk-nuxt.yml) (`@bitrix24/b24jssdk-nuxt`) — каждый прогоняет CI и затем публикует свой пакет. Публикация использует npm OIDC trusted publishing — `NPM_TOKEN` вести не нужно. Два файла существуют потому, что запись Trusted Publisher каждого пакета в npm привязана к одному точному имени файла workflow; путь объединения см. в RELEASING.md.
+Выпуск релиза (повышение версии → журнал изменений → тег → публикация) описан в **[RELEASING.md](RELEASING.md)**. Вкратце: `pnpm run release:bump <version>` синхронно задаёт версию во всех трёх `package.json` (и обновляет lock-файл), а публикация GitHub Release на теге `v<version>` запускает два парных workflow — [`npm-publish-js-sdk.yml`](.github/workflows/npm-publish-js-sdk.yml) (`@bxshefby/b24jssdk`) and [`npm-publish-js-sdk-nuxt.yml`](.github/workflows/npm-publish-js-sdk-nuxt.yml) (`@bxshefby/b24jssdk-nuxt`) — каждый прогоняет CI и затем публикует свой пакет. Публикация использует npm OIDC trusted publishing — `NPM_TOKEN` вести не нужно. Два файла существуют потому, что запись Trusted Publisher каждого пакета в npm привязана к одному точному имени файла workflow; путь объединения см. в RELEASING.md.
 
 ## Основные соглашения
 

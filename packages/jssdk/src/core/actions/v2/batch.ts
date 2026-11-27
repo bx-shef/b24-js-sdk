@@ -55,7 +55,7 @@ export class BatchV2 extends AbstractBatch {
    *   the raw payload.
    *
    * @example
-   * import type { AjaxResult } from '@bitrix24/b24jssdk'
+   * import type { AjaxResult } from '@bxshefby/b24jssdk'
    *
    * interface Contact { id: number, name: string }
    * const response = await b24.actions.v2.batch.make<{ item: Contact }>({

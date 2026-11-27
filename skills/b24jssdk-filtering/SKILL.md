@@ -109,8 +109,8 @@ filter: [
 Для всего, что сложнее плоского списка троек, предпочитайте построитель `FilterV3` ручному написанию структур — он проверяет операторы и формы `in`/`between` на клиенте (опечатка падает сразу, а не как серверный `UNKNOWNFILTEROPERATOREXCEPTION`):
 
 ```ts
-import { Text } from '@bitrix24/b24jssdk'
-import { FilterV3 as F } from '@bitrix24/b24jssdk'
+import { Text } from '@bxshefby/b24jssdk'
+import { FilterV3 as F } from '@bxshefby/b24jssdk'
 
 // status = NEW  AND  (id in [1,2]  OR  id > 100)
 const filter = F.build(
@@ -127,7 +127,7 @@ await $b24.actions.v3.call.make({ method: 'tasks.task.list', params: { filter } 
 - Группы: `F.and(...)`, `F.or(...)`, `F.not(node)` (отрицает условие или группу).
 - `F.build(...nodes)` возвращает массив верхнего уровня (объединённый через AND) для `params.filter`; ложные узлы пропускаются, поэтому `F.build(F.eq('a', 1), flag && F.gt('b', 2))` встраивает условные части.
 
-> Внутри **пакетного запроса v3 (batch)** значение фильтра может ссылаться на вывод более раннего команды через маркер `$ref`/`$refArray` — стройте их с помощью `BatchRefV3` (`import { BatchRefV3 } from '@bitrix24/b24jssdk'`), например `['id', 'in', BatchRefV3.refArray('tasks.id')]`. Подстановку выполняет сервер; см. навык `b24jssdk-rest` / документацию по пакетным запросам v3.
+> Внутри **пакетного запроса v3 (batch)** значение фильтра может ссылаться на вывод более раннего команды через маркер `$ref`/`$refArray` — стройте их с помощью `BatchRefV3` (`import { BatchRefV3 } from '@bxshefby/b24jssdk'`), например `['id', 'in', BatchRefV3.refArray('tasks.id')]`. Подстановку выполняет сервер; см. навык `b24jssdk-rest` / документацию по пакетным запросам v3.
 
 ## Правило `order` для callList / fetchList
 
@@ -166,7 +166,7 @@ await $b24.actions.v2.call.make({ method: 'user.get', params: { filter: { ACTIVE
 Используйте помощник SDK `Text.toB24Format(date)` — он выдаёт формат Битрикс24 `yyyy-MM-dd'T'HH:mm:ssZZ` и обрабатывает входные значения `Date | DateTime | string` (см. `Text.toB24Format` в `packages/jssdk/src/tools/text.ts`).
 
 ```ts
-import { Text } from '@bitrix24/b24jssdk'
+import { Text } from '@bxshefby/b24jssdk'
 
 const sixMonthsAgo = new Date()
 sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
@@ -218,7 +218,7 @@ select: ['id', 'title', 'responsible.name', 'responsible.email']
 ### v2 — открытые сделки в диапазоне сумм
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
 const response = await $b24.actions.v2.callList.make<CrmItem>({
   method: 'crm.item.list',
   params: {
@@ -238,7 +238,7 @@ const response = await $b24.actions.v2.callList.make<CrmItem>({
 ### v2 — контакты по подстроке телефона
 
 ```ts
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
 const response = await $b24.actions.v2.callList.make<CrmItem>({
   method: 'crm.item.list',
   params: {
@@ -269,7 +269,7 @@ const response = await $b24.actions.v2.callList.make<TaskItem>({
 ### v3 — журнал событий за последние 6 месяцев
 
 ```ts
-import { Text } from '@bitrix24/b24jssdk'
+import { Text } from '@bxshefby/b24jssdk'
 const sixMonthsAgo = new Date()
 sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 sixMonthsAgo.setHours(0, 0, 0, 0)
@@ -289,7 +289,7 @@ const response = await $b24.actions.v3.callList.make<EventItem>({
 ### v3 — IN / between
 
 ```ts
-import { Text } from '@bitrix24/b24jssdk'
+import { Text } from '@bxshefby/b24jssdk'
 filter: [
   ['responsibleId', 'in', [1, 2, 3]],
   ['createdTime', 'between', ['2026-01-01T00:00:00+03:00', '2026-03-31T23:59:59+03:00']]

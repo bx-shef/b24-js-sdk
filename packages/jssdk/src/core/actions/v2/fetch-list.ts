@@ -88,7 +88,7 @@ export class FetchListV2 extends AbstractAction {
    *     at a time until the dataset is exhausted.
    *
    * @example
-   * import { EnumCrmEntityTypeId, Text } from '@bitrix24/b24jssdk'
+   * import { EnumCrmEntityTypeId, Text } from '@bxshefby/b24jssdk'
    *
    * interface CrmItem { id: number, title: string }
    * const sixMonthAgo = new Date()

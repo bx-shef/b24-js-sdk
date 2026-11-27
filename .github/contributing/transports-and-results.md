@@ -64,7 +64,7 @@ const user = result.getData().result
 `AjaxResult` расширяет `Result` для транспортных вызовов и добавляет постраничную выборку — только v2:
 
 ```ts
-import { ApiVersion } from '@bitrix24/b24jssdk'
+import { ApiVersion } from '@bxshefby/b24jssdk'
 
 const result = await b24.actions.v2.call.make({
   method: 'crm.deal.list',
@@ -94,7 +94,7 @@ if (result.isMore()) {
 | `AjaxError` | Ошибки HTTP / REST API (4xx, 5xx, некорректные данные) | Возвращается через `Result.getErrors()` |
 
 ```ts
-import { SdkError, AjaxError } from '@bitrix24/b24jssdk'
+import { SdkError, AjaxError } from '@bxshefby/b24jssdk'
 
 declare const url: string | undefined
 declare const payload: Record<string, unknown>

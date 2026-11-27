@@ -18,7 +18,7 @@ description: Выбор и инициализация нужной точки в
 ## B24Hook (бэкенд / скрипты)
 
 ```ts
-import { B24Hook, ConsoleV2Handler, LogLevel, Logger } from '@bitrix24/b24jssdk'
+import { B24Hook, ConsoleV2Handler, LogLevel, Logger } from '@bxshefby/b24jssdk'
 
 // Node, so the handler is created explicitly with `useStyles: false`; the
 // browser factory below emits CSS styling a terminal prints as literal noise.
@@ -40,7 +40,7 @@ logger.info(`Hello, ${me.getData()!.result.NAME}`)
 Альтернативный конструктор (части задаются вручную):
 
 ```ts
-import { B24Hook } from '@bitrix24/b24jssdk'
+import { B24Hook } from '@bxshefby/b24jssdk'
 const $b24 = new B24Hook({
   b24Url: 'https://your_domain.bitrix24.com',
   userId: 1,
@@ -56,7 +56,7 @@ const $b24 = new B24Hook({
 ## B24Frame (приложение во фрейме)
 
 ```ts
-import { initializeB24Frame, LoggerFactory, type B24Frame } from '@bitrix24/b24jssdk'
+import { initializeB24Frame, LoggerFactory, type B24Frame } from '@bxshefby/b24jssdk'
 
 const logger = LoggerFactory.createForBrowser('App', import.meta.env?.DEV === true)
 let $b24: B24Frame
@@ -96,7 +96,7 @@ if ($b24.isInstallMode) {
 ## B24OAuth (серверная часть OAuth-приложения)
 
 ```ts
-import { B24OAuth } from '@bitrix24/b24jssdk'
+import { B24OAuth } from '@bxshefby/b24jssdk'
 
 // `b24OAuthParams` come from the install/refresh events of your Bitrix24 app
 // (applicationToken, accessToken, refreshToken, expires, expiresIn, domain, …)
@@ -118,7 +118,7 @@ await $b24.initIsAdmin() // populates auth.isAdmin
 В браузере достаточно одного вызова фабрики:
 
 ```ts
-import { LoggerFactory } from '@bitrix24/b24jssdk'
+import { LoggerFactory } from '@bxshefby/b24jssdk'
 
 const logger = LoggerFactory.createForBrowser('AppName', /* isDev */ true)
 ```
@@ -126,7 +126,7 @@ const logger = LoggerFactory.createForBrowser('AppName', /* isDev */ true)
 В Node собирайте логгер явно, чтобы вывод не был оформлен для консоли браузера:
 
 ```ts
-import { ConsoleV2Handler, LogLevel, Logger } from '@bitrix24/b24jssdk'
+import { ConsoleV2Handler, LogLevel, Logger } from '@bxshefby/b24jssdk'
 
 const logger = Logger.create('AppName')
 logger.pushHandler(new ConsoleV2Handler(LogLevel.INFO, { useStyles: false }))
@@ -165,7 +165,7 @@ $b24.setLogger(logger)
 `actions.v{2,3}.call.make` возвращает `AjaxResult`. Сбои на уровне REST бросают `AjaxError`. Сбои на уровне SDK (неверная версия API для метода и т. п.) бросают `SdkError`.
 
 ```ts
-import { AjaxError, SdkError } from '@bitrix24/b24jssdk'
+import { AjaxError, SdkError } from '@bxshefby/b24jssdk'
 
 async function loadDeal() {
   try {
@@ -222,7 +222,7 @@ async function loadDeal() {
 По умолчанию закреплены известные коды Битрикс24; расширяйте для своего приложения через `RestrictionParams`.
 
 ```ts
-import { B24Hook, ParamsFactory, ApiVersion } from '@bitrix24/b24jssdk'
+import { B24Hook, ParamsFactory, ApiVersion } from '@bxshefby/b24jssdk'
 
 const $b24 = B24Hook.fromWebhookUrl(process.env.B24_HOOK!)
 
@@ -273,7 +273,7 @@ await $b24.setRestrictionManagerParams({
 Для тяжёлых долгих вызовов также увеличьте таймаут axios у базового HTTP-клиента:
 
 ```ts
-import { ApiVersion } from '@bitrix24/b24jssdk'
+import { ApiVersion } from '@bxshefby/b24jssdk'
 const clientAxios = $b24.getHttpClient(ApiVersion.v2).ajaxClient
 clientAxios.defaults.timeout = 120_000
 ```
@@ -284,7 +284,7 @@ clientAxios.defaults.timeout = 120_000
 собственных значений axios по умолчанию в SDK.
 
 ```ts
-import { B24Hook } from '@bitrix24/b24jssdk'
+import { B24Hook } from '@bxshefby/b24jssdk'
 
 const b24 = B24Hook.fromWebhookUrl(
   'https://your-portal.bitrix24.com/rest/1/SECRET',
@@ -325,7 +325,7 @@ dropped`), поскольку тип не может остановить зна
 `LicenseManager` (из `useB24Helper`) автоматически подставляет параметры ограничений для enterprise, если портал enterprise. Вручную:
 
 ```ts
-import { ParamsFactory } from '@bitrix24/b24jssdk'
+import { ParamsFactory } from '@bxshefby/b24jssdk'
 
 await $b24.setRestrictionManagerParams(ParamsFactory.getEnterprise())
 ```
@@ -363,8 +363,8 @@ await $b24.setRestrictionManagerParams(ParamsFactory.getEnterprise())
 Пишите функции против `TypeB24`:
 
 ```ts
-import type { TypeB24 } from '@bitrix24/b24jssdk'
-import { EnumCrmEntityTypeId } from '@bitrix24/b24jssdk'
+import type { TypeB24 } from '@bxshefby/b24jssdk'
+import { EnumCrmEntityTypeId } from '@bxshefby/b24jssdk'
 
 interface Deal { id: number; title: string }
 

@@ -1,5 +1,5 @@
-import { B24Hook, Logger, LogLevel, ConsoleV2Handler, ParamsFactory, SdkError } from '@bitrix24/b24jssdk'
-import type { Handler } from '@bitrix24/b24jssdk'
+import { B24Hook, Logger, LogLevel, ConsoleV2Handler, ParamsFactory, SdkError } from '@bxshefby/b24jssdk'
+import type { Handler } from '@bxshefby/b24jssdk'
 import { CLIENT_ERROR_STATUS } from '../constants'
 
 export interface CreateB24ClientOptions {

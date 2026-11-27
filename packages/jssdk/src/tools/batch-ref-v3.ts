@@ -59,7 +59,7 @@ function assertPath(path: string, who: string): void {
  * the caller did not intend to expose to the next command.
  *
  * @example
- * import { BatchRefV3 as R } from '@bitrix24/b24jssdk'
+ * import { BatchRefV3 as R } from '@bxshefby/b24jssdk'
  *
  * const response = await b24.actions.v3.batch.make({
  *   calls: [

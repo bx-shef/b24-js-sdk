@@ -11,8 +11,8 @@
  * Prerequisite: pnpm run dev:prepare (builds dist/ and its type declarations).
  */
 
-import type { LoggerInterface } from '@bitrix24/b24jssdk'
-import { LoggerFactory } from '@bitrix24/b24jssdk'
+import type { LoggerInterface } from '@bxshefby/b24jssdk'
+import { LoggerFactory } from '@bxshefby/b24jssdk'
 
 export function warnDeprecated(logger: LoggerInterface): void {
   LoggerFactory.forcedLog(

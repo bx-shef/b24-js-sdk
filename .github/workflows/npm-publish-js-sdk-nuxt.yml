@@ -1,6 +1,6 @@
 name: NPM publish JS SDK Nuxt 🚀
 
-# Publishes @bitrix24/b24jssdk-nuxt (Nuxt module) to npm via OIDC trusted
+# Publishes @bxshefby/b24jssdk-nuxt (Nuxt module) to npm via OIDC trusted
 # publishing.
 #
 # This is a TOP-LEVEL workflow on purpose. npm's Trusted Publisher entry for the
@@ -8,7 +8,7 @@ name: NPM publish JS SDK Nuxt 🚀
 # the OIDC token exchange 404s if the publishing job runs from any other file. The
 # core SDK publishes from its sibling workflow (`npm-publish-js-sdk.yml`).
 #
-# The published Nuxt module declares a dependency on @bitrix24/b24jssdk at the
+# The published Nuxt module declares a dependency on @bxshefby/b24jssdk at the
 # released version. Both workflows fire on the same `release: published` event, so
 # in the brief window before the core publish lands an `npm install` of the Nuxt
 # module could miss the matching core version. The build itself does not need core
@@ -30,8 +30,9 @@ concurrency:
 
 jobs:
   ci:
-    # Наш форк: автоматика bitrix24 (релизы, npm, ночной smoke против их портала) здесь не работает.
-    if: github.repository == 'bitrix24/b24jssdk'
+    # Форк bx-shef/b24-js-sdk: выпуск @bxshefby/* включается переменной репозитория NPM_RELEASE=true
+    # (Settings → Secrets and variables → Actions → Variables); см. RELEASING.md.
+    if: github.repository == 'bx-shef/b24-js-sdk' && vars.NPM_RELEASE == 'true'
     uses: ./.github/workflows/ci.yml
     # See npm-publish-js-sdk.yml for why these permissions are granted here.
     permissions:
@@ -42,6 +43,10 @@ jobs:
   publish:
     needs: ci
     runs-on: ubuntu-latest
+    # Форк: окружение npm-release (Settings → Environments) — владелец подтверждает каждую публикацию,
+    # разрешены только main и теги v*. То же имя задано в Trusted Publisher пакета на npmjs.com:
+    # без него npm сверял бы только репозиторий и имя файла, и публиковать мог бы любой с правом push.
+    environment: npm-release
     timeout-minutes: 20
     permissions:
       contents: read

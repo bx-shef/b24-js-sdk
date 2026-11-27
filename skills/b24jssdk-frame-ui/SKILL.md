@@ -8,7 +8,7 @@ description: Используйте UI-менеджеры B24Frame (slider, dial
 Эти менеджеры существуют **только** в `B24Frame`. Ни один из них не работает с `B24Hook` или `B24OAuth`. Всегда инициализируйте так:
 
 ```ts
-import { initializeB24Frame } from '@bitrix24/b24jssdk'
+import { initializeB24Frame } from '@bxshefby/b24jssdk'
 const $b24 = await initializeB24Frame()
 ```
 
@@ -98,7 +98,7 @@ const many = await $b24.dialog.selectUsers()
 Активный метод (реализован заново в `packages/jssdk/src/frame/dialog.ts:175-235`). Возвращает объект с группами по типам сущностей, каждая из которых — настоящий `Array`, поэтому можно использовать `.length`/`.map()`/`for..of`. Группы для типов сущностей, которые вы не запрашивали, равны `undefined`.
 
 ```ts
-import type { SelectCRMParams, SelectedCRM } from '@bitrix24/b24jssdk'
+import type { SelectCRMParams, SelectedCRM } from '@bxshefby/b24jssdk'
 
 // Pick one contact
 const single = await $b24.dialog.selectCRM({
@@ -263,7 +263,7 @@ SDK автоматически обновляет авторизацию при 
 токен пропадает, и собственные запросы приложения начинают отвечать 401.
 
 ```ts
-import { initializeB24Frame } from '@bitrix24/b24jssdk'
+import { initializeB24Frame } from '@bxshefby/b24jssdk'
 
 // Opt in — off by default, and pass it at the app's FIRST init (the first
 // caller's options win). Refreshes ahead of expiry, re-checks when the tab
@@ -284,7 +284,7 @@ const $b24 = await initializeB24Frame({ keepAuthFresh: true })
 
 ```ts
 import { onMounted, onBeforeUnmount, ref } from 'vue'
-import { initializeB24Frame, type B24Frame } from '@bitrix24/b24jssdk'
+import { initializeB24Frame, type B24Frame } from '@bxshefby/b24jssdk'
 
 const $b24 = ref<B24Frame | null>(null)
 
@@ -313,7 +313,7 @@ onBeforeUnmount(() => {
 <!-- Синхронизировать с: docs 30.frame.md (installFinish), docs 99.examples/20.app-installation-wizard.md, skills/b24jssdk-core/SKILL.md. -->
 
 ```ts
-import { initializeB24Frame } from '@bitrix24/b24jssdk'
+import { initializeB24Frame } from '@bxshefby/b24jssdk'
 const $b24 = await initializeB24Frame()
 
 if ($b24.isInstallMode) {

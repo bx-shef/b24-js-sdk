@@ -7,7 +7,7 @@ packages:
 
 # Single source of truth for dependencies declared in more than one manifest.
 #
-# `axios` is both a runtime dependency of `@bitrix24/b24jssdk` and a devDependency
+# `axios` is both a runtime dependency of `@bxshefby/b24jssdk` and a devDependency
 # of the workspace root (the root is where the unit specs live, and several of
 # them construct or match an `AxiosError`). Declared separately, the two ranges
 # can drift — a bump to one manifest and not the other resolves two copies of
