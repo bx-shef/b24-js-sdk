@@ -70,6 +70,11 @@ for (const file of RELEASE.filter(f => f.includes('npm-publish'))) {
     assert.match(build, /tar -xzOf "\$TGZ" package\/package\.json/)
     assert.match(build, /startsWith\('catalog:'\) \|\| String\(range\)\.startsWith\('workspace:'\)/)
     assert.match(build, /uses: actions\/upload-artifact@[0-9a-f]{40} /)
+    assert.match(build, /persist-credentials: false/)
+    // tarball доходит до publish тем же путём: артефакт npm-tarball → runner.temp/npm-tarball/<имя из build>
+    assert.match(build, /name: npm-tarball\n/)
+    assert.match(publish, /name: npm-tarball\n {10}path: \$\{\{ runner\.temp \}\}\/npm-tarball\n/)
+    assert.match(publish, /TGZ: \$\{\{ runner\.temp \}\}\/npm-tarball\/\$\{\{ needs\.build\.outputs\.tarball \}\}/)
 
     // publish: только готовый tarball, без кода проекта и без pnpm
     assert.match(publish, /^ {4}environment: npm-release\n/m)
@@ -178,4 +183,8 @@ test('выпуск сам запускает публикацию: release-pleas
     assert.match(s, /if: github\.event_name == 'release' \|\| startsWith\(github\.ref, 'refs\/tags\/v'\)/, file)
     assert.match(s, /TAG: \$\{\{ github\.event\.release\.tag_name \|\| github\.ref_name \}\}/, file)
   }
+})
+
+test('npm-publish-js-sdk-nuxt.yml: модуль закреплён на точной версии ядра', () => {
+  assert.match(read('.github/workflows/npm-publish-js-sdk-nuxt.yml'), /CORE=\$\(jq -r '\.dependencies\["@bxshefby\/b24jssdk"\]'[^\n]*\n {10}if \[ "\$CORE" != "\$VER" \]/)
 })

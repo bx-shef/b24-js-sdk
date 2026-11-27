@@ -161,6 +161,13 @@ jobs:
             exit 1
           fi
           echo "$EXPECTED: $NAME@$VER"
+          # The module must pin the core it was built against: `workspace:*` packs to the exact version.
+          # A `workspace:^` would pack to a range and pass the check above unnoticed.
+          CORE=$(jq -r '.dependencies["@bxshefby/b24jssdk"]' "$RUNNER_TEMP/packed.json")
+          if [ "$CORE" != "$VER" ]; then
+            echo "::error::@bxshefby/b24jssdk in the packed manifest is '$CORE', expected exactly $VER"
+            exit 1
+          fi
 
       - name: Verify version token was replaced
         shell: bash

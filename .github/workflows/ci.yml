@@ -313,8 +313,8 @@ jobs:
           # catalog, and `catalog:` is a pnpm protocol that MUST be resolved
           # before the manifest reaches npm. `pnpm pack` resolves it; plain
           # `npm publish` would ship the literal string and break every install.
-          # Assert on the packed tarball rather than trusting the publish step to
-          # stay `pnpm publish` forever.
+          # The publish workflows pack with pnpm and `npm publish` the tarball;
+          # assert on the packed tarball here too, so a broken pack fails CI first.
           pnpm pack --pack-destination "$RUNNER_TEMP" >/dev/null
           tar -xzOf "$RUNNER_TEMP"/bxshefby-b24jssdk-*.tgz package/package.json > "$RUNNER_TEMP/packed.json"
           node -e "const p=require(process.env.RUNNER_TEMP+'/packed.json'); for (const [name, range] of Object.entries(p.dependencies||{})) { if (String(range).startsWith('catalog:') || String(range).startsWith('workspace:')) { console.error('::error::packed manifest ships an unresolved specifier: '+name+'@'+range); process.exit(1) } } console.log('packed manifest specifiers resolved OK')"
