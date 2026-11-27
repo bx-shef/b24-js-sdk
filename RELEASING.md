@@ -29,9 +29,14 @@
    Токен npm в секретах не нужен: публикация идёт по OIDC с provenance (`publishConfig.provenance`),
    поэтому `repository.url` в `package.json` пакетов указывает на `bx-shef/b24-js-sdk`.
 2. **Окружение `npm-release`** (*Settings → Environments → New environment*): *Required reviewers* —
-   владелец; *Deployment branches and tags* — *Selected*: ветка `main` и теги `v*`. Jobs публикации идут в
-   этом окружении, и npm принимает токен только из него — опубликовать без подтверждения владельца, со
-   своей ветки или правкой workflow нельзя.
+   владелец, *Prevent self-review* выключить (иначе владелец не одобрит запуск, который начал сам);
+   *Deployment branches and tags* — *Selected*: ветка `main` и теги `v*`. Jobs публикации идут в этом
+   окружении, и npm принимает токен только из него. Одобряя запуск, проверьте, что он идёт с `main` или
+   с тега `v*`, коммит которого есть в `main`.
+   **Правило на теги** (*Settings → Rules → Rulesets → New tag ruleset*): цель `v*`, *Restrict creations*,
+   *Restrict updates*, *Restrict deletions*; в обход — владелец и приложение GitHub Actions (теги ставит
+   release-please). Без него любой с правом записи поставит `v*` на свой коммит и запустит публикацию
+   из окружения.
 3. **Переменная репозитория `NPM_RELEASE=true`** (*Settings → Secrets and variables → Actions →
    Variables*). Без неё release-please и обе публикации не запускаются: так форк не выпускал ничего, пока
    имена и версия не были решены (`scripts/__tests__/fork-guards.test.mjs`).
