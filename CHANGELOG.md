@@ -1,7 +1,9 @@
 # Changelog
 
-## [3.1.0](https://github.com/bx-shef/b24-js-sdk/compare/v3.0.0...v3.1.0) (2026-11-27)
+## [3.1.0](https://github.com/bx-shef/b24-js-sdk/commits/v3.1.0) (2026-11-27)
 
+
+Первый выпуск форка: пакеты `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt`, API как у `@bitrix24/b24jssdk@3.0.0`. Переход — «Начало работы → Миграция → с @bitrix24/b24jssdk».
 
 ### Features
 
@@ -18,24 +20,24 @@
 
 ### Dependencies
 
-* raise the brace-expansion 2.x and fast-uri floors past four new advisories ([#588](https://github.com/bx-shef/b24-js-sdk/issues/588)) ([4dde84b](https://github.com/bx-shef/b24-js-sdk/commit/4dde84b14f2aa71e91d5b232157d8b7bf29e2f59))
+* raise the brace-expansion 2.x and fast-uri floors past four new advisories ([#588](https://github.com/bitrix24/b24jssdk/issues/588)) ([4dde84b](https://github.com/bitrix24/b24jssdk/commit/4dde84b14f2aa71e91d5b232157d8b7bf29e2f59))
 * закрыть уязвимости из pnpm audit (simple-git и др.) ([#8](https://github.com/bx-shef/b24-js-sdk/issues/8)) ([02c592f](https://github.com/bx-shef/b24-js-sdk/commit/02c592f3ed75090e2b3d9fd75f42e73bc79e5dfe))
 * исключение GHSA-mrhx-c7xc-m3w5 для zod 3 в @nuxt/content ([#17](https://github.com/bx-shef/b24-js-sdk/issues/17)) ([e77884a](https://github.com/bx-shef/b24-js-sdk/commit/e77884a86e4ffe2c3006f613d188c14b518b08de))
 
 
 ### Changed
 
-* move the package manager to pnpm 12.8.1 ([#590](https://github.com/bx-shef/b24-js-sdk/issues/590)) ([9992396](https://github.com/bx-shef/b24-js-sdk/commit/99923961a1ea5b78a08460665067da99805e5e5e))
+* move the package manager to pnpm 12.8.1 ([#590](https://github.com/bitrix24/b24jssdk/issues/590)) ([9992396](https://github.com/bitrix24/b24jssdk/commit/99923961a1ea5b78a08460665067da99805e5e5e))
 
 
 ### Docs
 
 * **mcp:** описания инструментов и промптов MCP на русском ([#41](https://github.com/bx-shef/b24-js-sdk/issues/41)) ([a33ab8a](https://github.com/bx-shef/b24-js-sdk/commit/a33ab8acc5730cfb19d2ae64e40fff44dcd099a6))
-* replace the Node 20 banner with a 3.0.0 release banner ([#584](https://github.com/bx-shef/b24-js-sdk/issues/584)) ([6fcbe88](https://github.com/bx-shef/b24-js-sdk/commit/6fcbe882fd7eb615b95af439230726feda6043a0))
-* **site:** пометка [@check-ignore](https://github.com/check-ignore) не видна на страницах; главная по-русски ([#46](https://github.com/bx-shef/b24-js-sdk/issues/46)) ([063c85c](https://github.com/bx-shef/b24-js-sdk/commit/063c85ce466609a72ef12b3e27193405e5123f70))
+* replace the Node 20 banner with a 3.0.0 release banner ([#584](https://github.com/bitrix24/b24jssdk/issues/584)) ([6fcbe88](https://github.com/bitrix24/b24jssdk/commit/6fcbe882fd7eb615b95af439230726feda6043a0))
+* **site:** пометка `@check-ignore` не видна на страницах; главная по-русски ([#46](https://github.com/bx-shef/b24-js-sdk/issues/46)) ([063c85c](https://github.com/bx-shef/b24-js-sdk/commit/063c85ce466609a72ef12b3e27193405e5123f70))
 * **site:** примеры только показываются, запуска на портале нет ([#43](https://github.com/bx-shef/b24-js-sdk/issues/43)) ([3db6ca0](https://github.com/bx-shef/b24-js-sdk/commit/3db6ca0caf12187d120170430d952f4258ffaff8))
-* **umd:** add a current user and placement frame example ([#589](https://github.com/bx-shef/b24-js-sdk/issues/589)) ([132a386](https://github.com/bx-shef/b24-js-sdk/commit/132a386dabccf8eca26c8e792cbf1a5bad8eb5c9)), closes [#586](https://github.com/bx-shef/b24-js-sdk/issues/586)
-* **umd:** pin the CDN script to [@3](https://github.com/3) instead of [@latest](https://github.com/latest) ([#587](https://github.com/bx-shef/b24-js-sdk/issues/587)) ([79a25c2](https://github.com/bx-shef/b24-js-sdk/commit/79a25c23c51c6285958e5c211be8952728747154)), closes [#586](https://github.com/bx-shef/b24-js-sdk/issues/586)
+* **umd:** add a current user and placement frame example ([#589](https://github.com/bitrix24/b24jssdk/issues/589)) ([132a386](https://github.com/bitrix24/b24jssdk/commit/132a386dabccf8eca26c8e792cbf1a5bad8eb5c9)), closes [#586](https://github.com/bitrix24/b24jssdk/issues/586)
+* **umd:** pin the CDN script to `@3` instead of `@latest` ([#587](https://github.com/bitrix24/b24jssdk/issues/587)) ([79a25c2](https://github.com/bitrix24/b24jssdk/commit/79a25c23c51c6285958e5c211be8952728747154)), closes [#586](https://github.com/bitrix24/b24jssdk/issues/586)
 * перевод — миграция ([#13](https://github.com/bx-shef/b24-js-sdk/issues/13)) ([92fabdf](https://github.com/bx-shef/b24-js-sdk/commit/92fabdf574d546ff6edb4971e37c067d1b4ef1d7))
 * перевод — работа с REST API, часть 1 ([#19](https://github.com/bx-shef/b24-js-sdk/issues/19)) ([62e1cd8](https://github.com/bx-shef/b24-js-sdk/commit/62e1cd880ce2a52b6f42bddffa662057209fa72e))
 * перевод — работа с REST API, часть 2 (вебхук, фрейм, OAuth, помощники) ([#20](https://github.com/bx-shef/b24-js-sdk/issues/20)) ([dfcae78](https://github.com/bx-shef/b24-js-sdk/commit/dfcae789edfbb9d068f9305997e15fdf2fc42586))
