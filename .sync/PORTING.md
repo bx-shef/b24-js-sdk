@@ -60,7 +60,7 @@ CLA и т. п.). Пропуск без записи неотличим от не
 | `pnpm-lock.yaml`, `skills/*/pnpm-lock.yaml` | Не сводить руками: после правки манифестов — `pnpm install` |
 | `pnpm-workspace.yaml` (overrides) | Объединять: наши override оставить, пока родитель не закрыл ту же уязвимость |
 | Версии зависимостей | Переносить, только если у нас стояла та же версия, что у родителя «до»; сверка — `node .sync/dep-parity.mjs --check`, снимок обновляется `node .sync/dep-parity.mjs --write` |
-| Имя пакета `@bitrix24/b24jssdk` (`-nuxt`, `-cli`, `-docs`, `-recipes`) в любых файлах родителя | Заменять на `@bxshefby/…`: так называются наши пакеты. Исключения — глава о переходе, `CHANGELOG.md` и ключ `localStorage` Pull-клиента (`storage-manager.ts`). Сторож — `scripts/__tests__/fork-guards.test.mjs` |
+| Имя пакета `@bitrix24/b24jssdk` (`-nuxt`, `-cli`, `-docs`, `-recipes`) в любых файлах родителя | Заменять на `@bxshefby/…`: так называются наши пакеты. Исключения — глава о переходе и `CHANGELOG.md`. Сторож — `scripts/__tests__/fork-guards.test.mjs` |
 | `docs/app/**` (дизайн), `docs/modules/bx-assistant/**`, `deploy/**`, `tools/review-tier.*`, `.claude/**` | Наше. Изменения родителя — вручную, если они имеют смысл для нас |
 | Релизы родителя (release-please, `CHANGELOG`, смена версии) | `n/a`: версию мы берём сами |
 

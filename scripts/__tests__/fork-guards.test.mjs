@@ -61,11 +61,10 @@ test('dependabot.yml: свои PR Dependabot выключены', () => {
 
 // Пакеты форка выходят как @bxshefby/*. Имя bitrix24 при переносе их коммитов возвращается
 // в тексты незаметно — оно законно только в главе о переходе, в CHANGELOG (история),
-// в ключе localStorage Pull-клиента (совместимость), в правилах выпуска и переноса и в этом тесте.
+// в правилах выпуска и переноса и в этом тесте.
 const OLD_NAME = '@bitrix24/b24jssdk'
 const OLD_NAME_ALLOWED = new Set([
   'docs/content/docs/1.getting-started/3.migration/0.from-bitrix24.md',
-  'packages/jssdk/src/pullClient/storage-manager.ts',
   'scripts/__tests__/fork-guards.test.mjs',
   '.claude/owner-questions.md',
   'RELEASING.md',

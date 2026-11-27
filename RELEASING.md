@@ -18,6 +18,13 @@
    | Repository | `b24-js-sdk` | `b24-js-sdk` |
    | Workflow filename | `npm-publish-js-sdk.yml` | `npm-publish-js-sdk-nuxt.yml` |
    | Environment name | `npm-release` | `npm-release` |
+   | Allow npm publish | отметить | отметить |
+   | Allow npm dist-tag | не отмечать | не отмечать |
+
+   Без *Allow npm publish* доверенный публикатор может только `npm stage publish`, а workflow публикует
+   сразу (`pnpm publish`); метку `latest`/`next` он ставит при публикации, `npm dist-tag` не нужен. Ниже, в
+   *Publishing access*, — *Require two-factor authentication and disallow bypass 2fa tokens*: публикация по
+   токену в обход 2FA закрыта, доверенной публикации это не мешает.
 
    Токен npm в секретах не нужен: публикация идёт по OIDC с provenance (`publishConfig.provenance`),
    поэтому `repository.url` в `package.json` пакетов указывает на `bx-shef/b24-js-sdk`.

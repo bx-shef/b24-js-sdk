@@ -63,9 +63,7 @@ export class StorageManager implements TypeStorageManager {
   }
 
   private _getKey(name: string): string {
-    // Fork: the storage key keeps the upstream package name on purpose, so a user
-    // switching from @bitrix24/b24jssdk keeps the saved Pull state.
-    return `@bitrix24/b24jssdk-pull-${this.userId}-${this.siteId}-${name}`
+    return `@bxshefby/b24jssdk-pull-${this.userId}-${this.siteId}-${name}`
   }
 
   compareKey(eventKey: string, userKey: string): boolean {
