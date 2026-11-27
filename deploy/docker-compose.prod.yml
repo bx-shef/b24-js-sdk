@@ -4,7 +4,8 @@
 #     блоки сайтов вручную); с nginx-proxy + acme-companion сайт подхватится сам по VIRTUAL_HOST;
 #   - .env рядом с этим файлом (шаблон — deploy/.env.example);
 #   - общий Watchtower с входом в ghcr — подхватит новый :latest по метке ниже.
-# Наружу сайт выставляет прокси по VIRTUAL_HOST — порта на хосте нет.
+# Наружу сайт выставляет прокси (на сервере bx-shef — блок в default.conf, у nginx-proxy — по VIRTUAL_HOST);
+# порта на хосте нет.
 
 name: b24-js-sdk-docs
 
