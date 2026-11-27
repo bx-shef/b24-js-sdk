@@ -11,8 +11,8 @@
   `pnpm run docs:build`. В образе только `docs/.output`, процесс от `node`, порт 3000.
 - Воркфлоу `.github/workflows/docs-image.yml`: на PR — сборка и дымовая проверка; на push в `main` —
   публикация `ghcr.io/bx-shef/b24-js-sdk-docs:latest` и `:sha-…`.
-- Адрес сайта для sitemap, canonical и og — переменная репозитория `SITE_URL`
-  (Settings → Secrets and variables → Actions → Variables). Пусто — ссылки относительные.
+- Адрес сайта для sitemap, canonical и og — секрет репозитория `DOCS_SITE_URL` (или переменная
+  `SITE_URL`; Settings → Secrets and variables → Actions). Пусто — ссылки относительные.
 - MCP включён при сборке (`NUXT_MCP_ENABLED=true`). Чат включён при сборке флагом
   `NUXT_PUBLIC_BX_ASSISTANT_ENABLED=true`, а показывается, только если при запуске
   `ASSISTANT_ENABLED=true` и задан `DEEPSEEK_API_KEY`. `ASSISTANT_ENABLED=false` выключает и
@@ -21,7 +21,8 @@
   (`ASSISTANT_RATE_PER_MINUTE`, клиент — по `X-Forwarded-For` от nginx-proxy) и общий за сутки
   (`ASSISTANT_DAILY_LIMIT`).
 
-- Яндекс Метрика — `YANDEX_METRIKA_ID` в `.env` (номер счётчика). Метрика грузится только после
+- Яндекс Метрика — номер счётчика в секрете репозитория `YANDEX_METRIKA_ID`, вшивается в образ при
+  сборке; на сервере заменить его можно переменной `NUXT_PUBLIC_YANDEX_METRIKA_ID`. Метрика грузится только после
   согласия посетителя в баннере cookie (`docs/public/cookie-consent.js`, как на посадочных bx-shef),
   без Вебвизора; события сайта (поиск, чат, переключение версии API, действия со страницей) уходят
   целями `reachGoal` (`docs/app/composables/useAnalytics.ts`).
@@ -32,6 +33,6 @@
    `site/landing/deploy/proxy.compose.yml` из bx-shef/toolsai.
 2. Каталог, например `/opt/b24-js-sdk-docs`: `docker-compose.prod.yml` и `.env` из `.env.example`.
 3. `docker compose -f docker-compose.prod.yml up -d`.
-4. Проверка: `https://<DOMAIN>/` и `https://<DOMAIN>/llms.txt` (есть при заданном `SITE_URL`) — 200, `https://<DOMAIN>/mcp/` — MCP-сервер.
+4. Проверка: `https://<DOMAIN>/` и `https://<DOMAIN>/llms.txt` (есть при заданном адресе сайта) — 200, `https://<DOMAIN>/mcp/` — MCP-сервер.
 
 Новые версии ставит Watchtower по метке `com.centurylinklabs.watchtower.enable=true`.
