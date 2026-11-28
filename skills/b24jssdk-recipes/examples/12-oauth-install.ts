@@ -437,6 +437,10 @@ async function main() {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
+  // No rate limit here on purpose — it is deployment policy, not recipe logic.
+  // Every request to /install and /uninstall reads and writes the credentials
+  // store and may call the portal, so put a limiter in front in production
+  // (e.g. express-rate-limit, or `limit_req` in nginx).
   app.post('/install', (req: Request, res: Response) => {
     handleInstall(req, res).catch((e: unknown) => {
       // The second argument is a CONTEXT RECORD, not a second value. Passing the
