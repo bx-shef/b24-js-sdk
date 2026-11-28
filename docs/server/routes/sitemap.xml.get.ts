@@ -16,8 +16,10 @@ export default defineEventHandler(async (event) => {
     .all()
 
   const today = new Date().toISOString().split('T')[0]
+  // Форк: адрес без «/» на конце — как canonical (useCanonical.ts), ссылки меню (useNavigation.ts) и /raw.
+  // Со «/» каждая страница карты сайта указывала бы canonical на другой адрес (#109).
   const urls = pages.map(page =>
-    `  <url>\n    <loc>${xmlEscape(`${baseUrl}${page.path}/`)}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
+    `  <url>\n    <loc>${xmlEscape(`${baseUrl}${page.path}`)}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
   ).join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

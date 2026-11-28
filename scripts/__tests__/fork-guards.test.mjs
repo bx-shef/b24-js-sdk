@@ -313,9 +313,13 @@ test('сайт: /raw/* не отражает путь запроса в отве
   }
 })
 
-// canonical совпадает с sitemap.xml (#109): оба со «/» на конце. Родитель строит canonical без «/» —
-// при синхронизации это вернётся, и каждая страница карты сайта станет неканоничной.
-test('сайт: canonical со «/» на конце, как в sitemap.xml', () => {
-  assert.ok(read('docs/app/composables/useCanonical.ts').includes('withTrailingSlash(route.path)'), 'canonical снова без «/» на конце')
-  assert.ok(read('docs/server/routes/sitemap.xml.get.ts').includes('${page.path}/'), 'sitemap.xml без «/» на конце — сверить с canonical')
+// sitemap.xml совпадает с canonical (#109): оба без «/» на конце, как ссылки меню (nuxt.config.ts, prerender).
+// У родителя sitemap со «/» — при синхронизации это вернётся, и каждая страница карты станет неканоничной.
+const stripComments = src => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1')
+test('сайт: sitemap.xml и canonical — адрес страницы без «/» на конце', () => {
+  const canonical = stripComments(read('docs/app/composables/useCanonical.ts'))
+  assert.match(canonical, /const pathNormal = withoutTrailingSlash\(route\.path\)/, 'canonical больше не без «/»')
+  assert.match(canonical, /rel: 'canonical', href: joinURL\(siteUrl, pathNormal\)/, 'canonical строится не из pathNormal')
+  const sitemap = stripComments(read('docs/server/routes/sitemap.xml.get.ts'))
+  assert.match(sitemap, /<loc>\$\{xmlEscape\(`\$\{baseUrl\}\$\{page\.path\}`\)\}<\/loc>/, 'sitemap.xml снова со «/» на конце')
 })
