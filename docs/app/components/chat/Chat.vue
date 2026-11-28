@@ -121,24 +121,15 @@ type ToolPart = ToolUIPart | DynamicToolUIPart
 type ToolState = ToolPart['state']
 
 function getToolMessage(state: ToolState, toolName: string, input: Record<string, string | undefined>) {
-  const searchVerb = state === 'output-available' ? 'Searched' : 'Searching'
-  const readVerb = state === 'output-available' ? 'Read' : 'Reading'
-
+  // Подписи шагов по-русски (#71): служебные имена инструментов MCP читателю ничего не говорят
+  const done = state === 'output-available'
+  const page = input.path ? ` «${input.path}»` : ''
   return {
-    'b24-ui-search-components': `${searchVerb} components${input.category ? ` in ${input.category} category` : ''}${input.search ? ` for "${input.search}"` : ''}`,
-    'b24-ui-search-composables': `${searchVerb} composables${input.search ? ` for "${input.search}"` : ''}`,
-    'b24-ui-search-documentation': `${searchVerb} documentation${input.section ? ` in ${input.section}` : ''}${input.search ? ` for "${input.search}"` : ''}`,
-    'b24-ui-search-icons': `${searchVerb} icons${input.query ? ` for "${input.query}"` : ''}`,
-    'b24-ui-get-component': `${readVerb} ${upperName(input.componentName || '')} component`,
-    'b24-ui-get-component-metadata': `${readVerb} metadata for component ${upperName(input.componentName || '')}`,
-    'b24-ui-list-templates': `${searchVerb} templates${input.category ? ` in ${input.category} category` : ''}`,
-    'b24-ui-get-template': `${readVerb} template ${upperName(input.templateName || '')}`,
-    'b24-ui-get-documentation-page': `${readVerb} ${input.path || ''} page`,
-    'b24-ui-list-getting-started-guides': `${searchVerb} documentation guides`,
-    'b24-ui-get-migration-guide': `${readVerb} migration guide${input.version ? ` for ${input.version}` : ''}`,
-    'b24-ui-list-examples': `${searchVerb} examples`,
-    'b24-ui-get-example': `${readVerb} ${upperName(input.exampleName || '')} example`
-  }[toolName] || `${searchVerb} ${toolName}`
+    'b24-jssdk-list-documentation-pages': done ? 'Просмотрел список страниц документации' : 'Смотрю список страниц документации…',
+    'b24-jssdk-list-getting-started-guides': done ? 'Просмотрел руководства «Быстрый старт»' : 'Смотрю руководства «Быстрый старт»…',
+    'b24-jssdk-get-documentation-page': done ? `Прочитал страницу${page}` : `Читаю страницу${page}…`,
+    'b24-jssdk-get-example': done ? `Прочитал пример${input.exampleName ? ` «${input.exampleName}»` : ''}` : `Читаю пример${input.exampleName ? ` «${input.exampleName}»` : ''}…`
+  }[toolName] || (done ? 'Поискал в документации' : 'Ищу в документации…')
 }
 
 const getCachedToolMessage = useMemoize((state: ToolState, toolName: string, input: string) =>

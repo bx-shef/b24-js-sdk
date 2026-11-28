@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ToasterProps } from '@bitrix24/b24ui-nuxt'
-import { ru } from '@bitrix24/b24ui-nuxt/locale'
 
 const route = useRoute()
 const appConfig = useAppConfig()
@@ -17,12 +16,9 @@ const { data: files } = useLazyAsyncData(
       ignoredTags: ['style']
     })
 
-    return data.map((file) => {
-      return {
-        ...file,
-        id: file.id.replace(/([^/])(#.*)?$/, (_, char, hash = '') => `${char}/${hash}`)
-      }
-    })
+    // Адреса разделов — как у пунктов меню, без «/» на конце: ContentSearch b24ui сопоставляет раздел с пунктом
+    // меню по точному адресу. Добавленный «/» не совпадал ни с одним пунктом, и поиск находил только меню (#71).
+    return data
   },
   {
     server: false
@@ -70,7 +66,7 @@ provide('files', files)
 </script>
 
 <template>
-  <B24App :toaster="appConfig.toaster as ToasterProps" :locale="ru">
+  <B24App :toaster="appConfig.toaster as ToasterProps" :locale="siteLocale">
     <NuxtLoadingIndicator color="var(--ui-color-design-filled-warning-bg)" :height="3" />
 
     <div class="flex">

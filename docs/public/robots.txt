@@ -1,1 +1,3 @@
 User-agent: *
+
+Sitemap: https://b24-js-sdk.bx-shef.by/sitemap.xml
