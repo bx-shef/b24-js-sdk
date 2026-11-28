@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// .global: MDC вне страниц документации (главная) ищет ProsePre среди глобальных компонентов — иначе блок
+// рисуется неизвестным тегом <prosepre> и пропадает (штатный из b24ui глобальный, и наш должен быть таким же).
 // Блок кода документации — штатный ProsePre из b24ui плюс пометка, где выполняется пример (#113).
 // Среда видна только по точке входа в самом коде (B24Hook, B24OAuth, initializeB24Frame…); у примеров,
 // где `$b24` уже создан, точки входа нет — они работают в любой среде, и пометки у них нет (иначе шум).
@@ -8,7 +10,10 @@ import { codeRuntime } from '~/utils/codeRuntime'
 defineOptions({ inheritAttrs: false })
 
 const attrs = useAttrs()
-const runtime = computed(() => codeRuntime(typeof attrs.code === 'string' ? attrs.code : '', typeof attrs.language === 'string' ? attrs.language : undefined))
+// Внутри code-group (она передаёт hide-header, а атрибуты скрытия вкладки — блоку, не обёртке) пометки нет:
+// иначе подписи скрытых вкладок видны, а среду там и так называют имена вкладок.
+const inGroup = computed(() => attrs.hideHeader !== undefined || attrs['hide-header'] !== undefined)
+const runtime = computed(() => inGroup.value ? undefined : codeRuntime(typeof attrs.code === 'string' ? attrs.code : '', typeof attrs.language === 'string' ? attrs.language : undefined))
 const preUi = computed(() => ({ ...(attrs.b24ui as Record<string, unknown> | undefined), root: 'my-0' }))
 </script>
 
