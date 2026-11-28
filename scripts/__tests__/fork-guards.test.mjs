@@ -282,3 +282,13 @@ test('подвал сайта: © ООО «БэИксШефБай» и «Осн�
   assert.ok(footer.includes(`© 2026 ${OWNER}`))
   assert.ok(footer.includes('Основано на Bitrix24 JS SDK'))
 })
+
+// Размер пакета (#63): без карт исходников, лишних копий деклараций и несжатого UMD. Слияние с родителем
+// возвращает его build.config.ts и files — архив снова 3,2 МБ вместо 0,74.
+test('пакет @bxshefby/b24jssdk: без карт, лишних деклараций и несжатого UMD', () => {
+  const files = JSON.parse(read('packages/jssdk/package.json')).files
+  for (const rule of ['!dist/**/*.map', '!dist/esm/index.d.mts', '!dist/cjs/index.d.ts', '!dist/cjs/index.d.mts', '!dist/umd/index.js']) {
+    assert.ok(files.includes(rule), `в files нет ${rule}`)
+  }
+  assert.equal(count(read('packages/jssdk/build.config.ts'), 'sourcemap: true'), 0, 'build.config.ts снова собирает карты')
+})

@@ -49,9 +49,9 @@ function initConfig(formatTypeParam: string): BuildConfig {
         // Maintaining a modular structure
         preserveModules: formatType === 'esm' || formatType === 'cjs',
         preserveModulesRoot: 'src',
-        // Generate a sourcemap with the original content
-        sourcemap: true,
-        sourcemapExcludeSources: false
+        // Карт исходников в пакете нет (#63): они занимали 63% пакета (9 МБ), а бандлу пользователя не нужны.
+        // Ссылок sourceMappingURL на файлы, которых нет в пакете, тоже не оставляем.
+        sourcemap: false
       } as any
     },
     hooks: {} as Record<string, () => {}>
@@ -63,7 +63,7 @@ function initConfig(formatTypeParam: string): BuildConfig {
         ...baseConfig,
         entries: ['./src/index'],
         declaration: true,
-        sourcemap: true,
+        sourcemap: false,
         rollup: {
           ...baseConfig.rollup,
           esbuild: {
@@ -113,7 +113,7 @@ function initConfig(formatTypeParam: string): BuildConfig {
         ...baseConfig,
         entries: ['./src/index'],
         declaration: true,
-        sourcemap: true,
+        sourcemap: false,
         rollup: {
           ...baseConfig.rollup,
           esbuild: {
@@ -169,7 +169,7 @@ function initConfig(formatTypeParam: string): BuildConfig {
         ...baseConfig,
         entries: ['./src/index'],
         declaration: false,
-        sourcemap: true,
+        sourcemap: false,
         rollup: {
           ...baseConfig.rollup,
           esbuild: {
