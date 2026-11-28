@@ -75,9 +75,18 @@ body {
     /* шапка сайта: bg-(--ui-color-accent-soft-element-violet)/40, dark:bg-(--ui-color-copilot-bg-content-3)/40 */
     --ui-color-accent-soft-element-violet: #2A2466;
     --ui-color-copilot-bg-content-3: #2A2466;
+    /* Текст контурных и «простых» акцентных кнопок: #4B3CD0 на тёмном — контраст ~2,6; #A9B4FF — как в b24-ui (#49) */
+    --ui-color-design-outline-a2-content: #A9B4FF;
+    --ui-color-design-outline-a2-content-icon: #A9B4FF;
+    --ui-color-design-outline-a2-content-chevron: #A9B4FF;
+    --ui-color-design-outline-content-icon-alt: #A9B4FF;
+    --ui-color-design-plain-a-content: #A9B4FF;
+    --ui-color-design-plain-a-content-icon: #A9B4FF;
+    --ui-color-design-plain-a-content-chevron: #A9B4FF;
   }
 
-  /* Фон: пятна перелива на тёмном — вместо фотографии фона b24ui */
+  /* Фон: пятна перелива на тёмном — вместо фотографии фона b24ui. Тёмная тема сайта — `dark` (app.config.ts) */
+  .dark,
   .edge-dark {
     --air-theme-bg-image:
       radial-gradient(60rem 40rem at 10% -10%, rgb(110 91 255 / 0.28), transparent 60%),
@@ -120,6 +129,7 @@ html[data-restapiver="rest-api-ver3"] .rest-api-ver2-only {
 }
 /** endregion */
 
+.dark .custom-scrollbar-transparent,
 .edge-dark .custom-scrollbar-transparent {
   scrollbar-color: hsla(0, 0%, 0%, 0.21) transparent;
 }
