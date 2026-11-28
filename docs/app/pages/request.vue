@@ -50,6 +50,8 @@ const frame = useTemplateRef<HTMLIFrameElement>('frame')
 const gate = ref<'wait' | 'ask' | 'load'>('wait')
 const hasConsentBanner = /^\d+$/.test(String(config.public.yandexMetrikaId ?? '').trim())
 let consentTimer: ReturnType<typeof setInterval> | undefined
+// Окно согласия доступно (баннер мог не загрузиться, например из-за блокировщика) — иначе ссылки на него нет
+const canOpenConsent = ref(false)
 
 function openConsent() {
   window.BxConsent?.open()
@@ -74,6 +76,7 @@ function watchConsent() {
       return
     }
     gate.value = 'ask'
+    canOpenConsent.value = Boolean(consent)
     consent?.onAnalytics(() => {
       gate.value = 'load'
     })
@@ -127,16 +130,21 @@ onBeforeUnmount(() => {
       />
       <div v-else-if="gate === 'ask'" class="min-h-[240px] flex items-center justify-center px-4 py-8 text-center">
         <p class="text-description max-w-md">
-          Форма заявки работает с cookie аналитики: загрузчик Битрикс24 ставит свои метки. Примите cookie
-          <button
-            v-if="hasConsentBanner"
-            type="button"
-            class="inline underline underline-offset-4 text-primary hover:no-underline"
-            @click="openConsent"
-          >
-            в окне согласия
-          </button>
-          — и форма появится. Или напишите на почту ниже.
+          Форма заявки работает с cookie аналитики: загрузчик Битрикс24 ставит свои метки.
+          <template v-if="canOpenConsent">
+            Примите cookie
+            <button
+              type="button"
+              class="inline underline underline-offset-4 text-primary hover:no-underline"
+              @click="openConsent"
+            >
+              в окне согласия
+            </button>
+            — и форма появится. Или напишите на почту ниже.
+          </template>
+          <template v-else>
+            Окно согласия не загрузилось (возможно, его скрыл блокировщик) — напишите на почту ниже.
+          </template>
         </p>
       </div>
       <div v-else class="min-h-[240px]" aria-busy="true" />
