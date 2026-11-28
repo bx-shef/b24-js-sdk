@@ -44,9 +44,11 @@ const stemOrder = (stem?: string) => {
   return Number.isNaN(n) ? Number.MAX_SAFE_INTEGER : n
 }
 
-// Card titles drop the "Recipe: " prefix the recipe pages carry — the homepage
-// grid reads cleaner without it.
-const cardTitle = (title?: string) => (title ?? '').replace(/^Recipe:\s*/, '')
+// Заголовки карточек — без приставки «Рецепт:» у страниц рецептов, с заглавной буквы
+const cardTitle = (title?: string) => {
+  const text = (title ?? '').replace(/^(Recipe|Рецепт):\s*/, '')
+  return text.charAt(0).toUpperCase() + text.slice(1)
+}
 
 // Cookbook — recipes flagged `featured: true`, ordered by the frontmatter-driven
 // `cookbookOrder` (lower first; unset sorts to the end). No index.vue edit needed
@@ -96,28 +98,32 @@ const iconFromIconName = (iconName?: string) => {
 
 <template>
   <main v-if="page" class="min-h-[calc(100vh-125px)]">
-    <B24Container class="px-[22px] lg:px-8 py-10 sm:py-16 lg:py-24 relative flex flex-col items-start sm:items-center justify-center gap-[20px]">
-      <h1 class="relative text-label sm:text-center text-5xl sm:text-8xl font-bold mb-0">
-        @bxshefby/b24jssdk <br> Bitrix24 JS SDK
-      </h1>
-
-      <div class="sm:text-center sm:text-4xl mb-2 last:mb-0 text-pretty text-(length:--ui-font-size-xl) leading-(--ui-font-line-height-lg) text-label">
-        {{ page.hero.description }}
-      </div>
-
-      <B24Separator class="my-4" type="dashed" accent="accent" />
-      <div class="mt-2 flex flex-wrap items-start sm:items-center gap-4">
-        <B24Button
-          v-for="link of page.hero.links"
-          :key="link.label"
-          v-bind="link"
-          size="md"
-          :icon="iconFromIconName(link?.iconName)"
-        />
-      </div>
+    <B24Container class="px-[22px] lg:px-8 py-10 sm:py-16 lg:py-20">
+      <HomeHero :title="page.hero.title" :description="page.hero.description">
+        <div class="flex flex-wrap items-center gap-3">
+          <B24Button
+            v-for="link of page.hero.links"
+            :key="link.label"
+            v-bind="link"
+            size="md"
+            :icon="iconFromIconName(link?.iconName)"
+          />
+        </div>
+      </HomeHero>
     </B24Container>
 
-    <B24PageSection :b24ui="{ container: 'py-10 sm:py-10 lg:py-10 gap-0 sm:gap-0' }">
+    <B24Container class="px-[22px] lg:px-8 pb-10 flex flex-col gap-10">
+      <section>
+        <h2 class="text-2xl font-bold mb-4 text-label">
+          Что умеет
+        </h2>
+        <HomeFeatures />
+      </section>
+
+      <HomeAi />
+    </B24Container>
+
+    <div class="pt-6">
       <!-- Cookbook -->
       <B24Container class="px-[22px] lg:px-8 pb-10">
         <h2 class="text-2xl font-bold mb-2 text-label">
@@ -151,7 +157,7 @@ const iconFromIconName = (iconName?: string) => {
       </B24Container>
 
       <!-- Extended catalogue -->
-      <B24Container class="pb-16">
+      <B24Container class="px-[22px] lg:px-8 pb-16">
         <B24Card
           class="base-mode"
           :b24ui="{
@@ -216,6 +222,6 @@ const iconFromIconName = (iconName?: string) => {
           </B24Button>
         </div>
       </B24Container>
-    </B24PageSection>
+    </div>
   </main>
 </template>
