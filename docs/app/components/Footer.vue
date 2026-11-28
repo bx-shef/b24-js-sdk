@@ -82,10 +82,10 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
       >
         Настроить cookie
       </button>
-      <!-- Та же политика, что в окне баннера cookie (public/cookie-consent.js) -->
+      <!-- Та же политика, что в окне баннера cookie (utils/cookiePolicy.ts) -->
       <NuxtLink
         v-if="config.public.yandexMetrikaId"
-        to="https://offer.bx-shef.by/privacy"
+        :to="COOKIE_POLICY_URL"
         target="_blank"
         class="whitespace-nowrap text-legend text-(length:--ui-font-size-sm) hover:underline"
       >

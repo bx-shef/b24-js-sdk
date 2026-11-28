@@ -39,7 +39,7 @@ export default defineNuxtPlugin(() => {
 
   const consent = document.createElement('script')
   consent.src = `${baseUrl}/cookie-consent.js`
-  consent.setAttribute('data-policy', 'https://offer.bx-shef.by/privacy')
+  consent.setAttribute('data-policy', COOKIE_POLICY_URL)
   consent.setAttribute('data-services', 'Яндекс Метрику (статистика посещений)')
   consent.onload = () => {
     window.BxConsent?.onAnalytics(() => {
