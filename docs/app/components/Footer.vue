@@ -20,7 +20,7 @@ const { b24DocsLink, tgLink } = useHeader()
 
     <template #right>
       <B24Button
-        aria-label="Bitrix24 REST API"
+        aria-label="Документация REST API Битрикс24"
         :icon="Bitrix24Icon"
         :to="b24DocsLink"
         target="_blank"
@@ -28,7 +28,7 @@ const { b24DocsLink, tgLink } = useHeader()
       />
 
       <B24Button
-        aria-label="Bitrix24 UI on Telegram"
+        aria-label="Чат разработчиков в Telegram"
         :icon="TelegramIcon"
         :to="tgLink"
         target="_blank"

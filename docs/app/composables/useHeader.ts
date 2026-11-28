@@ -12,22 +12,10 @@ import Bitrix24Icon from '@bitrix24/b24icons-vue/common-service/Bitrix24Icon'
 const _useHeader = () => {
   const route = useRoute()
 
-  const isNeedChangeTarget = ref(false)
-  const tgLink = computed(() => {
-    return (
-      isNeedChangeTarget.value && (typeof window !== 'undefined' && window.navigator?.language.includes('ru'))
-    )
-      ? 'https://t.me/bitrix24apps'
-      : 'https://t.me/b24_dev'
-  })
-
-  const b24DocsLink = computed(() => {
-    return (
-      isNeedChangeTarget.value && (typeof window !== 'undefined' && window.navigator?.language.includes('ru'))
-    )
-      ? 'https://apidocs.bitrix24.ru/'
-      : 'https://apidocs.bitrix24.com/'
-  })
+  // Сообщество и документация REST — русские для всех (решение владельца 2026-11-28): разработчики сидят
+  // в русском чате, переключать их по языку браузера не нужно.
+  const tgLink = computed(() => 'https://t.me/bitrix24apps')
+  const b24DocsLink = computed(() => 'https://apidocs.bitrix24.ru/')
 
   const desktopLinks = computed<NavigationMenuItem[]>(() => [
     {
@@ -138,10 +126,6 @@ const _useHeader = () => {
       }
     }
   ])
-
-  onMounted(() => {
-    isNeedChangeTarget.value = true
-  })
 
   return {
     desktopLinks,

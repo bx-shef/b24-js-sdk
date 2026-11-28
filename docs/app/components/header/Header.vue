@@ -72,7 +72,7 @@ defineShortcuts({
 
       <div class="hidden sm:flex flex-nowrap flex-row items-center justify-end gap-3">
         <B24Button
-          aria-label="Bitrix24 UI on GitHub"
+          aria-label="Исходный код на GitHub"
           :icon="GitHubIcon"
           :to="config.public.gitUrl"
           target="_blank"
