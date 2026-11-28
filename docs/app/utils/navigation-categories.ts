@@ -41,7 +41,7 @@ export const navigationCategories: Record<string, NavigationCategory[]> = {
   ],
   'getting-started': [
     { id: 'integrations', title: 'Интеграции', icon: 'none' },
-    { id: 'aiTools', title: 'ИИ-инструменты', icon: 'none' }
+    { id: 'aiTools', title: 'AI-инструменты', icon: 'none' }
   ],
   'examples': [
     { id: 'examples', title: 'Рецепты', icon: 'item' }
