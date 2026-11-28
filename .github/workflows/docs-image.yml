@@ -61,6 +61,7 @@ jobs:
           check 200 localhost:3000/docs/getting-started/
           # Vite 8 (rolldown) оставлял в клиентских скриптах заглушки адресов файлов — база документации в браузере
           # не открывалась, переходы внутри сайта давали 404 (docs/build/rolldown-file-url.ts).
+          docker exec docs test -d /app/public/_nuxt || { echo "::error::нет /app/public/_nuxt в образе"; exit 1; }
           if docker exec docs grep -rl 'ROLLDOWN_FILE_URL_' /app/public/_nuxt; then echo "::error::в клиентских скриптах остались ROLLDOWN_FILE_URL_"; exit 1; fi
           # номер Метрики, вшитый при сборке, дошёл до страницы (runtimeConfig в разметке)
           if [ -n "${YANDEX_METRIKA_ID}" ]; then
