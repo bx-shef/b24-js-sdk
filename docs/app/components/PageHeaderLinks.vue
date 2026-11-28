@@ -14,7 +14,7 @@ const { track } = useAnalytics()
 
 const mdPath = computed(() => `${withoutTrailingSlash(`${config.public.siteUrl}${config.public.baseUrl}/raw${route.path}`)}.md`)
 
-// @see docs/app/pages/docs/[...slug]/index.vue:164
+// @see aiPrompt в docs/app/pages/docs/[...slug]/index.vue
 const aiPrompt = computed(() => `Я читаю документацию JS SDK Битрикс24: ${mdPath.value}\nПомоги разобраться, как этим пользоваться: объясняй понятия, приводи примеры и помогай с отладкой по этой странице. Отвечай по-русски.`)
 
 const items = [
