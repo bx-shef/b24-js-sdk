@@ -11,13 +11,18 @@
  * Portal-free (`jsSdk:unit`).
  */
 import { describe, it, expect } from 'vitest'
-// luxon — зависимость пакета, а не корня: берём из него
-import { DateTime } from '../../../packages/jssdk/node_modules/luxon'
+// luxon — зависимость пакета, а не корня: берём из него. Типы лежат отдельно (@types/luxon), прямой путь
+// к модулю их не находит — подставляем вручную
+// @ts-expect-error — у прямого пути к luxon нет объявлений типов
+import * as luxonRuntime from '../../../packages/jssdk/node_modules/luxon'
+import type * as LuxonTypes from '../../../packages/jssdk/node_modules/@types/luxon'
 import * as core from '../../../packages/jssdk/src/tools/text-core'
 import { Text } from '../../../packages/jssdk/src/tools/text'
 import { formatDate, TOKEN_NAMES } from '../../../packages/jssdk/src/logger/formatter/date-format'
 import { LineFormatter } from '../../../packages/jssdk/src/logger/formatter/line-formatter'
 import { LogLevel } from '../../../packages/jssdk/src/types/logger'
+
+const { DateTime } = luxonRuntime as typeof LuxonTypes
 
 // A morning, an afternoon, noon, half past noon and midnight; single- and double-digit fields; milliseconds
 const DATES = [
