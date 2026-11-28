@@ -13,3 +13,5 @@ npx nuxi module add @bxshefby/b24jssdk-nuxt
 Это всё! Теперь `@bxshefby/b24jssdk-nuxt` можно использовать в приложении на Nuxt
 
 Подробности — в [документации](https://b24-js-sdk.bx-shef.by/docs/getting-started/installation/nuxt/)
+
+Переходите с `@bitrix24/b24jssdk-nuxt`? Код менять не нужно — [как сменить пакет](https://b24-js-sdk.bx-shef.by/docs/getting-started/migration/from-bitrix24/).

@@ -125,6 +125,7 @@ test('dependabot.yml: свои PR Dependabot выключены', () => {
 const OLD_NAME = '@bitrix24/b24jssdk'
 // Имя tarball из `pnpm pack`: scope превращается в префикс (`bitrix24-b24jssdk-3.0.0.tgz`).
 const OLD_TARBALL = 'bitrix24-b24jssdk-'
+const MIGRATION_PAGE = '/docs/getting-started/migration/from-bitrix24'
 const OLD_NAME_ALLOWED = new Set([
   'docs/content/docs/1.getting-started/3.migration/0.from-bitrix24.md',
   'scripts/__tests__/fork-guards.test.mjs',
@@ -138,7 +139,9 @@ test('имя @bitrix24/b24jssdk осталось только там, где о�
   const files = out.split('\n').filter(Boolean)
     .filter(f => !/(?:^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/log/'))
     .filter(f => !OLD_NAME_ALLOWED.has(f))
-  assert.deepEqual(files, [], `замените ${OLD_NAME} на @bxshefby/b24jssdk (.sync/PORTING.md)`)
+    // Ссылка на главу о переходе (#114): строка со старым именем законна, только если в ней же — адрес главы.
+    .filter(f => read(f).split('\n').some(line => line.includes(OLD_NAME) && !line.includes(MIGRATION_PAGE)))
+  assert.deepEqual(files, [], `замените ${OLD_NAME} на @bxshefby/b24jssdk (.sync/PORTING.md); вне разрешённых файлов — только в строке со ссылкой на ${MIGRATION_PAGE}`)
 })
 
 // У форка свой сайт документации (https://b24-js-sdk.bx-shef.by) с другой раскладкой страниц и
