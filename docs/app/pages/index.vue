@@ -99,7 +99,7 @@ const iconFromIconName = (iconName?: string) => {
 <template>
   <main v-if="page" class="min-h-[calc(100vh-125px)]">
     <B24Container class="px-[22px] lg:px-8 py-10 sm:py-16 lg:py-20">
-      <HomeHero>
+      <HomeHero :title="page.hero.title" :description="page.hero.description">
         <div class="flex flex-wrap items-center gap-3">
           <B24Button
             v-for="link of page.hero.links"

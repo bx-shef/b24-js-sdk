@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Первый экран главной (#97): о пользе, команда установки и живой пример на трёх точках входа.
 // Код — обычный Markdown через MDC: подсветка, вкладки code-group и кнопка «Скопировать» — те же, что в документации.
+const props = defineProps<{ title: string, description: string }>()
 const config = useRuntimeConfig()
 
 const install = '```bash\nnpm i @bxshefby/b24jssdk\n```'
@@ -46,10 +47,10 @@ const example = [
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
     <div class="flex flex-col gap-5 min-w-0">
       <h1 class="text-label text-4xl sm:text-6xl font-bold leading-tight mb-0">
-        REST API Битрикс24 на&nbsp;TypeScript
+        {{ props.title }}
       </h1>
       <p class="text-(length:--ui-font-size-xl) leading-(--ui-font-line-height-lg) text-label text-pretty">
-        Один SDK для вебхука на сервере, приложения внутри Битрикс24 и OAuth-приложения Маркета: пакетные запросы, обход больших списков и события в реальном времени.
+        {{ props.description }}
       </p>
       <div class="min-w-0 [&_pre]:my-0">
         <MDC :value="install" cache-key="home-install" />

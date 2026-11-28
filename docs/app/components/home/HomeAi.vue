@@ -4,7 +4,14 @@ import CopyIcon from '@bitrix24/b24icons-vue/outline/CopyIcon'
 import CheckLIcon from '@bitrix24/b24icons-vue/outline/CheckLIcon'
 
 const config = useRuntimeConfig()
-const site = computed(() => `${config.public.canonicalUrl || config.public.siteUrl}${config.public.baseUrl}`)
+// Адрес сайта из настроек сборки; без них (локальный запуск) — адрес открытой страницы, чтобы копировался полный URL
+const origin = ref(config.public.canonicalUrl || config.public.siteUrl || '')
+onMounted(() => {
+  if (!origin.value) {
+    origin.value = window.location.origin
+  }
+})
+const site = computed(() => `${origin.value}${config.public.baseUrl}`)
 const mcpUrl = computed(() => `${site.value}/mcp/`)
 
 const copied = ref(false)
