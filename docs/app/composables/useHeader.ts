@@ -49,16 +49,16 @@ const _useHeader = () => {
       children: [
         {
           label: 'B24 UI',
-          description: 'для разработки веб-приложений на REST API',
+          description: 'Интерфейс приложений в стиле Битрикс24',
           icon: BrowserIcon,
-          to: 'https://bitrix24.github.io/b24ui/',
+          to: 'https://b24-ui.bx-shef.by/',
           target: '_blank'
         },
         {
           label: 'B24 Icons',
-          description: 'Интерфейс приложений в стиле Битрикс24.',
+          description: 'Иконки Битрикс24 для Vue и React',
           icon: BarcodeIcon,
-          to: 'https://bitrix24.github.io/b24icons/',
+          to: 'https://b24-icons.bx-shef.by/',
           target: '_blank'
         },
         {
