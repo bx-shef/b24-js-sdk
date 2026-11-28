@@ -435,7 +435,10 @@ export default defineNuxtConfig({
     name: 'Bitrix24 JS SDK',
     version: '1.0.0',
     route: `/mcp/`, // ${baseUrl}
-    browserRedirect: '/docs/getting-started/' // '/docs/getting-started/ai/mcp'
+    browserRedirect: '/docs/getting-started/ai/mcp/',
+    // Раздел «MCP-сервер» в llms.txt пишет docs/server/plugins/llms.ts — по-русски и с рабочими ссылками.
+    // Раздел модуля был английским, а его ссылки шли через замену на /raw/…md: /raw/mcp.md отвечал 500.
+    llms: false
   },
 
   ogImage: {

@@ -62,7 +62,7 @@ curl -fsSLO https://raw.githubusercontent.com/bx-shef/b24-js-sdk/main/deploy/ins
 - Ответы чата идут потоком: в блоке `:443` нужен `proxy_buffering off`, иначе текст приходит целиком в конце.
 - Адрес посетителя прокси передаёт последним в `X-Forwarded-For` (глобальные `proxy_set_header` в начале
   `default.conf`) — на нём держится лимит частоты чата (`NUXT_TRUST_PROXY=true`).
-- MCP (`/mcp/`) на простое открытие отвечает 405 — он принимает только POST от AI-клиентов.
+- MCP (`/mcp/`) принимает POST от AI-клиентов; браузер он перенаправляет на страницу «MCP-сервер», `curl` без `Accept: text/html` получает 405.
 
 Проверка: `https://<домен>/` и `/llms.txt` — 200, на странице есть номер Метрики (`yandexMetrikaId`),
 чат отвечает (`POST /api/ai` — поток `data: …`).

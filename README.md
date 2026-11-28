@@ -85,6 +85,17 @@ $b24.destroy()
 
 Полная документация: [https://b24-js-sdk.bx-shef.by/](https://b24-js-sdk.bx-shef.by/)
 
+## Для AI-агентов
+
+- **MCP-сервер документации:** `https://b24-js-sdk.bx-shef.by/mcp/` — агент сам находит нужные страницы и примеры. Подключение для Claude Code, Cursor, VS Code и Windsurf — [страница «MCP-сервер»](https://b24-js-sdk.bx-shef.by/docs/getting-started/ai/mcp/). Claude Code:
+
+  ```bash
+  claude mcp add --transport http b24-jssdk https://b24-js-sdk.bx-shef.by/mcp/
+  ```
+
+- **Навыки** (`SKILL.md` под задачи) — каталог [`skills/`](./skills), [описание](https://b24-js-sdk.bx-shef.by/docs/getting-started/ai/skills/).
+- **LLMs.txt** — [`/llms.txt`](https://b24-js-sdk.bx-shef.by/llms.txt) (обзор) и [`/llms-full.txt`](https://b24-js-sdk.bx-shef.by/llms-full.txt) (вся документация).
+
 ## Участие в разработке
 
 Руководство для контрибьюторов и ИИ-агентов — в [AGENTS.md](./AGENTS.md).
