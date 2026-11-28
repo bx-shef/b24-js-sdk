@@ -237,3 +237,11 @@ test('номер сборки: github.sha → COMMIT_SHA → NUXT_PUBLIC_COMMIT_
   assert.match(footer, /config\.public\.commitSha/)
   assert.match(footer, /data-testid="build-sha"/)
 })
+
+// Ответ чата (28.11): @comark/vue 0.7 принимает текст в свойстве value. Со старым :markdown текст уходил
+// лишним атрибутом, и в панели оставались только шаги «Размышление / Searched» без ответа.
+test('чат: ChatComark получает текст через :value, не :markdown', () => {
+  const chat = read('docs/app/components/chat/Chat.vue')
+  assert.equal(count(chat, ':markdown='), 0)
+  assert.ok(count(chat, ':value="part.text"') >= 2)
+})
