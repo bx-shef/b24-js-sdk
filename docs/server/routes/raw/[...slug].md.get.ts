@@ -11,6 +11,8 @@ export default defineEventHandler(async (event) => {
   const baseUrl = `${config.public.canonicalUrl}${config.public.baseUrl}`
 
   const notFound = (reason: string) => {
+    // Форк: без статуса несуществующая страница отдавалась с 200 и попадала бы в индекс как настоящая
+    setResponseStatus(event, 404)
     setResponseHeader(event, 'Content-Type', 'text/markdown; charset=utf-8')
     return `---\ntitle: Not Found\n---\n\n# Page Not Found\n\n${reason} Browse the [sitemap](${config.public.baseUrl}/sitemap.md) to find available pages.\n`
   }
@@ -36,7 +38,8 @@ export default defineEventHandler(async (event) => {
   }
 
   if (!page) {
-    return notFound(`The page \`${config.public.baseUrl}${path}\` does not exist.`)
+    // Форк: путь из запроса в ответ не отражаем — обратная кавычка в нём закрывала code span и вставляла ссылку в markdown для агента
+    return notFound('The requested page does not exist.')
   }
 
   await transformMDC(event, page as any)
