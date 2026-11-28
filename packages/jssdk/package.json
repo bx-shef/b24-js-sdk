@@ -1,7 +1,7 @@
 {
   "name": "@bxshefby/b24jssdk",
   "version": "3.1.0",
-  "author": "Bitrix",
+  "author": "ООО «БэИксШефБай»",
   "license": "MIT",
   "description": "Bitrix24 REST API JavaScript SDK",
   "keywords": [
