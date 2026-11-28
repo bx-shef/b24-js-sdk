@@ -40,7 +40,8 @@ export default defineNuxtPlugin(() => {
   const consent = document.createElement('script')
   consent.src = `${baseUrl}/cookie-consent.js`
   consent.setAttribute('data-policy', COOKIE_POLICY_URL)
-  consent.setAttribute('data-services', 'Яндекс Метрику (статистика посещений)')
+  // Метки формы — страница заявки грузит форму Битрикс24 только после этого же согласия (request.vue)
+  consent.setAttribute('data-services', 'Яндекс Метрику (статистика посещений) и метки формы заявки Битрикс24')
   consent.onload = () => {
     window.BxConsent?.onAnalytics(() => {
       if (!window.ym) {
