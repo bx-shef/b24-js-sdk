@@ -63,6 +63,7 @@ CLA и т. п.). Пропуск без записи неотличим от не
 | Имя пакета `@bitrix24/b24jssdk` (`-nuxt`, `-cli`, `-docs`, `-recipes`) в любых файлах родителя | Заменять на `@bxshefby/…`: так называются наши пакеты. Исключения — глава о переходе и `CHANGELOG.md`. Сторож — `scripts/__tests__/fork-guards.test.mjs` |
 | Ссылки на сайт и репозиторий родителя в любых файлах родителя | Сайт `https://bitrix24.github.io/b24jssdk/...` → наш `https://b24-js-sdk.bx-shef.by/...`: страница — по [`docs-map.json`](./docs-map.json) (адрес = путь без числовых префиксов, со слешем на конце; `docs/hook/`, `docs/oauth/`, `docs/frame/` → `docs/entry-points/…/`), якорь — по русскому заголовку нашей страницы, нет точного места — страница без якоря. `https://github.com/bitrix24/b24jssdk/...` в смысле «наш код» (`blob`/`tree`, список issues, `security/advisories/new`, `compare`, `git clone`) → `https://github.com/bx-shef/b24-js-sdk/...`. Сайты соседей: `https://bitrix24.github.io/b24ui/...` → `https://b24-ui.bx-shef.by/...`, `https://bitrix24.github.io/b24icons/...` → `https://b24-icons.bx-shef.by/...` (те же пути и якоря). Не менять: номера issues, PR и коммитов родителя как историю (у нас их нет), упоминания «форк bitrix24/b24jssdk», ремоут `upstream`, `CHANGELOG.md`, `.sync/**`. Сторож — `scripts/__tests__/fork-guards.test.mjs` (адрес сайта родителя) |
 | `docs/app/**` (дизайн), `docs/modules/bx-assistant/**`, `deploy/**`, `tools/review-tier.*`, `.claude/**` | Наше. Изменения родителя — вручную, если они имеют смысл для нас |
+| `LICENSE` (корень, `packages/jssdk`, `packages/jssdk-nuxt`), `author` в `package.json`, подвал `docs/app/components/Footer.vue` | Правообладатель форка — ООО «БэИксШефБай». После переноса вернуть наши строки: `Copyright (c) 2026 ООО «БэИксШефБай»` во всех трёх `LICENSE`, `"author": "ООО «БэИксШефБай»"` в трёх `package.json`, в подвале «© 2026 ООО «БэИксШефБай»» и «Основано на Bitrix24 JS SDK». Строку `Copyright (c) 2024 Bitrix24` не удалять никогда — это условие лицензии MIT. Сторож — `scripts/__tests__/fork-guards.test.mjs` |
 | Релизы родителя (release-please, `CHANGELOG`, смена версии) | `n/a`: версию мы берём сами |
 
 Ломающее изменение родителя (`!` в теме или `BREAKING CHANGE:`) — в заголовке нашего PR тоже `!`;
@@ -75,6 +76,9 @@ CLA и т. п.). Пропуск без записи неотличим от не
 Коммит **только с документацией** (`docs/content/**`, `.sync/**` без манифестов): `node scripts/docs-lint.mjs --strict`,
 `node scripts/docs-link-check.mjs`, `node scripts/md-internal-links.mjs`, `pnpm run docs:build`
 (плюс `node --test "scripts/__tests__/**/*.test.mjs"`, если правили блоки версий).
+
+**Каждый перенос**, какие бы файлы он ни трогал: `node --test scripts/__tests__/fork-guards.test.mjs` —
+условия форка в workflow, имена пакетов, адреса сайтов и правообладатель (`LICENSE`, `author`, подвал).
 
 Коммит **с кодом, манифестами или зависимостями**: всё перечисленное и ещё
 `pnpm install --frozen-lockfile`, `pnpm run lint`, `pnpm run typecheck`,

@@ -37,6 +37,9 @@ git log --reverse --first-parent --format='%H %s' $CURSOR..upstream/main
    руками (`pnpm install`). Объединённые страницы v2/v3: правка v2-файла родителя → слот `#rest-api-ver2`,
    v3 → `#rest-api-ver3`, общий текст — только если изменился в обоих; число блоков `rest-api-version-only`
    сверить до и после, ловит `scripts/__tests__/docs-rest-api-version-blocks.test.mjs`.
+   Правообладатель форка — ООО «БэИксШефБай»: в трёх `LICENSE`, `author` трёх `package.json` и подвале сайта
+   вернуть наши строки, `Copyright (c) 2024 Bitrix24` не удалять (MIT). Перед PR — всегда
+   `node --test scripts/__tests__/fork-guards.test.mjs`.
 5. `.sync/b24jssdk.json`: сдвинуть `cursor`, записать `processed[<sha>]`.
 6. Проверки — `PORTING.md` §4; заголовок PR заканчивается `(b24jssdk@<7 знаков>)`; ломающее — с `!`.
 7. Уровень ревью — `bash tools/review-tier.sh --action` и навык `review-panel`.

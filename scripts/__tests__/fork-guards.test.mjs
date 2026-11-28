@@ -261,3 +261,24 @@ test('ссылки на B24 UI и B24 Icons ведут на наши сайты'
     .filter(f => f !== 'scripts/__tests__/fork-guards.test.mjs')
   assert.deepEqual(files, [], 'замените на https://b24-ui.bx-shef.by/… и https://b24-icons.bx-shef.by/… (.sync/PORTING.md)')
 })
+
+// Правообладатель форка (#78): слияние с родителем может вернуть его LICENSE, author и подвал. Строка
+// Bitrix24 в LICENSE обязана остаться — условие MIT.
+const OWNER = 'ООО «БэИксШефБай»'
+for (const file of ['LICENSE', 'packages/jssdk/LICENSE', 'packages/jssdk-nuxt/LICENSE']) {
+  test(`${file}: оба правообладателя — Bitrix24 и ${OWNER}`, () => {
+    const s = read(file)
+    assert.match(s, /^Copyright \(c\) 2024 Bitrix24$/m)
+    assert.ok(s.includes(`Copyright (c) 2026 ${OWNER}`))
+  })
+}
+for (const file of ['package.json', 'packages/jssdk/package.json', 'packages/jssdk-nuxt/package.json']) {
+  test(`${file}: author — ${OWNER}`, () => {
+    assert.equal(JSON.parse(read(file)).author, OWNER)
+  })
+}
+test('подвал сайта: © ООО «БэИксШефБай» и «Основано на Bitrix24 JS SDK»', () => {
+  const footer = read('docs/app/components/Footer.vue')
+  assert.ok(footer.includes(`© 2026 ${OWNER}`))
+  assert.ok(footer.includes('Основано на Bitrix24 JS SDK'))
+})
