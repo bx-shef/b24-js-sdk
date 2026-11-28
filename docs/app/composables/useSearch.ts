@@ -39,8 +39,8 @@ export function useSearch() {
 
   const links = computed(() => [
     isAssistantEnabled.value && {
-      label: 'Спросить ИИ',
-      description: 'Спросите ИИ-помощника: он отвечает по документации через наш MCP-сервер.',
+      label: 'Спросить AI',
+      description: 'Спросите AI-помощника: он отвечает по документации через наш MCP-сервер.',
       icon: RobotIcon,
       kbds: ['meta', 'i'],
       b24ui: {

@@ -26,7 +26,7 @@ const toast = useToast()
 const { track } = useAnalytics()
 const input = ref('')
 
-const displayTitle = computed(() => 'Спросить ИИ')
+const displayTitle = computed(() => 'Спросить AI')
 const displayPlaceholder = computed(() => 'Задайте вопрос о JS SDK…')
 
 const chat = new Chat({

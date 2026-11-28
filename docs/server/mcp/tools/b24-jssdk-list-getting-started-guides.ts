@@ -3,7 +3,7 @@ import { withTrailingSlash } from 'ufo'
 
 export default defineMcpTool({
   title: 'Список руководств «Быстрый старт»',
-  description: 'Все руководства раздела «Быстрый старт»: установка, миграция, ИИ-инструменты',
+  description: 'Все руководства раздела «Быстрый старт»: установка, миграция, AI-инструменты',
   cache: '30m',
   async handler() {
     const event = useEvent()
