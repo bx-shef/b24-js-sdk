@@ -1,6 +1,6 @@
 # Выпуск релиза `@bxshefby/b24jssdk`
 
-<sub>Последняя сверка: 2026-11-27.</sub>
+<sub>Последняя сверка: 2026-11-28.</sub>
 
 ## Форк bx-shef/b24-js-sdk: выпуск `@bxshefby/*`
 
@@ -10,7 +10,7 @@
 `release-please-config.json`).
 
 **Как идёт выпуск.** Push в `main` ничего не публикует: release-please держит открытым PR
-`chore(main): release X.Y.Z`. Слияние этого PR — единственное действие человека: release-please ставит тег
+`chore(main): release X.Y.Z`. Человек сливает этот PR (перед этим подтверждает удержанные проверки — см. «Проверки на release PR» ниже): release-please ставит тег
 `vX.Y.Z` и GitHub Release и сам запускает `npm-publish-js-sdk.yml` **на этом теге**, а тот после публикации
 SDK — `npm-publish-js-sdk-nuxt.yml` на том же теге. Публикуется ровно коммит выпуска, даже если в `main` уже
 влили следующий PR; версия в `package.json` сверяется с тегом. Release от `GITHUB_TOKEN` не запускает
@@ -63,6 +63,35 @@ workflow* → *Use workflow from* → *Tags* → `vX.Y.Z` (он запустит
 4. Первый выпуск `3.1.0` — 2026-11-27, оба пакета с provenance.
 5. Старые пакеты владельца (`@bxshefby/b24jssdk@<1`, `@bxshefby/b24jssdk-nuxt@<1`, `@bxshefby/jssdk`,
    `@bxshefby/ddd-jssdk`) помечены устаревшими (`npm deprecate`, 2026-11-27).
+6. **Ruleset `Protect main`** (*Settings → Rules → Rulesets*) на default-ветку: запрет удаления и
+   force-push, слияние только через PR с 0 одобрений, только squash, обязательные проверки `ci`, `title`
+   и `guards` со strict (ветка должна быть обновлена до `main`). Bypass — у роли Repository admin.
+   Обязательными нарочно сделаны проверки, которые идут на каждом PR без фильтра по путям; `image`
+   (`docs-image.yml`) и `dependency-review` в список не входят.
+7. **Безопасность** (*Settings → Advanced Security*): Dependabot alerts и security updates, secret
+   scanning с push protection, code scanning (default setup, CodeQL), private vulnerability reporting.
+   Свои version-PR Dependabot здесь выключены (`open-pull-requests-limit: 0`): версии приходят из
+   bitrix24/b24jssdk при синхронизации; security-PR идут с префиксом `deps`.
+
+### Проверки на release PR
+
+PR выпуска открывает `github-actions[bot]` от имени `GITHUB_TOKEN`. Запуски его проверок
+(`ci`, `PR title`, `fork-guards`, `docs-image`) GitHub **удерживает** в состоянии `action_required`:
+они не создают job, а значит и check run, и PR остаётся `blocked`, хотя ruleset ждёт `ci`, `title`
+и `guards`. Так выглядит PR #55 (3.2.0): на каждом новом коммите ветки release-please запуски
+создаются заново и снова удерживаются. Порядок такой:
+
+1. Дождаться, пока release-please перестанет менять ветку (после слияния любого PR в `main` он
+   пересобирает PR выпуска и добавляет новый коммит).
+2. Actions → удержанные запуски на ветке `release-please--branches--main--…` → *Approve and run*
+   для каждого из них (минимум `ci`, `PR title`, `fork-guards`), дождаться зелёных проверок.
+3. Слить squash-ом сразу после этого. Если между подтверждением и слиянием в `main` попал другой PR,
+   ветка отстанет (strict) и всё повторится — поэтому подтверждать нужно непосредственно перед слиянием.
+4. Запасной путь владельца — bypass в ruleset (*Merge without waiting for requirements to be met*);
+   использовать, только если проверки заведомо не могут появиться.
+
+Схема та же, что описана в bx-shef/b24-ui (`.github/contributing/releasing.md`, «Approving the release
+PR's CI»).
 
 Пользователям `@bitrix24/b24jssdk` переход описан на сайте — «Начало работы → Миграция →
 с @bitrix24/b24jssdk».
