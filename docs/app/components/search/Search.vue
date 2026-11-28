@@ -27,6 +27,8 @@ watchDebounced(searchTerm, (term) => {
 </script>
 
 <template>
+  <!-- Окно поиска смонтировано заранее (#95): иначе оно подгружалось при первом Ctrl K, и набранные сразу буквы
+       терялись. -->
   <B24ContentSearch
     v-model:search-term="searchTerm"
     :links="links"
@@ -35,5 +37,7 @@ watchDebounced(searchTerm, (term) => {
     :navigation="navigation"
     :color-mode="false"
     :fuse="{ resultLimit: 30 }"
+    :unmount-on-hide="false"
+    placeholder="Поиск по документации — Ctrl K"
   />
 </template>
