@@ -1,4 +1,4 @@
-import { withoutTrailingSlash, joinURL } from 'ufo'
+import { withoutTrailingSlash, withTrailingSlash, joinURL } from 'ufo'
 import type { MaybeRefOrGetter } from 'vue'
 import { toValue } from 'vue'
 
@@ -10,7 +10,9 @@ export function useCanonical(markdownAlternate?: MaybeRefOrGetter<string | undef
   useHead({
     link: computed(() => {
       const siteUrl = withoutTrailingSlash(`${config.public.canonicalUrl}${config.public.baseUrl}`)
-      const pathNormal = withoutTrailingSlash(route.path)
+      // Форк: со «/» на конце — как в sitemap.xml, меню и ответах MCP. Без «/» каждая страница карты сайта
+      // указывала бы canonical на другой адрес, и поисковик считал бы карту неканоничной.
+      const pathNormal = withTrailingSlash(route.path)
 
       const md = toValue(markdownAlternate)
       const alternateHref = md

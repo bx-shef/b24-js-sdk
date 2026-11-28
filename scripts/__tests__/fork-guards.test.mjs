@@ -312,3 +312,10 @@ test('сайт: /raw/* не отражает путь запроса в отве
     assert.ok(!call[1].includes('${'), `notFound подставляет значение в текст: ${call[1]}`)
   }
 })
+
+// canonical совпадает с sitemap.xml (#109): оба со «/» на конце. Родитель строит canonical без «/» —
+// при синхронизации это вернётся, и каждая страница карты сайта станет неканоничной.
+test('сайт: canonical со «/» на конце, как в sitemap.xml', () => {
+  assert.ok(read('docs/app/composables/useCanonical.ts').includes('withTrailingSlash(route.path)'), 'canonical снова без «/» на конце')
+  assert.ok(read('docs/server/routes/sitemap.xml.get.ts').includes('${page.path}/'), 'sitemap.xml без «/» на конце — сверить с canonical')
+})
