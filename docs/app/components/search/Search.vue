@@ -16,6 +16,14 @@ defineProps<{
 }>()
 
 const { links, groups, searchTerm } = useSearch()
+
+// Подсказка с клавишей своей платформы: на Mac поиск открывает ⌘ K, а не Ctrl K
+const placeholder = ref('Поиск по документации — Ctrl K')
+onMounted(() => {
+  if (/Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent)) {
+    placeholder.value = 'Поиск по документации — ⌘ K'
+  }
+})
 const { track } = useAnalytics()
 
 watchDebounced(searchTerm, (term) => {
@@ -28,7 +36,8 @@ watchDebounced(searchTerm, (term) => {
 
 <template>
   <!-- Окно поиска смонтировано заранее (#95): иначе оно подгружалось при первом Ctrl K, и набранные сразу буквы
-       терялись. -->
+       терялись. Предзагрузка одного кода не помогает — окно всё равно открывается через несколько асинхронных шагов.
+       Цена — около 900 скрытых элементов на странице (замер 28.11). -->
   <B24ContentSearch
     v-model:search-term="searchTerm"
     :links="links"
@@ -38,6 +47,6 @@ watchDebounced(searchTerm, (term) => {
     :color-mode="false"
     :fuse="{ resultLimit: 30 }"
     :unmount-on-hide="false"
-    placeholder="Поиск по документации — Ctrl K"
+    :placeholder="placeholder"
   />
 </template>
