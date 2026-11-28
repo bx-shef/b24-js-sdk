@@ -349,3 +349,13 @@ test('сайт: чат на DeepSeek и предлагает заявку на �
   assert.match(ai, /createDeepSeek\(/, 'чат больше не на DeepSeek')
   assert.ok(ai.includes('/request?source=chat'), 'чат не ведёт на заявку (/request?source=chat)')
 })
+
+// Пометка «где выполняется» у примеров кода (#113): наш ProsePre поверх штатного из b24ui.
+test('сайт: блок кода показывает среду выполнения по точке входа', () => {
+  const pre = read('docs/app/components/content/ProsePre.vue')
+  assert.ok(pre.includes('from \'~/utils/codeRuntime\'') && pre.includes('B24ProsePre'), 'ProsePre не наш или без пометки среды')
+  const rules = read('docs/app/utils/codeRuntime.ts')
+  for (const entry of ['B24OAuth', 'B24Hook', 'initializeB24Frame']) {
+    assert.ok(rules.includes(entry), `правило для ${entry} пропало`)
+  }
+})
