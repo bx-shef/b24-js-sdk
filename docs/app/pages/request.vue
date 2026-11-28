@@ -17,11 +17,12 @@ useSeoMeta({
   ogDescription: description
 })
 
-// CRM-форма «Контактные данные» портала; поменять форму — три значения.
+// CRM-форма портала — та же, что на offer.bx-shef.by (bx-shef/lp, BriefForm.vue); поменять форму — три значения
+// здесь и LOADER в docs/public/b24-form.html.
 const FORM = {
-  script: 'https://cdn-ru.bitrix24.by/b37817748/crm/form/loader_5.js',
-  id: '5',
-  secret: '8i8drp'
+  script: 'https://cdn-ru.bitrix24.by/b37817748/crm/form/loader_1.js',
+  id: '1',
+  secret: '3c735r'
 }
 
 // Откуда пришли: ссылки шапки, подвала, главной и чата несут ?source=…, остальное — direct.
@@ -72,13 +73,13 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage))
     </p>
 
     <B24Card :b24ui="{ body: 'p-2 sm:p-4' }">
-      <!-- Высоту задаёт min-height: обёртка высоту не сообщает, форма Битрикс24 растёт внутри iframe -->
+      <!-- Высоту задаёт min-height: обёртка высоту не сообщает. Форма №1 — около 780 px на телефоне и 660–710 px шире 640 px, плюс запас на подсказки ошибок -->
       <iframe
         ref="frame"
         :src="frameSrc"
         title="Форма заявки на разработку"
         loading="lazy"
-        class="block w-full min-h-[640px] sm:min-h-[540px] border-0 rounded-(--ui-border-radius-md)"
+        class="block w-full min-h-[840px] sm:min-h-[740px] border-0 rounded-(--ui-border-radius-md)"
       />
     </B24Card>
 
