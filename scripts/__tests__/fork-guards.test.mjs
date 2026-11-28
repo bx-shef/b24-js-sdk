@@ -353,6 +353,30 @@ test('сайт: чат на DeepSeek и предлагает заявку на �
   assert.ok(ai.includes('/request?source=chat'), 'чат не ведёт на заявку (/request?source=chat)')
 })
 
+// Ядро без luxon (#115): вызов одного метода синглтона Text или luxon в форматтере логгера
+// (LoggerFactory достижим из ядра) возвращает luxon (~22 КБ gzip) в бандл каждого потребителя.
+// luxon законен только в Text (toDateTime/toB24Format), helper и его типах.
+const LUXON_ALLOWED = new Set([
+  'packages/jssdk/src/tools/text.ts',
+  'packages/jssdk/src/helper/options-manager.ts',
+  'packages/jssdk/src/types/b24-helper.ts'
+])
+const TEXT_ALLOWED_DIRS = ['packages/jssdk/src/tools/', 'packages/jssdk/src/helper/']
+test('SDK: luxon и синглтон Text не тянутся в ядро, frame, pull и логгер', () => {
+  const files = execFileSync('git', ['ls-files', 'packages/jssdk/src/*.ts', 'packages/jssdk/src/**/*.ts'], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean)
+  const luxon = files.filter(f => /from 'luxon'/.test(read(f)) && !LUXON_ALLOWED.has(f))
+  assert.deepEqual(luxon, [], 'luxon вне Text/helper — используйте tools/text-core.ts или logger/formatter/date-format.ts')
+  const text = files.filter(f => !TEXT_ALLOWED_DIRS.some(d => f.startsWith(d)) && /^import .*\bText\b.* from '[./]*tools\/text'/m.test(read(f)))
+  assert.deepEqual(text, [], 'синглтон Text в ядре — импортируйте функцию из tools/text-core.ts')
+})
+
+// zod (#86): сервер сайта валидирует входящие запросы zod-ом (чат, MCP). Это zod 4 — прямая зависимость
+// docs; без неё `import 'zod'` разрешился бы в поднятый zod 3 от @nuxt/content (GHSA-mrhx-c7xc-m3w5 в исключениях).
+test('сайт: docs зависит от zod 4 напрямую', () => {
+  const zod = JSON.parse(read('docs/package.json')).dependencies?.zod
+  assert.match(zod ?? '', /^\^4\./, 'docs/package.json без прямой зависимости zod ^4 — сервер возьмёт zod 3 из @nuxt/content')
+})
+
 // Пометка «где выполняется» у примеров кода (#113): наш ProsePre поверх штатного из b24ui.
 test('сайт: блок кода показывает среду выполнения по точке входа', () => {
   const pre = read('docs/app/components/content/ProsePre.global.vue')

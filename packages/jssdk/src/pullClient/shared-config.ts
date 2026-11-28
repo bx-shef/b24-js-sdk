@@ -2,7 +2,7 @@ import type { SharedConfigCallbacks, SharedConfigParams, TypeStorageManager } fr
 import type { LoggerInterface } from '../logger'
 import { LoggerFactory } from '../logger'
 import { Type } from '../tools/type'
-import { Text } from '../tools/text'
+import { getDateForLog } from '../tools/text-core'
 import { StorageManager } from './storage-manager'
 import { LsKeys } from '../types/pull'
 
@@ -72,7 +72,7 @@ export class SharedConfig {
       )
     } catch (error) {
       this.getLogger().error(
-        `${Text.getDateForLog()}: Pull: Could not save WS_blocked flag in local storage`,
+        `${getDateForLog()}: Pull: Could not save WS_blocked flag in local storage`,
         { error }
       ).catch(() => {})
 
@@ -102,7 +102,7 @@ export class SharedConfig {
       )
     } catch (error) {
       this.getLogger().error(
-        `${Text.getDateForLog()}: Pull: Could not save LP_blocked flag in local storage.`,
+        `${getDateForLog()}: Pull: Could not save LP_blocked flag in local storage.`,
         { error }
       ).catch(() => {})
 
@@ -132,7 +132,7 @@ export class SharedConfig {
       )
     } catch (error) {
       this.getLogger().error(
-        `${Text.getDateForLog()}: LocalStorage error.`,
+        `${getDateForLog()}: LocalStorage error.`,
         { error }
       ).catch(() => {})
 

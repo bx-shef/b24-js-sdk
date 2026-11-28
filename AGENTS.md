@@ -295,7 +295,7 @@ pnpm vitest run --project jsSdk:unit -t "<test name>"
 (`--explain` — по файлам). Правила репозитория — `tools/review-tier.rules`; сам движок — копия
 эталона bx-shef/toolsai, здесь его не правят. Уровень PR — наибольший из уровней его файлов; не
 подошло ни одно правило — уровень 1. Порядок действий — навык `review-panel`
-([SKILL.md](.claude/skills/review-panel/SKILL.md)). Основная проверка — `pnpm run lint`, `pnpm run typecheck`, `pnpm run package-jssdk:test:run-unit` и `node --test "scripts/__tests__/**/*.test.mjs"`; последняя же сверяет правила уровней.
+([SKILL.md](.claude/skills/review-panel/SKILL.md)). Основная проверка — `pnpm run lint`, `pnpm run typecheck`, `pnpm run package-jssdk:test:run-unit` и `node --test --test-concurrency=1 "scripts/__tests__/**/*.test.mjs"`; последняя же сверяет правила уровней.
 
 | уровень | что меняется | ревью | примеры |
 | --- | --- | --- | --- |

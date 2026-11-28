@@ -59,8 +59,11 @@ jobs:
       - name: Check the API Reference index covers every public export
         run: node scripts/check-api-reference-index.mjs
 
+      # По одному файлу: jsdoc-typecheck-blocks и contributing-typecheck-blocks на время проверки
+      # портят настоящие файлы (tools/index.ts, руководство), а docs-lint --strict в соседнем процессе
+      # считает их изменёнными «сейчас» и краснеет. Параллельно гонка — 8 с, по одному — ~18 с.
       - name: Test docs-lint scripts
-        run: node --test "scripts/__tests__/**/*.test.mjs"
+        run: node --test --test-concurrency=1 "scripts/__tests__/**/*.test.mjs"
 
       - name: Check v3 action/method references (docs + skills)
         run: node scripts/check-v3-method-refs.mjs

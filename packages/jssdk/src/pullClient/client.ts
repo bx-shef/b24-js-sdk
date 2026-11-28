@@ -1,7 +1,7 @@
 import type { LoggerInterface } from '../logger'
 import { LoggerFactory } from '../logger'
 import { Type } from '../tools/type'
-import { Text } from '../tools/text'
+import { buildQueryString, capitalize, getDateForLog, toBoolean, toInteger } from '../tools/text-core'
 import { Browser } from '../tools/browser'
 import { redactSensitiveParams, redactSensitiveUrl, REDACTED_PLACEHOLDER } from '../core/http/redact'
 import { StorageManager } from './storage-manager'
@@ -210,18 +210,18 @@ export class PullClient implements ConnectorParent {
 
     // region Params ////
     this._guestMode = params.guestMode
-      ? Text.toBoolean(params.guestMode)
+      ? toBoolean(params.guestMode)
       : false
 
     this._guestUserId = params.guestUserId
-      ? Text.toInteger(params.guestUserId)
+      ? toInteger(params.guestUserId)
       : 0
 
     if (this._guestMode && this._guestUserId > 0) {
       this._userId = this._guestUserId
     } else {
       this._guestMode = false
-      this._userId = params.userId ? Text.toInteger(params.userId) : 0
+      this._userId = params.userId ? toInteger(params.userId) : 0
     }
 
     this._siteId = params.siteId ?? 'none'
@@ -242,7 +242,7 @@ export class PullClient implements ConnectorParent {
     this._skipCheckRevision = params.skipCheckRevision === true
 
     if (!Type.isUndefined(params.configTimestamp)) {
-      this._configTimestamp = Text.toInteger(params.configTimestamp)
+      this._configTimestamp = toInteger(params.configTimestamp)
     }
     // endregion ////
 
@@ -443,7 +443,7 @@ export class PullClient implements ConnectorParent {
     ) {
       if (typeof params.moduleId === 'undefined') {
         throw new TypeError(
-          `${Text.getDateForLog()}: Pull.subscribe: parameter moduleId is not specified`
+          `${getDateForLog()}: Pull.subscribe: parameter moduleId is not specified`
         )
       }
 
@@ -546,7 +546,7 @@ export class PullClient implements ConnectorParent {
       typeof handler.getModuleId !== 'function'
       || typeof handler.getModuleId() !== 'string'
     ) {
-      this.getLogger().error(`${Text.getDateForLog()}: Pull.attachCommandHandler: result of handler.getModuleId() is not a string.`).catch(() => {})
+      this.getLogger().error(`${getDateForLog()}: Pull.attachCommandHandler: result of handler.getModuleId() is not a string.`).catch(() => {})
       return () => {}
     }
 
@@ -581,7 +581,7 @@ export class PullClient implements ConnectorParent {
          * handler.handleSomeCommandName: CommandHandlerFunction
          */
         if (!method) {
-          const methodName = `handle${Text.capitalize(data.command)}`
+          const methodName = `handle${capitalize(data.command)}`
           if (typeof handler[methodName] === 'function') {
             method = handler[methodName].bind(handler)
           }
@@ -590,7 +590,7 @@ export class PullClient implements ConnectorParent {
         if (method) {
           if (this._debug && this._context !== 'master') {
             this.getLogger().warning(
-              `${Text.getDateForLog()}: Pull.attachCommandHandler: result of handler.getModuleId() is not a string`,
+              `${getDateForLog()}: Pull.attachCommandHandler: result of handler.getModuleId() is not a string`,
               // data.params / data.extra are app-defined and may carry a credential key (#43)
               redactSensitiveParams({ data } as unknown as Record<string, unknown>)
             ).catch(() => {})
@@ -714,7 +714,7 @@ export class PullClient implements ConnectorParent {
           this.status = PullStatus.Offline
           this.stopCheckConfig()
           this.getLogger().error(
-            `${Text.getDateForLog()}: Pull: could not read push-server config`,
+            `${getDateForLog()}: Pull: could not read push-server config`,
             { error }
           ).catch(() => {})
           reject(error)
@@ -740,7 +740,7 @@ export class PullClient implements ConnectorParent {
     }
 
     this.getLogger().debug(
-      `${Text.getDateForLog()}: Pull: restarting with code ${disconnectCode}`
+      `${getDateForLog()}: Pull: restarting with code ${disconnectCode}`
     ).catch(() => {})
 
     this.disconnect(disconnectCode, disconnectReason)
@@ -763,7 +763,7 @@ export class PullClient implements ConnectorParent {
       },
       (error) => {
         this.getLogger().error(
-          `${Text.getDateForLog()}: Pull: could not read push-server config `,
+          `${getDateForLog()}: Pull: could not read push-server config `,
           { error }
         ).catch(() => {})
 
@@ -1311,7 +1311,7 @@ export class PullClient implements ConnectorParent {
     }
     params.revision = REVISION
 
-    return `${path}?${Text.buildQueryString(params)}`
+    return `${path}?${buildQueryString(params)}`
   }
 
   /**
@@ -1340,7 +1340,7 @@ export class PullClient implements ConnectorParent {
       CHANNEL_ID: channels.join('/')
     }
 
-    return path + '?' + Text.buildQueryString(params)
+    return path + '?' + buildQueryString(params)
   }
 
   // endregion ////
@@ -1420,7 +1420,7 @@ export class PullClient implements ConnectorParent {
 
       if (typeof params.moduleId === 'undefined') {
         throw new TypeError(
-          `${Text.getDateForLog()}: Pull.emit: parameter moduleId is not specified`
+          `${getDateForLog()}: Pull.emit: parameter moduleId is not specified`
         )
       }
 
@@ -1602,7 +1602,7 @@ export class PullClient implements ConnectorParent {
     }
 
     if (message.extra && message.extra.revision_web) {
-      this.checkRevision(Text.toInteger(message.extra.revision_web))
+      this.checkRevision(toInteger(message.extra.revision_web))
     }
   }
 
@@ -2004,7 +2004,7 @@ export class PullClient implements ConnectorParent {
 
   private checkConfig(): boolean {
     if (this.isConfigActual(this._config)) {
-      if (!this.checkRevision(Text.toInteger(this._config?.api.revision_web))) {
+      if (!this.checkRevision(toInteger(this._config?.api.revision_web))) {
         return false
       }
     } else {
@@ -2059,7 +2059,7 @@ export class PullClient implements ConnectorParent {
           localStorage.removeItem('history')
         }
         this.getLogger().error(
-          `${Text.getDateForLog()}: Pull: Could not cache config in local storage.`,
+          `${getDateForLog()}: Pull: Could not cache config in local storage.`,
           { error }
         ).catch(() => {})
       }
@@ -2252,7 +2252,7 @@ export class PullClient implements ConnectorParent {
     // an `extra` that is not one.
     if (body === null || typeof body !== 'object') {
       this.getLogger().warning(
-        `${Text.getDateForLog()}: Pull: an rpc message body was not an object and was skipped`,
+        `${getDateForLog()}: Pull: an rpc message body was not an object and was skipped`,
         { bodyType: body === null ? 'null' : typeof body }
       ).catch(() => {})
       return {}
@@ -2443,7 +2443,7 @@ export class PullClient implements ConnectorParent {
     }
 
     this.getLogger().error(
-      `${Text.getDateForLog()}: Pull: Long polling connection error`,
+      `${getDateForLog()}: Pull: Long polling connection error`,
       { error }
     ).catch(() => {})
 
@@ -2572,7 +2572,7 @@ export class PullClient implements ConnectorParent {
     }
 
     this.getLogger().error(
-      `${Text.getDateForLog()}: Pull: WebSocket connection error`,
+      `${getDateForLog()}: Pull: WebSocket connection error`,
       { error }
     ).catch(() => {})
     this.scheduleReconnect()
@@ -2625,7 +2625,7 @@ export class PullClient implements ConnectorParent {
       // and is not detectable at all. See `pull-protobuf.md`.
       if ('damaged' in responseBatch && responseBatch.damaged) {
         this.getLogger().warning(
-          `${Text.getDateForLog()}: Pull: a protobuf frame was damaged; whatever could not be read was dropped`,
+          `${getDateForLog()}: Pull: a protobuf frame was damaged; whatever could not be read was dropped`,
           { byteLength: pullEvent.byteLength }
         ).catch(() => {})
       }
@@ -2643,7 +2643,7 @@ export class PullClient implements ConnectorParent {
             messageFields = JSON.parse(message.body)
           } catch (error) {
             this.getLogger().error(
-              `${Text.getDateForLog()}: Pull: Could not parse message body`,
+              `${getDateForLog()}: Pull: Could not parse message body`,
               { error }
             ).catch(() => {})
             continue
@@ -2656,7 +2656,7 @@ export class PullClient implements ConnectorParent {
           // and logged without the body (#43). Arrays are objects and pass.
           if (messageFields === null || typeof messageFields !== 'object') {
             this.getLogger().warning(
-              `${Text.getDateForLog()}: Pull: a message body was not a JSON object and was skipped`,
+              `${getDateForLog()}: Pull: a message body was not a JSON object and was skipped`,
               { responseIndex: i, bodyType: messageFields === null ? 'null' : typeof messageFields }
             ).catch(() => {})
             continue
@@ -2692,7 +2692,7 @@ export class PullClient implements ConnectorParent {
           // connection with nothing in the log to say why.
           if (!message.sender) {
             this.getLogger().warning(
-              `${Text.getDateForLog()}: Pull: a protobuf message arrived with no sender and was skipped`,
+              `${getDateForLog()}: Pull: a protobuf message arrived with no sender and was skipped`,
               { responseIndex: i, moduleId: typeof messageFields.module_id === 'string' ? messageFields.module_id : null }
             ).catch(() => {})
             continue
@@ -2716,7 +2716,7 @@ export class PullClient implements ConnectorParent {
       }
     } catch (error) {
       this.getLogger().error(
-        `${Text.getDateForLog()}: Pull: Could not parse message`,
+        `${getDateForLog()}: Pull: Could not parse message`,
         { error }
       ).catch(() => {})
     }
@@ -2839,7 +2839,7 @@ export class PullClient implements ConnectorParent {
         )
       } catch (error) {
         this.getLogger().error(
-          `${Text.getDateForLog()}: Pull: Could not save session info in local storage. Error: `,
+          `${getDateForLog()}: Pull: Could not save session info in local storage. Error: `,
           { error }
         ).catch(() => {})
       }
@@ -3092,7 +3092,7 @@ export class PullClient implements ConnectorParent {
    */
   private logToConsole(message: string, force: boolean = false): void {
     if (this._loggingEnabled || force) {
-      this.getLogger().debug(`${Text.getDateForLog()}: ${message}`).catch(() => {})
+      this.getLogger().debug(`${getDateForLog()}: ${message}`).catch(() => {})
     }
   }
 

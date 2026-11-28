@@ -1,7 +1,7 @@
 import type { DateTimeOptions } from 'luxon'
 import { DateTime } from 'luxon'
-import uuidv7 from './uuidv7'
 import { Type } from './type'
+import * as core from './text-core'
 
 const reEscape = /[&<>'"]/g
 const reUnescape = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34)/g
@@ -89,11 +89,7 @@ class TextManager {
    * ```
    */
   getUniqId(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.trunc(Math.random() * 16)
-      const v = c === 'x' ? r : (r & 0x3) | 0x8
-      return v.toString(16)
-    })
+    return core.getUniqId()
   }
 
   /**
@@ -110,7 +106,7 @@ class TextManager {
    * ```
    */
   getUuidRfc4122(): string {
-    return uuidv7()
+    return core.getUuidRfc4122()
   }
 
   /**
@@ -184,13 +180,7 @@ class TextManager {
    * ```
    */
   toNumber(value: any): number {
-    const parsedValue = Number.parseFloat(value)
-
-    if (Type.isNumber(parsedValue)) {
-      return parsedValue
-    }
-
-    return 0.0
+    return core.toNumber(value)
   }
 
   /**
@@ -208,7 +198,7 @@ class TextManager {
    * ```
    */
   toInteger(value: any): number {
-    return this.toNumber(Number.parseInt(value, 10))
+    return core.toInteger(value)
   }
 
   /**
@@ -230,8 +220,7 @@ class TextManager {
    * ```
    */
   toBoolean(value: any, trueValues: string[] = []): boolean {
-    const transformedValue = Type.isString(value) ? value.toLowerCase() : value
-    return ['true', 'y', '1', 1, true, ...trueValues].includes(transformedValue)
+    return core.toBoolean(value, trueValues)
   }
 
   /**
@@ -341,11 +330,7 @@ class TextManager {
    * ```
    */
   capitalize(str: string): string {
-    if (!Type.isStringFilled(str)) {
-      return str
-    }
-
-    return str[0]!.toUpperCase() + str.slice(1)
+    return core.capitalize(str)
   }
 
   /**
@@ -469,7 +454,7 @@ class TextManager {
    * ```
    */
   getDateForLog(): string {
-    return DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss')
+    return core.getDateForLog()
   }
 
   /**
@@ -490,25 +475,7 @@ class TextManager {
    * ```
    */
   buildQueryString(params: any): string {
-    if (Type.isNil(params)) {
-      return ''
-    }
-
-    const pairs: string[] = []
-
-    for (const [key, value] of Object.entries(params)) {
-      if (Type.isArray(value)) {
-        value.forEach((valueElement: any, index: number) => {
-          pairs.push(
-            `${encodeURIComponent(`${key}[${index}]`)}=${encodeURIComponent(valueElement)}`
-          )
-        })
-      } else {
-        pairs.push(`${encodeURIComponent(key)}=${encodeURIComponent(value as any)}`)
-      }
-    }
-
-    return pairs.join('&')
+    return core.buildQueryString(params)
   }
 }
 

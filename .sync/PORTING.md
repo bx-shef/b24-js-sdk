@@ -68,6 +68,7 @@ CLA и т. п.). Пропуск без записи неотличим от не
 | `docs/server/**` (чат `api/ai.post.ts`, CSP `plugins/csp.ts`, `plugins/llms.ts`, MCP-инструменты и промпты, `/raw`, `sitemap.*`, `utils/transformMDC.ts`) и `docs/nuxt.config.ts` | Наше поверх родительского: чат и заявка, CSP под Метрику и форму Битрикс24, русские тексты MCP и `llms.txt`, свои настройки сборки. Правку родителя сводить вручную построчно, а не брать его файл целиком: молча потерять CSP или чат дороже всего. Сторожа — `scripts/__tests__/fork-guards.test.mjs` (CSP, чат, `/raw`, sitemap) |
 | `nitro.externals.inline` в `docs/nuxt.config.ts`, статус в `docs/server/routes/raw/[...slug].md.get.ts` | `minimark` и `entities` вшиты в серверную сборку (иначе трассировщик кладёт версии от `@nuxt/content`, и всякий непререндеренный `/raw/…` отвечает 500), несуществующая страница — 404. Правку родителя сводить, сохраняя оба. Сторож — `scripts/__tests__/fork-guards.test.mjs` |
 | `docs/server/routes/sitemap.xml.get.ts` (`<loc>`) | Адрес страницы без «/» на конце — как canonical (`useCanonical.ts`), ссылки меню (`useNavigation.ts`, правило в `nuxt.config.ts` у `prerender`) и `/raw`; у родителя sitemap со «/», и каждая страница карты указывала бы canonical на другой адрес. Ссылки в ответах MCP остаются со «/» (оба адреса отвечают 200). Правку родителя сводить, сохраняя адрес без «/». Сторож — `scripts/__tests__/fork-guards.test.mjs` |
+| Вызовы `Text.*` в `packages/jssdk/src` вне `tools/` и `helper/`; `logger/formatter/abstract-formatter.ts`; новые `tools/text-core.ts`, `logger/formatter/date-format.ts` | Ядро без luxon (#115): ядро, frame, Pull и логгер зовут функции из `tools/text-core.ts`, а не синглтон `Text`; даты логгера — `date-format.ts` (токены Luxon, вывод сверяется с Luxon в `test/integration/size/core-without-luxon.unit.spec.ts`). Бандл «вебхук + вызов» 75,7 → 54,3 КБ gzip. Новый `Text.*` из коммита родителя в этих местах — заменить функцией из `text-core.ts` (добавить её туда, если нет). Сторож — `scripts/__tests__/fork-guards.test.mjs` |
 | `packages/jssdk/src/oauth/auth.ts` (обрезка «/»), `pullClient/client.ts` (карты без прототипа, `hasOwnProperty` в `attachCommandHandler`), `logger/formatter/telegram-formatter.ts` (экранирование HTML) | Исправления по CodeQL (#121): цикл вместо `/\/+$/` (полиномиальный ReDoS); `_subscribers`, их `commands` (в `subscribe` и `emit`) и `_userStatusCallbacks` — `Object.create(null)`, ключи из сообщений сервера Pull не достают `Object.prototype`; в HTML-режиме Telegram экранируются канал и сообщение, обрезка не режет сущность. Markdown-режимы Telegram по-прежнему не экранируют (`_escapeMarkdownV2` дополнен «\», но не вызывается). Правку родителя сводить, сохраняя их. Тест — `test/integration/core/codeql-fixes.unit.spec.ts` |
 | Релизы родителя (release-please, `CHANGELOG`, смена версии) | `n/a`: версию мы берём сами |
 
@@ -80,14 +81,14 @@ CLA и т. п.). Пропуск без записи неотличим от не
 
 Коммит **только с документацией** (`docs/content/**`, `.sync/**` без манифестов): `node scripts/docs-lint.mjs --strict`,
 `node scripts/docs-link-check.mjs`, `node scripts/md-internal-links.mjs`, `pnpm run docs:build`
-(плюс `node --test "scripts/__tests__/**/*.test.mjs"`, если правили блоки версий).
+(плюс `node --test --test-concurrency=1 "scripts/__tests__/**/*.test.mjs"`, если правили блоки версий).
 
 **Каждый перенос**, какие бы файлы он ни трогал: `node --test scripts/__tests__/fork-guards.test.mjs` —
 условия форка в workflow, имена пакетов, адреса сайтов и правообладатель (`LICENSE`, `author`, подвал).
 
 Коммит **с кодом, манифестами или зависимостями**: всё перечисленное и ещё
 `pnpm install --frozen-lockfile`, `pnpm run lint`, `pnpm run typecheck`,
-`pnpm run package-jssdk:test:run-unit`, `node --test "scripts/__tests__/**/*.test.mjs"`,
+`pnpm run package-jssdk:test:run-unit`, `node --test --test-concurrency=1 "scripts/__tests__/**/*.test.mjs"`,
 `pnpm audit --audit-level=moderate`, `node .sync/dep-parity.mjs --check`.
 
 ## 5. PR

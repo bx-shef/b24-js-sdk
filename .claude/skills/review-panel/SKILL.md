@@ -11,7 +11,7 @@ description: Ревью PR в репозитории bx-shef/b24-js-sdk (JS SDK 
 Расходятся — прав файл правил, а навык правится в том же PR.
 
 **Основная проверка** (дальше — «проверка»): `pnpm install --frozen-lockfile`, затем `pnpm run lint`,
-`pnpm run typecheck`, `pnpm run package-jssdk:test:run-unit`, `node --test "scripts/__tests__/**/*.test.mjs"`.
+`pnpm run typecheck`, `pnpm run package-jssdk:test:run-unit`, `node --test --test-concurrency=1 "scripts/__tests__/**/*.test.mjs"`.
 Один прогон на PR; по ходу работы — точечные запуски нужных тестов.
 
 ## 1. Подготовка
