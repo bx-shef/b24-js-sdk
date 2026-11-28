@@ -252,6 +252,10 @@ overrides:
   # GHSA-g3hv-75wg-m249 — minimatch ReDoS via globparts amplification
   # (nuxt > nitropack > archiver > readdir-glob > minimatch).
   'readdir-glob>minimatch': '>=11.0.1 <12'
+  # GHSA-238p-pmpm-9mq7 (katex <0.18.2, low) — the vulnerable copy comes only through markdownlint
+  # (dev, docs linting: micromark-extension-math, markdownlint never renders). Scoped to that path:
+  # @comark/vue (chat) has katex as an optional peer `^0.17`, a global override would break it. #86
+  'micromark-extension-math>katex': '>=0.18.2 <0.19'
 
 allowBuilds:
   '@parcel/watcher': false
