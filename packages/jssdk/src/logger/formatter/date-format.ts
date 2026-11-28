@@ -3,16 +3,16 @@
  *
  * The logger formatters are reachable from the SDK core (`LoggerFactory` → console handler →
  * `LineFormatter`), so a Luxon import here put Luxon (~22 KB gzip) into every bundle, even a single
- * webhook call (#115). The supported tokens give the same output as Luxon's `toFormat()` in the
- * system locale — `date-format.test.ts` compares them:
+ * webhook call (#115). The supported tokens give the same output as Luxon's `toFormat()`, names in
+ * English as Luxon prints them by default — `core-without-luxon.unit.spec.ts` compares them:
  *
  * | token | meaning |
  * |---|---|
- * | `yyyy` `yy` | year, four / two digits |
+ * | `yyyy` `yy` `y` | year: four digits / two digits / as is |
  * | `M` `MM` `L` `LL` | month number, padded or not |
- * | `MMM` `MMMM` `LLL` `LLLL` | month name, short / long |
+ * | `MMM` `MMMM` `MMMMM` (and `L…`) | month name, short / long / narrow |
  * | `d` `dd` | day of month |
- * | `EEE` `EEEE` `ccc` `cccc` | weekday name, short / long |
+ * | `EEE` `EEEE` `EEEEE` (and `c…`) | weekday name, short / long / narrow |
  * | `H` `HH` `h` `hh` | hour, 24 / 12 h |
  * | `m` `mm` `s` `ss` | minutes, seconds |
  * | `S` `SSS` | milliseconds |
@@ -26,17 +26,28 @@
  * | `'text'` | literal text; `''` is a single quote |
  *
  * Any other character is copied as is. Unlike Luxon, that includes its locale macros (`t`, `T`, `f`,
- * `F`, `D`…), week numbers (`W`, `k`) and era (`G`) — the SDK never used them in log dates.
+ * `F`, `D`…), week numbers (`W`, `k`), era (`G`) and the zone name (`ZZZZ`) — the SDK never used them
+ * in log dates.
  *
  * @internal
  */
+// Longest first, so `yyyy` is not read as `yy` + `yy`. Kept in step with the table in formatDate().
+export const TOKEN_NAMES = [
+  'MMMMM', 'LLLLL', 'EEEEE', 'ccccc',
+  'yyyy', 'MMMM', 'LLLL', 'EEEE', 'cccc',
+  'MMM', 'LLL', 'EEE', 'ccc', 'SSS', 'ooo', 'uuu', 'ZZZ',
+  'yy', 'MM', 'LL', 'dd', 'HH', 'hh', 'mm', 'ss', 'qq', 'uu', 'ZZ',
+  'y', 'M', 'L', 'd', 'H', 'h', 'm', 's', 'S', 'a', 'E', 'c', 'q', 'o', 'u', 'x', 'X', 'Z'
+]
+
 export function formatDate(date: Date, format: string): string {
   // As Luxon: a record without a usable date is logged, not thrown on
   if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
     return 'Invalid DateTime'
   }
   const pad = (value: number, length: number = 2): string => String(Math.trunc(Math.abs(value))).padStart(length, '0')
-  const name = (options: Intl.DateTimeFormatOptions): string => new Intl.DateTimeFormat(undefined, options).format(date)
+  // English, as Luxon prints names unless a locale is set (it does not follow the system locale)
+  const name = (options: Intl.DateTimeFormatOptions): string => new Intl.DateTimeFormat('en-US', options).format(date)
   const offset = (style: 'short' | 'colon' | 'plain'): string => {
     const minutes = -date.getTimezoneOffset()
     const sign = minutes < 0 ? '-' : '+'
@@ -53,6 +64,11 @@ export function formatDate(date: Date, format: string): string {
   const tokens: Record<string, () => string> = {
     yyyy: () => pad(date.getFullYear(), 4),
     yy: () => pad(date.getFullYear() % 100),
+    y: () => String(date.getFullYear()),
+    MMMMM: () => name({ month: 'narrow' }),
+    LLLLL: () => name({ month: 'narrow' }),
+    EEEEE: () => name({ weekday: 'narrow' }),
+    ccccc: () => name({ weekday: 'narrow' }),
     MMMM: () => name({ month: 'long' }),
     MMM: () => name({ month: 'short' }),
     MM: () => pad(date.getMonth() + 1),
@@ -93,8 +109,6 @@ export function formatDate(date: Date, format: string): string {
     ZZ: () => offset('colon'),
     Z: () => offset('short')
   }
-  // Longest first, so `yyyy` is not read as `yy` + `yy`
-  const names = Object.keys(tokens).sort((a, b) => b.length - a.length)
 
   let out = ''
   for (let i = 0; i < format.length;) {
@@ -109,7 +123,7 @@ export function formatDate(date: Date, format: string): string {
       i = end === -1 ? format.length : end + 1
       continue
     }
-    const token = names.find(candidate => format.startsWith(candidate, i))
+    const token = TOKEN_NAMES.find(candidate => format.startsWith(candidate, i))
     if (token) {
       out += tokens[token]!()
       i += token.length

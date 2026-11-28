@@ -15,16 +15,21 @@ import { describe, it, expect } from 'vitest'
 import { DateTime } from '../../../packages/jssdk/node_modules/luxon'
 import * as core from '../../../packages/jssdk/src/tools/text-core'
 import { Text } from '../../../packages/jssdk/src/tools/text'
-import { formatDate } from '../../../packages/jssdk/src/logger/formatter/date-format'
+import { formatDate, TOKEN_NAMES } from '../../../packages/jssdk/src/logger/formatter/date-format'
 import { LineFormatter } from '../../../packages/jssdk/src/logger/formatter/line-formatter'
 import { LogLevel } from '../../../packages/jssdk/src/types/logger'
 
-// A morning, an afternoon and midnight; single- and double-digit fields; milliseconds
+// A morning, an afternoon, noon, half past noon and midnight; single- and double-digit fields; milliseconds
 const DATES = [
   new Date(2026, 0, 5, 9, 3, 7, 4),
   new Date(2026, 10, 28, 17, 45, 59, 999),
+  new Date(2026, 2, 1, 12, 0, 0, 50),
+  new Date(2026, 5, 15, 12, 30, 0, 0),
   new Date(1999, 11, 31, 0, 0, 0, 0)
 ]
+
+// Offsets with minutes and negative ones too — CI runs in UTC, where `+5:30` would never be checked
+const ZONES = ['UTC', 'Europe/Minsk', 'America/St_Johns', 'Asia/Kolkata', 'America/Los_Angeles']
 
 const FORMATS = [
   'yyyy-MM-dd HH:mm:ss',
@@ -41,23 +46,48 @@ const FORMATS = [
   '\'year\' yyyy, \'\'',
   '[yyyy] / x X',
   'q qq o ooo E c',
-  'u uu uuu'
+  'u uu uuu',
+  'y yy yyyy',
+  'MMMMM EEEEE LLLLL ccccc'
 ]
 
 describe('formatDate — same output as Luxon toFormat()', () => {
-  for (const date of DATES) {
-    for (const format of FORMATS) {
-      it(`${format} @ ${date.toISOString()}`, () => {
-        expect(formatDate(date, format)).toBe(DateTime.fromJSDate(date).toFormat(format))
-      })
-    }
+  for (const zone of ZONES) {
+    it(`all formats and dates, TZ=${zone}`, () => {
+      const saved = process.env.TZ
+      process.env.TZ = zone
+      try {
+        for (const date of DATES) {
+          for (const format of FORMATS) {
+            // Same wall-clock fields in each zone: rebuild the date there
+            const local = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds())
+            expect(formatDate(local, format), `${format} @ ${local.toString()}`).toBe(DateTime.fromJSDate(local).toFormat(format))
+          }
+        }
+      } finally {
+        process.env.TZ = saved
+      }
+    })
   }
+
+  it('names are English whatever the system locale, as Luxon prints them by default', () => {
+    const date = new Date(2026, 0, 5, 9, 0, 0)
+    expect(formatDate(date, 'MMM MMMM EEE EEEE')).toBe('Jan January Mon Monday')
+  })
+
+  it('every token in the list is implemented', () => {
+    const date = new Date(2026, 0, 5, 9, 3, 7, 4)
+    for (const token of TOKEN_NAMES) {
+      expect(formatDate(date, token), token).not.toBe(token)
+    }
+  })
 })
 
 describe('formatDate — documented narrowing', () => {
   it('Luxon locale macros, week numbers and era are copied as is', () => {
     const date = DATES[0]!
     expect(formatDate(date, 't T f F W k G')).toBe('t T f F W k G')
+    expect(formatDate(date, 'ZZZZ')).toBe(formatDate(date, 'ZZZ') + formatDate(date, 'Z'))
   })
 })
 
