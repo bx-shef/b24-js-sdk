@@ -282,7 +282,7 @@ function closeChat() {
               chevron="leading"
             >
               <ChatComark
-                :markdown="part.text"
+                :value="part.text"
                 :streaming="isPartStreaming(part)"
               />
             </B24ChatReasoning>
@@ -290,7 +290,7 @@ function closeChat() {
             <template v-else-if="isTextUIPart(part) && part.text.length > 0">
               <ChatComark
                 v-if="message.role === 'assistant'"
-                :markdown="part.text"
+                :value="part.text"
                 :streaming="isPartStreaming(part)"
               />
               <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap text-sm/6">
