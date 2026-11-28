@@ -353,6 +353,13 @@ test('сайт: чат на DeepSeek и предлагает заявку на �
   assert.ok(ai.includes('/request?source=chat'), 'чат не ведёт на заявку (/request?source=chat)')
 })
 
+// zod (#86): сервер сайта валидирует входящие запросы zod-ом (чат, MCP). Это zod 4 — прямая зависимость
+// docs; без неё `import 'zod'` разрешился бы в поднятый zod 3 от @nuxt/content (GHSA-mrhx-c7xc-m3w5 в исключениях).
+test('сайт: docs зависит от zod 4 напрямую', () => {
+  const zod = JSON.parse(read('docs/package.json')).dependencies?.zod
+  assert.match(zod ?? '', /^\^4\./, 'docs/package.json без прямой зависимости zod ^4 — сервер возьмёт zod 3 из @nuxt/content')
+})
+
 // Пометка «где выполняется» у примеров кода (#113): наш ProsePre поверх штатного из b24ui.
 test('сайт: блок кода показывает среду выполнения по точке входа', () => {
   const pre = read('docs/app/components/content/ProsePre.global.vue')
