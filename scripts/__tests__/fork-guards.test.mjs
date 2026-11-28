@@ -290,5 +290,7 @@ test('пакет @bxshefby/b24jssdk: без карт, лишних деклар�
   for (const rule of ['!dist/**/*.map', '!dist/esm/index.d.mts', '!dist/cjs/index.d.ts', '!dist/cjs/index.d.mts', '!dist/umd/index.js']) {
     assert.ok(files.includes(rule), `в files нет ${rule}`)
   }
-  assert.equal(count(read('packages/jssdk/build.config.ts'), 'sourcemap: true'), 0, 'build.config.ts снова собирает карты')
+  const values = [...read('packages/jssdk/build.config.ts').matchAll(/\bsourcemap:\s*([^,\n}]+)/g)].map(m => m[1].trim())
+  assert.ok(values.length > 0, 'в build.config.ts не найден sourcemap')
+  assert.deepEqual(values.filter(v => v !== 'false'), [], 'build.config.ts снова собирает карты (sourcemap не false)')
 })
