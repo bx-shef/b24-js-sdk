@@ -61,8 +61,7 @@ The Bitrix24 JS SDK (\`@bxshefby/b24jssdk\`) is a free and open-source JavaScrip
 
 - Website: <${DOMAIN}>
 - GitHub: <https://github.com/bx-shef/b24-js-sdk>
-- Community (EN): <https://t.me/b24_dev>
-- Community (RU): <https://t.me/bitrix24apps>
+- Community (Telegram, RU): <https://t.me/bitrix24apps>
 `
 
   setResponseHeader(event, 'Content-Type', 'text/markdown; charset=utf-8')

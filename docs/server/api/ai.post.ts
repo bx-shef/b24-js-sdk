@@ -1,7 +1,7 @@
 // @memo we not use jsonSchema
 import { streamText, convertToModelMessages, smoothStream, stepCountIs, jsonSchema } from 'ai'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs } from '../../modules/bx-assistant/runtime/server/utils/guard'
+import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs, chatErrorText, logChatError } from '../../modules/bx-assistant/runtime/server/utils/guard'
 import { z } from 'zod'
 import { tools as mcpToolDefinitions } from '#nuxt-mcp-toolkit/tools.mjs'
 
@@ -145,8 +145,9 @@ Code Style Guidelines for Vue and Nuxt:
     tools: {
       ...mcpTools
     },
-    onError: (error) => {
-      console.error('streamText error:', error)
-    }
-  }).toUIMessageStreamResponse()
+    onError: ({ error }) => logChatError(error)
+  }).toUIMessageStreamResponse({
+    // Текст для окна чата: подробности ошибки провайдера пользователю не нужны.
+    onError: chatErrorText
+  })
 })

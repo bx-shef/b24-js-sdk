@@ -2,7 +2,7 @@ import { streamText, convertToModelMessages, createUIMessageStream, createUIMess
 import type { UIMessageStreamWriter, ToolCallPart, ToolSet } from 'ai'
 import { createMCPClient } from '@ai-sdk/mcp'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs } from '../utils/guard'
+import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs, chatErrorText, logChatError } from '../utils/guard'
 
 const MAX_STEPS = 10
 
@@ -97,6 +97,7 @@ export default defineEventHandler(async (event) => {
   event.node.req.on('close', () => abortController.abort())
 
   const stream = createUIMessageStream({
+    onError: chatErrorText,
     execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
       const modelMessages = await convertToModelMessages(trimToolOutputs(messages) as Parameters<typeof convertToModelMessages>[0])
       const result = streamText({
@@ -108,6 +109,7 @@ export default defineEventHandler(async (event) => {
         system: getSystemPrompt(siteName, requestUrl),
         messages: modelMessages,
         tools: mcpTools as ToolSet,
+        onError: ({ error }) => logChatError(error),
         onStepFinish: ({ toolCalls }: { toolCalls: ToolCallPart[] }) => {
           if (toolCalls.length === 0) return
           writer.write({
