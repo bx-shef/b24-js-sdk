@@ -12,7 +12,7 @@
 
 - не зависящее от фреймворков ядро SDK (`packages/jssdk`, публикуется как `@bxshefby/b24jssdk`, поставляется в ESM, CommonJS и UMD; рекомендуемая точка входа — ESM),
 - тонкую обёртку-модуль для Nuxt (`packages/jssdk-nuxt`),
-- публичный сайт документации (`docs/`, https://b24-js-sdk.bx-shef.by — Docker-образ на сервере bx-shef, `deploy/`; там же MCP-сервер `/mcp/`, `llms.txt` и чат помощника),
+- публичный сайт документации (`docs/`, <https://b24-js-sdk.bx-shef.by> — Docker-образ на сервере bx-shef, `deploy/`; там же MCP-сервер `/mcp/`, `llms.txt` и чат помощника),
 - песочницы для ручной проверки (`playgrounds/cli`, `playgrounds/nuxt`),
 - проекты Vitest уровня рабочего пространства в `test/`, обращающиеся к настоящему порталу Битрикс24.
 

@@ -11,16 +11,16 @@
 ## Где мы
 
 | Что | Состояние |
-|---|---|
+| --- | --- |
 | Пакеты npm | `@bxshefby/b24jssdk` и `@bxshefby/b24jssdk-nuxt` 3.1.0, с provenance. Старые `@bitrix24/*` помечены deprecated владельцем |
 | Выпуск | release-please копит изменения в PR `chore(main): release X.Y.Z`; владелец мержит его руками, когда нужен выпуск, — публикация в npm идёт сама (`RELEASING.md`, раздел «Форк») |
-| Сайт | https://b24-js-sdk.bx-shef.by — Docker-образ из `main` (`docs-image.yml`), сервер bx-shef, обновляет Watchtower (`deploy/README.md`). Номер сборки — в подвале. При выкладке сайт 2–3 минуты отвечает 502 |
+| Сайт | <https://b24-js-sdk.bx-shef.by> — Docker-образ из `main` (`docs-image.yml`), сервер bx-shef, обновляет Watchtower (`deploy/README.md`). Номер сборки — в подвале. При выкладке сайт 2–3 минуты отвечает 502 |
 | Сайт для AI-агентов | MCP-сервер `/mcp/` (страница «MCP-сервер»), навыки `skills/` и `/.well-known/skills/`, `llms.txt` и `llms-full.txt` |
 | Чат помощника | DeepSeek через MCP-инструменты сайта; заявка на разработку — форма Битрикс24 |
 | Аналитика | Яндекс Метрика (цели заведены), баннер согласия на cookie |
 | Синхронизация с родителем | Запланированная задача каждый понедельник; правила переноса — `.sync/PORTING.md` |
 | Живые тесты SDK | 64–67 из 68 на тестовом портале; записи готовит `make test-fixtures` |
-| Соседи | UI-библиотека — [bx-shef/b24-ui](https://github.com/bx-shef/b24-ui) (https://b24-ui.bx-shef.by), иконки — [bx-shef/b24-icons](https://github.com/bx-shef/b24-icons) (https://b24-icons.bx-shef.by); правки там делают их сессии |
+| Соседи | UI-библиотека — [bx-shef/b24-ui](https://github.com/bx-shef/b24-ui) (<https://b24-ui.bx-shef.by>), иконки — [bx-shef/b24-icons](https://github.com/bx-shef/b24-icons) (<https://b24-icons.bx-shef.by>); правки там делают их сессии |
 
 ## Что дальше
 
@@ -42,7 +42,7 @@
 ## Где что лежит
 
 | Что | Где |
-|---|---|
+| --- | --- |
 | Правила для агентов и контрибьюторов | `AGENTS.md`, `.github/contributing/` |
 | Выпуск | `RELEASING.md`, `release-please-config.json`, `.github/workflows/release-please.yml`, `npm-publish-*.yml` |
 | Сайт и сервер | `docs/`, `deploy/` (`install-server.sh`, `README.md`), `.github/workflows/docs-image.yml` |
