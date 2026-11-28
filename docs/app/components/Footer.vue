@@ -16,7 +16,7 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
 <template>
   <B24Separator :icon="route.path === '/' ? undefined : Bitrix24Icon" class="h-px" />
 
-  <B24Footer>
+  <B24Footer :b24ui="{ right: 'flex-wrap lg:flex-nowrap justify-center gap-y-2' }">
     <template #left>
       <ProseP small accent="less">
         © 2026 ООО «БэИксШефБай»
@@ -61,34 +61,36 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
       />
     </template>
 
-    <NuxtLink :to="config.public.gitUrl" target="_blank" class="text-legend text-(length:--ui-font-size-sm) hover:underline">
-      Основано на Bitrix24 JS SDK. Распространяется по лицензии MIT.
-    </NuxtLink>
-    <NuxtLink
-      :to="buildHref"
-      target="_blank"
-      data-testid="build-sha"
-      class="ms-3 text-legend text-(length:--ui-font-size-sm) hover:underline"
-    >
-      {{ buildLabel }}
-    </NuxtLink>
-    <!-- Отзыв согласия на cookie (cookie-consent.js): только когда на сайте есть Метрика -->
-    <button
-      v-if="config.public.yandexMetrikaId"
-      type="button"
-      data-cookie-settings
-      class="ms-3 text-legend text-(length:--ui-font-size-sm) hover:underline"
-    >
-      Настроить cookie
-    </button>
-    <!-- Та же политика, что в окне баннера cookie (public/cookie-consent.js) -->
-    <NuxtLink
-      v-if="config.public.yandexMetrikaId"
-      to="https://offer.bx-shef.by/privacy"
-      target="_blank"
-      class="ms-3 text-legend text-(length:--ui-font-size-sm) hover:underline"
-    >
-      Политика cookie
-    </NuxtLink>
+    <div class="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center">
+      <NuxtLink :to="config.public.gitUrl" target="_blank" class="text-legend text-(length:--ui-font-size-sm) hover:underline">
+        Основано на Bitrix24 JS SDK. Распространяется по лицензии MIT.
+      </NuxtLink>
+      <NuxtLink
+        :to="buildHref"
+        target="_blank"
+        data-testid="build-sha"
+        class="whitespace-nowrap text-legend text-(length:--ui-font-size-sm) hover:underline"
+      >
+        {{ buildLabel }}
+      </NuxtLink>
+      <!-- Отзыв согласия на cookie (cookie-consent.js): только когда на сайте есть Метрика -->
+      <button
+        v-if="config.public.yandexMetrikaId"
+        type="button"
+        data-cookie-settings
+        class="whitespace-nowrap text-legend text-(length:--ui-font-size-sm) hover:underline"
+      >
+        Настроить cookie
+      </button>
+      <!-- Та же политика, что в окне баннера cookie (public/cookie-consent.js) -->
+      <NuxtLink
+        v-if="config.public.yandexMetrikaId"
+        to="https://offer.bx-shef.by/privacy"
+        target="_blank"
+        class="whitespace-nowrap text-legend text-(length:--ui-font-size-sm) hover:underline"
+      >
+        Политика cookie
+      </NuxtLink>
+    </div>
   </B24Footer>
 </template>
