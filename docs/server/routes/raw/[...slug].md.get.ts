@@ -11,6 +11,8 @@ export default defineEventHandler(async (event) => {
   const baseUrl = `${config.public.canonicalUrl}${config.public.baseUrl}`
 
   const notFound = (reason: string) => {
+    // Форк: без статуса несуществующая страница отдавалась с 200 и попадала бы в индекс как настоящая
+    setResponseStatus(event, 404)
     setResponseHeader(event, 'Content-Type', 'text/markdown; charset=utf-8')
     return `---\ntitle: Not Found\n---\n\n# Page Not Found\n\n${reason} Browse the [sitemap](${config.public.baseUrl}/sitemap.md) to find available pages.\n`
   }
