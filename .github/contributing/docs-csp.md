@@ -66,7 +66,7 @@ worker-src 'self';
 object-src 'none';
 base-uri 'self';
 form-action 'none';
-frame-src 'self';
+frame-src 'self' https://mc.yandex.ru https://mc.yandex.com;
 manifest-src 'self'
 ```
 
@@ -79,6 +79,8 @@ manifest-src 'self'
 ни скриптов, ни стилей, ни шрифтов, ни изображений, ни запросов fetch. Так стало после
 PR #407, который заменил CDN с prettier встроенной копией. До него политике понадобилось
 бы исключение для jsDelivr в `script-src`, и вся затея стоила бы гораздо меньше.
+
+`frame-src 'self' https://mc.yandex.ru https://mc.yandex.com` — Метрика после согласия на аналитику открывает служебный iframe со своего домена (без него в консоли нарушение CSP).
 
 `frame-src 'self'` — страница `/request` («Заявка на разработку») встраивает форму CRM Битрикс24
 iframe-ом **того же источника**: `docs/public/b24-form.html` (копия обёртки из
