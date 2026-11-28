@@ -342,3 +342,10 @@ test('сайт: заявка различает источники шапка/п
   }
   assert.match(stripComments(read('docs/server/routes/sitemap.xml.get.ts')), /\['', '\/request'\]/, 'главная или /request выпали из sitemap.xml')
 })
+// Чат помощника (#110, панель): docs/server/api/ai.post.ts — наш (DeepSeek, русские правила, заявка из чата).
+// Перенос файла родителя целиком молча сменил бы модель и убрал заявку.
+test('сайт: чат на DeepSeek и предлагает заявку на разработку', () => {
+  const ai = stripComments(read('docs/server/api/ai.post.ts'))
+  assert.match(ai, /createDeepSeek\(/, 'чат больше не на DeepSeek')
+  assert.ok(ai.includes('/request?source=chat'), 'чат не ведёт на заявку (/request?source=chat)')
+})

@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   ).join('\n')
   // Форк: главная и страница заявки — не из коллекции docs, но их тоже должен найти поисковик
   const extra = ['', '/request'].map(path =>
-    `  <url>\n    <loc>${xmlEscape(`${baseUrl}${path}` || '/')}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
+    `  <url>\n    <loc>${xmlEscape(`${baseUrl}${path}`)}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
   ).join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
