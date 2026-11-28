@@ -7,8 +7,12 @@ export default defineAppConfig({
   },
   b24ui: {},
   colorMode: true,
-  colorModeInitialValue: 'edge-dark' as const, // edge-dark | edge-light | light
-  colorModeTypeLight: 'edge-dark' as const, // edge-dark | edge-light | light
+  // Тёмная тема сайта — штатная `dark` с фоном «Василька» (main.css). У `edge-dark` в b24ui тёмный только фон,
+  // а окна с `base-mode` (поиск, панель чата) остаются светлыми — белые «островки» (#70, #49).
+  colorModeInitialValue: 'dark' as const, // dark | edge-dark | edge-light | light
+  // Светлая тема сайта — `edge-light` (светлый перелив «Василька», main.css). Было `edge-dark`: режим «light»
+  // ставил тот же тёмный класс, и светлая тема не включалась (#70).
+  colorModeTypeLight: 'edge-light' as const, // edge-dark | edge-light | light
   bxAssistant: {
     icons: {
       explain: undefined,

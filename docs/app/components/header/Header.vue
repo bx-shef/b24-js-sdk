@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import GitHubIcon from '@bitrix24/b24icons-vue/social/GitHubIcon'
 import AiStarsIcon from '@bitrix24/b24icons-vue/outline/AiStarsIcon'
+import SunIcon from '@bitrix24/b24icons-vue/outline/SunIcon'
+import MoonIcon from '@bitrix24/b24icons-vue/outline/MoonIcon'
+import { useMounted } from '@vueuse/core'
 
 const route = useRoute()
 const { desktopLinks } = useHeader()
@@ -21,10 +24,15 @@ function toggleChat() {
 // region ColorMode ////
 const colorMode = useColorMode()
 
+// Тёмная тема сайта — `dark`, светлая — `light` (класс `edge-light`, app.config.ts). Своя кнопка вместо
+// B24ColorModeButton: та ставит светлую тему режимом `light`, а тёмной считает только `dark` — со старым
+// `edge-dark` она подписывалась «на тёмную» (#70). До монтирования режим неизвестен (хранится в браузере) —
+// кнопка считает тему тёмной, как и тема по умолчанию.
+const mounted = useMounted()
+const isDarkMode = computed(() => !mounted.value || colorMode.value === 'dark' || colorMode.value === 'edge-dark')
+
 function toggleMode() {
-  // The site's dark theme is `edge-dark` (app.config.ts): it carries the gradient
-  // background, so the toggle returns there rather than to plain `dark`.
-  colorMode.preference = colorMode.value === 'dark' || colorMode.value === 'edge-dark' ? 'light' : 'edge-dark'
+  colorMode.preference = isDarkMode.value ? 'light' : 'dark'
 }
 // endregion ////
 
@@ -68,7 +76,12 @@ defineShortcuts({
       <!-- AssistantChat v-if="isAssistantEnabled" / -->
       <B24ContentSearchButton />
 
-      <B24ColorModeButton />
+      <B24Button
+        color="air-tertiary-no-accent"
+        :icon="isDarkMode ? SunIcon : MoonIcon"
+        :aria-label="isDarkMode ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'"
+        @click="toggleMode"
+      />
 
       <div class="hidden sm:flex flex-nowrap flex-row items-center justify-end gap-3">
         <B24Button
