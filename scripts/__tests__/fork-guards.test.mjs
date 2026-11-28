@@ -294,3 +294,21 @@ test('пакет @bxshefby/b24jssdk: без карт, лишних деклар�
   assert.ok(values.length > 0, 'в build.config.ts не найден sourcemap')
   assert.deepEqual(values.filter(v => v !== 'false'), [], 'build.config.ts снова собирает карты (sourcemap не false)')
 })
+
+// /raw/*.md вне пререндера (#103): трассировщик кладёт в сервер minimark 0.2.0 от @nuxt/content, а маршрут
+// импортирует minimark/stringify из 1.0.0 — всякий несуществующий адрес отвечал 500 вместо 404.
+test('сайт: minimark и entities вшиты в серверную сборку, /raw/* без страницы — 404', () => {
+  const config = read('docs/nuxt.config.ts')
+  const inline = config.match(/externals:\s*\{\s*inline:\s*\[([^\]]*)\]/)
+  assert.ok(inline, 'в nitro нет externals.inline')
+  for (const dep of ['minimark', 'entities']) {
+    assert.ok(inline[1].includes(`'${dep}'`), `${dep} не в externals.inline`)
+  }
+  assert.ok(read('docs/server/routes/raw/[...slug].md.get.ts').includes('setResponseStatus(event, 404)'), '/raw/* без страницы снова отвечает 200')
+})
+test('сайт: /raw/* не отражает путь запроса в ответ «не найдено»', () => {
+  const route = read('docs/server/routes/raw/[...slug].md.get.ts')
+  for (const call of route.matchAll(/notFound\(([^)]*)\)/g)) {
+    assert.ok(!call[1].includes('${'), `notFound подставляет значение в текст: ${call[1]}`)
+  }
+})

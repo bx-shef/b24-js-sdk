@@ -212,6 +212,13 @@ export default defineNuxtConfig({
     // into a negated globby pattern in `getIncludePatterns`, and leaves patterns
     // starting with `*` unrewritten — which is why this one is written that way.
     ignore: ['**/node_modules/**'],
+    // Форк: в серверную сборку трассировщик кладёт minimark 0.2.0 (зависимость
+    // @nuxt/content), а наш /raw/*.md импортирует `minimark/stringify` из 1.0.0 —
+    // такого файла в 0.2.0 нет, и всякий непререндеренный /raw/… отвечал 500.
+    // Вшиваем minimark (и его entities — та же история версий) в бандл, чтобы версии были наши.
+    externals: {
+      inline: ['minimark', 'entities']
+    },
     publicAssets: [{
       dir: resolve('../skills'),
       baseURL: '/.well-known/skills',
