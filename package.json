@@ -1,7 +1,7 @@
 {
   "name": "@bxshefby/b24jssdk-main",
   "description": "Bitrix24 REST API JS SDK",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "author": "ООО «БэИксШефБай»",
   "packageManager": "pnpm@12.8.1",
   "repository": {
