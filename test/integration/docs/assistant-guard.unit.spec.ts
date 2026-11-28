@@ -69,7 +69,8 @@ describe('assistant guard — trimToolOutputs', () => {
 
 describe('assistant guard — chat errors', () => {
   it('429 is recognised directly and after retries (RetryError.lastError)', async () => {
-    const { APICallError, RetryError } = await import('ai')
+    // 'ai' is a dependency of the docs app, not of the root workspace — the same copy guard.ts resolves.
+    const { APICallError, RetryError } = await import('../../../docs/node_modules/ai/dist/index.js')
     const { chatErrorStatus, chatErrorText } = await import('../../../docs/modules/bx-assistant/runtime/server/utils/guard')
     const busy = new APICallError({ message: 'Too Many Requests', url: 'https://api.deepseek.com', requestBodyValues: { messages: ['secret'] }, statusCode: 429 })
     const retried = new RetryError({ message: 'Failed after 3 attempts', reason: 'maxRetriesExceeded', errors: [busy, busy] })
