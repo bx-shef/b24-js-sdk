@@ -28,7 +28,7 @@ type Document = {
 }
 
 const B24_DOCS = {
-  ui: 'https://bitrix24.github.io/b24ui/',
+  ui: 'https://b24-ui.bx-shef.by/',
   jsSdk: 'https://b24-js-sdk.bx-shef.by/'
 }
 

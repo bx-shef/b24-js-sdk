@@ -2,12 +2,12 @@
 const menuList = [
   {
     label: 'b24ui',
-    to: 'https://bitrix24.github.io/b24ui/',
+    to: 'https://b24-ui.bx-shef.by/',
     target: '_blank'
   },
   {
     label: 'b24icons',
-    to: 'https://bitrix24.github.io/b24icons/',
+    to: 'https://b24-icons.bx-shef.by/',
     target: '_blank'
   }
 ]
