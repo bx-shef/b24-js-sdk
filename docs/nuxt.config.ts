@@ -91,7 +91,17 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/x-icon', href: `${baseUrl}/favicon.ico?v=2` }
       ],
-      htmlAttrs: { class: 'edge-dark' }
+      // Тема без мигания (#70). Класс темы на <html> ставит только этот скрипт, до отрисовки: выбор посетителя
+      // (`vueuse-color-scheme`, useColorMode b24ui), иначе тёмная `dark`. Сохранённый прежний `edge-dark` переводится
+      // в `dark`: у него окна поиска и чата светлые. Класс в htmlAttrs не задаём: при
+      // гидратации его возвращала разметка сервера, и у светлой темы на <html> оказывались `edge-light edge-dark`.
+      // Соответствие режимов классам — как в app.config.ts: light → edge-light.
+      script: [
+        {
+          tagPosition: 'head',
+          innerHTML: `(function(){var c='dark';try{var v=localStorage.getItem('vueuse-color-scheme');if(v==='edge-dark'){v='dark';localStorage.setItem('vueuse-color-scheme',v)}if(v==='auto')v=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';c={light:'edge-light','edge-light':'edge-light',dark:'dark'}[v]||c}catch(e){}document.documentElement.classList.add(c)})()`
+        }
+      ]
     },
     rootAttrs: { 'data-vaul-drawer-wrapper': '' }
   },
