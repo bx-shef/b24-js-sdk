@@ -66,3 +66,16 @@ describe('assistant guard — trimToolOutputs', () => {
     expect(trimToolOutputs(msgs)).toEqual(msgs)
   })
 })
+
+describe('assistant guard — chat errors', () => {
+  it('429 is recognised directly and after retries (RetryError.lastError)', async () => {
+    const { APICallError, RetryError } = await import('ai')
+    const { chatErrorStatus, chatErrorText } = await import('../../../docs/modules/bx-assistant/runtime/server/utils/guard')
+    const busy = new APICallError({ message: 'Too Many Requests', url: 'https://api.deepseek.com', requestBodyValues: { messages: ['secret'] }, statusCode: 429 })
+    const retried = new RetryError({ message: 'Failed after 3 attempts', reason: 'maxRetriesExceeded', errors: [busy, busy] })
+    expect(chatErrorStatus(busy)).toBe(429)
+    expect(chatErrorStatus(retried)).toBe(429)
+    expect(chatErrorText(retried)).toMatch(/слишком много запросов/)
+    expect(chatErrorText(new Error('x'))).toMatch(/Не получилось ответить/)
+  })
+})

@@ -1,7 +1,7 @@
 // @memo we not use jsonSchema
-import { streamText, convertToModelMessages, smoothStream, stepCountIs, jsonSchema, APICallError } from 'ai'
+import { streamText, convertToModelMessages, smoothStream, stepCountIs, jsonSchema } from 'ai'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs } from '../../modules/bx-assistant/runtime/server/utils/guard'
+import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs, chatErrorText, logChatError } from '../../modules/bx-assistant/runtime/server/utils/guard'
 import { z } from 'zod'
 import { tools as mcpToolDefinitions } from '#nuxt-mcp-toolkit/tools.mjs'
 
@@ -148,23 +148,6 @@ Code Style Guidelines for Vue and Nuxt:
     onError: ({ error }) => logChatError(error)
   }).toUIMessageStreamResponse({
     // Текст для окна чата: подробности ошибки провайдера пользователю не нужны.
-    onError: (error) => {
-      const status = APICallError.isInstance(error) ? error.statusCode : undefined
-      return status === 429
-        ? 'Сейчас слишком много запросов к помощнику. Попробуйте через минуту.'
-        : 'Не получилось ответить. Попробуйте ещё раз или переформулируйте вопрос.'
-    }
+    onError: chatErrorText
   })
 })
-
-/**
- * Ошибка провайдера несёт исходящий запрос (`requestBodyValues`) и сырой ответ — то есть переписку.
- * В лог — только опознавательные поля (как в чате nuxt/ui).
- */
-function logChatError(error: unknown) {
-  console.error('[api/ai] stream error:', {
-    name: error instanceof Error ? error.name : 'UnknownError',
-    message: error instanceof Error ? error.message.slice(0, 300) : String(error).slice(0, 300),
-    statusCode: APICallError.isInstance(error) ? error.statusCode : undefined
-  })
-}

@@ -1,5 +1,6 @@
 import { createError, getHeader, getRequestIP } from 'h3'
 import type { H3Event } from 'h3'
+import { APICallError, RetryError } from 'ai'
 
 /**
  * Gate shared by the two AI endpoints (`/api/ai` and the assistant search):
@@ -139,4 +140,31 @@ export function trimToolOutputs<T>(messages: T[]): T[] {
       })
     }
   })
+}
+
+/** Код ответа провайдера; после повторов SDK отдаёт RetryError, а ответ провайдера — в `lastError`. */
+export function chatErrorStatus(error: unknown): number | undefined {
+  const cause = RetryError.isInstance(error) ? error.lastError : error
+  return APICallError.isInstance(cause) ? cause.statusCode : undefined
+}
+
+/**
+ * Ошибка провайдера несёт исходящий запрос (`requestBodyValues`) и сырой ответ — то есть переписку.
+ * В лог — только опознавательные поля (как в чате nuxt/ui). Текст `message` — только у ошибки провайдера
+ * (короткая фраза API): у ошибок разбора и инструментов он может цитировать переписку.
+ */
+export function logChatError(error: unknown) {
+  const cause = RetryError.isInstance(error) ? error.lastError : error
+  console.error('[api/ai] stream error:', {
+    name: error instanceof Error ? error.name : 'UnknownError',
+    statusCode: chatErrorStatus(error),
+    message: APICallError.isInstance(cause) ? cause.message.slice(0, 300) : undefined
+  })
+}
+
+/** Текст ошибки для окна чата: подробности провайдера пользователю не нужны. */
+export function chatErrorText(error: unknown): string {
+  return chatErrorStatus(error) === 429
+    ? 'Сейчас слишком много запросов к помощнику. Попробуйте через минуту.'
+    : 'Не получилось ответить. Попробуйте ещё раз или переформулируйте вопрос.'
 }
