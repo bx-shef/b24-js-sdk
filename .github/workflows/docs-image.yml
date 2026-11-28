@@ -64,8 +64,9 @@ jobs:
           check 200 localhost:3000/docs/getting-started/ai/mcp/
           check 200 localhost:3000/raw/docs/getting-started/ai/mcp.md
           if [ -n "${SITE_URL}" ]; then
-            curl -fs localhost:3000/llms.txt | grep -q '## MCP-сервер' || { echo "::error::в llms.txt нет раздела MCP-сервер"; exit 1; }
-            if curl -fs localhost:3000/llms.txt | grep -q 'raw/mcp.md'; then echo "::error::в llms.txt ссылка /raw/mcp.md"; exit 1; fi
+            llms=$(curl -fs localhost:3000/llms.txt)
+            grep -q '## MCP-сервер' <<<"$llms" || { echo "::error::в llms.txt нет раздела MCP-сервер"; exit 1; }
+            if grep -q '/raw/mcp\.md' <<<"$llms"; then echo "::error::в llms.txt ссылка /raw/mcp.md"; exit 1; fi
           fi
           # Vite 8 (rolldown) оставлял в клиентских скриптах заглушки адресов файлов — база документации в браузере
           # не открывалась, переходы внутри сайта давали 404 (docs/build/rolldown-file-url.ts).
