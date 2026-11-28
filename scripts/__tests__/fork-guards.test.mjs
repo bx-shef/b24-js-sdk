@@ -7,7 +7,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -351,4 +351,19 @@ test('сайт: чат на DeepSeek и предлагает заявку на �
   const ai = stripComments(read('docs/server/api/ai.post.ts'))
   assert.match(ai, /createDeepSeek\(/, 'чат больше не на DeepSeek')
   assert.ok(ai.includes('/request?source=chat'), 'чат не ведёт на заявку (/request?source=chat)')
+})
+
+// Пометка «где выполняется» у примеров кода (#113): наш ProsePre поверх штатного из b24ui.
+test('сайт: блок кода показывает среду выполнения по точке входа', () => {
+  const pre = read('docs/app/components/content/ProsePre.global.vue')
+  assert.ok(pre.includes('from \'~/utils/codeRuntime\'') && pre.includes('B24ProsePre'), 'ProsePre не наш или без пометки среды')
+  const rules = read('docs/app/utils/codeRuntime.ts')
+  for (const entry of ['B24OAuth', 'B24Hook', 'initializeB24Frame']) {
+    assert.ok(rules.includes(entry), `правило для ${entry} пропало`)
+  }
+})
+test('сайт: свой ProsePre глобальный и не подписывает блоки внутри code-group', () => {
+  assert.ok(existsSync(join(ROOT, 'docs/app/components/content/ProsePre.global.vue')), 'ProsePre не .global — MDC на главной не найдёт его и блоки кода пропадут')
+  assert.ok(!existsSync(join(ROOT, 'docs/app/components/content/ProsePre.vue')), 'второй ProsePre без .global')
+  assert.match(read('docs/app/components/content/ProsePre.global.vue'), /inGroup\.value \? undefined/, 'пометка внутри code-group — подписи скрытых вкладок видны')
 })
