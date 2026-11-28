@@ -11,11 +11,11 @@ export function useRestApiVersions() {
   }
 
   const restApiVersions = computed(() => [{
-    label: 'restApi:v2',
+    label: 'v2',
     value: 'rest-api-ver2',
     onSelect: () => setRestapiVersion('rest-api-ver2')
   }, {
-    label: 'restApi:v3',
+    label: 'v3',
     value: 'rest-api-ver3',
     onSelect: () => setRestapiVersion('rest-api-ver3')
   }].map(f => ({ ...f, active: restApiVersion.value === f.value })))

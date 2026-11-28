@@ -212,7 +212,7 @@ function makeExplain() {
         <B24Button
           v-if="showExplainWithAi"
           :icon="explainIcon"
-          label="Объяснить с ИИ"
+          label="Объяснить с AI"
           color="air-selection"
           size="sm"
           @click="makeExplain"

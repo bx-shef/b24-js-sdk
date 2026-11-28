@@ -192,7 +192,7 @@ function closeChat() {
   <B24Sidebar
     v-model:open="open"
     side="right"
-    title="Спросить ИИ"
+    title="Спросить AI"
     rail
     :style="{ '--sidebar-width': '26rem' }"
     :b24ui="{ root: 'base-mode bg-(--ui-color-gray-02) dark:bg-(--ui-color-base-black-fixed)', header: '', body: 'scrollbar-thin scrollbar-transparent custom-scrollbar-transparent', actions: 'gap-0.5' }"
