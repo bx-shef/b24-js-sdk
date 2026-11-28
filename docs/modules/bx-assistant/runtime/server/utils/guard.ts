@@ -94,14 +94,49 @@ export function assertMessages(messages: unknown): asserts messages is unknown[]
   }
 }
 
-/** The text of a message: string `content`, or the `text` parts of `parts` (AI SDK UI messages). */
+/**
+ * The text of a message: string `content` plus the `text` parts of `parts` / array `content` (AI SDK UI
+ * messages). Both are counted — the model reads `parts`, so a short `content` must not hide a long `parts`.
+ */
 export function messageText(msg: any): string {
-  if (typeof msg?.content === 'string') {
-    return msg.content
-  }
-  const parts = Array.isArray(msg?.parts) ? msg.parts : Array.isArray(msg?.content) ? msg.content : []
-  return parts
+  const own = typeof msg?.content === 'string' ? msg.content : ''
+  const parts = [
+    ...(Array.isArray(msg?.parts) ? msg.parts : []),
+    ...(Array.isArray(msg?.content) ? msg.content : [])
+  ]
+  return own + parts
     .filter((part: any) => part?.type === 'text' && typeof part.text === 'string')
     .map((part: any) => part.text)
     .join('')
+}
+
+const TOOL_OUTPUT_KEEP = 1_000
+
+/**
+ * The history as it goes to the model: tool results from earlier answers cut to their first
+ * {@link TOOL_OUTPUT_KEEP} characters. The chat window sends every page the assistant read back with each
+ * question; re-sending them spends the DeepSeek key on every turn and, a few turns in, overflows the model's
+ * context. The assistant can call the tool again when it needs a page. Parts keep their type and state,
+ * so tool calls stay paired with results.
+ */
+export function trimToolOutputs<T>(messages: T[]): T[] {
+  return messages.map((msg: any) => {
+    if (!Array.isArray(msg?.parts)) {
+      return msg
+    }
+    return {
+      ...msg,
+      parts: msg.parts.map((part: any) => {
+        const isTool = typeof part?.type === 'string' && (part.type.startsWith('tool-') || part.type === 'dynamic-tool')
+        if (!isTool || part.output === undefined) {
+          return part
+        }
+        const text = typeof part.output === 'string' ? part.output : JSON.stringify(part.output)
+        if (text.length <= TOOL_OUTPUT_KEEP) {
+          return part
+        }
+        return { ...part, output: `${text.slice(0, TOOL_OUTPUT_KEEP)}… [обрезано: результат прошлого ответа, при необходимости вызовите инструмент снова]` }
+      })
+    }
+  })
 }

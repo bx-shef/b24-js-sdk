@@ -2,7 +2,7 @@ import { streamText, convertToModelMessages, createUIMessageStream, createUIMess
 import type { UIMessageStreamWriter, ToolCallPart, ToolSet } from 'ai'
 import { createMCPClient } from '@ai-sdk/mcp'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { assistantGuard, assertMessages, chargeAssistant } from '../utils/guard'
+import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs } from '../utils/guard'
 
 const MAX_STEPS = 10
 
@@ -98,7 +98,7 @@ export default defineEventHandler(async (event) => {
 
   const stream = createUIMessageStream({
     execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
-      const modelMessages = await convertToModelMessages(messages as Parameters<typeof convertToModelMessages>[0])
+      const modelMessages = await convertToModelMessages(trimToolOutputs(messages) as Parameters<typeof convertToModelMessages>[0])
       const result = streamText({
         model: deepseek(config.bxAssistant.modelDeepSeek),
         maxOutputTokens: 4000, // Possible values: `10000` | `8100` | `4000`

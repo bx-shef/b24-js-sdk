@@ -6,7 +6,7 @@ vi.mock('h3', () => ({
   getHeader: () => undefined,
   getRequestIP: () => undefined
 }))
-import { assertMessages, messageText } from '../../../docs/modules/bx-assistant/runtime/server/utils/guard'
+import { assertMessages, messageText, trimToolOutputs } from '../../../docs/modules/bx-assistant/runtime/server/utils/guard'
 
 const user = (text: string) => ({ id: 'u', role: 'user', parts: [{ type: 'text', text }] })
 // What the chat window sends back after an answer that read a documentation page:
@@ -43,5 +43,26 @@ describe('assistant guard — assertMessages', () => {
     expect(messageText({ content: 'abc' })).toBe('abc')
     expect(messageText(assistantWithTool(10))).toBe('Используйте B24Hook.fromWebhookUrl(...).')
     expect(messageText({})).toBe('')
+  })
+
+  it('a short string content does not hide long text parts', () => {
+    expect(() => assertMessages([{ role: 'user', content: 'a', parts: [{ type: 'text', text: 'x'.repeat(32_001) }] }])).toThrow(/maximum allowed length/)
+  })
+})
+
+describe('assistant guard — trimToolOutputs', () => {
+  it('cuts long tool results, keeps text, type and state', () => {
+    const [, a] = trimToolOutputs([user('q'), assistantWithTool(56_000)]) as any[]
+    const tool = a.parts.find((p: any) => p.type.startsWith('tool-'))
+    expect(tool.state).toBe('output-available')
+    expect(tool.toolCallId).toBe('t1')
+    expect(tool.output.length).toBeLessThan(1_200)
+    expect(tool.output).toMatch(/обрезано/)
+    expect(a.parts.find((p: any) => p.type === 'text').text).toBe('Используйте B24Hook.fromWebhookUrl(...).')
+  })
+
+  it('leaves short results and user messages as they are', () => {
+    const msgs = [user('q'), assistantWithTool(100)]
+    expect(trimToolOutputs(msgs)).toEqual(msgs)
   })
 })
