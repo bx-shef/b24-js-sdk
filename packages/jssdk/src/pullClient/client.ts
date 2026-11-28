@@ -158,7 +158,8 @@ export class PullClient implements ConnectorParent {
   private _onOnlineHandler: () => void
 
   // [userId] => array of callbacks
-  private _userStatusCallbacks: Record<number, UserStatusCallback[]> = {}
+  // Без прототипа (#121): читается по user_id из сообщений сервера
+  private _userStatusCallbacks: Record<number, UserStatusCallback[]> = Object.create(null)
 
   private _connectPromise: null | {
     resolve: (response: any) => void
@@ -563,7 +564,8 @@ export class PullClient implements ConnectorParent {
         if (typeof handler.getMap === 'function') {
           const mapping = handler.getMap()
           if (mapping && typeof mapping === 'object') {
-            const rowMapping = mapping[data.command]
+            // Только собственные ключи карты (#121): command приходит с сервера, `constructor` взял бы Object
+            const rowMapping = Object.prototype.hasOwnProperty.call(mapping, data.command) ? mapping[data.command] : undefined
             if (typeof rowMapping === 'function') {
               method = rowMapping.bind(handler)
             } else if (
@@ -1427,7 +1429,7 @@ export class PullClient implements ConnectorParent {
       ) {
         this._subscribers[params.type][params.moduleId] = {
           callbacks: [],
-          commands: {}
+          commands: Object.create(null)
         }
       }
 

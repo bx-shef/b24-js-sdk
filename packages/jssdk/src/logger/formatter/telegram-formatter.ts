@@ -5,7 +5,10 @@ import { AbstractFormatter } from './abstract-formatter'
  * TelegramFormatter
  *
  * Formats a log entry for sending to Telegram.
- * Supports HTML markup with escaped special characters.
+ *
+ * In HTML mode (`useHtml`, the default) the channel, the message, the context and the extra data are
+ * escaped, so `<`, `>` and `&` in a log line are shown as text. In Markdown modes nothing is escaped:
+ * Telegram may reject a message with `_`, `*`, `.` and similar characters — prefer HTML.
  *
  * @link https://core.telegram.org/bots/api#html-style
  */
@@ -35,7 +38,13 @@ export class TelegramFormatter extends AbstractFormatter implements Formatter {
 
     // Truncate the message if it exceeds the maximum length
     if (message.length > this.maxMessageLength) {
-      message = message.substring(0, this.maxMessageLength - 3) + '...'
+      message = message.substring(0, this.maxMessageLength - 3)
+      // Не оставлять разрезанную HTML-сущность (`&am`): после экранирования (#121) она стала вероятнее,
+      // а Telegram такую запись отвергает целиком
+      if (this.useHtml) {
+        message = message.replace(/&[#a-z0-9]{0,7}$/i, '')
+      }
+      message += '...'
     }
 
     return message
@@ -94,7 +103,8 @@ export class TelegramFormatter extends AbstractFormatter implements Formatter {
   }
 
   protected _escapeMarkdownV2(text: string): string {
-    // Все символы, которые MarkdownV2 требует экранировать, включая саму «\\» (#121)
+    // Все символы, которые MarkdownV2 требует экранировать, включая саму «\» (#121). Сейчас метод
+    // не вызывается: в Markdown-режимах форматтер текст не экранирует (см. JSDoc класса)
     return text.replace(/[\\_*[\]()~`>#+\-=|{}.!]/g, '\\$&')
   }
 

@@ -17,6 +17,7 @@ import { PullClient } from '../../../packages/jssdk/src/pullClient/client'
 import { LogLevel } from '../../../packages/jssdk/src/types/logger'
 import type { B24OAuthParams, B24OAuthSecret } from '../../../packages/jssdk/src/types/auth'
 import { ApiVersion } from '../../../packages/jssdk/src/types/b24'
+import type { TypeB24 } from '../../../packages/jssdk/src/types/b24'
 
 const secret: B24OAuthSecret = { clientId: 'id', clientSecret: 'secret' }
 const auth = (clientEndpoint: string, serverEndpoint: string) => new AuthOAuthManager({
@@ -74,6 +75,12 @@ describe('Telegram formatter escaping', () => {
     expect(text).not.toContain('<a href')
   })
 
+  it('a long HTML message is not cut inside an entity', () => {
+    const text = new TelegramFormatter(true, 'YYYY', 120).format(record('&'.repeat(200)))
+    expect(text.endsWith('...')).toBe(true)
+    expect(text.slice(0, -3)).not.toMatch(/&[#a-z0-9]{0,7}$/i)
+  })
+
   it('MarkdownV2 escaping covers the backslash', () => {
     const formatter = new TelegramFormatter(false) as any
     expect(formatter._escapeMarkdownV2('a\\b_c*d.e!')).toBe('a\\\\b\\_c\\*d\\.e\\!')
@@ -81,19 +88,33 @@ describe('Telegram formatter escaping', () => {
 })
 
 describe('Pull subscribers without a prototype', () => {
-  it('a __proto__ module or command does not touch Object.prototype', () => {
-    const client = Object.create(PullClient.prototype) as any
-    client._subscribers = Object.create(null)
-    // Called the way the class does it; only the maps matter here
-    const subscribe = PullClient.prototype.subscribe as any
-    const before = Object.getOwnPropertyNames(Object.prototype).length
-    try {
-      subscribe.call(client, { type: 'server', moduleId: '__proto__', command: 'constructor', callback: () => {} })
-    } catch {
-      // whatever else the method needs does not matter: the maps are written first
-    }
-    expect(Object.getOwnPropertyNames(Object.prototype).length).toBe(before)
+  // Настоящий клиент: проверяется инициализация полей класса, а не подставленная карта
+  const createClient = () => new PullClient({
+    b24: {} as unknown as TypeB24,
+    userId: 42,
+    serverEnabled: true,
+    skipStorageInit: true,
+    skipCheckRevision: true
+  }) as any
+
+  it('the subscriber maps have no prototype', () => {
+    const client = createClient()
+    expect(Object.getPrototypeOf(client._subscribers)).toBeNull()
+    client.subscribe({ type: 'server', moduleId: '__proto__', command: 'constructor', callback: () => {} })
+    expect(Object.getPrototypeOf(client._subscribers.server)).toBeNull()
+    expect(Object.hasOwn(client._subscribers.server, '__proto__')).toBe(true)
+    expect(Object.getPrototypeOf(client._subscribers.server['__proto__'].commands)).toBeNull()
     expect(({} as any).commands).toBeUndefined()
-    expect(({} as any).callbacks).toBeUndefined()
+  })
+
+  it('emit before any subscription: a `constructor` command from the server does not throw', () => {
+    const client = createClient()
+    expect(() => client.emit({ type: 'server', moduleId: 'im', data: { command: 'constructor', params: {}, extra: {} } })).not.toThrow()
+    expect(Object.getPrototypeOf(client._subscribers.server.im.commands)).toBeNull()
+  })
+
+  it('user status callbacks: `__proto__` from the server is not a callback list', () => {
+    const client = createClient()
+    expect(Object.getPrototypeOf(client._userStatusCallbacks)).toBeNull()
   })
 })

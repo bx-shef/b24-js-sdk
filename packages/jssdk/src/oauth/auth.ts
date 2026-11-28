@@ -8,12 +8,6 @@ import { Type } from '../tools/type'
 import { EnumAppStatus } from '../types/b24-helper'
 import { ApiVersion } from '../types/b24'
 
-/**
- * OAuth Authorization Manager
- *
- * @link https://apidocs.bitrix24.com/settings/oauth/index.html
- * @link https://b24-js-sdk.bx-shef.by/docs/entry-points/oauth/
- */
 // `/\/+$/` на длинной серии «/», за которой идёт не «/», работает квадратично (CodeQL js/polynomial-redos, #121);
 // адрес приходит от портала — цикл линеен при любом входе
 function trimTrailingSlashes(value: string): string {
@@ -24,6 +18,12 @@ function trimTrailingSlashes(value: string): string {
   return value.slice(0, end)
 }
 
+/**
+ * OAuth Authorization Manager
+ *
+ * @link https://apidocs.bitrix24.com/settings/oauth/index.html
+ * @link https://b24-js-sdk.bx-shef.by/docs/entry-points/oauth/
+ */
 export class AuthOAuthManager implements AuthActions {
   #clientAxios: AxiosInstance
   #callbackRefreshAuth: null | CallbackRefreshAuth = null
