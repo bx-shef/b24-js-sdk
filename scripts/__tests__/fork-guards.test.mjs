@@ -223,3 +223,17 @@ test('выпуск сам запускает публикацию: release-pleas
 test('npm-publish-js-sdk-nuxt.yml: модуль закреплён на точной версии ядра', () => {
   assert.match(read('.github/workflows/npm-publish-js-sdk-nuxt.yml'), /CORE=\$\(jq -r '\.dependencies\["@bxshefby\/b24jssdk"\]'[^\n]*\n {10}if \[ "\$CORE" != "\$VER" \]/)
 })
+
+// Номер сборки в подвале сайта (#72): коммит доходит от CI до runtimeConfig. Цепочку может молча разорвать
+// слияние с родителем — у bitrix24 этих строк нет.
+test('номер сборки: github.sha → COMMIT_SHA → NUXT_PUBLIC_COMMIT_SHA → commitSha → подвал', () => {
+  const wf = read('.github/workflows/docs-image.yml')
+  assert.equal(count(wf, 'COMMIT_SHA=${{ github.sha }}'), 2, 'обе сборки образа передают коммит')
+  const df = read('deploy/Dockerfile')
+  assert.match(df, /^ARG COMMIT_SHA=/m)
+  assert.match(df, /NUXT_PUBLIC_COMMIT_SHA=\$\{COMMIT_SHA\}/)
+  assert.match(read('docs/nuxt.config.ts'), /commitSha: process\?\.env\.NUXT_PUBLIC_COMMIT_SHA/)
+  const footer = read('docs/app/components/Footer.vue')
+  assert.match(footer, /config\.public\.commitSha/)
+  assert.match(footer, /data-testid="build-sha"/)
+})

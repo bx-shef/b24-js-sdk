@@ -7,7 +7,8 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const { b24DocsLink, tgLink } = useHeader()
 // Номер сборки: короткий коммит образа ссылкой на него; без коммита (локальная сборка) — «dev» ссылкой на репозиторий
-const commitSha = String(config.public.commitSha ?? '').trim()
+const raw = String(config.public.commitSha ?? '').trim()
+const commitSha = /^[0-9a-f]{7,40}$/i.test(raw) ? raw : ''
 const buildLabel = `сборка ${commitSha ? commitSha.slice(0, 7) : 'dev'}`
 const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : config.public.gitUrl
 </script>
