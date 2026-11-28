@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import { createResolver } from '@nuxt/kit'
 import pkg from '../package.json'
 import { withoutTrailingSlash } from 'ufo'
+import { rolldownFileUrl } from './build/rolldown-file-url'
 
 const { resolve } = createResolver(import.meta.url)
 
@@ -218,6 +219,8 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    // Fork: Vite 8 leaves ROLLDOWN_FILE_URL placeholders in client chunks — client navigation 404 (build/rolldown-file-url.ts)
+    plugins: [rolldownFileUrl()],
     worker: {
       // Part of a deliberate divergence from upstream `nuxt/ui`, which loads
       // prettier from a CDN and needs none of this — see
@@ -237,7 +240,9 @@ export default defineNuxtConfig({
       // simply does not happen and nothing else is affected. The repository
       // states no browserslist target, so this is the decision rather than a
       // violation of one.
-      format: 'es'
+      format: 'es',
+      // Same rolldown placeholder fix inside worker bundles (sqlite3-worker1).
+      plugins: () => [rolldownFileUrl()]
     },
     server: {
       // Fix: "Blocked request. This host is not allowed" when using tunnels like ngrok
