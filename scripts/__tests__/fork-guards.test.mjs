@@ -251,10 +251,13 @@ test('чат: ChatComark получает текст через :value, не :ma
 test('ссылки на B24 UI и B24 Icons ведут на наши сайты', () => {
   let out = ''
   try {
-    out = execFileSync('git', ['grep', '-lE', 'bitrix24\\.github\\.io/(b24ui|b24icons)', '--', 'docs/app', 'docs/server', 'docs/content'], { cwd: ROOT, encoding: 'utf8' })
+    out = execFileSync('git', ['grep', '-lE', 'bitrix24\\.github\\.io/(b24ui|b24icons)'], { cwd: ROOT, encoding: 'utf8' })
   } catch (error) {
     // git grep без совпадений выходит с кодом 1 — это и есть успех
     if (error.status !== 1) throw error
   }
-  assert.deepEqual(out.split('\n').filter(Boolean), [], 'замените на https://b24-ui.bx-shef.by/… и https://b24-icons.bx-shef.by/… (.sync/PORTING.md)')
+  const files = out.split('\n').filter(Boolean)
+    .filter(f => !/(?:^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/'))
+    .filter(f => f !== 'scripts/__tests__/fork-guards.test.mjs')
+  assert.deepEqual(files, [], 'замените на https://b24-ui.bx-shef.by/… и https://b24-icons.bx-shef.by/… (.sync/PORTING.md)')
 })

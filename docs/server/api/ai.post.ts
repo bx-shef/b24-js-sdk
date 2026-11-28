@@ -14,7 +14,7 @@ const maxStepCount = 5
 
 // async function initMcpToolsForUI() {
 //   const httpTransport = new StreamableHTTPClientTransport(
-//     new URL(`https://b24ui.bx-shef.by/b24ui/mcp/`)
+//     new URL(`https://b24-ui.bx-shef.by/b24ui/mcp/`)
 //   )
 //   const httpClient = await experimental_createMCPClient({
 //     transport: httpTransport
