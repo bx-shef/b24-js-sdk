@@ -80,6 +80,23 @@ const catalogueRecipes = computed(() =>
     .sort((a, b) => stemOrder(a.stem) - stemOrder(b.stem))
 )
 
+// "All recipes" filter by area, matched against the recipes' `scopes` field (#99)
+const recipeFilters = [
+  { label: 'Все', value: '' },
+  { label: 'CRM', value: 'crm' },
+  { label: 'Задачи', value: 'task' },
+  { label: 'Диск', value: 'disk' },
+  { label: 'Чаты', value: 'im' },
+  { label: 'OAuth', value: 'oauth' }
+]
+const recipeFilter = ref('')
+const filteredRecipes = computed(() => {
+  if (!recipeFilter.value) {
+    return catalogueRecipes.value
+  }
+  return catalogueRecipes.value.filter(recipe => String(recipe.scopes ?? '').toLowerCase().split(/[\s,]+/).includes(recipeFilter.value))
+})
+
 const iconFromIconName = (iconName?: string) => {
   if (!iconName) {
     return undefined
@@ -156,69 +173,61 @@ const iconFromIconName = (iconName?: string) => {
         </div>
       </B24Container>
 
-      <!-- Extended catalogue -->
+      <!-- Все рецепты — плиткой с фильтром по области (#99) -->
       <B24Container class="px-[22px] lg:px-8 pb-16">
-        <B24Card
-          class="base-mode"
-          :b24ui="{
-            root: 'rounded-(--ui-border-radius-md)',
-            body: 'p-0 sm:px-0 sm:py-0 overflow-hidden'
-          }"
-        >
-          <template #header>
-            <h2 class="text-2xl font-bold mb-1 text-legend">
-              Все рецепты
-            </h2>
-            <p class="text-description">
-              Сквозные скрипты на TypeScript: укажите в <code>B24_HOOK</code> адрес входящего вебхука и запустите через <code>tsx</code>.
-            </p>
-          </template>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm border-collapse">
-              <thead>
-                <tr class="border-b border-(--ui-color-design-outline-content-divider)">
-                  <th class="text-left py-2.5 px-4 font-semibold text-muted w-10">
-                    #
-                  </th>
-                  <th class="text-left py-2.5 px-4 font-semibold text-muted">
-                    Рецепт
-                  </th>
-                  <th class="text-left py-2.5 px-4 font-semibold text-muted hidden sm:table-cell">
-                    Стек
-                  </th>
-                  <th class="text-left py-2.5 px-4 font-semibold text-muted hidden md:table-cell">
-                    Права
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(recipe, i) in catalogueRecipes"
-                  :key="recipe.path"
-                  class="border-b border-(--ui-color-design-outline-content-divider) last:border-0 hover:bg-(--ui-color-accent-soft-element-violet)/30 transition-colors"
-                >
-                  <td class="py-2.5 px-4">
-                    {{ i + 1 }}
-                  </td>
-                  <td class="py-2.5 px-4">
-                    <NuxtLink :to="recipe.path" class="text-primary hover:underline font-medium">
-                      {{ cardTitle(recipe.title) }}
-                    </NuxtLink>
-                  </td>
-                  <td class="py-2.5 px-4 hidden sm:table-cell">
-                    {{ recipe.stack }}
-                  </td>
-                  <td class="py-2.5 px-4 hidden md:table-cell">
-                    <code class="text-xs">{{ recipe.scopes }}</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </B24Card>
-        <div class="mt-4">
-          <B24Button to="/docs/examples">
+        <h2 class="text-2xl font-bold mb-1 text-label">
+          Все рецепты
+        </h2>
+        <p class="text-muted mb-4">
+          Сквозные скрипты на TypeScript: укажите в <code>B24_HOOK</code> адрес входящего вебхука и запустите через <code>tsx</code>.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-5" role="group" aria-label="Фильтр рецептов по области">
+          <B24Button
+            v-for="filter in recipeFilters"
+            :key="filter.value"
+            size="sm"
+            :color="recipeFilter === filter.value ? 'air-primary' : 'air-tertiary'"
+            :aria-pressed="recipeFilter === filter.value"
+            :label="filter.label"
+            @click="recipeFilter = filter.value"
+          />
+        </div>
+        <p v-if="filteredRecipes.length === 0" class="text-muted mb-4">
+          В этой области рецептов пока нет.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <NuxtLink
+            v-for="recipe in filteredRecipes"
+            :key="recipe.path"
+            :to="recipe.path"
+            class="group block"
+          >
+            <B24Card
+              :b24ui="{
+                root: 'h-full transition-[transform,box-shadow] duration-200 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer',
+                body: 'p-4 flex flex-col gap-2 h-full'
+              }"
+            >
+              <p class="font-semibold text-label">
+                {{ cardTitle(recipe.title) }}
+              </p>
+              <p class="text-sm text-muted grow">
+                {{ recipe.description }}
+              </p>
+              <p class="text-xs text-legend">
+                {{ recipe.stack }}<template v-if="recipe.scopes">
+                  · права: <code>{{ recipe.scopes }}</code>
+                </template>
+              </p>
+            </B24Card>
+          </NuxtLink>
+        </div>
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <B24Button to="/docs/examples" color="air-secondary">
             Все примеры →
+          </B24Button>
+          <B24Button to="/request?source=home" color="air-tertiary">
+            Нужна доработка? Оставить заявку
           </B24Button>
         </div>
       </B24Container>
