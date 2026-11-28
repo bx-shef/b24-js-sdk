@@ -1,4 +1,4 @@
-import { Text } from '../tools/text'
+import { getUuidRfc4122 } from '../tools/text-core'
 
 /**
  * Interface defining the structure and methods of a Result object.
@@ -119,7 +119,7 @@ export class Result<T = unknown> implements IResult<T> {
   }
 
   addError(error: Error | string, key?: string): this {
-    const errorKey = key ?? Text.getUuidRfc4122()
+    const errorKey = key ?? getUuidRfc4122()
     const errorObj = typeof error === 'string' ? new Error(error) : error
 
     this._errors.set(errorKey, errorObj)
