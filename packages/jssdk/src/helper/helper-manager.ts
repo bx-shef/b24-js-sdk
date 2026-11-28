@@ -8,7 +8,7 @@ import { LicenseManager } from './license-manager'
 import { CurrencyManager } from './currency-manager'
 import { OptionsManager } from './options-manager'
 import { B24PullClientManager } from '../pullClient'
-import { Text } from '../tools/text'
+import { getDateForLog } from '../tools/text-core'
 import { LoadDataType, TypeSpecificUrl } from '../types/b24-helper'
 import type { TypeApp, TypeB24Form, TypeEnumAppStatus, TypeLicense, TypePayment, TypeUser } from '../types/b24-helper'
 import type { GenderString } from '../types/common'
@@ -474,7 +474,7 @@ export class B24HelperManager {
     }
 
     this._b24PullClient.start().catch((error) => {
-      this.getLogger().error(`${Text.getDateForLog()}: Pull not running`, { error }).catch(() => {})
+      this.getLogger().error(`${getDateForLog()}: Pull not running`, { error }).catch(() => {})
     })
   }
 

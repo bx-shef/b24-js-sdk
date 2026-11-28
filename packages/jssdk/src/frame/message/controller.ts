@@ -3,7 +3,7 @@ import type { AppFrame } from '../frame'
 import type { LoggerInterface } from '../../logger'
 import { LoggerFactory } from '../../logger'
 import { Type } from '../../tools/type'
-import { Text } from '../../tools/text'
+import { getUniqId } from '../../tools/text-core'
 import { omit } from '../../tools'
 import { SdkError } from '../../core/sdk-error'
 
@@ -377,7 +377,7 @@ export class MessageManager {
    * @memo We don't use Symbol here, because we need to pass it to the parent and then find and restore it.
    */
   #setCallbackPromise(promiseHandler: PromiseHandlers): string {
-    const key = Text.getUniqId()
+    const key = getUniqId()
     this.#callbackPromises.set(key, promiseHandler)
     return key
   }

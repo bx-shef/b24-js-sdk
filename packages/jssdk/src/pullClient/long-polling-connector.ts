@@ -1,6 +1,6 @@
 import type { ConnectorConfig } from '../types/pull'
 import { Type } from '../tools/type'
-import { Text } from '../tools/text'
+import { getDateForLog } from '../tools/text-core'
 import { AbstractConnector } from './abstract-connector'
 import { ConnectionType } from '../types/pull'
 
@@ -135,13 +135,13 @@ export class LongPollingConnector extends AbstractConnector {
   override send(buffer: ArrayBuffer | string): boolean {
     const path = this._parent.getPublicationPath()
     if (!path) {
-      this.getLogger().error(`${Text.getDateForLog()}: Pull: publication path is empty`).catch(() => {})
+      this.getLogger().error(`${getDateForLog()}: Pull: publication path is empty`).catch(() => {})
       return false
     }
 
     if (typeof XMLHttpRequest === 'undefined') {
       this.getLogger().error(
-        `${Text.getDateForLog()}: Pull: XMLHttpRequest is not available; cannot publish`
+        `${getDateForLog()}: Pull: XMLHttpRequest is not available; cannot publish`
       ).catch(() => {})
       return false
     }

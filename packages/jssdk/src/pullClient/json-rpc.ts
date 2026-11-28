@@ -3,7 +3,7 @@ import type { LoggerInterface } from '../logger'
 import { LoggerFactory } from '../logger'
 import { ErrorNotConnected, ErrorTimeout } from './errors'
 import { Type } from '../tools/type'
-import { Text } from '../tools/text'
+import { getDateForLog } from '../tools/text-core'
 import { ListRpcError } from '../types/pull'
 import { redactSensitiveParams } from '../core/http/redact'
 
@@ -132,7 +132,7 @@ export class JsonRpc {
     }
 
     // Redact: an unknown/error server frame is opaque and could carry a credential key (#43).
-    this.getLogger().error(`${Text.getDateForLog()}: Pull: Received rpc response with unknown id`, redactSensitiveParams({ response })).catch(() => {})
+    this.getLogger().error(`${getDateForLog()}: Pull: Received rpc response with unknown id`, redactSensitiveParams({ response })).catch(() => {})
   }
 
   parseJsonRpcMessage(
@@ -143,7 +143,7 @@ export class JsonRpc {
       decoded = JSON.parse(message)
     } catch (error) {
       this.getLogger().error(
-        `${Text.getDateForLog()}: Pull: Could not decode json rpc message`,
+        `${getDateForLog()}: Pull: Could not decode json rpc message`,
         { error }
       ).catch(() => {})
 
@@ -159,7 +159,7 @@ export class JsonRpc {
       return []
     } else {
       this.getLogger().error(
-        `${Text.getDateForLog()}: Pull: unknown rpc packet`,
+        `${getDateForLog()}: Pull: unknown rpc packet`,
         redactSensitiveParams({ decoded })
       ).catch(() => {})
     }
@@ -206,7 +206,7 @@ export class JsonRpc {
         }
       } else {
         this.getLogger().error(
-          `${Text.getDateForLog()}: Pull: unknown rpc command in batch`,
+          `${getDateForLog()}: Pull: unknown rpc command in batch`,
           redactSensitiveParams({ command })
         ).catch(() => {})
 

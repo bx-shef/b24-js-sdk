@@ -100,7 +100,7 @@ export class CallListV2 extends AbstractAction {
    *     entityTypeId:  EnumCrmEntityTypeId.company,
    *     filter: {
    *       '=%title': 'A%',
-   *       '>=createdTime': Text.toB24Format(sixMonthAgo) // created at least 6 months ago
+   *       '>=createdTime': Text.toB24Format(sixMonthAgo) // created within the last 6 months
    *     },
    *     select: ['id', 'title']
    *   },

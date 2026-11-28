@@ -1,7 +1,7 @@
 import type { StorageManagerParams, TypeStorageManager } from '../types/pull'
 import type { LoggerInterface } from '../logger'
 import { LoggerFactory } from '../logger'
-import { Text } from '../tools/text'
+import { toInteger } from '../tools/text-core'
 
 export class StorageManager implements TypeStorageManager {
   private _logger: LoggerInterface
@@ -11,7 +11,7 @@ export class StorageManager implements TypeStorageManager {
 
   constructor(params: StorageManagerParams = {}) {
     this._logger = LoggerFactory.createNullLogger()
-    this.userId = params.userId ? Text.toInteger(params.userId) : 0
+    this.userId = params.userId ? toInteger(params.userId) : 0
     this.siteId = params.siteId ?? 'none'
   }
 
