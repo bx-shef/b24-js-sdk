@@ -165,13 +165,55 @@ const suggestions = appConfig.bxAssistant?.faqQuestions as {
   items: string[]
 }[]
 
+// Очистка — сразу, без окна подтверждения, но 5 секунд её можно отменить (решение владельца, #112)
+const CLEAR_UNDO_MS = 5000
+// Своя плашка на каждую очистку: удаление по id завершается после анимации и закрыло бы новую с тем же id
+let clearToastId: string | undefined
+
 function clearMessages() {
   if (chat.status === 'streaming') {
     chat.stop()
   }
+  const saved = [...chat.messages]
+  const savedApplied = new Set(_themeApplied)
   messages.value = []
   chat.messages = []
   _themeApplied.clear()
+
+  if (clearToastId) {
+    toast.remove(clearToastId)
+  }
+  clearToastId = `chat-cleared-${Date.now()}`
+  toast.add({
+    id: clearToastId,
+    title: 'Переписка очищена',
+    duration: CLEAR_UNDO_MS,
+    // Плашка ложится поверх чёрной панели чата: штатный фон (чёрный, 80%) без границы там не виден
+    b24ui: { root: 'bg-(--ui-color-base-black-fixed) ring-1 ring-(--ui-color-base-5)' },
+    actions: [{
+      label: 'Отменить',
+      color: 'air-secondary-accent',
+      size: 'sm',
+      onClick: () => undoClear(saved, savedApplied)
+    }]
+  })
+}
+
+function undoClear(saved: typeof chat.messages, savedApplied: Set<string>) {
+  // Пока плашка висела, могли начать новую переписку — тогда возвращать нечего, чтобы не смешать её со старой
+  if (chat.messages.length) {
+    return
+  }
+  chat.messages = saved
+  // Без _skipSync наблюдатель за messages переотправил бы последний вопрос (очистку могли нажать посреди ответа)
+  _skipSync = true
+  messages.value = saved
+  nextTick(() => {
+    _skipSync = false
+  })
+  for (const id of savedApplied) {
+    _themeApplied.add(id)
+  }
 }
 
 defineShortcuts({
@@ -201,6 +243,7 @@ function closeChat() {
       <B24Tooltip v-if="hasThemeChanges" text="Сбросить тему">
         <B24Button
           :icon="UndoIcon"
+          aria-label="Сбросить тему"
           size="sm"
           color="air-tertiary"
           :b24ui="{ baseLine: '[--ui-btn-icon-size:20px]' }"
@@ -211,6 +254,7 @@ function closeChat() {
       <B24Tooltip v-if="canClear" text="Очистить переписку">
         <B24Button
           :icon="TrashcanIcon"
+          aria-label="Очистить переписку"
           size="sm"
           color="air-tertiary"
           :b24ui="{ baseLine: '[--ui-btn-icon-size:19px]' }"

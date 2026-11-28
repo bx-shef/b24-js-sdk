@@ -7,7 +7,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -125,6 +125,7 @@ test('dependabot.yml: свои PR Dependabot выключены', () => {
 const OLD_NAME = '@bitrix24/b24jssdk'
 // Имя tarball из `pnpm pack`: scope превращается в префикс (`bitrix24-b24jssdk-3.0.0.tgz`).
 const OLD_TARBALL = 'bitrix24-b24jssdk-'
+const MIGRATION_PAGE = '/docs/getting-started/migration/from-bitrix24'
 const OLD_NAME_ALLOWED = new Set([
   'docs/content/docs/1.getting-started/3.migration/0.from-bitrix24.md',
   'scripts/__tests__/fork-guards.test.mjs',
@@ -138,7 +139,9 @@ test('имя @bitrix24/b24jssdk осталось только там, где о�
   const files = out.split('\n').filter(Boolean)
     .filter(f => !/(?:^|\/)CHANGELOG\.md$/.test(f) && !f.startsWith('.sync/log/'))
     .filter(f => !OLD_NAME_ALLOWED.has(f))
-  assert.deepEqual(files, [], `замените ${OLD_NAME} на @bxshefby/b24jssdk (.sync/PORTING.md)`)
+    // Ссылка на главу о переходе (#114): строка со старым именем законна, только если в ней же — адрес главы.
+    .filter(f => read(f).split('\n').some(line => line.includes(OLD_NAME) && !line.includes(MIGRATION_PAGE)))
+  assert.deepEqual(files, [], `замените ${OLD_NAME} на @bxshefby/b24jssdk (.sync/PORTING.md); вне разрешённых файлов — только в строке со ссылкой на ${MIGRATION_PAGE}`)
 })
 
 // У форка свой сайт документации (https://b24-js-sdk.bx-shef.by) с другой раскладкой страниц и
@@ -355,4 +358,19 @@ test('сайт: чат на DeepSeek и предлагает заявку на �
 test('сайт: docs зависит от zod 4 напрямую', () => {
   const zod = JSON.parse(read('docs/package.json')).dependencies?.zod
   assert.match(zod ?? '', /^\^4\./, 'docs/package.json без прямой зависимости zod ^4 — сервер возьмёт zod 3 из @nuxt/content')
+})
+
+// Пометка «где выполняется» у примеров кода (#113): наш ProsePre поверх штатного из b24ui.
+test('сайт: блок кода показывает среду выполнения по точке входа', () => {
+  const pre = read('docs/app/components/content/ProsePre.global.vue')
+  assert.ok(pre.includes('from \'~/utils/codeRuntime\'') && pre.includes('B24ProsePre'), 'ProsePre не наш или без пометки среды')
+  const rules = read('docs/app/utils/codeRuntime.ts')
+  for (const entry of ['B24OAuth', 'B24Hook', 'initializeB24Frame']) {
+    assert.ok(rules.includes(entry), `правило для ${entry} пропало`)
+  }
+})
+test('сайт: свой ProsePre глобальный и не подписывает блоки внутри code-group', () => {
+  assert.ok(existsSync(join(ROOT, 'docs/app/components/content/ProsePre.global.vue')), 'ProsePre не .global — MDC на главной не найдёт его и блоки кода пропадут')
+  assert.ok(!existsSync(join(ROOT, 'docs/app/components/content/ProsePre.vue')), 'второй ProsePre без .global')
+  assert.match(read('docs/app/components/content/ProsePre.global.vue'), /inGroup\.value \? undefined/, 'пометка внутри code-group — подписи скрытых вкладок видны')
 })
