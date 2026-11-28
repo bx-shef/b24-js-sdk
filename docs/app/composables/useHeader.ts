@@ -71,6 +71,11 @@ const _useHeader = () => {
       active: route.path.startsWith('/docs/tools')
     },
     {
+      label: 'Справочник API',
+      to: '/docs/api-reference',
+      active: route.path.startsWith('/docs/api-reference')
+    },
+    {
       label: 'Примеры',
       to: '/docs/examples',
       active: route.path === '/docs/examples' || route.path.startsWith('/docs/examples/')
@@ -106,6 +111,12 @@ const _useHeader = () => {
       to: '/docs/tools',
       icon: TerminalIcon,
       active: route.path.startsWith('/docs/tools')
+    },
+    {
+      label: 'Справочник API',
+      to: '/docs/api-reference',
+      icon: TerminalIcon,
+      active: route.path.startsWith('/docs/api-reference')
     },
     {
       label: 'Примеры',
