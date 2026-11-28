@@ -157,7 +157,10 @@ const showExplainWithAi = computed(() => {
 // @todo fix this
 // @see docs/app/components/PageHeaderLinks.vue:16
 // const aiPrompt = computed(() => `I'm looking at this Bitrix24 UI documentation: ${page.value?.path}\nHelp me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it.`)
-const aiPrompt = ref('Read this documentation page and summarize it. I want to ask questions about it.')
+// Оглавление на телефоне закрывается после выбора пункта (#71): иначе оно закрывало пол-экрана
+const tocOpen = ref(false)
+
+const aiPrompt = ref('Прочитай эту страницу документации и кратко перескажи её. Потом я задам вопросы по ней.')
 
 function makeExplain() {
   // @memo this for NUXT.UI.docs
@@ -261,8 +264,10 @@ function makeExplain() {
 
     <template v-if="page?.body?.toc?.links?.length && !isOpen" #right>
       <B24ContentToc
+        v-model:open="tocOpen"
         :links="page.body.toc.links"
         class="sticky top-(--b24ui-header-height) px-3 py-3 pb-0 lg:p-4 lg:top-(--b24ui-header-height) scrollbar-thin scrollbar-transparent bg-(--ui-color-accent-soft-element-violet)/60 dark:bg-(--ui-color-copilot-bg-content-3)/40 lg:bg-transparent dark:lg:bg-transparent backdrop-blur-md lg:ms-0 overflow-y-auto max-h-[calc(100vh-var(--b24ui-header-height))] lg:col-span-2 order-first lg:order-last z-2"
+        @move="tocOpen = false"
       />
     </template>
   </B24Page>
