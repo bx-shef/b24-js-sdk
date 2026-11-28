@@ -269,10 +269,10 @@ allowBuilds:
 # GHSA-mrhx-c7xc-m3w5 (zod <4.6.6, memory exhaustion on oversized constrained collections)
 # has no fix on zod 3. @nuxt/content still needs zod 3 for zod-to-json-schema: forcing zod 4
 # onto it silently empties the collection schemas. Its zod only validates our own docs content
-# at build time (only its build module imports zod), never untrusted input, so the advisory does not
-# apply there. That holds because docs/server imports zod 4 — a direct dependency of docs (fork-guards). zod 4 is held at
-# >=4.6.6 by the override above. Owner's decision 2026-11-24; drop this entry once
-# @nuxt/content moves to zod 4.
+# at build time (only its build module imports zod), never untrusted input, so the advisory does
+# not apply there. That holds because docs/server imports zod 4, a direct dependency of docs
+# (guarded in fork-guards). zod 4 is held at >=4.6.6 by the override above. Owner's decision
+# 2026-11-24; drop this entry once @nuxt/content moves to zod 4.
 auditConfig:
   ignoreGhsas:
     - GHSA-mrhx-c7xc-m3w5
