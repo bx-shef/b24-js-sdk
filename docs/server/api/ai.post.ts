@@ -1,7 +1,7 @@
 // @memo we not use jsonSchema
 import { streamText, convertToModelMessages, smoothStream, stepCountIs, jsonSchema } from 'ai'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { assistantGuard, assertMessages, chargeAssistant } from '../../modules/bx-assistant/runtime/server/utils/guard'
+import { assistantGuard, assertMessages, chargeAssistant, trimToolOutputs } from '../../modules/bx-assistant/runtime/server/utils/guard'
 import { z } from 'zod'
 import { tools as mcpToolDefinitions } from '#nuxt-mcp-toolkit/tools.mjs'
 
@@ -139,7 +139,7 @@ Code Style Guidelines for Vue and Nuxt:
     abortSignal: abortController.signal,
     providerOptions: {},
     system,
-    messages: await convertToModelMessages(messages as Parameters<typeof convertToModelMessages>[0]),
+    messages: await convertToModelMessages(trimToolOutputs(messages) as Parameters<typeof convertToModelMessages>[0]),
     experimental_transform: smoothStream(),
     stopWhen: stepCountIs(maxStepCount),
     tools: {

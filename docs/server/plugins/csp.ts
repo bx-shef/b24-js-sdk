@@ -37,8 +37,9 @@ const CONTENT_SECURITY_POLICY = [
   `base-uri 'self'`,
   `form-action 'none'`,
   // 'self' — страница /request встраивает форму заявки iframe-ом того же источника
-  // (public/b24-form.html); чужие источники во фреймах остаются закрыты.
-  `frame-src 'self'`,
+  // (public/b24-form.html). mc.yandex.ru и .com — служебный iframe Яндекс Метрики (синхронизация
+  // счётчика); грузится только после согласия на аналитику. Остальные источники во фреймах закрыты.
+  `frame-src 'self' https://mc.yandex.ru https://mc.yandex.com`,
   `manifest-src 'self'`
 ].join('; ')
 
