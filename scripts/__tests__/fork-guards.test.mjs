@@ -306,3 +306,9 @@ test('сайт: minimark и entities вшиты в серверную сборк
   }
   assert.ok(read('docs/server/routes/raw/[...slug].md.get.ts').includes('setResponseStatus(event, 404)'), '/raw/* без страницы снова отвечает 200')
 })
+test('сайт: /raw/* не отражает путь запроса в ответ «не найдено»', () => {
+  const route = read('docs/server/routes/raw/[...slug].md.get.ts')
+  for (const call of route.matchAll(/notFound\(([^)]*)\)/g)) {
+    assert.ok(!call[1].includes('${'), `notFound подставляет значение в текст: ${call[1]}`)
+  }
+})

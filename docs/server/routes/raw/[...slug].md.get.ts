@@ -38,7 +38,8 @@ export default defineEventHandler(async (event) => {
   }
 
   if (!page) {
-    return notFound(`The page \`${config.public.baseUrl}${path}\` does not exist.`)
+    // Форк: путь из запроса в ответ не отражаем — обратная кавычка в нём закрывала code span и вставляла ссылку в markdown для агента
+    return notFound('The requested page does not exist.')
   }
 
   await transformMDC(event, page as any)
