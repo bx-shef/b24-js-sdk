@@ -69,7 +69,9 @@ export class PullClient implements ConnectorParent {
   private _skipStorageInit: boolean
   private _skipCheckRevision: boolean
 
-  private _subscribers: Record<string, any> = {}
+  // Без прототипа (#121): ключи — тип, moduleId и command — приходят и из сообщений сервера Pull;
+  // у обычного объекта `__proto__` / `constructor` вели бы в Object.prototype
+  private _subscribers: Record<string, any> = Object.create(null)
   private _watchTagsQueue: Map<string, boolean> = new Map()
   private _watchUpdateInterval: number = 1_740_000
   private _watchForceUpdateInterval: number = 5_000
@@ -445,7 +447,7 @@ export class PullClient implements ConnectorParent {
       }
 
       if (typeof this._subscribers[params.type] === 'undefined') {
-        this._subscribers[params.type] = {}
+        this._subscribers[params.type] = Object.create(null)
       }
 
       if (
@@ -453,7 +455,7 @@ export class PullClient implements ConnectorParent {
       ) {
         this._subscribers[params.type][params.moduleId] = {
           callbacks: [],
-          commands: {}
+          commands: Object.create(null)
         }
       }
 
@@ -1411,7 +1413,7 @@ export class PullClient implements ConnectorParent {
       || params.type == SubscriptionType.Client
     ) {
       if (typeof this._subscribers[params.type] === 'undefined') {
-        this._subscribers[params.type] = {}
+        this._subscribers[params.type] = Object.create(null)
       }
 
       if (typeof params.moduleId === 'undefined') {

@@ -14,6 +14,16 @@ import { ApiVersion } from '../types/b24'
  * @link https://apidocs.bitrix24.com/settings/oauth/index.html
  * @link https://b24-js-sdk.bx-shef.by/docs/entry-points/oauth/
  */
+// `/\/+$/` на длинной серии «/», за которой идёт не «/», работает квадратично (CodeQL js/polynomial-redos, #121);
+// адрес приходит от портала — цикл линеен при любом входе
+function trimTrailingSlashes(value: string): string {
+  let end = value.length
+  while (end > 0 && value[end - 1] === '/') {
+    end--
+  }
+  return value.slice(0, end)
+}
+
 export class AuthOAuthManager implements AuthActions {
   #clientAxios: AxiosInstance
   #callbackRefreshAuth: null | CallbackRefreshAuth = null
@@ -52,7 +62,7 @@ export class AuthOAuthManager implements AuthActions {
     //
     // Normalised here rather than at each use so the two derived values below,
     // and both entries of the version map, are built from one shape.
-    this.#b24TargetRest = this.#authOptions.clientEndpoint.replace(/\/+$/, '')
+    this.#b24TargetRest = trimTrailingSlashes(this.#authOptions.clientEndpoint)
     // Anchored, and reading a value that no longer ends in a slash. The previous
     // `replace('/rest/', '')` matched only the trailing-slash spelling: had the
     // portal ever sent `client_endpoint` without one, `getTargetOrigin()` would
@@ -62,7 +72,7 @@ export class AuthOAuthManager implements AuthActions {
     // Same shape, same reasoning as `clientEndpoint` above: strip any trailing
     // slash first, then take the REST root off the end with an anchored match,
     // so both spellings of the input give the same origin.
-    this.#oAuthTarget = this.#authOptions.serverEndpoint.replace(/\/+$/, '').replace(/\/rest$/, '')
+    this.#oAuthTarget = trimTrailingSlashes(this.#authOptions.serverEndpoint).replace(/\/rest$/, '')
     this.#authExpires = this.#authOptions.expires * 1_000
     this.#authExpiresIn = this.#authOptions.expiresIn
 

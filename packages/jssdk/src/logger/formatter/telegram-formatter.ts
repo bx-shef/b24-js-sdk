@@ -46,9 +46,11 @@ export class TelegramFormatter extends AbstractFormatter implements Formatter {
     const level = record.levelName
 
     if (this.useHtml) {
-      return `<b>${level}</b> | <code>${record.channel}</code>\n`
+      // Канал и сообщение экранируются (#121): «<» или «&» в тексте журнала Telegram отвергает
+      // (parse_mode HTML) — запись терялась, а теги из сообщения становились разметкой
+      return `<b>${level}</b> | <code>${this._escapeHtml(String(record.channel))}</code>\n`
         + `<i>Time:</i> ${date}\n`
-        + `<i>Message:</i>\n${record.message}`
+        + `<i>Message:</i>\n${this._escapeHtml(String(record.message))}`
     } else {
       return `*${level}* \`${record.channel}\`\n`
         + `_Time:_ \`${date}\`\n`
@@ -92,25 +94,8 @@ export class TelegramFormatter extends AbstractFormatter implements Formatter {
   }
 
   protected _escapeMarkdownV2(text: string): string {
-    return text
-      .replace(/_/g, '\\_')
-      .replace(/\*/g, '\\*')
-      .replace(/\[/g, '\\[')
-      .replace(/\]/g, '\\]')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)')
-      .replace(/~/g, '\\~')
-      .replace(/`/g, '\\`')
-      .replace(/>/g, '\\>')
-      .replace(/#/g, '\\#')
-      .replace(/\+/g, '\\+')
-      .replace(/-/g, '\\-')
-      .replace(/=/g, '\\=')
-      .replace(/\|/g, '\\|')
-      .replace(/\{/g, '\\{')
-      .replace(/\}/g, '\\}')
-      .replace(/\./g, '\\.')
-      .replace(/!/g, '\\!')
+    // Все символы, которые MarkdownV2 требует экранировать, включая саму «\\» (#121)
+    return text.replace(/[\\_*[\]()~`>#+\-=|{}.!]/g, '\\$&')
   }
 
   /**
