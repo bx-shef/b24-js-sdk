@@ -29,6 +29,9 @@
  * `F`, `D`…), week numbers (`W`, `k`), era (`G`) and the zone name (`ZZZZ`) — the SDK never used them
  * in log dates.
  *
+ * Names are always English: a locale set through Luxon's `Settings.defaultLocale` no longer applies to log
+ * dates (it affects only custom formats with `MMM`/`EEE`; the default format is numeric).
+ *
  * @internal
  */
 // Longest first, so `yyyy` is not read as `yy` + `yy`. Kept in step with the table in formatDate().
