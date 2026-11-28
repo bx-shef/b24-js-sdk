@@ -134,7 +134,10 @@ export default defineNuxtConfig({
       // Номер счётчика Яндекс Метрики (NUXT_PUBLIC_YANDEX_METRIKA_ID при запуске). Пусто — Метрики нет.
       // Читается при сборке: номер вшивается в .output (образ — deploy/Dockerfile). NUXT_PUBLIC_YANDEX_METRIKA_ID
       // при запуске по-прежнему заменяет его.
-      yandexMetrikaId: process?.env.NUXT_PUBLIC_YANDEX_METRIKA_ID ?? ''
+      yandexMetrikaId: process?.env.NUXT_PUBLIC_YANDEX_METRIKA_ID ?? '',
+      // Коммит, из которого собран образ (CI передаёт github.sha, deploy/Dockerfile). В подвале — «сборка <sha>»
+      // ссылкой на коммит: видно, какая версия сейчас на сервере. Читается при сборке, как номер Метрики.
+      commitSha: process?.env.NUXT_PUBLIC_COMMIT_SHA ?? ''
     }
   },
 

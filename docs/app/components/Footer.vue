@@ -6,6 +6,11 @@ import TelegramIcon from '@bitrix24/b24icons-vue/outline/TelegramIcon'
 const route = useRoute()
 const config = useRuntimeConfig()
 const { b24DocsLink, tgLink } = useHeader()
+// Номер сборки: короткий коммит образа ссылкой на него; без коммита (локальная сборка) — «dev» ссылкой на репозиторий
+const raw = String(config.public.commitSha ?? '').trim()
+const commitSha = /^[0-9a-f]{7,40}$/i.test(raw) ? raw : ''
+const buildLabel = `сборка ${commitSha ? commitSha.slice(0, 7) : 'dev'}`
+const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : config.public.gitUrl
 </script>
 
 <template>
@@ -51,6 +56,14 @@ const { b24DocsLink, tgLink } = useHeader()
 
     <NuxtLink :to="config.public.gitUrl" target="_blank" class="text-legend text-(length:--ui-font-size-sm) hover:underline">
       Published under MIT License.
+    </NuxtLink>
+    <NuxtLink
+      :to="buildHref"
+      target="_blank"
+      data-testid="build-sha"
+      class="ms-3 text-legend text-(length:--ui-font-size-sm) hover:underline"
+    >
+      {{ buildLabel }}
     </NuxtLink>
     <!-- Отзыв согласия на cookie (cookie-consent.js): только когда на сайте есть Метрика -->
     <button

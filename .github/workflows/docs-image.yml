@@ -43,6 +43,7 @@ jobs:
           build-args: |
             SITE_URL=${{ vars.SITE_URL || secrets.DOCS_SITE_URL }}
             YANDEX_METRIKA_ID=${{ secrets.YANDEX_METRIKA_ID }}
+            COMMIT_SHA=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -68,6 +69,10 @@ jobs:
             curl -fs localhost:3000/ | grep -q "${YANDEX_METRIKA_ID}" || { echo "::error::номера Метрики нет на странице"; exit 1; }
             echo "Метрика: номер на странице"
           fi
+          # номер сборки в подвале — коммит этого прогона
+          sha=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          curl -fs localhost:3000/ | grep -q "сборка ${sha}" || { echo "::error::номера сборки ${sha} нет в подвале"; exit 1; }
+          echo "Подвал: сборка ${sha}"
           check 200 localhost:3000/.well-known/skills/README.md
           check 200 -X POST -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
             -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' localhost:3000/mcp/
@@ -121,4 +126,5 @@ jobs:
           build-args: |
             SITE_URL=${{ vars.SITE_URL || secrets.DOCS_SITE_URL }}
             YANDEX_METRIKA_ID=${{ secrets.YANDEX_METRIKA_ID }}
+            COMMIT_SHA=${{ github.sha }}
           cache-from: type=gha
