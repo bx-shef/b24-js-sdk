@@ -19,7 +19,9 @@ useHead({
 
 useSeoMeta({
   titleTemplate: '%s - Bitrix24 JS SDK',
-  title: props.error.status
+  title: props.error.status,
+  // Страница ошибки в поиск не попадает
+  robots: 'noindex'
 })
 
 if (import.meta.server) {
@@ -34,7 +36,7 @@ provide('navigation', rootNavigation)
 </script>
 
 <template>
-  <B24App>
+  <B24App :locale="siteLocale">
     <NuxtLoadingIndicator color="var(--ui-color-accent-main-primary)" :height="2" />
 
     <div :class="[route.path.startsWith('/docs/') && 'root']">
@@ -44,6 +46,7 @@ provide('navigation', rootNavigation)
 
       <B24Error
         :error="error"
+        :clear="{ label: 'На главную' }"
         :b24ui="{
           root: 'min-h-[calc(100vh-var(--topbar-height)-var(--topbar-height))]'
         }"

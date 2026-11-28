@@ -55,7 +55,7 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
     </template>
 
     <NuxtLink :to="config.public.gitUrl" target="_blank" class="text-legend text-(length:--ui-font-size-sm) hover:underline">
-      Основано на Bitrix24 JS SDK. Published under MIT License.
+      Основано на Bitrix24 JS SDK. Распространяется по лицензии MIT.
     </NuxtLink>
     <NuxtLink
       :to="buildHref"

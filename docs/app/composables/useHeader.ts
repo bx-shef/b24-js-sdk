@@ -17,6 +17,38 @@ const _useHeader = () => {
   const tgLink = computed(() => 'https://t.me/bitrix24apps')
   const b24DocsLink = computed(() => 'https://apidocs.bitrix24.ru/')
 
+  // Ресурсы — одни и те же в меню компьютера и в бургер-меню телефона (#71: на телефоне их не было)
+  const resourceLinks = computed<NavigationMenuItem[]>(() => [
+    {
+      label: 'B24 UI',
+      description: 'Интерфейс приложений в стиле Битрикс24',
+      icon: BrowserIcon,
+      to: 'https://b24-ui.bx-shef.by/',
+      target: '_blank'
+    },
+    {
+      label: 'B24 Icons',
+      description: 'Иконки Битрикс24 для Vue и React',
+      icon: BarcodeIcon,
+      to: 'https://b24-icons.bx-shef.by/',
+      target: '_blank'
+    },
+    {
+      label: 'Сообщество',
+      description: 'Сообщество в Telegram',
+      icon: EarthIcon,
+      to: tgLink.value,
+      target: '_blank'
+    },
+    {
+      label: 'REST API',
+      description: 'REST API Битрикс24 и приложения Маркета',
+      icon: Bitrix24Icon,
+      to: b24DocsLink.value,
+      target: '_blank'
+    }
+  ])
+
   const desktopLinks = computed<NavigationMenuItem[]>(() => [
     {
       label: 'Документация',
@@ -51,36 +83,7 @@ const _useHeader = () => {
     {
       label: 'Ресурсы',
       type: 'trigger',
-      children: [
-        {
-          label: 'B24 UI',
-          description: 'Интерфейс приложений в стиле Битрикс24',
-          icon: BrowserIcon,
-          to: 'https://b24-ui.bx-shef.by/',
-          target: '_blank'
-        },
-        {
-          label: 'B24 Icons',
-          description: 'Иконки Битрикс24 для Vue и React',
-          icon: BarcodeIcon,
-          to: 'https://b24-icons.bx-shef.by/',
-          target: '_blank'
-        },
-        {
-          label: 'Сообщество',
-          description: 'Сообщество в Telegram',
-          icon: EarthIcon,
-          to: tgLink.value,
-          target: '_blank'
-        },
-        {
-          label: 'REST API',
-          description: 'REST API Битрикс24 и приложения Маркета',
-          icon: Bitrix24Icon,
-          to: b24DocsLink.value,
-          target: '_blank'
-        }
-      ]
+      children: resourceLinks.value
     }
   ])
 
@@ -120,6 +123,12 @@ const _useHeader = () => {
       to: '/docs/examples',
       icon: ItemIcon,
       active: route.path === '/docs/examples' || route.path.startsWith('/docs/examples/')
+    },
+    {
+      label: 'Ресурсы',
+      icon: EarthIcon,
+      defaultOpen: false,
+      children: resourceLinks.value
     },
     {
       label: 'Заявка на разработку',
