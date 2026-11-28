@@ -13,7 +13,12 @@ const WINDOW_MS = 60_000
 const PER_CLIENT_PER_MINUTE = Number(process.env.ASSISTANT_RATE_PER_MINUTE) || 20
 const PER_DAY = Number(process.env.ASSISTANT_DAILY_LIMIT) || 2000
 const MAX_MESSAGES = 30
+// What a person typed into one message. Tool calls and their results from earlier answers ride along in the
+// history (a documentation page is tens of KB) and must not count here — otherwise every follow-up question
+// fails with 400 once the first answer has read a page.
 const MAX_MESSAGE_LENGTH = 32_000
+// The whole history, tool results included: bounds the request body.
+const MAX_HISTORY_LENGTH = 1_500_000
 
 const perClient = new Map<string, { count: number, resetAt: number }>()
 let day = { count: 0, resetAt: 0 }
@@ -80,9 +85,23 @@ export function assertMessages(messages: unknown): asserts messages is unknown[]
     throw createError({ status: 400, message: 'Too many messages in conversation.' })
   }
   for (const msg of messages as any[]) {
-    const content = JSON.stringify(msg?.content ?? msg?.parts ?? '')
-    if (content.length > MAX_MESSAGE_LENGTH) {
+    if (messageText(msg).length > MAX_MESSAGE_LENGTH) {
       throw createError({ status: 400, message: 'Message content exceeds maximum allowed length.' })
     }
   }
+  if (JSON.stringify(messages).length > MAX_HISTORY_LENGTH) {
+    throw createError({ status: 413, message: 'Conversation is too long. Start a new chat.' })
+  }
+}
+
+/** The text of a message: string `content`, or the `text` parts of `parts` (AI SDK UI messages). */
+export function messageText(msg: any): string {
+  if (typeof msg?.content === 'string') {
+    return msg.content
+  }
+  const parts = Array.isArray(msg?.parts) ? msg.parts : Array.isArray(msg?.content) ? msg.content : []
+  return parts
+    .filter((part: any) => part?.type === 'text' && typeof part.text === 'string')
+    .map((part: any) => part.text)
+    .join('')
 }
