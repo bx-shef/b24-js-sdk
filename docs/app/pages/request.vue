@@ -17,11 +17,12 @@ useSeoMeta({
   ogDescription: description
 })
 
-// CRM-форма «Контактные данные» портала; поменять форму — три значения.
+// CRM-форма портала — та же, что на offer.bx-shef.by (bx-shef/lp, BriefForm.vue); поменять форму — три значения
+// здесь и LOADER в docs/public/b24-form.html.
 const FORM = {
-  script: 'https://cdn-ru.bitrix24.by/b37817748/crm/form/loader_5.js',
-  id: '5',
-  secret: '8i8drp'
+  script: 'https://cdn-ru.bitrix24.by/b37817748/crm/form/loader_1.js',
+  id: '1',
+  secret: '3c735r'
 }
 
 // Откуда пришли: ссылки шапки, подвала, главной и чата несут ?source=…, остальное — direct.
