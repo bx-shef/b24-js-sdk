@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<LogoWithVersionProps>(), {
       <NuxtLink
         to="/"
         class="flex items-end gap-2 font-(--ui-font-weight-bold) text-xl min-w-0 shrink-0"
-        aria-label="JS SDK"
+        aria-label="bx-shef JS SDK — на главную"
       >
         <Logo class="w-auto h-[24px] shrink-0 text-label" />
       </NuxtLink>
