@@ -93,13 +93,13 @@ export default defineNuxtConfig({
       ],
       // Тема без мигания (#70). Класс темы на <html> ставит только этот скрипт, до отрисовки: выбор посетителя
       // (`vueuse-color-scheme`, useColorMode b24ui), иначе тёмная `dark`. Сохранённый прежний `edge-dark` переводится
-      // в `dark`: у него окна поиска и чата светлые. Класс в htmlAttrs не задаём: при
+      // в `dark`: у него окна поиска и чата светлые; неизвестное значение — тоже в `dark`. Класс — только из белого списка. Класс в htmlAttrs не задаём: при
       // гидратации его возвращала разметка сервера, и у светлой темы на <html> оказывались `edge-light edge-dark`.
       // Соответствие режимов классам — как в app.config.ts: light → edge-light.
       script: [
         {
           tagPosition: 'head',
-          innerHTML: `(function(){var c='dark';try{var v=localStorage.getItem('vueuse-color-scheme');if(v==='edge-dark'){v='dark';localStorage.setItem('vueuse-color-scheme',v)}if(v==='auto')v=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';c={light:'edge-light','edge-light':'edge-light',dark:'dark'}[v]||c}catch(e){}document.documentElement.classList.add(c)})()`
+          innerHTML: `(function(){var c='dark',k='vueuse-color-scheme',m={light:'edge-light','edge-light':'edge-light',dark:'dark'};try{var v=localStorage.getItem(k);if(v==='edge-dark'){v='dark';localStorage.setItem(k,v)}var s=v==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):v;if(s&&Object.prototype.hasOwnProperty.call(m,s))c=m[s];else if(v&&v!=='auto')localStorage.setItem(k,'dark')}catch(e){}document.documentElement.classList.add(c)})()`
         }
       ]
     },
