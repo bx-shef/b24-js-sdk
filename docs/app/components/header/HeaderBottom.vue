@@ -1,35 +1,33 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from '@bitrix24/b24ui-nuxt'
 import type { ContentNavigationItem } from '@nuxt/content'
+import { findPageBreadcrumb } from '@nuxt/content/utils'
 import { withoutTrailingSlash } from 'ufo'
 
 const route = useRoute()
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
-const { findBreadcrumb } = useNavigation(navigation!)
 
 // Разделы — в верхнем меню (useHeader). Здесь — путь к открытой странице: раздел → группа → страница (#87).
-function findTitle(items: ContentNavigationItem[] | undefined, path: string): string | undefined {
-  for (const item of items ?? []) {
-    if (withoutTrailingSlash(item.path) === path && !item.children?.length) {
-      return item.title
-    }
-    const found = findTitle(item.children, path)
-    if (found) {
-      return found
-    }
+// Ссылкой — только пункт, у которого есть своя страница: у групп меню («ИИ», «Установка», «Миграция»)
+// её нет, и ссылка вела бы на пустой адрес (сборка создавала для них заглушки без CSP).
+function hasPage(item: ContentNavigationItem): boolean {
+  if (item.page === false) {
+    return false
   }
-  return undefined
+  return !item.children?.length || item.children.some(child => withoutTrailingSlash(child.path) === withoutTrailingSlash(item.path))
 }
 
 const items = computed<BreadcrumbItem[]>(() => {
   const path = withoutTrailingSlash(route.path)
-  const trail = findBreadcrumb(path)
-    .filter(link => link.label && withoutTrailingSlash(String(link.to ?? '')) !== '/docs')
-    .map(link => ({ label: link.label, to: link.to ? withoutTrailingSlash(String(link.to)) : undefined }))
-  const title = findTitle(navigation?.value, path)
-  if (title && trail.at(-1)?.label !== title) {
-    trail.push({ label: title, to: undefined })
+  const trail: BreadcrumbItem[] = []
+  for (const item of findPageBreadcrumb(navigation?.value, path, { current: true, indexAsChild: true })) {
+    const itemPath = withoutTrailingSlash(item.path)
+    if (itemPath === '/docs' || !item.title || trail.at(-1)?.label === item.title) {
+      continue
+    }
+    const isCurrent = itemPath === path
+    trail.push({ label: item.title, to: !isCurrent && hasPage(item) ? itemPath : undefined })
   }
   return trail
 })
