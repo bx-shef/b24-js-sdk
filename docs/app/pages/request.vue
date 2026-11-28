@@ -17,11 +17,12 @@ useSeoMeta({
   ogDescription: description
 })
 
-// CRM-форма «Контактные данные» портала; поменять форму — три значения.
+// CRM-форма портала — та же, что на offer.bx-shef.by (bx-shef/lp, BriefForm.vue); поменять форму — три значения
+// здесь и LOADER в docs/public/b24-form.html.
 const FORM = {
-  script: 'https://cdn-ru.bitrix24.by/b37817748/crm/form/loader_5.js',
-  id: '5',
-  secret: '8i8drp'
+  script: 'https://cdn-ru.bitrix24.by/b37817748/crm/form/loader_1.js',
+  id: '1',
+  secret: '3c735r'
 }
 
 // Откуда пришли: ссылки шапки, подвала, главной и чата несут ?source=…, остальное — direct.
@@ -42,6 +43,48 @@ const frameSrc = computed(() => {
 
 const frame = useTemplateRef<HTMLIFrameElement>('frame')
 
+// Загрузчик формы Битрикс24 пишет метки посетителя (b24_crm_guest_*), поэтому форма — только после согласия
+// на cookie аналитики, как на offer.bx-shef.by (bx-shef/lp, BriefForm.vue и shared/form-gate.ts). Баннер
+// согласия (cookie-consent.js) подключает плагин Метрики; в сборке без Метрики баннера нет — форма сразу.
+// 'wait' — баннер ещё грузится, 'ask' — согласия нет, 'load' — показываем форму.
+const gate = ref<'wait' | 'ask' | 'load'>('wait')
+const hasConsentBanner = /^\d+$/.test(String(config.public.yandexMetrikaId ?? '').trim())
+let consentTimer: ReturnType<typeof setInterval> | undefined
+// Окно согласия доступно (баннер мог не загрузиться, например из-за блокировщика) — иначе ссылки на него нет
+const canOpenConsent = ref(false)
+
+function openConsent() {
+  window.BxConsent?.open()
+}
+
+function watchConsent() {
+  if (!hasConsentBanner) {
+    gate.value = 'load'
+    return
+  }
+  // Скрипт баннера подключается асинхронно: ждём BxConsent до 5 с, потом — как без согласия
+  let tries = 0
+  const check = () => {
+    const consent = window.BxConsent
+    if (!consent && ++tries < 50) {
+      return
+    }
+    clearInterval(consentTimer)
+    consentTimer = undefined
+    if (consent?.granted()) {
+      gate.value = 'load'
+      return
+    }
+    gate.value = 'ask'
+    canOpenConsent.value = Boolean(consent)
+    consent?.onAnalytics(() => {
+      gate.value = 'load'
+    })
+  }
+  consentTimer = setInterval(check, 100)
+  check()
+}
+
 // Обёртка сообщает об отправке формы (события не пересекают границу iframe).
 function onMessage(event: MessageEvent) {
   if (event.source !== frame.value?.contentWindow || event.origin !== window.location.origin) {
@@ -55,8 +98,12 @@ function onMessage(event: MessageEvent) {
 onMounted(() => {
   track('Development Request Opened', { source: source.value })
   window.addEventListener('message', onMessage)
+  watchConsent()
 })
-onBeforeUnmount(() => window.removeEventListener('message', onMessage))
+onBeforeUnmount(() => {
+  window.removeEventListener('message', onMessage)
+  clearInterval(consentTimer)
+})
 </script>
 
 <template>
@@ -72,14 +119,35 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage))
     </p>
 
     <B24Card :b24ui="{ body: 'p-2 sm:p-4' }">
-      <!-- Высоту задаёт min-height: обёртка высоту не сообщает, форма Битрикс24 растёт внутри iframe -->
+      <!-- Высоту задаёт min-height: обёртка высоту не сообщает. Форма №1 — около 780 px на телефоне и 660–710 px шире 640 px, плюс запас на подсказки ошибок -->
       <iframe
+        v-if="gate === 'load'"
         ref="frame"
         :src="frameSrc"
         title="Форма заявки на разработку"
         loading="lazy"
-        class="block w-full min-h-[640px] sm:min-h-[540px] border-0 rounded-(--ui-border-radius-md)"
+        class="block w-full min-h-[840px] sm:min-h-[740px] border-0 rounded-(--ui-border-radius-md)"
       />
+      <div v-else-if="gate === 'ask'" class="min-h-[240px] flex items-center justify-center px-4 py-8 text-center">
+        <p class="text-description max-w-md">
+          Форма заявки работает с cookie аналитики: загрузчик Битрикс24 ставит свои метки.
+          <template v-if="canOpenConsent">
+            Примите cookie
+            <button
+              type="button"
+              class="inline underline underline-offset-4 text-primary hover:no-underline"
+              @click="openConsent"
+            >
+              в окне согласия
+            </button>
+            — и форма появится. Или напишите на почту ниже.
+          </template>
+          <template v-else>
+            Окно согласия не загрузилось (возможно, его скрыл блокировщик) — напишите на почту ниже.
+          </template>
+        </p>
+      </div>
+      <div v-else class="min-h-[240px]" aria-busy="true" />
     </B24Card>
 
     <p class="text-sm text-muted mt-4">
