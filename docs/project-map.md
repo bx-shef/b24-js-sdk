@@ -29,7 +29,7 @@
 План по решениям владельца 28.11 ([#116](https://github.com/bx-shef/b24-js-sdk/issues/116)): очистка чата с «Отменить» (#119), пометка «где выполняется код» у примеров (#120), ссылки на [статью о переходе с `@bitrix24/b24jssdk`](https://b24-js-sdk.bx-shef.by/docs/getting-started/migration/from-bitrix24/) (#117), форма заявки и согласие на cookie как на offer.bx-shef.by (#118, #126), алерт `katex` (#122), ядро SDK без luxon — бандл «вебхук + вызов» 75,7 → 54,5 КБ gzip (#123), исправления по CodeQL (#124).
 
 1. **Безопасность** ([#86](https://github.com/bx-shef/b24-js-sdk/issues/86)): `zod` 3 уйдёт с переходом `@nuxt/content` на zod 4; алерты закрывает владелец (вопрос 8 в `.claude/owner-questions.md`).
-2. **Размер пакета, дальше** ([#115](https://github.com/bx-shef/b24-js-sdk/issues/115), часть 2): облегчённый protobuf в Pull — после решения владельца (вопрос 9); `minifyIdentifiers` в UMD ([#63](https://github.com/bx-shef/b24-js-sdk/issues/63)); тест «в бандле вебхука нет luxon» по сборке ([#128](https://github.com/bx-shef/b24-js-sdk/issues/128)).
+2. **Размер пакета, дальше** ([#115](https://github.com/bx-shef/b24-js-sdk/issues/115), часть 2): облегчённый protobuf в Pull — сначала сравнение кодеков на живом портале (решение 28.11); `minifyIdentifiers` в UMD ([#63](https://github.com/bx-shef/b24-js-sdk/issues/63)); тест «в бандле вебхука нет luxon» по сборке ([#128](https://github.com/bx-shef/b24-js-sdk/issues/128)).
 3. **Логгер Telegram**: экранирование в режимах Markdown ([#127](https://github.com/bx-shef/b24-js-sdk/issues/127)).
 4. **Pull-клиент** ([#61](https://github.com/bx-shef/b24-js-sdk/issues/61)) — после доступа к коду ядра Битрикс24.
 5. **Нестабильные живые тесты** ([#48](https://github.com/bx-shef/b24-js-sdk/issues/48)) — позже (решение владельца).
@@ -43,7 +43,7 @@
 
 - Чат, заявка и Метрика — один вариант с b24-ui ([#44](https://github.com/bx-shef/b24-js-sdk/issues/44)).
 - Доступ к коду ядра Битрикс24 — нужен для #61.
-- Настройки репозитория, название сайта, cookie и ПДн (проверка в понедельник), закрытие алертов, protobuf, запись в CHANGELOG, обязательная `dependency-review`, риск `clearMD` — `.claude/owner-questions.md`.
+- Настройки репозитория, cookie и ПДн и обязательная `dependency-review` (напоминание — понедельник), закрытие алертов — `.claude/owner-questions.md`.
 
 ## Где что лежит
 
