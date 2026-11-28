@@ -65,6 +65,7 @@ async function copyPage() {
 }
 </script>
 
+<!-- Форк: меню шире родительского (w-54): русские пункты «Скопировать ссылку на Markdown» в 216 px обрезались -->
 <template>
   <B24FieldGroup no-split size="sm">
     <B24Button
@@ -79,7 +80,7 @@ async function copyPage() {
     <B24DropdownMenu
       :items="items"
       :content="{ side: 'bottom', align: 'end', sideOffset: 4 }"
-      :b24ui="{ content: 'w-54', viewport: 'w-54' }"
+      :b24ui="{ content: 'w-72', viewport: 'w-72' }"
     >
       <B24Button color="air-secondary-accent" use-dropdown />
     </B24DropdownMenu>

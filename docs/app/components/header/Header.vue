@@ -56,7 +56,10 @@ defineShortcuts({
       <LogoWithVersion no-padding />
     </template>
 
+    <!-- Открытая панель чата отнимает ~400 px: верхнее меню не сжимается и выталкивало кнопки справа
+         (AI, поиск, тема, GitHub) поверх заголовка панели. Те же разделы есть во второй строке (HeaderBottom). -->
     <B24NavigationMenu
+      v-if="!open"
       :items="desktopLinks"
       orientation="horizontal"
     />
