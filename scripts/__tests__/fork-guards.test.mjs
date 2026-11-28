@@ -391,3 +391,22 @@ test('сайт: свой ProsePre глобальный и не подписыв�
   assert.ok(!existsSync(join(ROOT, 'docs/app/components/content/ProsePre.vue')), 'второй ProsePre без .global')
   assert.match(read('docs/app/components/content/ProsePre.global.vue'), /inGroup\.value \? undefined/, 'пометка внутри code-group — подписи скрытых вкладок видны')
 })
+
+// Название в логотипе (#132, решение владельца 28.11): «bx-shef JS SDK», без «Битрикс24» по правилу линейки.
+// Перенос Logo.vue родителя вернул бы его подпись.
+test('сайт: логотип подписан «bx-shef JS SDK»', () => {
+  const logo = read('docs/app/components/Logo.vue')
+  assert.ok(logo.includes('>bx-shef JS SDK</text>') && logo.includes('aria-label="bx-shef JS SDK"'), 'подпись логотипа не «bx-shef JS SDK»')
+  assert.ok(!/Битрикс24|Bitrix24/.test(logo), 'в логотипе название Битрикс24')
+})
+
+// Шапка (#132): меню целиком помещается с ~1180 px, поэтому оно с xl, а кнопка меню — до той же ширины
+// (с открытой панелью чата — до 2xl). На lg меню выталкивало поиск и тему за край (замер: +126 px на 1024).
+test('сайт: меню шапки и кнопка меню переключаются на одной ширине', () => {
+  const header = read('docs/app/components/header/Header.vue')
+  // lg перекрыт явно: базовые классы b24ui (center `lg:flex`, остальное `lg:hidden`) иначе остаются рядом с xl
+  assert.ok(header.includes('center: open ? \'hidden lg:hidden 2xl:flex\' : \'hidden lg:hidden xl:flex\''), 'меню шапки снова с lg — на 1024 px не помещается')
+  for (const [slot, display] of [['toggle', 'inline-flex'], ['content', 'flex'], ['overlay', 'block']]) {
+    assert.ok(header.includes(`${slot}: open ? 'lg:${display} 2xl:hidden' : 'lg:${display} xl:hidden'`), `${slot} шапки прячется не там, где появляется меню`)
+  }
+})

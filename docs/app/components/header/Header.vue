@@ -52,7 +52,7 @@ defineShortcuts({
   <B24Header
     mode="modal"
     class="bg-(--ui-color-accent-soft-element-violet)/40 dark:bg-(--ui-color-copilot-bg-content-3)/40 backdrop-blur-md"
-    :b24ui="{ container: 'lg:ps-10.5 h-auto', center: open ? 'hidden lg:hidden 2xl:flex' : 'hidden lg:flex', right: 'shrink-0 gap-1 sm:gap-3' }"
+    :b24ui="{ container: 'lg:ps-10.5 h-auto', center: open ? 'hidden lg:hidden 2xl:flex' : 'hidden lg:hidden xl:flex', right: 'shrink-0 gap-1 sm:gap-3', toggle: open ? 'lg:inline-flex 2xl:hidden' : 'lg:inline-flex xl:hidden', content: open ? 'lg:flex 2xl:hidden' : 'lg:flex xl:hidden', overlay: open ? 'lg:block 2xl:hidden' : 'lg:block xl:hidden' }"
   >
     <template #left>
       <LogoWithVersion no-padding />
@@ -61,7 +61,10 @@ defineShortcuts({
     <!-- Открытая панель чата отнимает ~400 px, а пункты меню не сжимаются: меню выталкивало кнопки справа
          (AI, поиск, тема, GitHub) поверх заголовка панели. С открытой панелью меню показывается только от 2xl
          (1536 px), где помещается; путь к странице остаётся во второй строке (HeaderBottom). min-[…] не подходит:
-         Tailwind ставит его раньше lg, и он проигрывает. Прокрутку сюда не ставить: overflow обрезает «Ресурсы». -->
+         Tailwind ставит его раньше lg, и он проигрывает. Прокрутку сюда не ставить: overflow обрезает «Ресурсы».
+         Без панели меню помещается с ~1180 px (замер), поэтому оно с xl, а ниже — кнопка меню (toggle/content); с панелью
+         кнопка меню видна до 2xl, иначе вне /docs навигации не остаётся. Базовые классы b24ui (center `lg:flex`,
+         toggle/content/overlay `lg:hidden`) tailwind-merge не убирает, если указать только xl/2xl, — их надо перекрыть на lg. -->
     <B24NavigationMenu
       :items="desktopLinks"
       orientation="horizontal"

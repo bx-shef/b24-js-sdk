@@ -10,10 +10,10 @@ const gradientId = useId()
 
 <template>
   <svg
-    :viewBox="collapsed ? '0 0 24 24' : '0 0 118 24'"
+    :viewBox="collapsed ? '0 0 24 24' : '0 0 152 24'"
     xmlns="http://www.w3.org/2000/svg"
     role="img"
-    aria-label="JS SDK"
+    aria-label="bx-shef JS SDK"
   >
     <defs>
       <linearGradient :id="gradientId" x1="0" y1="0" x2="1" y2="1">
@@ -32,6 +32,6 @@ const gradientId = useId()
       font-weight="700"
       letter-spacing="-0.2"
       style="font-family: 'Inter Tight', var(--ui-font-family-primary, system-ui), sans-serif"
-    >JS SDK</text>
+    >bx-shef JS SDK</text>
   </svg>
 </template>
