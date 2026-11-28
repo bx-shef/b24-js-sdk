@@ -22,9 +22,9 @@ pnpm add @bxshefby/b24jssdk
 pnpm add @bxshefby/b24jssdk-nuxt
 ```
 
-## Уже на `@bitrix24/b24jssdk`?
+## Переход с пакета Битрикс24
 
-Версия `3.1.0` совместима с `@bitrix24/b24jssdk@3.0.0`: переход — смена имени пакета, код не меняется. Как перейти, в том числе без правки импортов, — [«Переход с @bitrix24/b24jssdk»](https://b24-js-sdk.bx-shef.by/docs/getting-started/migration/from-bitrix24/).
+Версия `3.1.0` совместима с `@bitrix24/b24jssdk@3.0.0`: переход — смена имени пакета, код не меняется ([как перейти, в том числе без правки импортов](https://b24-js-sdk.bx-shef.by/docs/getting-started/migration/from-bitrix24/)).
 
 ## Быстрый старт
 

@@ -59,8 +59,7 @@ const example = [
         v{{ config.public.version }} · MIT · Node.js 22+ · ESM, CommonJS и UMD
       </p>
       <p class="text-sm text-legend">
-        Уже на <code>@bitrix24/b24jssdk</code>?
-        <NuxtLink to="/docs/getting-started/migration/from-bitrix24" class="text-primary hover:underline">Переход — смена имени пакета</NuxtLink>
+        Уже на <code>@bitrix24/b24jssdk</code>? <NuxtLink to="/docs/getting-started/migration/from-bitrix24" class="text-primary hover:underline">Переход — смена имени пакета</NuxtLink>
       </p>
       <slot />
     </div>
