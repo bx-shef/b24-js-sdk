@@ -1,5 +1,5 @@
 import type { ConnectorConfig } from '../types/pull'
-import { Text } from '../tools/text'
+import { getDateForLog } from '../tools/text-core'
 import { AbstractConnector } from './abstract-connector'
 import { ConnectionType } from '../types/pull'
 
@@ -80,7 +80,7 @@ export class WebSocketConnector extends AbstractConnector {
    */
   override send(buffer: ArrayBuffer | string): boolean {
     if (!this._socket || this._socket.readyState !== 1) {
-      this.getLogger().error(`${Text.getDateForLog()}: Pull: WebSocket is not connected`).catch(() => {})
+      this.getLogger().error(`${getDateForLog()}: Pull: WebSocket is not connected`).catch(() => {})
 
       return false
     }

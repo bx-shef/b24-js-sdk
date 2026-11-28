@@ -1,5 +1,5 @@
 import type { IRequestIdGenerator } from '../types/http'
-import { Text } from '../tools/text'
+import { getUuidRfc4122 } from '../tools/text-core'
 
 const DEFAULT_REQUEST_ID_HEADER_FIELD_NAME = 'X-Request-ID'
 const DEFAULT_QUERY_STRING_PARAMETER_NAME = 'bx24_request_id'
@@ -20,7 +20,7 @@ export class RequestIdGenerator implements IRequestIdGenerator {
   }
 
   private generate(): string {
-    return Text.getUuidRfc4122()
+    return getUuidRfc4122()
   }
 
   public getRequestId(): string {

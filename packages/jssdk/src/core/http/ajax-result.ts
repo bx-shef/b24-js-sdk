@@ -4,7 +4,7 @@ import type { ValidationDetail } from './parse-error-payload'
 import { parseErrorPayload } from './parse-error-payload'
 import type { AjaxIdempotency, TypeCallParams, TypeHttp } from '../../types/http'
 import { Type } from '../../tools/type'
-import { Text } from '../../tools/text'
+import { toInteger } from '../../tools/text-core'
 import { Result } from '../result'
 import { AjaxError } from './ajax-error'
 import { ApiVersion } from '../../types/b24'
@@ -274,7 +274,7 @@ export class AjaxResult<T = unknown> extends Result<Payload<T>> implements IResu
     const payload = this._data as { total?: number }
     const totalValue = 'total' in payload ? payload.total : undefined
 
-    return Text.toInteger(totalValue)
+    return toInteger(totalValue)
   }
 
   getStatus(): number {
@@ -399,7 +399,7 @@ export class AjaxResult<T = unknown> extends Result<Payload<T>> implements IResu
     // request. Reusing this page's id for the next page would be wrong anyway.
     return {
       ...this._query,
-      params: { ...this._query.params, start: Text.toInteger(nextValue) }
+      params: { ...this._query.params, start: toInteger(nextValue) }
     }
   }
 

@@ -5,6 +5,7 @@ import type { Result } from '../core/result'
 import { TypeOption } from '../types/b24-helper'
 import { Type } from '../tools/type'
 import { Text } from '../tools/text'
+import { toBoolean, toInteger, toNumber } from '../tools/text-core'
 
 export class OptionsManager extends AbstractHelper {
   protected override _data: Map<string, any>
@@ -115,7 +116,7 @@ export class OptionsManager extends AbstractHelper {
       return defValue
     }
 
-    return Text.toNumber(this.data.get(key))
+    return toNumber(this.data.get(key))
   }
 
   getInteger(key: string, defValue: number = 0): number {
@@ -123,7 +124,7 @@ export class OptionsManager extends AbstractHelper {
       return defValue
     }
 
-    return Text.toInteger(this.data.get(key))
+    return toInteger(this.data.get(key))
   }
 
   getBoolYN(key: string, defValue: boolean = true): boolean {
@@ -131,7 +132,7 @@ export class OptionsManager extends AbstractHelper {
       return defValue
     }
 
-    return Text.toBoolean(this.data.get(key))
+    return toBoolean(this.data.get(key))
   }
 
   getBoolNY(key: string, defValue: boolean = false): boolean {
@@ -139,7 +140,7 @@ export class OptionsManager extends AbstractHelper {
       return defValue
     }
 
-    return Text.toBoolean(this.data.get(key))
+    return toBoolean(this.data.get(key))
   }
 
   getString(key: string, defValue: string = ''): string {
