@@ -7,6 +7,8 @@ import { useMounted } from '@vueuse/core'
 
 const route = useRoute()
 const { desktopLinks } = useHeader()
+// Вторая строка шапки (разделы и версия REST API) — только в документации
+const hasBottomRow = computed(() => route.path.startsWith('/docs/'))
 const config = useRuntimeConfig()
 
 // @memo @memo this for NUXT.UI.docs
@@ -50,13 +52,18 @@ defineShortcuts({
   <B24Header
     mode="modal"
     class="bg-(--ui-color-accent-soft-element-violet)/40 dark:bg-(--ui-color-copilot-bg-content-3)/40 backdrop-blur-md"
-    :b24ui="{ container: 'lg:ps-10.5 h-auto', right: 'gap-1 sm:gap-3' }"
+    :b24ui="{ container: 'lg:ps-10.5 h-auto', center: open ? 'hidden lg:hidden 2xl:flex' : 'hidden lg:flex', right: 'shrink-0 gap-1 sm:gap-3' }"
   >
     <template #left>
       <LogoWithVersion no-padding />
     </template>
 
+    <!-- Открытая панель чата отнимает ~400 px, а пункты меню не сжимаются: меню выталкивало кнопки справа
+         (AI, поиск, тема, GitHub) поверх заголовка панели. С открытой панелью: в /docs/ меню скрыто (те же
+         разделы во второй строке, HeaderBottom), на остальных страницах — только от 2xl (1536 px), где оно помещается (min-[…] Tailwind ставит раньше lg и проигрывает).
+         Прокрутку сюда не ставить: overflow обрезает выпадающее меню «Ресурсы». -->
     <B24NavigationMenu
+      v-if="!(open && hasBottomRow)"
       :items="desktopLinks"
       orientation="horizontal"
     />
@@ -98,7 +105,7 @@ defineShortcuts({
       <HeaderBody />
     </template>
 
-    <template v-if="route.path.startsWith('/docs/')" #bottom>
+    <template v-if="hasBottomRow" #bottom>
       <HeaderBottom />
     </template>
   </B24Header>

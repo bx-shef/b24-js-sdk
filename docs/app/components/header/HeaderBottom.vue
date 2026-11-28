@@ -18,12 +18,15 @@ const items = computed<NavigationMenuItem[]>(() => mapContentNavigation(navigati
 <template>
   <B24Separator class="hidden lg:flex" />
 
-  <B24Container class="hidden lg:flex items-center justify-between pt-2.5 px-0">
+  <!-- С открытой панелью чата строка уже ~700 px: меню разделов прокручивается вбок (пункты не сжимаются),
+       переключатель версии не сжимается (перенос строки сломал бы фиксированную высоту шапки, 112 px) -->
+  <B24Container class="hidden lg:flex items-center justify-between gap-3 pt-2.5 px-0">
     <B24NavigationMenu
       :items="items"
-      class="ps-2px"
+      class="ps-2px min-w-0 overflow-x-auto scrollbar-thin"
+      :b24ui="{ item: 'shrink-0' }"
     />
 
-    <RestApiVersionTabs />
+    <RestApiVersionTabs class="shrink-0" />
   </B24Container>
 </template>
