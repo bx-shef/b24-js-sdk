@@ -253,8 +253,9 @@ overrides:
   # (nuxt > nitropack > archiver > readdir-glob > minimatch).
   'readdir-glob>minimatch': '>=11.0.1 <12'
   # GHSA-238p-pmpm-9mq7 (katex <0.18.2, low) — the vulnerable copy comes only through markdownlint
-  # (dev, docs linting: micromark-extension-math, markdownlint never renders). Scoped to that path:
-  # @comark/vue (chat) has katex as an optional peer `^0.17`, a global override would break it. #86
+  # (dev, docs linting: micromark-extension-math, markdownlint never renders). Kept scoped to that path:
+  # @comark/vue (chat) declares katex as an optional peer `^0.17`, so a global override would force a
+  # version outside its range. #86
   'micromark-extension-math>katex': '>=0.18.2 <0.19'
 
 allowBuilds:
@@ -268,7 +269,8 @@ allowBuilds:
 # GHSA-mrhx-c7xc-m3w5 (zod <4.6.6, memory exhaustion on oversized constrained collections)
 # has no fix on zod 3. @nuxt/content still needs zod 3 for zod-to-json-schema: forcing zod 4
 # onto it silently empties the collection schemas. Its zod only validates our own docs content
-# at build time, never untrusted input, so the advisory does not apply there. zod 4 is held at
+# at build time (only its build module imports zod), never untrusted input, so the advisory does not
+# apply there. That holds because docs/server imports zod 4 — a direct dependency of docs (fork-guards). zod 4 is held at
 # >=4.6.6 by the override above. Owner's decision 2026-11-24; drop this entry once
 # @nuxt/content moves to zod 4.
 auditConfig:
