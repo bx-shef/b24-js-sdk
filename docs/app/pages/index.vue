@@ -80,7 +80,7 @@ const catalogueRecipes = computed(() =>
     .sort((a, b) => stemOrder(a.stem) - stemOrder(b.stem))
 )
 
-// Фильтр «Всех рецептов» по области — по полю `scopes` рецептов (#99)
+// "All recipes" filter by area, matched against the recipes' `scopes` field (#99)
 const recipeFilters = [
   { label: 'Все', value: '' },
   { label: 'CRM', value: 'crm' },
@@ -192,6 +192,9 @@ const iconFromIconName = (iconName?: string) => {
             @click="recipeFilter = filter.value"
           />
         </div>
+        <p v-if="filteredRecipes.length === 0" class="text-muted mb-4">
+          В этой области рецептов пока нет.
+        </p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <NuxtLink
             v-for="recipe in filteredRecipes"
