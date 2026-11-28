@@ -1,6 +1,6 @@
 {
   "name": "@bxshefby/b24jssdk-nuxt",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "author": "ООО «БэИксШефБай»",
   "license": "MIT",
   "description": "Bitrix24 REST API JS SDK for Nuxt",

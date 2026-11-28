@@ -1,5 +1,71 @@
 # Changelog
 
+## [3.2.0](https://github.com/bx-shef/b24-js-sdk/compare/v3.1.0...v3.2.0) (2026-11-28)
+
+
+### Features
+
+* **docs:** главная — первый экран о пользе, живой пример, «Что умеет», блок для AI-агентов ([#98](https://github.com/bx-shef/b24-js-sdk/issues/98)) ([17fbc25](https://github.com/bx-shef/b24-js-sdk/commit/17fbc25b7a0157bfc49e0df2d9be5d6d65b52355))
+* **docs:** главная — рецепты плиткой с фильтром, ссылка на заявку ([#102](https://github.com/bx-shef/b24-js-sdk/issues/102)) ([08a2ab8](https://github.com/bx-shef/b24-js-sdk/commit/08a2ab86787d3c5a270f89c256e692d5d228c983))
+* **docs:** заявка на разработку — форма после согласия на cookie, как на offer.bx-shef.by ([#126](https://github.com/bx-shef/b24-js-sdk/issues/126)) ([3ec688b](https://github.com/bx-shef/b24-js-sdk/commit/3ec688b7caa407df9ee9835ee8dcd5ea0ce1e13b))
+* **docs:** картинка для превью ссылок (og:image) в стиле «Василька» ([#62](https://github.com/bx-shef/b24-js-sdk/issues/62)) ([e88ca0b](https://github.com/bx-shef/b24-js-sdk/commit/e88ca0bb1c54f95ed572fca679be8b1561b920b3))
+* **docs:** номер сборки в подвале сайта ссылкой на коммит ([#73](https://github.com/bx-shef/b24-js-sdk/issues/73)) ([1677364](https://github.com/bx-shef/b24-js-sdk/commit/167736455bfa467b831671450d9c5162a3448d78))
+* **docs:** одно меню разделов, вторая строка — путь к странице и версия REST API ([#88](https://github.com/bx-shef/b24-js-sdk/issues/88)) ([e913004](https://github.com/bx-shef/b24-js-sdk/commit/e913004950a0b40003b7a1fcee76c2cd570ef953))
+* **docs:** очистка чата с «Отменить» на 5 секунд ([#119](https://github.com/bx-shef/b24-js-sdk/issues/119)) ([e9f081f](https://github.com/bx-shef/b24-js-sdk/commit/e9f081f200e9c31ee277741901544880212e15f3)), closes [#112](https://github.com/bx-shef/b24-js-sdk/issues/112)
+* **docs:** переключатель версии REST API — подпись и пояснение ([#90](https://github.com/bx-shef/b24-js-sdk/issues/90)) ([a01c51e](https://github.com/bx-shef/b24-js-sdk/commit/a01c51ea529da4424eb518789c45cadc53077142)), closes [#89](https://github.com/bx-shef/b24-js-sdk/issues/89)
+* **docs:** подвал — ссылки на npm и политику cookie, перенос на телефоне ([#101](https://github.com/bx-shef/b24-js-sdk/issues/101)) ([b322d5c](https://github.com/bx-shef/b24-js-sdk/commit/b322d5c01d82f639f3b9bd38a41fc4c981f6044e))
+* **docs:** пометка «где выполняется» у примеров кода ([#120](https://github.com/bx-shef/b24-js-sdk/issues/120)) ([2888719](https://github.com/bx-shef/b24-js-sdk/commit/28887198211c0fbf7b222f5cdb7d30e5ba533acc))
+* **docs:** шрифт «Василька» Inter Tight с самого сайта; баннер выпуска bitrix24 скрыт ([#58](https://github.com/bx-shef/b24-js-sdk/issues/58)) ([b2d738a](https://github.com/bx-shef/b24-js-sdk/commit/b2d738ac28ec8878dba6d637e9676b239c6310fd))
+
+
+### Bug Fixes
+
+* **docs:** /raw/…md без страницы — 404 вместо 500 ([#104](https://github.com/bx-shef/b24-js-sdk/issues/104)) ([580fe78](https://github.com/bx-shef/b24-js-sdk/commit/580fe7837241cfb7d0718f2a39c42a98bbb047ce))
+* **docs:** Telegram и документация REST — русские; подписи ссылок по-русски; ошибки чата без переписки в логе ([#68](https://github.com/bx-shef/b24-js-sdk/issues/68)) ([efb98d6](https://github.com/bx-shef/b24-js-sdk/commit/efb98d682b213f153f0de11fe6143cdf3464e9b7))
+* **docs:** адрес страницы без «/» в sitemap.xml, как canonical; главная и /request в карте сайта ([#110](https://github.com/bx-shef/b24-js-sdk/issues/110)) ([b6844a5](https://github.com/bx-shef/b24-js-sdk/commit/b6844a5e0764097eff8f7734832123ab237e0d78))
+* **docs:** белая полоса под формой заявки в тёмной теме ([#129](https://github.com/bx-shef/b24-js-sdk/issues/129)) ([851336b](https://github.com/bx-shef/b24-js-sdk/commit/851336bbbaf6d8848ea817264e9277f525b0527f))
+* **docs:** второй вопрос в чате и «Объяснить с ИИ» — без 400; старые результаты инструментов не уходят в модель; iframe Метрики в CSP ([#67](https://github.com/bx-shef/b24-js-sdk/issues/67)) ([481ef5a](https://github.com/bx-shef/b24-js-sdk/commit/481ef5a0ae9f2793cac57b43bc9c2fb11c77553d))
+* **docs:** заявка на разработку — форма Битрикс24 с offer.bx-shef.by ([#118](https://github.com/bx-shef/b24-js-sdk/issues/118)) ([cb9d8c1](https://github.com/bx-shef/b24-js-sdk/commit/cb9d8c16fd9b8a5b9810167bb74acd8b84e1a5b9))
+* **docs:** исправленные скрипты — под новыми именами, мимо кеша браузера ([#80](https://github.com/bx-shef/b24-js-sdk/issues/80)) ([59cb82d](https://github.com/bx-shef/b24-js-sdk/commit/59cb82d02274db3c5fc528fd08a0bf82c4135811))
+* **docs:** переходы внутри сайта без 404 — база документации в браузере снова загружается ([#69](https://github.com/bx-shef/b24-js-sdk/issues/69)) ([422f9b7](https://github.com/bx-shef/b24-js-sdk/commit/422f9b75693d6bd6023950e49e953e0d8b789936))
+* **docs:** поиск — первый ввод не теряется, подсказка Ctrl K ([#96](https://github.com/bx-shef/b24-js-sdk/issues/96)) ([805a543](https://github.com/bx-shef/b24-js-sdk/commit/805a5435883d5052953a7b8489cfdb2678758dd1))
+* **docs:** поиск находит страницы, тексты по-русски, 404, меню и оглавление на телефоне ([#85](https://github.com/bx-shef/b24-js-sdk/issues/85)) ([e4918ed](https://github.com/bx-shef/b24-js-sdk/commit/e4918ed853970c5ddcebcf3f4d366c011bf6f9b7))
+* **docs:** светлая тема включается, тёмная — без белых островков ([#84](https://github.com/bx-shef/b24-js-sdk/issues/84)) ([e12d917](https://github.com/bx-shef/b24-js-sdk/commit/e12d9171f547b97ec910bb9c671a878e16921442))
+* **docs:** ссылки «Ресурсы» на наши сайты B24 UI и B24 Icons ([#79](https://github.com/bx-shef/b24-js-sdk/issues/79)) ([190a0f8](https://github.com/bx-shef/b24-js-sdk/commit/190a0f865f3ec054b4b1d789437ef521fa80c49f))
+* **docs:** чат показывает ответ — текст в ChatComark через :value ([#74](https://github.com/bx-shef/b24-js-sdk/issues/74)) ([64bc5b9](https://github.com/bx-shef/b24-js-sdk/commit/64bc5b920a3967f543eb535f0bf9b001396aad08))
+* **docs:** шапка не залезает на панель чата, меню «Скопировать страницу» целиком ([#106](https://github.com/bx-shef/b24-js-sdk/issues/106)) ([fe93d3a](https://github.com/bx-shef/b24-js-sdk/commit/fe93d3af5f8fdd0ad08e31308e798982db3fee92))
+* **jssdk:** исправления по CodeQL — ReDoS в OAuth, прототип в Pull, экранирование Telegram ([312940a](https://github.com/bx-shef/b24-js-sdk/commit/312940aafc238270fc32c8a182e3c1accce9f208))
+
+
+### Performance
+
+* **jssdk:** пакет npm в 4 раза меньше — без карт, лишних деклараций и несжатого UMD ([#83](https://github.com/bx-shef/b24-js-sdk/issues/83)) ([a85a292](https://github.com/bx-shef/b24-js-sdk/commit/a85a2926f0a62a1028d0f217fc89bea16548ec6b))
+* **jssdk:** ядро без luxon — бандл «вебхук + вызов» 75,7 → 54,5 КБ gzip ([#123](https://github.com/bx-shef/b24-js-sdk/issues/123)) ([7ff2c59](https://github.com/bx-shef/b24-js-sdk/commit/7ff2c5972e1f6f3d56fa7749ca63d24c0e9e3914))
+
+
+### Dependencies
+
+* katex &gt;=0.18.2 на пути markdownlint (GHSA-238p-pmpm-9mq7) ([#122](https://github.com/bx-shef/b24-js-sdk/issues/122)) ([eeb229f](https://github.com/bx-shef/b24-js-sdk/commit/eeb229fefc0ca33c42f5cb091f03918f18a06a13))
+
+
+### Changed
+
+* **deploy:** адрес сайта и номер Метрики — из секретов репозитория при сборке образа ([#54](https://github.com/bx-shef/b24-js-sdk/issues/54)) ([fc58c05](https://github.com/bx-shef/b24-js-sdk/commit/fc58c05fb93e208b04798304fd7039969667b8d8))
+
+
+### Docs
+
+* «Быстрый старт» без плашки — установка, русские комментарии, «Что дальше» ([#92](https://github.com/bx-shef/b24-js-sdk/issues/92)) ([d9fd31a](https://github.com/bx-shef/b24-js-sdk/commit/d9fd31a408227b45bd653dfcad48596d1e0fe173)), closes [#91](https://github.com/bx-shef/b24-js-sdk/issues/91)
+* **deploy:** как сайт стоит на сервере bx-shef и скрипт установки ([#59](https://github.com/bx-shef/b24-js-sdk/issues/59)) ([1da1ca1](https://github.com/bx-shef/b24-js-sdk/commit/1da1ca10ebb65390dbf758025907b15c5555ac35))
+* **license:** add the ООО БэИксШефБай copyright line, author and footer attribution ([#77](https://github.com/bx-shef/b24-js-sdk/issues/77)) ([cc7417f](https://github.com/bx-shef/b24-js-sdk/commit/cc7417f7225a00bd9941f1a175355cf775ffa2ef))
+* **releasing:** сверить форковую часть с ruleset main и проверками release PR ([#76](https://github.com/bx-shef/b24-js-sdk/issues/76)) ([e0f7878](https://github.com/bx-shef/b24-js-sdk/commit/e0f7878784c50a7b48def637cc7e6793deb9866f))
+* карта проекта и вопросы владельцу — итог плана 28.11 ([#111](https://github.com/bx-shef/b24-js-sdk/issues/111)) ([b3efe30](https://github.com/bx-shef/b24-js-sdk/commit/b3efe3015168bd39373015ef8bee51f4962758f8))
+* комментарии в примерах кода — по-русски ([#108](https://github.com/bx-shef/b24-js-sdk/issues/108)) ([06399d7](https://github.com/bx-shef/b24-js-sdk/commit/06399d762525fc081c7cda43c431ba70b6bf090b)), closes [#107](https://github.com/bx-shef/b24-js-sdk/issues/107)
+* один термин «AI» вместо «ИИ» ([#94](https://github.com/bx-shef/b24-js-sdk/issues/94)) ([09a034c](https://github.com/bx-shef/b24-js-sdk/commit/09a034c041edbadbe124f65a10f5f4244bb79699))
+* ссылки на «Переход с @bitrix24/b24jssdk» — README, пакеты npm, главная, быстрый старт ([#117](https://github.com/bx-shef/b24-js-sdk/issues/117)) ([1e6d0b3](https://github.com/bx-shef/b24-js-sdk/commit/1e6d0b3d1341da2fb6e413ecbfb1844bb7d3953d))
+* ссылки на свой сайт и репозиторий ([#57](https://github.com/bx-shef/b24-js-sdk/issues/57)) ([8d6214e](https://github.com/bx-shef/b24-js-sdk/commit/8d6214e185d1417076ec20299e7a2db2c8320056))
+* страница «MCP-сервер», раздел MCP в llms.txt, карта проекта ([#81](https://github.com/bx-shef/b24-js-sdk/issues/81)) ([8d462d5](https://github.com/bx-shef/b24-js-sdk/commit/8d462d581855436337e42ca774427473f93c33c9))
+
 ## [3.1.0](https://github.com/bx-shef/b24-js-sdk/commits/v3.1.0) (2026-11-27)
 
 
