@@ -7,8 +7,9 @@ import { Type } from './type'
  * `Text` is a singleton class, so importing it for one method pulls in the whole class — and with it
  * Luxon (~22 KB gzip) — even for a plain webhook call. The core, frame, Pull client and logger import
  * these functions instead; `Text` delegates to them, so the behaviour lives in one place (#115).
+ * Not part of the public API — use `Text`.
  *
- * @internal Not part of the public API — use `Text`.
+ * @internal
  */
 
 /** Current local timestamp for log lines, `yyyy-MM-dd HH:mm:ss`. */

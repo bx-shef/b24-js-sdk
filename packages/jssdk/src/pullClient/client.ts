@@ -69,7 +69,9 @@ export class PullClient implements ConnectorParent {
   private _skipStorageInit: boolean
   private _skipCheckRevision: boolean
 
-  private _subscribers: Record<string, any> = {}
+  // Без прототипа (#121): ключи — тип, moduleId и command — приходят и из сообщений сервера Pull;
+  // у обычного объекта `__proto__` / `constructor` вели бы в Object.prototype
+  private _subscribers: Record<string, any> = Object.create(null)
   private _watchTagsQueue: Map<string, boolean> = new Map()
   private _watchUpdateInterval: number = 1_740_000
   private _watchForceUpdateInterval: number = 5_000
@@ -156,7 +158,8 @@ export class PullClient implements ConnectorParent {
   private _onOnlineHandler: () => void
 
   // [userId] => array of callbacks
-  private _userStatusCallbacks: Record<number, UserStatusCallback[]> = {}
+  // Без прототипа (#121): читается по user_id из сообщений сервера
+  private _userStatusCallbacks: Record<number, UserStatusCallback[]> = Object.create(null)
 
   private _connectPromise: null | {
     resolve: (response: any) => void
@@ -445,7 +448,7 @@ export class PullClient implements ConnectorParent {
       }
 
       if (typeof this._subscribers[params.type] === 'undefined') {
-        this._subscribers[params.type] = {}
+        this._subscribers[params.type] = Object.create(null)
       }
 
       if (
@@ -453,7 +456,7 @@ export class PullClient implements ConnectorParent {
       ) {
         this._subscribers[params.type][params.moduleId] = {
           callbacks: [],
-          commands: {}
+          commands: Object.create(null)
         }
       }
 
@@ -561,7 +564,8 @@ export class PullClient implements ConnectorParent {
         if (typeof handler.getMap === 'function') {
           const mapping = handler.getMap()
           if (mapping && typeof mapping === 'object') {
-            const rowMapping = mapping[data.command]
+            // Только собственные ключи карты (#121): command приходит с сервера, `constructor` взял бы Object
+            const rowMapping = Object.prototype.hasOwnProperty.call(mapping, data.command) ? mapping[data.command] : undefined
             if (typeof rowMapping === 'function') {
               method = rowMapping.bind(handler)
             } else if (
@@ -1411,7 +1415,7 @@ export class PullClient implements ConnectorParent {
       || params.type == SubscriptionType.Client
     ) {
       if (typeof this._subscribers[params.type] === 'undefined') {
-        this._subscribers[params.type] = {}
+        this._subscribers[params.type] = Object.create(null)
       }
 
       if (typeof params.moduleId === 'undefined') {
@@ -1425,7 +1429,7 @@ export class PullClient implements ConnectorParent {
       ) {
         this._subscribers[params.type][params.moduleId] = {
           callbacks: [],
-          commands: {}
+          commands: Object.create(null)
         }
       }
 
