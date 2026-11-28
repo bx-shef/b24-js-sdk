@@ -119,6 +119,8 @@ onBeforeUnmount(() => {
     </p>
 
     <B24Card :b24ui="{ body: 'p-2 sm:p-4' }">
+      <!-- [color-scheme:normal]: в тёмной теме сайта iframe получает схему dark, а документ формы — светлый;
+           при несовпадении схем Chrome заливает фрейм белым, и под формой оставалась белая полоса -->
       <!-- Высоту задаёт min-height: обёртка высоту не сообщает. Форма №1 — около 780 px на телефоне и 660–710 px шире 640 px, плюс запас на подсказки ошибок -->
       <iframe
         v-if="gate === 'load'"
@@ -126,7 +128,7 @@ onBeforeUnmount(() => {
         :src="frameSrc"
         title="Форма заявки на разработку"
         loading="lazy"
-        class="block w-full min-h-[840px] sm:min-h-[740px] border-0 rounded-(--ui-border-radius-md)"
+        class="block w-full min-h-[840px] sm:min-h-[740px] border-0 rounded-(--ui-border-radius-md) [color-scheme:normal]"
       />
       <div v-else-if="gate === 'ask'" class="min-h-[240px] flex items-center justify-center px-4 py-8 text-center">
         <p class="text-description max-w-md">
