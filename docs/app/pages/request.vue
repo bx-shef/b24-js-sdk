@@ -24,8 +24,8 @@ const FORM = {
   secret: '8i8drp'
 }
 
-// Откуда пришли: ссылки шапки, подвала и чата несут ?source=…, остальное — direct.
-const SOURCES = ['header', 'footer', 'chat']
+// Откуда пришли: ссылки шапки, подвала, главной и чата несут ?source=…, остальное — direct.
+const SOURCES = ['header', 'footer', 'home', 'chat']
 const source = computed(() => {
   const value = Array.isArray(route.query.source) ? route.query.source[0] : route.query.source
   return value && SOURCES.includes(value) ? value : 'direct'

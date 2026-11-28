@@ -312,3 +312,40 @@ test('сайт: /raw/* не отражает путь запроса в отве
     assert.ok(!call[1].includes('${'), `notFound подставляет значение в текст: ${call[1]}`)
   }
 })
+
+// sitemap.xml совпадает с canonical (#109): оба без «/» на конце, как ссылки меню (nuxt.config.ts, prerender).
+// У родителя sitemap со «/» — при синхронизации это вернётся, и каждая страница карты станет неканоничной.
+const stripComments = src => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1')
+test('сайт: sitemap.xml и canonical — адрес страницы без «/» на конце', () => {
+  const canonical = stripComments(read('docs/app/composables/useCanonical.ts'))
+  assert.match(canonical, /const pathNormal = withoutTrailingSlash\(route\.path\)/, 'canonical больше не без «/»')
+  assert.match(canonical, /rel: 'canonical', href: joinURL\(siteUrl, pathNormal\)/, 'canonical строится не из pathNormal')
+  const sitemap = stripComments(read('docs/server/routes/sitemap.xml.get.ts'))
+  assert.match(sitemap, /<loc>\$\{xmlEscape\(`\$\{baseUrl\}\$\{page\.path\}`\)\}<\/loc>/, 'sitemap.xml снова со «/» на конце')
+})
+
+// CSP и источники заявок (#110, панель): правка родителя в docs/server/plugins/csp.ts молча закрыла бы Метрику
+// и iframe формы заявки; источник «главная» (PR #102) без SOURCES уходил в direct.
+test('сайт: CSP пускает Метрику и iframe формы заявки', () => {
+  const csp = stripComments(read('docs/server/plugins/csp.ts'))
+  for (const directive of ['script-src', 'connect-src', 'img-src', 'frame-src']) {
+    const line = csp.split('\n').find(l => l.includes(`\`${directive} `))
+    assert.ok(line && line.includes('https://mc.yandex.ru'), `${directive} без Яндекс Метрики`)
+  }
+  assert.match(csp, /`frame-src 'self'/, 'frame-src без self — форма заявки (b24-form.html) не встроится')
+})
+test('сайт: заявка различает источники шапка/подвал/главная/чат, главная и /request в sitemap.xml', () => {
+  const sources = read('docs/app/pages/request.vue').match(/const SOURCES = \[([^\]]*)\]/)
+  assert.ok(sources, 'нет SOURCES в request.vue')
+  for (const s of ['header', 'footer', 'home', 'chat']) {
+    assert.ok(sources[1].includes(`'${s}'`), `источник ${s} не принимается — уйдёт в direct`)
+  }
+  assert.match(stripComments(read('docs/server/routes/sitemap.xml.get.ts')), /\['', '\/request'\]/, 'главная или /request выпали из sitemap.xml')
+})
+// Чат помощника (#110, панель): docs/server/api/ai.post.ts — наш (DeepSeek, русские правила, заявка из чата).
+// Перенос файла родителя целиком молча сменил бы модель и убрал заявку.
+test('сайт: чат на DeepSeek и предлагает заявку на разработку', () => {
+  const ai = stripComments(read('docs/server/api/ai.post.ts'))
+  assert.match(ai, /createDeepSeek\(/, 'чат больше не на DeepSeek')
+  assert.ok(ai.includes('/request?source=chat'), 'чат не ведёт на заявку (/request?source=chat)')
+})
