@@ -46,6 +46,13 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
         size="md"
       />
       <B24Button
+        label="npm"
+        aria-label="Пакет @bxshefby/b24jssdk в npm"
+        to="https://www.npmjs.com/package/@bxshefby/b24jssdk"
+        target="_blank"
+        size="md"
+      />
+      <B24Button
         label="Релизы"
         :icon="RocketIcon"
         :to="`${config.public.gitUrl}/releases`"
@@ -74,5 +81,14 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
     >
       Настроить cookie
     </button>
+    <!-- Та же политика, что в окне баннера cookie (public/cookie-consent.js) -->
+    <NuxtLink
+      v-if="config.public.yandexMetrikaId"
+      to="https://offer.bx-shef.by/privacy"
+      target="_blank"
+      class="ms-3 text-legend text-(length:--ui-font-size-sm) hover:underline"
+    >
+      Политика cookie
+    </NuxtLink>
   </B24Footer>
 </template>
