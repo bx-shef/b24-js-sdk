@@ -21,9 +21,14 @@ export default defineEventHandler(async (event) => {
   const urls = pages.map(page =>
     `  <url>\n    <loc>${xmlEscape(`${baseUrl}${page.path}`)}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
   ).join('\n')
+  // Форк: главная и страница заявки — не из коллекции docs, но их тоже должен найти поисковик
+  const extra = ['', '/request'].map(path =>
+    `  <url>\n    <loc>${xmlEscape(`${baseUrl}${path}` || '/')}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
+  ).join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${extra}
 ${urls}
 </urlset>`
 

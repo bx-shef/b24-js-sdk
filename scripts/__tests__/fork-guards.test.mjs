@@ -323,3 +323,22 @@ test('сайт: sitemap.xml и canonical — адрес страницы без 
   const sitemap = stripComments(read('docs/server/routes/sitemap.xml.get.ts'))
   assert.match(sitemap, /<loc>\$\{xmlEscape\(`\$\{baseUrl\}\$\{page\.path\}`\)\}<\/loc>/, 'sitemap.xml снова со «/» на конце')
 })
+
+// CSP и источники заявок (#110, панель): правка родителя в docs/server/plugins/csp.ts молча закрыла бы Метрику
+// и iframe формы заявки; источник «главная» (PR #102) без SOURCES уходил в direct.
+test('сайт: CSP пускает Метрику и iframe формы заявки', () => {
+  const csp = stripComments(read('docs/server/plugins/csp.ts'))
+  for (const directive of ['script-src', 'connect-src', 'img-src', 'frame-src']) {
+    const line = csp.split('\n').find(l => l.includes(`\`${directive} `))
+    assert.ok(line && line.includes('https://mc.yandex.ru'), `${directive} без Яндекс Метрики`)
+  }
+  assert.match(csp, /`frame-src 'self'/, 'frame-src без self — форма заявки (b24-form.html) не встроится')
+})
+test('сайт: заявка различает источники шапка/подвал/главная/чат, главная и /request в sitemap.xml', () => {
+  const sources = read('docs/app/pages/request.vue').match(/const SOURCES = \[([^\]]*)\]/)
+  assert.ok(sources, 'нет SOURCES в request.vue')
+  for (const s of ['header', 'footer', 'home', 'chat']) {
+    assert.ok(sources[1].includes(`'${s}'`), `источник ${s} не принимается — уйдёт в direct`)
+  }
+  assert.match(stripComments(read('docs/server/routes/sitemap.xml.get.ts')), /\['', '\/request'\]/, 'главная или /request выпали из sitemap.xml')
+})
