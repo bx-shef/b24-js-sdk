@@ -12,12 +12,15 @@ ARG SITE_URL=""
 # ни баннера cookie.
 ARG YANDEX_METRIKA_ID=""
 ARG GIT_URL="https://github.com/bx-shef/b24-js-sdk"
+# Коммит сборки — номер в подвале сайта (CI передаёт github.sha). Пусто — «сборка dev».
+ARG COMMIT_SHA=""
 ENV NUXT_PUBLIC_SITE_URL=${SITE_URL} \
     NUXT_PUBLIC_CANONICAL_URL=${SITE_URL} \
     NUXT_PUBLIC_BASE_URL="" \
     NUXT_PUBLIC_GIT_URL=${GIT_URL} \
     NUXT_PUBLIC_USE_AI=false \
     NUXT_PUBLIC_YANDEX_METRIKA_ID=${YANDEX_METRIKA_ID} \
+    NUXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA} \
     NUXT_MCP_ENABLED=true \
     NUXT_PUBLIC_BX_ASSISTANT_ENABLED=true \
     NUXT_TELEMETRY_DISABLED=1
