@@ -10,7 +10,7 @@ const gradientId = useId()
 
 <template>
   <svg
-    :viewBox="collapsed ? '0 0 24 24' : '0 0 152 24'"
+    :viewBox="collapsed ? '0 0 24 24' : '0 0 162 24'"
     xmlns="http://www.w3.org/2000/svg"
     role="img"
     aria-label="bx-shef JS SDK"

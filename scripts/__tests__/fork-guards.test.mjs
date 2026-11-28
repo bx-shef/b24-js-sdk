@@ -410,3 +410,7 @@ test('сайт: меню шапки и кнопка меню переключа�
     assert.ok(header.includes(`${slot}: open ? 'lg:${display} 2xl:hidden' : 'lg:${display} xl:hidden'`), `${slot} шапки прячется не там, где появляется меню`)
   }
 })
+test('сайт: меню шапки закрывается, когда окно шире порога', () => {
+  const header = read('docs/app/components/header/Header.vue')
+  assert.ok(header.includes('v-model:open="menuOpen"') && header.includes('useMediaQuery(\'(min-width: 1280px)\')'), 'открытое меню после растягивания окна держит блокировку прокрутки')
+})

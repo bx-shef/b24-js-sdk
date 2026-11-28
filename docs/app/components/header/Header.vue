@@ -3,7 +3,7 @@ import GitHubIcon from '@bitrix24/b24icons-vue/social/GitHubIcon'
 import AiStarsIcon from '@bitrix24/b24icons-vue/outline/AiStarsIcon'
 import SunIcon from '@bitrix24/b24icons-vue/outline/SunIcon'
 import MoonIcon from '@bitrix24/b24icons-vue/outline/MoonIcon'
-import { useMounted } from '@vueuse/core'
+import { useMediaQuery, useMounted } from '@vueuse/core'
 
 const route = useRoute()
 const { desktopLinks } = useHeader()
@@ -22,6 +22,17 @@ function toggleChat() {
   }
   open.value = !open.value
 }
+
+// Меню-кнопка видна до xl (с открытой панелью чата — до 2xl). Если меню открыто и окно растянули за этот порог,
+// b24ui прячет его классом, но окно остаётся открытым и держит блокировку прокрутки страницы — закрываем сами.
+const menuOpen = ref(false)
+const isXl = useMediaQuery('(min-width: 1280px)')
+const is2xl = useMediaQuery('(min-width: 1536px)')
+watch([isXl, is2xl, open], () => {
+  if (open.value ? is2xl.value : isXl.value) {
+    menuOpen.value = false
+  }
+})
 
 // region ColorMode ////
 const colorMode = useColorMode()
@@ -50,6 +61,7 @@ defineShortcuts({
 <!-- eslint-disable vue/no-template-shadow -->
 <template>
   <B24Header
+    v-model:open="menuOpen"
     mode="modal"
     class="bg-(--ui-color-accent-soft-element-violet)/40 dark:bg-(--ui-color-copilot-bg-content-3)/40 backdrop-blur-md"
     :b24ui="{ container: 'lg:ps-10.5 h-auto', center: open ? 'hidden lg:hidden 2xl:flex' : 'hidden lg:hidden xl:flex', right: 'shrink-0 gap-1 sm:gap-3', toggle: open ? 'lg:inline-flex 2xl:hidden' : 'lg:inline-flex xl:hidden', content: open ? 'lg:flex 2xl:hidden' : 'lg:flex xl:hidden', overlay: open ? 'lg:block 2xl:hidden' : 'lg:block xl:hidden' }"
