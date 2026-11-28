@@ -19,7 +19,7 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
   <B24Footer>
     <template #left>
       <ProseP small accent="less">
-        Copyright © 2024-present Bitrix24
+        © 2026 ООО «БэИксШефБай»
       </ProseP>
     </template>
 
@@ -55,7 +55,7 @@ const buildHref = commitSha ? `${config.public.gitUrl}/commit/${commitSha}` : co
     </template>
 
     <NuxtLink :to="config.public.gitUrl" target="_blank" class="text-legend text-(length:--ui-font-size-sm) hover:underline">
-      Published under MIT License.
+      Основано на Bitrix24 JS SDK. Published under MIT License.
     </NuxtLink>
     <NuxtLink
       :to="buildHref"
