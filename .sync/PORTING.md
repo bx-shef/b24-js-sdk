@@ -80,14 +80,14 @@ CLA и т. п.). Пропуск без записи неотличим от не
 
 Коммит **только с документацией** (`docs/content/**`, `.sync/**` без манифестов): `node scripts/docs-lint.mjs --strict`,
 `node scripts/docs-link-check.mjs`, `node scripts/md-internal-links.mjs`, `pnpm run docs:build`
-(плюс `node --test "scripts/__tests__/**/*.test.mjs"`, если правили блоки версий).
+(плюс `node --test --test-concurrency=1 "scripts/__tests__/**/*.test.mjs"`, если правили блоки версий).
 
 **Каждый перенос**, какие бы файлы он ни трогал: `node --test scripts/__tests__/fork-guards.test.mjs` —
 условия форка в workflow, имена пакетов, адреса сайтов и правообладатель (`LICENSE`, `author`, подвал).
 
 Коммит **с кодом, манифестами или зависимостями**: всё перечисленное и ещё
 `pnpm install --frozen-lockfile`, `pnpm run lint`, `pnpm run typecheck`,
-`pnpm run package-jssdk:test:run-unit`, `node --test "scripts/__tests__/**/*.test.mjs"`,
+`pnpm run package-jssdk:test:run-unit`, `node --test --test-concurrency=1 "scripts/__tests__/**/*.test.mjs"`,
 `pnpm audit --audit-level=moderate`, `node .sync/dep-parity.mjs --check`.
 
 ## 5. PR
